@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { useApp, useHostStyles, type McpUiHostContext } from '@modelcontextprotocol/ext-apps/react';
-import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
+import type { CallToolResult } from '@modelcontextprotocol/server';
 import { StrictMode, useEffect, useReducer, type JSX } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
@@ -102,13 +102,11 @@ export function SuigarInspectorApp(): JSX.Element | null {
 		},
 		capabilities: {},
 		onAppCreated: (createdApp) => {
-			// oxlint-disable-next-line typescript/no-deprecated
-			createdApp.ontoolinput = () => {
+			createdApp.addEventListener('toolinput', () => {
 				dispatch({ type: 'tool-input' });
-			};
+			});
 
-			// oxlint-disable-next-line typescript/no-deprecated
-			createdApp.ontoolresult = (result) => {
+			createdApp.addEventListener('toolresult', (result) => {
 				if (result.isError) {
 					const errors = textErrors(result);
 					dispatch({
@@ -133,22 +131,21 @@ export function SuigarInspectorApp(): JSX.Element | null {
 								: 'read',
 					payload,
 				});
-			};
+			});
 
-			// oxlint-disable-next-line typescript/no-deprecated
-			createdApp.onhostcontextchanged = (context: McpUiHostContext) => {
+			createdApp.addEventListener('hostcontextchanged', (context) => {
 				dispatch({ type: 'host-context', context });
-			};
+			});
 		},
 	});
-	const hostContext = app?.getHostContext() as McpUiHostContext | undefined;
+	const hostContext = app?.getHostContext();
 	useHostStyles(app, hostContext);
 
 	useEffect(() => {
 		if (!app) {
 			return;
 		}
-		const context = app.getHostContext() as McpUiHostContext | undefined;
+		const context = app.getHostContext();
 		dispatch({ type: 'host-context', context });
 	}, [app]);
 

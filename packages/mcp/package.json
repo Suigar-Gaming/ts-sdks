@@ -92,8 +92,10 @@
 		"lint:fix": "pnpm run oxlint:fix && pnpm run oxfmt:fix"
 	},
 	"dependencies": {
-		"@modelcontextprotocol/ext-apps": "^1.7.5",
-		"@modelcontextprotocol/sdk": "^1.30.0",
+		"@modelcontextprotocol/client": "^2.0.0",
+		"@modelcontextprotocol/core": "^2.0.0",
+		"@modelcontextprotocol/ext-apps": "^2.0.0",
+		"@modelcontextprotocol/server": "^2.0.0",
 		"@mysten/bcs": "catalog:mysten",
 		"@mysten/sui": "catalog:mysten",
 		"@napi-rs/keyring": "^2.0.0",

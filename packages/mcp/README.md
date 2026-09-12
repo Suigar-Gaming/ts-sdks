@@ -2,7 +2,9 @@
 
 AI agent MCP server for Suigar provably fair on-chain Sui casino game, SweetHouse, NFT, and referral transactions.
 
-The server targets the MCP [`2025-11-25`](https://modelcontextprotocol.io/specification/2025-11-25) specification and registers tools/resources through the modern MCP server and MCP Apps APIs. Tool calls return tool execution errors (`isError: true`) for retryable validation or config failures rather than signing or executing transactions.
+The server targets the MCP [`2025-11-25`](https://modelcontextprotocol.io/specification/2025-11-25) specification and registers tools/resources through the modern MCP server and MCP Apps APIs. The server and bundled App use MCP SDK 2 and ext-apps 2; existing MCP Apps 1.x hosts remain compatible. Known tools return `isError: true` for input-validation and handler failures; calls to unknown tools reject with a JSON-RPC invalid-params error (`-32602`). Handler failures include both text and structured error details.
+
+When embedding the package programmatically, `createSuigarMcpServer()` returns `McpServer` from `@modelcontextprotocol/server` v2. Use the split v2 SDK packages for clients and transports; v1 `@modelcontextprotocol/sdk` classes and types cannot be mixed with this server.
 
 It provides:
 

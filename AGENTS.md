@@ -201,7 +201,8 @@ This is a core invariant: standard game transactions must fail clearly when the 
 
 `packages/mcp` exposes a local stdio MCP server plus a bundled MCP App resource. It should stay thin over `@suigar/sdk` and `@mysten/sui`.
 
-- Register tools with modern MCP SDK APIs such as `McpServer.registerTool` and `registerAppTool`.
+- Use ext-apps 2 with the split MCP SDK 2 packages: `@modelcontextprotocol/server`, `@modelcontextprotocol/server/stdio`, and `@modelcontextprotocol/client`. Do not reintroduce v1 `@modelcontextprotocol/sdk` imports or local declarations that replace the published ext-apps React types. Register tools with complete Standard JSON Schema schemas (such as Zod objects) and preserve schema/handler type inference.
+- Unknown tool calls reject with a protocol invalid-params error; schema-validation failures return `isError: true`. Keep Suigar handler failures actionable with both text and structured error details.
 - Always return both text `content` and `structuredContent`.
 - Keep tool errors actionable and include the field/config/network detail needed for an agent to retry.
 - Keep SDK-style MCP config documentation aligned with `SuigarConfigOverrides`: both `coins.sui` and `coins.usdc` accept optional `coinType`, `decimals`, and `priceInfoObjectId` metadata.

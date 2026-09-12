@@ -1,9 +1,13 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
-import { LATEST_PROTOCOL_VERSION } from '@modelcontextprotocol/sdk/types.js';
+import {
+	Client,
+	InMemoryTransport,
+	LATEST_PROTOCOL_VERSION,
+	ProtocolError,
+	ProtocolErrorCode,
+} from '@modelcontextprotocol/client';
 import { describe, expect, it } from 'vitest';
 import {
 	NFT_IMAGE_RESOURCE_DOMAINS,
@@ -77,11 +81,14 @@ describe('MCP server registration', () => {
 				'AI agent MCP server for Suigar provably fair on-chain Sui casino game',
 			);
 
+			for (const tool of result.tools) {
+				expect(tool.execution).toBeUndefined();
+			}
+
 			const readConfigTool = result.tools.find((tool) => tool.name === 'read_config');
 			const readGameMetadataTool = result.tools.find((tool) => tool.name === 'read_game_metadata');
 			expect(readConfigTool).toMatchObject({
 				title: 'Read Suigar Config',
-				execution: { taskSupport: 'forbidden' },
 			});
 			expect(readConfigTool?.inputSchema).toMatchObject({
 				type: 'object',
@@ -92,7 +99,6 @@ describe('MCP server registration', () => {
 			});
 			expect(readGameMetadataTool).toMatchObject({
 				title: 'Read Suigar Game Metadata',
-				execution: { taskSupport: 'forbidden' },
 			});
 			expect(readGameMetadataTool?._meta).toMatchObject({
 				ui: { resourceUri: SUIGAR_MCP_APP_RESOURCE_URI },
@@ -100,14 +106,52 @@ describe('MCP server registration', () => {
 			const getSessionWalletTool = result.tools.find((tool) => tool.name === 'get_session_wallet');
 			expect(getSessionWalletTool).toMatchObject({
 				title: 'Get Session Wallet',
-				execution: { taskSupport: 'forbidden' },
 				_meta: { ui: { resourceUri: SUIGAR_MCP_APP_RESOURCE_URI } },
 			});
 			const listNftsTool = result.tools.find((tool) => tool.name === 'list_nfts');
 			expect(listNftsTool).toMatchObject({
 				title: 'List Suigar NFTs',
-				execution: { taskSupport: 'forbidden' },
 				_meta: { ui: { resourceUri: SUIGAR_MCP_APP_RESOURCE_URI } },
+			});
+		} finally {
+			await client.close();
+			await server.close();
+		}
+	});
+
+	it('serves valid calls and distinguishes handler errors from protocol errors', async () => {
+		const server = createSuigarMcpServer();
+		const client = new Client({ name: 'suigar-test', version: '0.0.0' });
+		const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+		try {
+			await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
+			const config = await client.callTool({
+				name: 'read_config',
+				arguments: { network: 'testnet' },
+			});
+			expect(config.isError).not.toBe(true);
+			expect(config.structuredContent).toMatchObject({ network: 'testnet' });
+			expect(config.content).toEqual(
+				expect.arrayContaining([expect.objectContaining({ type: 'text' })]),
+			);
+
+			const failure = await client.callTool({
+				name: 'read_config',
+				arguments: { config: { coins: { sui: { coinType: 'invalid' } } } },
+			});
+			expect(failure.isError).toBe(true);
+			expect(failure.structuredContent).toMatchObject({ errors: expect.any(Array) });
+
+			const missingTool = client.callTool({ name: 'missing_tool', arguments: {} });
+			await expect(missingTool).rejects.toBeInstanceOf(ProtocolError);
+			await expect(missingTool).rejects.toMatchObject({ code: ProtocolErrorCode.InvalidParams });
+			const invalidInput = await client.callTool({
+				name: 'read_config',
+				arguments: { network: 'invalid' },
+			});
+			expect(invalidInput).toMatchObject({
+				isError: true,
+				content: [{ type: 'text', text: expect.stringContaining('network') }],
 			});
 		} finally {
 			await client.close();
