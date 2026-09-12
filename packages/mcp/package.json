@@ -112,7 +112,6 @@
 	},
 	"devDependencies": {
 		"@modelcontextprotocol/client": "^2.0.0",
-		"@modelcontextprotocol/core": "^2.0.0",
 		"@tailwindcss/vite": "catalog:tooling",
 		"@types/node": "catalog:typescript",
 		"@types/react": "catalog:typescript",

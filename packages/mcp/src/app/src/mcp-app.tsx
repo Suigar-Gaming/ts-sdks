@@ -59,7 +59,9 @@ type AppViewAction =
 function reducer(state: AppViewState, action: AppViewAction): AppViewState {
 	switch (action.type) {
 		case 'host-context':
-			return { ...state, hostContext: action.context };
+			return action.context
+				? { ...state, hostContext: { ...state.hostContext, ...action.context } }
+				: state;
 		case 'tool-input':
 			return {
 				...state,
@@ -154,10 +156,17 @@ export function SuigarInspectorApp(): JSX.Element | null {
 	const execution = asRecord(asRecord(inspector.payload).execution);
 	const approvalUrl = typeof execution.approvalUrl === 'string' ? execution.approvalUrl : null;
 	const viewError = error ?? viewState.error;
+	const safeAreaInsets = viewState.hostContext?.safeAreaInsets;
+	const safeAreaStyle = {
+		paddingTop: safeAreaInsets?.top,
+		paddingRight: safeAreaInsets?.right,
+		paddingBottom: safeAreaInsets?.bottom,
+		paddingLeft: safeAreaInsets?.left,
+	};
 
 	if (viewError) {
 		return (
-			<main className={shellClassName}>
+			<main className={shellClassName} style={safeAreaStyle}>
 				<Header status="Error" title={title} />
 				<ListPanel className="errors" items={[viewError.message]} title="Errors" />
 			</main>
@@ -166,7 +175,7 @@ export function SuigarInspectorApp(): JSX.Element | null {
 
 	if (!viewState.hostContext && !viewState.inspector) {
 		return (
-			<main className={shellClassName}>
+			<main className={shellClassName} style={safeAreaStyle}>
 				<Header status="Connecting" title="Suigar MCP" />
 				<Panel title="Connection">
 					<p className="text-muted-foreground text-xs leading-5 font-semibold">
@@ -185,7 +194,7 @@ export function SuigarInspectorApp(): JSX.Element | null {
 
 	if (inspector.errors.length > 0) {
 		return (
-			<main className={shellClassName}>
+			<main className={shellClassName} style={safeAreaStyle}>
 				<Header status="Error" title="Tool Error" />
 				<ListPanel className="errors" items={inspector.errors} title="Unable to complete request" />
 			</main>
@@ -193,7 +202,7 @@ export function SuigarInspectorApp(): JSX.Element | null {
 	}
 
 	return (
-		<main className={shellClassName}>
+		<main className={shellClassName} style={safeAreaStyle}>
 			<Header coinBadge={coinBadge} status={inspector.status} title={title} />
 			<ExecutionApproval url={approvalUrl} />
 			<View payload={inspector.payload} errors={inspector.errors} />
