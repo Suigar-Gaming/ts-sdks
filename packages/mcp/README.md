@@ -2,9 +2,11 @@
 
 AI agent MCP server for Suigar provably fair on-chain Sui casino game, SweetHouse, NFT, and referral transactions.
 
-The server targets the MCP [`2025-11-25`](https://modelcontextprotocol.io/specification/2025-11-25) specification and registers tools/resources through the modern MCP server and MCP Apps APIs. The server and bundled App use MCP SDK 2 and ext-apps 2; existing MCP Apps 1.x hosts remain compatible. Known tools return `isError: true` for input-validation and handler failures; calls to unknown tools reject with a JSON-RPC invalid-params error (`-32602`). Handler failures include both text and structured error details.
+The server targets the MCP [`2026-07-28`](https://modelcontextprotocol.io/specification/2026-07-28) specification and registers tools/resources through the modern MCP server and MCP Apps APIs. The server and bundled App use MCP SDK 2 and ext-apps 2; existing MCP Apps 1.x hosts remain compatible. Known tools return `isError: true` for input-validation and handler failures; calls to unknown tools reject with a JSON-RPC invalid-params error (`-32602`). Handler failures include both text and structured error details.
 
-When embedding the package programmatically, `createSuigarMcpServer()` returns `McpServer` from `@modelcontextprotocol/server` v2. Use the split v2 SDK packages for clients and transports; v1 `@modelcontextprotocol/sdk` classes and types cannot be mixed with this server.
+The stdio entry uses SDK 2 `serveStdio` to accept 2026-07-28 requests with per-request version/capability metadata and `server/discover`, while retaining the initialization handshake for older clients. The SDK supplies `resultType`, server identity metadata, and conservative cache hints (`ttlMs: 0`, `cacheScope: "private"`) on cacheable results.
+
+When embedding the package programmatically, `createSuigarMcpServer()` returns `McpServer` from `@modelcontextprotocol/server` v2. Import shared types and utilities from `@modelcontextprotocol/server` and stdio APIs from `@modelcontextprotocol/server/stdio`. The `@modelcontextprotocol/client` and `@modelcontextprotocol/core` packages are development dependencies for tests and the bundled App build. For stdio, use `startSuigarMcpServer()` to handle both protocol eras and validate the version on every request.
 
 It provides:
 

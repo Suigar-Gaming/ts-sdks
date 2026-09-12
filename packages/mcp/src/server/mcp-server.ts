@@ -2,8 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { registerAppResource } from '@modelcontextprotocol/ext-apps/server';
-import { McpServer } from '@modelcontextprotocol/server';
-import { StdioServerTransport } from '@modelcontextprotocol/server/stdio';
+import {
+	McpServer,
+	SUPPORTED_PROTOCOL_VERSIONS,
+	type Transport,
+} from '@modelcontextprotocol/server';
+import { serveStdio, StdioServerTransport } from '@modelcontextprotocol/server/stdio';
 import { VERSION } from '../version.js';
 import {
 	createSuigarMcpAppResourceMeta,
@@ -12,13 +16,20 @@ import {
 } from './app-resource.js';
 import { registerSuigarTools } from './tool-registration.js';
 
+const supportedProtocolVersions = ['2026-07-28', ...SUPPORTED_PROTOCOL_VERSIONS];
+
 export function createSuigarMcpServer(): McpServer {
-	const server = new McpServer({
-		name: 'suigar',
-		version: VERSION,
-		description:
-			'AI agent MCP server for Suigar provably fair on-chain Sui casino game, SweetHouse, NFT, and referral transactions.',
-	});
+	const server = new McpServer(
+		{
+			name: 'suigar',
+			version: VERSION,
+			description:
+				'AI agent MCP server for Suigar provably fair on-chain Sui casino game, SweetHouse, NFT, and referral transactions.',
+		},
+		{
+			supportedProtocolVersions,
+		},
+	);
 
 	registerAppResource(
 		server,
@@ -45,7 +56,35 @@ export function createSuigarMcpServer(): McpServer {
 }
 
 export async function startSuigarMcpServer(): Promise<void> {
-	const server = createSuigarMcpServer();
-	const transport = new StdioServerTransport();
-	await server.connect(transport);
+	serveSuigarMcpStdio();
+}
+
+export function serveSuigarMcpStdio(transport: Transport = new StdioServerTransport()) {
+	const handle = serveStdio(createSuigarMcpServer, { transport });
+	const onmessage = transport.onmessage;
+	// SDK 2.0.0 checks versions when opening stdio, but not on later ordinary requests.
+	// Keep the spec's per-request version check until the SDK covers both paths.
+	transport.onmessage = (message, extra) => {
+		if ('method' in message && 'id' in message) {
+			const requested = message.params?._meta?.['io.modelcontextprotocol/protocolVersion'];
+			if (typeof requested === 'string' && !supportedProtocolVersions.includes(requested)) {
+				void transport
+					.send({
+						jsonrpc: '2.0',
+						id: message.id,
+						error: {
+							code: -32022,
+							message: 'Unsupported protocol version',
+							data: { requested, supported: supportedProtocolVersions },
+						},
+					})
+					.catch((error: unknown) =>
+						transport.onerror?.(error instanceof Error ? error : new Error(String(error))),
+					);
+				return;
+			}
+		}
+		onmessage?.(message, extra);
+	};
+	return handle;
 }

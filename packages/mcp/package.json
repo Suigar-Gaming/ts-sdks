@@ -92,8 +92,6 @@
 		"lint:fix": "pnpm run oxlint:fix && pnpm run oxfmt:fix"
 	},
 	"dependencies": {
-		"@modelcontextprotocol/client": "^2.0.0",
-		"@modelcontextprotocol/core": "^2.0.0",
 		"@modelcontextprotocol/ext-apps": "^2.0.0",
 		"@modelcontextprotocol/server": "^2.0.0",
 		"@mysten/bcs": "catalog:mysten",
@@ -113,6 +111,8 @@
 		"zod": "^4.6.2"
 	},
 	"devDependencies": {
+		"@modelcontextprotocol/client": "^2.0.0",
+		"@modelcontextprotocol/core": "^2.0.0",
 		"@tailwindcss/vite": "catalog:tooling",
 		"@types/node": "catalog:typescript",
 		"@types/react": "catalog:typescript",
