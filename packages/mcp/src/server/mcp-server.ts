@@ -16,20 +16,15 @@ import {
 } from './app-resource.js';
 import { registerSuigarTools } from './tool-registration.js';
 
-const supportedProtocolVersions = ['2026-07-28', ...SUPPORTED_PROTOCOL_VERSIONS];
+const SUPPORTED_MCP_PROTOCOL_VERSIONS = ['2026-07-28', ...SUPPORTED_PROTOCOL_VERSIONS];
 
 export function createSuigarMcpServer(): McpServer {
-	const server = new McpServer(
-		{
-			name: 'suigar',
-			version: VERSION,
-			description:
-				'AI agent MCP server for Suigar provably fair on-chain Sui casino game, SweetHouse, NFT, and referral transactions.',
-		},
-		{
-			supportedProtocolVersions,
-		},
-	);
+	const server = new McpServer({
+		name: 'suigar',
+		version: VERSION,
+		description:
+			'AI agent MCP server for Suigar provably fair on-chain Sui casino game, SweetHouse, NFT, and referral transactions.',
+	});
 
 	registerAppResource(
 		server,
@@ -67,7 +62,7 @@ export function serveSuigarMcpStdio(transport: Transport = new StdioServerTransp
 	transport.onmessage = (message, extra) => {
 		if ('method' in message && 'id' in message) {
 			const requested = message.params?._meta?.['io.modelcontextprotocol/protocolVersion'];
-			if (typeof requested === 'string' && !supportedProtocolVersions.includes(requested)) {
+			if (typeof requested === 'string' && !SUPPORTED_MCP_PROTOCOL_VERSIONS.includes(requested)) {
 				void transport
 					.send({
 						jsonrpc: '2.0',
@@ -75,7 +70,7 @@ export function serveSuigarMcpStdio(transport: Transport = new StdioServerTransp
 						error: {
 							code: -32022,
 							message: 'Unsupported protocol version',
-							data: { requested, supported: supportedProtocolVersions },
+							data: { requested, supported: SUPPORTED_MCP_PROTOCOL_VERSIONS },
 						},
 					})
 					.catch((error: unknown) =>
