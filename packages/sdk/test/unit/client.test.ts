@@ -39,7 +39,6 @@ const TEST_SPEC_ID = testAddress('c');
 
 afterEach(() => {
 	vi.resetModules();
-	vi.clearAllMocks();
 });
 
 function serializeDummyFieldKey(

@@ -42,10 +42,10 @@ pnpm --dir packages/sdk run typecheck
 pnpm --dir packages/mcp run typecheck
 
 # Run a specific vitest file
-pnpm --dir packages/sdk exec vitest run test/unit/transactions.test.ts
+pnpm --dir packages/sdk exec vitest run test/unit/transactions/coinflip.test.ts
 
 # Run a specific test name
-pnpm --dir packages/sdk exec vitest run -t "builds a coinflip transaction with the configured package id"
+pnpm --dir packages/sdk exec vitest run -t "builds a coinflip transaction with a configured package override"
 ```
 
 ### Linting and Formatting
@@ -211,9 +211,12 @@ This is a core invariant: standard game transactions must fail clearly when the 
 
 ### Testing Conventions
 
-- `packages/sdk/test/unit/transactions.test.ts` covers transaction composition, normalization, and generated wrapper integration.
-- `packages/sdk/test/unit/config.test.ts` covers config resolution and defaults.
-- When changing transaction behavior, update tests to cover package id resolution, owner-address normalization, and action-specific argument mapping.
+- Both packages use Vitest 5 in the Node.js environment. Run tests through the package scripts or from the package root so its Vitest config is loaded. For `-t` filters, match an individual test name or use `.*` between suite and test names.
+- Organize tests by the behavior they cover, following the existing directories rather than adding a single catch-all suite. SDK tests live under `packages/sdk/test/unit/`, grouped into `transactions/`, `helpers/`, and `utils/`, with client and public-export coverage alongside them. MCP tests live under `packages/mcp/test/`, grouped into `tools/handlers/`, `tools/schemas/`, `runtime/`, `server/`, `wallet/`, `app/`, and `utils/`, with CLI and package-export coverage alongside them.
+- Add regression coverage near the affected behavior. Check observable results, argument normalization, configuration overrides, and actionable failures where relevant. Transaction tests should cover the applicable game or action and its generated contract-call arguments; keep standard and PvP flows separate.
+- Reuse nearby test fixtures and helpers. Mock external services and generated contract boundaries where needed, while exercising the package's own behavior. Keep tests independent of live networks and real wallet credentials; wallet bridge tests may use local loopback servers and temporary storage.
+- Vitest clears mock call history before each test by default. Reset mock implementations, module state, environment variables, timers, and resources explicitly when a test changes them; clearing call history does not reset those. Keep `vi.mock`, `vi.unmock`, and `vi.hoisted` at module scope, and use `vi.doMock` for runtime mocking. Await asynchronous assertions.
+- Run tests and typechecks for each affected package. When changing SDK tests, also run `pnpm --dir packages/sdk exec tsc --noEmit -p test/tsconfig.json`, since the SDK's main typecheck excludes tests.
 
 ### Changeset Conventions
 

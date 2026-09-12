@@ -6,7 +6,6 @@ import { afterEach, vi } from 'vitest';
 
 afterEach(() => {
 	vi.resetModules();
-	vi.clearAllMocks();
 });
 
 export async function loadTransactionModuleWithMock<TModule extends Record<string, unknown>>(
