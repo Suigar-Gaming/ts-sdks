@@ -108,7 +108,7 @@
 		"react-dom": "catalog:frontend",
 		"tailwind-merge": "catalog:frontend",
 		"yargs": "^18.1.0",
-		"zod": "^4.5.4"
+		"zod": "^4.6.2"
 	},
 	"devDependencies": {
 		"@tailwindcss/vite": "catalog:tooling",
@@ -121,7 +121,7 @@
 		"tailwindcss": "catalog:tooling",
 		"tsdown": "catalog:tooling",
 		"typescript": "catalog:typescript",
-		"vite": "^8.2.2",
+		"vite": "^8.3.0",
 		"vite-plugin-singlefile": "^2.3.3",
 		"vitest": "catalog:test"
 	},
