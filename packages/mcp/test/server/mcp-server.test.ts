@@ -8,7 +8,7 @@ import {
 	ProtocolErrorCode,
 	type JSONRPCMessage,
 } from '@modelcontextprotocol/server';
-import { describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
 	NFT_IMAGE_RESOURCE_DOMAINS,
 	SUIGAR_MCP_APP_RESOURCE_URI,
@@ -228,126 +228,120 @@ const modernMeta = {
 	'io.modelcontextprotocol/clientInfo': { name: 'suigar-test', version: '0.0.0' },
 };
 
-// Inspect wire responses without client-side normalization or an initialize handshake.
-function createProtocolConnection() {
-	const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
-	const handle = serveSuigarMcpStdio(serverTransport);
-	let requestId = 0;
-	return {
-		async request(
-			method: string,
-			params: Record<string, unknown> = {},
-			meta: Record<string, unknown> = modernMeta,
-		) {
-			const id = ++requestId;
-			const response = new Promise<JSONRPCMessage>((resolve) => {
-				clientTransport.onmessage = (message) => {
-					if ('id' in message && message.id === id) resolve(message);
-				};
-			});
-			await clientTransport.send({
-				jsonrpc: '2.0',
-				id,
-				method,
-				params: { ...params, _meta: meta },
-			});
-			return response;
-		},
-		close: () => handle.close(),
-	};
-}
-
 describe('MCP 2026-07-28 stdio protocol', () => {
+	let clientTransport: InMemoryTransport;
+	let handle: ReturnType<typeof serveSuigarMcpStdio>;
+	let requestId: number;
+
+	beforeEach(() => {
+		const transports = InMemoryTransport.createLinkedPair();
+		clientTransport = transports[0];
+		handle = serveSuigarMcpStdio(transports[1]);
+		requestId = 0;
+	});
+
+	afterEach(async () => {
+		await handle.close();
+	});
+
+	async function request(
+		method: string,
+		params: Record<string, unknown> = {},
+		meta: Record<string, unknown> = modernMeta,
+	) {
+		const id = ++requestId;
+		const response = new Promise<JSONRPCMessage>((resolve) => {
+			clientTransport.onmessage = (message) => {
+				if ('id' in message && message.id === id) resolve(message);
+			};
+		});
+		await clientTransport.send({
+			jsonrpc: '2.0',
+			id,
+			method,
+			params: { ...params, _meta: meta },
+		});
+		return response;
+	}
+
 	it('discovers the server and serves complete, cacheable results without initialization', async () => {
-		const connection = createProtocolConnection();
-		try {
-			expect(await connection.request('server/discover')).toMatchObject({
+		expect(await request('server/discover')).toMatchObject({
+			result: {
+				resultType: 'complete',
+				supportedVersions: ['2026-07-28'],
+				capabilities: { tools: {}, resources: {} },
+				_meta: { 'io.modelcontextprotocol/serverInfo': { name: 'suigar' } },
+			},
+		});
+		for (const method of ['tools/list', 'resources/list', 'resources/templates/list']) {
+			expect(await request(method)).toMatchObject({
 				result: {
 					resultType: 'complete',
-					supportedVersions: ['2026-07-28'],
-					capabilities: { tools: {}, resources: {} },
+					ttlMs: 0,
+					cacheScope: 'private',
 					_meta: { 'io.modelcontextprotocol/serverInfo': { name: 'suigar' } },
 				},
 			});
-			for (const method of ['tools/list', 'resources/list', 'resources/templates/list']) {
-				expect(await connection.request(method)).toMatchObject({
-					result: {
-						resultType: 'complete',
-						ttlMs: 0,
-						cacheScope: 'private',
-						_meta: { 'io.modelcontextprotocol/serverInfo': { name: 'suigar' } },
-					},
-				});
-			}
-			expect(
-				await connection.request('tools/call', {
-					name: 'read_config',
-					arguments: { network: 'testnet' },
-				}),
-			).toMatchObject({
-				result: {
-					resultType: 'complete',
-					structuredContent: { network: 'testnet' },
-				},
-			});
-			expect(await connection.request('resources/read', { uri: 'ui://missing' })).toMatchObject({
-				error: { code: -32602 },
-			});
-		} finally {
-			await connection.close();
 		}
+		expect(
+			await request('tools/call', {
+				name: 'read_config',
+				arguments: { network: 'testnet' },
+			}),
+		).toMatchObject({
+			result: {
+				resultType: 'complete',
+				structuredContent: { network: 'testnet' },
+			},
+		});
+		expect(await request('resources/read', { uri: 'ui://missing' })).toMatchObject({
+			error: { code: -32602 },
+		});
 	});
 
 	it('requires request metadata and rejects unsupported versions', async () => {
-		const connection = createProtocolConnection();
-		try {
-			expect(
-				await connection.request(
-					'server/discover',
-					{},
-					{
-						...modernMeta,
-						'io.modelcontextprotocol/protocolVersion': '2099-01-01',
-					},
-				),
-			).toMatchObject({
-				error: {
-					code: -32022,
-					data: {
-						requested: '2099-01-01',
-						supported: expect.arrayContaining(['2026-07-28']),
-					},
+		expect(
+			await request(
+				'server/discover',
+				{},
+				{
+					...modernMeta,
+					'io.modelcontextprotocol/protocolVersion': '2099-01-01',
 				},
-			});
-			expect(await connection.request('tools/list')).toHaveProperty('result');
-			expect(await connection.request('tools/list', {}, {})).toMatchObject({
-				error: { code: -32602 },
-			});
-			expect(
-				await connection.request(
-					'tools/list',
-					{},
-					{ ...modernMeta, 'io.modelcontextprotocol/protocolVersion': '2099-01-01' },
-				),
-			).toMatchObject({ error: { code: -32022 } });
-			expect(
-				await connection.request(
-					'tools/list',
-					{},
-					{
-						'io.modelcontextprotocol/protocolVersion': '2026-07-28',
-					},
-				),
-			).toMatchObject({ error: { code: -32602 } });
-			expect(await connection.request('tools/list')).toHaveProperty('result');
-		} finally {
-			await connection.close();
-		}
+			),
+		).toMatchObject({
+			error: {
+				code: -32022,
+				data: {
+					requested: '2099-01-01',
+					supported: expect.arrayContaining(['2026-07-28']),
+				},
+			},
+		});
+		expect(await request('tools/list')).toHaveProperty('result');
+		expect(await request('tools/list', {}, {})).toMatchObject({
+			error: { code: -32602 },
+		});
+		expect(
+			await request(
+				'tools/list',
+				{},
+				{ ...modernMeta, 'io.modelcontextprotocol/protocolVersion': '2099-01-01' },
+			),
+		).toMatchObject({ error: { code: -32022 } });
+		expect(
+			await request(
+				'tools/list',
+				{},
+				{
+					'io.modelcontextprotocol/protocolVersion': '2026-07-28',
+				},
+			),
+		).toMatchObject({ error: { code: -32602 } });
+		expect(await request('tools/list')).toHaveProperty('result');
 	});
 
 	it('continues to accept the legacy initialization handshake through the stdio entry', async () => {
-		const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
-		const handle = serveSuigarMcpStdio(serverTransport);
 		const client = new Client({ name: 'legacy-test', version: '0.0.0' });
 		try {
 			await client.connect(clientTransport);
@@ -356,7 +350,6 @@ describe('MCP 2026-07-28 stdio protocol', () => {
 			);
 		} finally {
 			await client.close();
-			await handle.close();
 		}
 	});
 });
