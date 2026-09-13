@@ -275,7 +275,7 @@ function createDecodedPvPCoinflipGame(gameId: string): DecodedPvPCoinflipGame {
 		stake_per_player: '1',
 		house_edge_bps: '100',
 		stake_pot: { value: '2' },
-	} as DecodedPvPCoinflipGame;
+	};
 }
 
 type SuigarTestClient = TestClient & { suigar: SuigarClient };
@@ -797,7 +797,7 @@ describe('SuigarClient', () => {
 			type: TypeName.name,
 			bcs: SUI_TYPE_NAME_FIELD_BCS,
 		});
-		expect(TypeName.parse(client.getDynamicObjectFieldCalls[1]!.name.bcs).name).toBe(
+		expect(TypeName.parse(client.getDynamicObjectFieldCalls[1].name.bcs).name).toBe(
 			normalizeStructTag(COINS.testnet.sui.coinType).replace(/^0x/u, ''),
 		);
 		expect(client.listDynamicFieldsCalls).toHaveLength(0);

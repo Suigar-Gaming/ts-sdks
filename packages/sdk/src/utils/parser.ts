@@ -105,7 +105,7 @@ export function parseSuigarEvent(suiEvent: SuiClientTypes.Event): SuigarEvent | 
 				game: gameEvent.game,
 				event: { type: gameEvent.event, data },
 				gameDetails: parseGameDetails({ game: gameEvent.game, gameDetails: data.game_details }),
-			} as SuigarEvent;
+			};
 		}
 		case 'GameCreatedEvent':
 			return {
