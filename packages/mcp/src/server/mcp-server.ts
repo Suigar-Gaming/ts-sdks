@@ -57,8 +57,6 @@ export async function startSuigarMcpServer(): Promise<void> {
 export function serveSuigarMcpStdio(transport: Transport = new StdioServerTransport()) {
 	const handle = serveStdio(createSuigarMcpServer, { transport });
 	const onmessage = transport.onmessage;
-	// SDK 2.0.0 checks versions when opening stdio, but not on later ordinary requests.
-	// Keep the spec's per-request version check until the SDK covers both paths.
 	transport.onmessage = (message, extra) => {
 		if ('method' in message && 'id' in message) {
 			const requested = message.params?._meta?.['io.modelcontextprotocol/protocolVersion'];

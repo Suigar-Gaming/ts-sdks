@@ -426,8 +426,6 @@ export function registerSuigarTools(server: McpServer, appToolMeta: AppToolMeta)
 			annotations: tool.annotations,
 			outputSchema: toolOutputSchema,
 		};
-		// The SDK validates input with this entry's schema before invoking its paired handler.
-		// The heterogeneous array erases that relationship when iterated.
 		const handler = withToolErrors((input: unknown) => tool.handler(input as never));
 		if (tool.isAppTool) {
 			registerAppTool(server, tool.name, { ...config, _meta: appToolMeta }, handler);
