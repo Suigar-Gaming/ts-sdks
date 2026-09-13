@@ -13,6 +13,7 @@ import {
 	RawPayload,
 } from './components/inspector-components.js';
 import { asRecord } from './lib/format.js';
+import { getToolResultPayload } from './lib/tool-result.js';
 import type { InspectorState } from './lib/types.js';
 import { resolveAppView } from './views/index.js';
 
@@ -63,13 +64,9 @@ function reducer(state: AppViewState, action: AppViewAction): AppViewState {
 				? { ...state, hostContext: { ...state.hostContext, ...action.context } }
 				: state;
 		case 'tool-input':
-			return {
-				...state,
-				// A host delivers arguments before it delivers the tool result. Those
-				// arguments are not inspector data, so rendering them creates an empty
-				// Transaction Inspector above the actual result.
-				inspector: null,
-			};
+			// Keep the last result visible while a host starts or repeats a tool call.
+			// Some hosts can deliver tool-input after the app has already rendered.
+			return state;
 		case 'tool-result':
 			return {
 				...state,
@@ -129,15 +126,13 @@ export function SuigarInspectorApp(): JSX.Element | null {
 					return;
 				}
 
-				const payload = result.structuredContent ?? {};
-				const record =
-					payload && typeof payload === 'object' ? (payload as Record<string, unknown>) : {};
-				const execution = asRecord(record.execution);
+				const payload = getToolResultPayload(result);
+				const execution = asRecord(payload.execution);
 				dispatch({
 					type: 'tool-result',
 					status:
-						typeof record.mode === 'string'
-							? record.mode
+						typeof payload.mode === 'string'
+							? payload.mode
 							: typeof execution.status === 'string'
 								? execution.status
 								: 'read',
@@ -207,7 +202,16 @@ export function SuigarInspectorApp(): JSX.Element | null {
 
 	if (Object.keys(asRecord(inspector.payload)).length === 0) {
 		if (inspector.errors.length === 0) {
-			return null;
+			return (
+				<main className={shellClassName} style={safeAreaStyle}>
+					<Header status="Waiting for tool result" title="Suigar MCP" />
+					<Panel title="Tool result">
+						<p className="text-muted-foreground text-xs leading-5 font-semibold">
+							The app is connected, but the host has not delivered a readable tool result.
+						</p>
+					</Panel>
+				</main>
+			);
 		}
 	}
 
