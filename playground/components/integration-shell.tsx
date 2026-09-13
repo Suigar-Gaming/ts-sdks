@@ -978,8 +978,9 @@ async function executeIntegrationTransaction({
 		const execution = await dAppKit.signAndExecuteTransaction({
 			transaction: buildResult.transaction,
 		});
-		if (execution.$kind === 'FailedTransaction')
+		if (execution.$kind === 'FailedTransaction') {
 			throw new Error(execution.FailedTransaction.status.error?.message);
+		}
 
 		const digest = execution.Transaction.digest;
 		dispatchUi({ type: 'set-status', value: digest });
@@ -987,11 +988,14 @@ async function executeIntegrationTransaction({
 			digest,
 			include: { events: true },
 		});
-		if (finalResult.$kind === 'FailedTransaction')
+		if (finalResult.$kind === 'FailedTransaction') {
 			throw new Error(finalResult.FailedTransaction.status.error?.message);
+		}
 
 		const rows = parseSuigarEvents(currentClient, digest, finalResult.Transaction.events);
-		if (rows.length > 0) addRows(rows);
+		if (rows.length > 0) {
+			addRows(rows);
+		}
 		if (mode === 'pvp' && (pvpAction === 'join' || pvpAction === 'cancel')) {
 			setPvpForms((current) => ({ ...current, [pvpAction]: { ...DEFAULT_PVP_FORMS[pvpAction] } }));
 		}
