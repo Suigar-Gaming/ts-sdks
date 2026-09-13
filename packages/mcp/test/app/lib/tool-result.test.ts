@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { describe, expect, it } from 'vitest';
-import { getToolResultPayload } from '../../src/app/src/lib/tool-result.js';
+import { getToolResultPayload } from '../../../src/app/src/lib/tool-result.js';
 
 describe('getToolResultPayload', () => {
 	it('uses direct structured content', () => {

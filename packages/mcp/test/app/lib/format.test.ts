@@ -9,7 +9,7 @@ import {
 	stringify,
 	valueTone,
 	visibleDefinitionEntries,
-} from '../../src/app/src/lib/format.js';
+} from '../../../src/app/src/lib/format.js';
 
 describe('app format helpers', () => {
 	it('formats display values and omits SDK-only companion fields', () => {
