@@ -13,7 +13,6 @@ import {
 	removeProfile,
 	saveProfile,
 	type WalletProfile,
-	type WalletType,
 } from './credentials.js';
 import { LOCALHOST_HOST, LOOPBACK_HOST, loopbackOrigin } from './loopback.js';
 import { resolvePositiveInteger } from './utils.js';
@@ -202,7 +201,7 @@ export async function createLoginBridge({
 			preflight = false;
 			const profile: WalletProfile = {
 				address: payload.address,
-				walletType: payload.walletType as WalletType,
+				walletType: payload.walletType,
 				frontendOrigin: webOrigin,
 				connectedAt: new Date().toISOString(),
 			};

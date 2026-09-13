@@ -165,10 +165,10 @@ describe('session wallet setup', () => {
 				address: secondSigner.toSuiAddress(),
 			}),
 		]);
-		expect((await session.loadSessionSigner(wallets[0]!.id)).toSuiAddress()).toBe(
+		expect((await session.loadSessionSigner(wallets[0].id)).toSuiAddress()).toBe(
 			firstSigner.toSuiAddress(),
 		);
-		expect((await session.loadSessionSigner(wallets[1]!.id)).toSuiAddress()).toBe(
+		expect((await session.loadSessionSigner(wallets[1].id)).toSuiAddress()).toBe(
 			secondSigner.toSuiAddress(),
 		);
 	});

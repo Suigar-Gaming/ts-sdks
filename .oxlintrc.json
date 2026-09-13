@@ -37,7 +37,8 @@
 				"default": "generic"
 			}
 		],
-		"typescript/no-deprecated": "warn"
+		"typescript/no-deprecated": "warn",
+		"typescript/no-unnecessary-type-assertion": "warn"
 	},
 	"overrides": [
 		{
