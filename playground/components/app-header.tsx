@@ -137,7 +137,9 @@ export function AppHeader({
 	const handleCoinChange = (coin: SupportedCoinKey) => {
 		if (onSelectedCoinChange) {
 			onSelectedCoinChange(coin);
-		} else setLocalSelectedCoin(coin);
+		} else {
+			setLocalSelectedCoin(coin);
+		}
 	};
 
 	const balanceNode = account ? (
