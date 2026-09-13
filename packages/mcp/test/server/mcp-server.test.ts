@@ -252,7 +252,9 @@ describe('MCP 2026-07-28 stdio protocol', () => {
 		const id = ++requestId;
 		const response = new Promise<JSONRPCMessage>((resolve) => {
 			clientTransport.onmessage = (message) => {
-				if ('id' in message && message.id === id) resolve(message);
+				if ('id' in message && message.id === id) {
+					resolve(message);
+				}
 			};
 		});
 		await clientTransport.send({

@@ -224,7 +224,9 @@ function readForm(request: IncomingMessage): Promise<URLSearchParams> {
 		request.setEncoding('utf8');
 		request.on('data', (chunk) => {
 			body += chunk;
-			if (body.length > 16_384) request.destroy();
+			if (body.length > 16_384) {
+				request.destroy();
+			}
 		});
 		request.on('end', () => resolve(new URLSearchParams(body)));
 		request.on('error', reject);
