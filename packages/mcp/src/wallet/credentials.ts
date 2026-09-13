@@ -37,7 +37,9 @@ function isNetwork(value: unknown): value is SuigarNetwork {
 }
 
 function isWalletProfile(value: unknown): value is WalletProfile {
-	if (!value || typeof value !== 'object') return false;
+	if (!value || typeof value !== 'object') {
+		return false;
+	}
 	const profile = value as Record<string, unknown>;
 	return (
 		typeof profile.address === 'string' &&
@@ -49,7 +51,9 @@ function isWalletProfile(value: unknown): value is WalletProfile {
 }
 
 function isValid(value: unknown): value is Credentials {
-	if (!value || typeof value !== 'object') return false;
+	if (!value || typeof value !== 'object') {
+		return false;
+	}
 	const credentials = value as Record<string, unknown>;
 	if (
 		credentials.version !== 1 ||
@@ -89,7 +93,9 @@ export async function loadCredentials(): Promise<Credentials> {
 		const parsed: unknown = JSON.parse(await readFile(CREDENTIALS_FILE, 'utf8'));
 		return isValid(parsed) ? parsed : empty();
 	} catch (error) {
-		if ((error as NodeJS.ErrnoException).code === 'ENOENT') return empty();
+		if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+			return empty();
+		}
 		throw error;
 	}
 }

@@ -18,7 +18,9 @@ vi.mock('@napi-rs/keyring', () => ({
 			private readonly service: string,
 			private readonly account: string,
 		) {
-			if (keychainUnavailable.value) throw new Error('native keyring unavailable');
+			if (keychainUnavailable.value) {
+				throw new Error('native keyring unavailable');
+			}
 		}
 
 		getPassword() {

@@ -61,7 +61,9 @@ export async function listSessionWallets(): Promise<Array<SessionWallet>> {
 		const stored = JSON.parse(await readFile(SESSION_WALLETS_FILE, 'utf8')) as Array<SessionWallet>;
 		return Array.isArray(stored) ? stored : [];
 	} catch (error) {
-		if ((error as NodeJS.ErrnoException).code === 'ENOENT') return [];
+		if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+			return [];
+		}
 		throw error;
 	}
 }
@@ -73,7 +75,9 @@ export async function loadSessionWallet(id?: string): Promise<SessionWallet | nu
 
 export async function loadSessionSigner(id?: string): Promise<Keypair> {
 	const wallet = await loadSessionWallet(id);
-	if (!wallet) throw new Error('No session wallet is available. Create or recover one first.');
+	if (!wallet) {
+		throw new Error('No session wallet is available. Create or recover one first.');
+	}
 	const secret = await readSessionWalletSecret(wallet.id);
 	if (!secret) {
 		throw new Error('No session wallet is available. Create or recover one first.');
@@ -85,7 +89,9 @@ async function readSessionWalletSecret(id: string): Promise<string | null> {
 	try {
 		return (await keychain(id)).getPassword();
 	} catch (error) {
-		if (error instanceof Error && error.message === KEYCHAIN_UNAVAILABLE_MESSAGE) throw error;
+		if (error instanceof Error && error.message === KEYCHAIN_UNAVAILABLE_MESSAGE) {
+			throw error;
+		}
 		throw new Error('Unable to read the session wallet signing key from secure storage.', {
 			cause: error,
 		});
@@ -128,7 +134,9 @@ async function writeSessionWalletSecret(id: string, secret: string): Promise<voi
 	try {
 		(await keychain(id)).setPassword(secret);
 	} catch (error) {
-		if (error instanceof Error && error.message === KEYCHAIN_UNAVAILABLE_MESSAGE) throw error;
+		if (error instanceof Error && error.message === KEYCHAIN_UNAVAILABLE_MESSAGE) {
+			throw error;
+		}
 		throw new Error('Unable to save the session wallet signing key to secure storage.', {
 			cause: error,
 		});
@@ -265,9 +273,12 @@ export async function createSessionWalletSetup({
 						)
 					: await (async () => {
 							const phrase = form.get('mnemonic')?.trim().replace(/\s+/gu, ' ') ?? '';
-							if (!validateMnemonic(phrase, wordlist)) throw new Error('Invalid recovery phrase.');
-							if (url.pathname === '/save' && form.get('confirmed') !== 'on')
+							if (!validateMnemonic(phrase, wordlist)) {
+								throw new Error('Invalid recovery phrase.');
+							}
+							if (url.pathname === '/save' && form.get('confirmed') !== 'on') {
 								throw new Error('Confirm that you saved the recovery phrase.');
+							}
 							return persistMnemonicSessionWallet(
 								phrase,
 								url.pathname === '/save' ? 'created' : 'imported',

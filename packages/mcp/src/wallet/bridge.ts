@@ -130,8 +130,9 @@ async function createLoopbackServer(webOrigin: string): Promise<{
 			return false;
 		}
 		if (request.method === 'OPTIONS') {
-			if (request.headers['access-control-request-private-network'] === 'true')
+			if (request.headers['access-control-request-private-network'] === 'true') {
 				response.setHeader('access-control-allow-private-network', 'true');
+			}
 			response.writeHead(204).end();
 			return false;
 		}
@@ -239,8 +240,9 @@ export async function createExecutionBridge({
 	const options = resolveBridgeOptions(bridgeOptions);
 	const credentials = await loadCredentials();
 	const profile = credentials.profiles[network];
-	if (!profile)
+	if (!profile) {
 		throw new Error(`No wallet is connected for ${network}. Call "suigar_login" first.`);
+	}
 	const state = randomHex(32);
 	const requestId = randomHex(16);
 	EXECUTIONS.set(requestId, { requestId, status: 'pending' });

@@ -118,8 +118,9 @@ export async function getExecutionStatusTool(
 	input: GetExecutionStatusInput,
 ): Promise<ToolTextResult> {
 	const execution = getExecutionStatus(input.requestId);
-	if (!execution)
+	if (!execution) {
 		throw new Error('Unknown execution request. It may have expired or this MCP server restarted.');
+	}
 	const { config } = createSuigarClient(getConfigInput(input));
 	return asTextResponse({ network: config.network, config, execution });
 }
