@@ -7,3 +7,5 @@ Migrate the server and bundled MCP App to ext-apps 2 and the split MCP SDK 2 pac
 Support MCP 2026-07-28 through SDK-managed stdio negotiation and discovery, including per-request metadata, complete-result discriminators, and cache hints, while retaining compatibility with legacy initialization-based clients.
 
 Preserve existing MCP App host context when the host sends partial updates, and respect host-provided safe-area padding across inspector views.
+
+Remove App event listeners on unmount or App replacement, and show the connecting state until the host handshake completes.

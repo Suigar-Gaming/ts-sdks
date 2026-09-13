@@ -3,7 +3,7 @@
 
 import { useApp, useHostStyles, type McpUiHostContext } from '@modelcontextprotocol/ext-apps/react';
 import type { CallToolResult } from '@modelcontextprotocol/server';
-import { StrictMode, useEffect, useReducer, type JSX } from 'react';
+import { StrictMode, useEffect, useReducer, useRef, type JSX } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
 	ExecutionApproval,
@@ -97,18 +97,28 @@ export function SuigarInspectorApp(): JSX.Element | null {
 		hostContext: undefined,
 		inspector: null,
 	});
-	const { app, error } = useApp({
+	const removeAppListeners = useRef<(() => void) | null>(null);
+	useEffect(
+		() => () => {
+			removeAppListeners.current?.();
+			removeAppListeners.current = null;
+		},
+		[],
+	);
+
+	const { app, error, isConnected } = useApp({
 		appInfo: {
 			name: 'suigar-mcp-app',
 			version: __SUIGAR_MCP_APP_VERSION__,
 		},
 		capabilities: {},
 		onAppCreated: (createdApp) => {
-			createdApp.addEventListener('toolinput', () => {
+			removeAppListeners.current?.();
+			const onToolInput = () => {
 				dispatch({ type: 'tool-input' });
-			});
+			};
 
-			createdApp.addEventListener('toolresult', (result) => {
+			const onToolResult = (result: CallToolResult) => {
 				if (result.isError) {
 					const errors = textErrors(result);
 					dispatch({
@@ -133,11 +143,20 @@ export function SuigarInspectorApp(): JSX.Element | null {
 								: 'read',
 					payload,
 				});
-			});
+			};
 
-			createdApp.addEventListener('hostcontextchanged', (context) => {
+			const onHostContextChanged = (context: McpUiHostContext) => {
 				dispatch({ type: 'host-context', context });
-			});
+			};
+
+			createdApp.addEventListener('toolinput', onToolInput);
+			createdApp.addEventListener('toolresult', onToolResult);
+			createdApp.addEventListener('hostcontextchanged', onHostContextChanged);
+			removeAppListeners.current = () => {
+				createdApp.removeEventListener('toolinput', onToolInput);
+				createdApp.removeEventListener('toolresult', onToolResult);
+				createdApp.removeEventListener('hostcontextchanged', onHostContextChanged);
+			};
 		},
 	});
 	const hostContext = app?.getHostContext();
@@ -173,13 +192,13 @@ export function SuigarInspectorApp(): JSX.Element | null {
 		);
 	}
 
-	if (!viewState.hostContext && !viewState.inspector) {
+	if (!isConnected) {
 		return (
 			<main className={shellClassName} style={safeAreaStyle}>
 				<Header status="Connecting" title="Suigar MCP" />
 				<Panel title="Connection">
 					<p className="text-muted-foreground text-xs leading-5 font-semibold">
-						Waiting for host context.
+						Connecting to host.
 					</p>
 				</Panel>
 			</main>
