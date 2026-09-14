@@ -170,6 +170,8 @@ Config is normalized in `packages/sdk/src/helpers/config.ts`. This layer is resp
 
 Treat unsupported network resolution and unsupported configured coin types as `RangeError` cases when documenting or testing these flows.
 
+Invalid package IDs, object IDs, and partner addresses throw `TypeError`; non-string partner values also receive the configuration-specific error message.
+
 #### Game Parameters
 
 `client.suigar.getGameParameters({ game, coinType, ...options })` requires a coin type. It reads the selected game's settings object from SweetHouse, then that coin's `Parameters<T>` object. It parses the result, decodes Move float fields into JavaScript numbers—including nested Keno, Plinko, and Wheel multipliers—and caches it for `cacheTtl`.
