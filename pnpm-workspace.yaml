@@ -9,7 +9,7 @@ catalogs:
     'clsx': ^2.1.1
     'react': ^19.3.0
     'react-dom': ^19.3.0
-    'tailwind-merge': ^3.6.0
+    'tailwind-merge': ^3.7.0
   mysten:
     '@mysten/bcs': ^2.1.1
     '@mysten/codegen': ^0.12.9
@@ -19,7 +19,7 @@ catalogs:
   tooling:
     '@tailwindcss/postcss': ^4.3.3
     '@tailwindcss/vite': ^4.3.3
-    'react-doctor': ^0.9.13
+    'react-doctor': ^0.9.14
     'tailwindcss': ^4.3.3
     'tsdown': ^0.23.0
   typescript:
