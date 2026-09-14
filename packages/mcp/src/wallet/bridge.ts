@@ -88,7 +88,7 @@ function readBody(request: IncomingMessage, maxBodyBytes: number): Promise<strin
 			length += chunk.length;
 			if (length > maxBodyBytes) {
 				request.destroy();
-				reject(new Error('Request body is too large.'));
+				reject(new RangeError('Request body is too large.'));
 				return;
 			}
 			body += decoder.decode(chunk, { stream: true });

@@ -108,7 +108,7 @@ function signerFromPrivateKey(privateKey: string): Keypair {
 		case 'Secp256r1':
 			return Secp256r1Keypair.fromSecretKey(secretKey);
 		default:
-			throw new Error(`Unsupported Sui private-key scheme: ${scheme}.`);
+			throw new RangeError(`Unsupported Sui private-key scheme: ${scheme}.`);
 	}
 }
 
@@ -276,7 +276,7 @@ export async function createSessionWalletSetup({
 					: await (async () => {
 							const phrase = form.get('mnemonic')?.trim().replace(/\s+/gu, ' ') ?? '';
 							if (!validateMnemonic(phrase, wordlist)) {
-								throw new Error('Invalid recovery phrase.');
+								throw new TypeError('Invalid recovery phrase.');
 							}
 							if (url.pathname === '/save' && form.get('confirmed') !== 'on') {
 								throw new Error('Confirm that you saved the recovery phrase.');

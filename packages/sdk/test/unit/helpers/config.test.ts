@@ -53,6 +53,33 @@ describe('resolveSuigarConfig', () => {
 		).toBe('0xabc');
 	});
 
+	it('rejects a missing price info object id with TypeError', () => {
+		const config = resolveSuigarConfig({ network: 'testnet' });
+		config.coins.sui.priceInfoObjectId = '';
+
+		expect(() =>
+			resolvePriceInfoObjectId({ config, coinType: COINS.testnet.sui.coinType }),
+		).toThrow(
+			new TypeError(
+				`Missing price info object configuration for coin type ${COINS.testnet.sui.coinType}`,
+			),
+		);
+	});
+
+	it.each([
+		{ coinType: 'not-a-coin-type' },
+		{ decimals: Number.NaN },
+		{ decimals: 1.5 },
+		{ priceInfoObjectId: 'not-an-object-id' },
+	])('rejects invalid coin metadata with TypeError: %j', (metadata) => {
+		expect(() =>
+			resolveSuigarConfig({
+				network: 'testnet',
+				config: { coins: { sui: metadata } },
+			}),
+		).toThrow(new TypeError('Invalid coin metadata configuration for supported coin sui'));
+	});
+
 	it('maps configured coins to supported coin object ids', () => {
 		const config = resolveSuigarConfig({ network: 'testnet' });
 		config.coins.sui.priceInfoObjectId = '0xsui';

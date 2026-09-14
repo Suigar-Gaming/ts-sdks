@@ -80,7 +80,7 @@ export function resolvePriceInfoObjectId({ config, coinType }: WithConfig<WithCo
 	const objectId = config.coins[supportedCoin].priceInfoObjectId;
 
 	if (!objectId) {
-		throw new Error(`Missing price info object configuration for coin type ${coinType}`);
+		throw new TypeError(`Missing price info object configuration for coin type ${coinType}`);
 	}
 
 	return objectId;
@@ -116,7 +116,7 @@ function resolveCoinMetadata({
 		!Number.isSafeInteger(metadata.decimals) ||
 		!isValidSuiObjectId(metadata.priceInfoObjectId)
 	) {
-		throw new Error(`Missing coin metadata configuration for supported coin ${coin}`);
+		throw new TypeError(`Invalid coin metadata configuration for supported coin ${coin}`);
 	}
 
 	return {

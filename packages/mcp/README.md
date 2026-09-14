@@ -17,6 +17,8 @@ It provides:
 
 Transactions remain unsigned by default. `mode: "execute"` uses the paired Suigar browser wallet and opens an explicit approval request unless `executionWallet: "session"` is selected. Session execution signs and submits directly from the local session-wallet key held in the operating-system keychain; it returns the final transaction digest without an approval URL. Wallet balance reads aggregate all result pages and display human-readable amounts using configured or on-chain coin metadata.
 
+Wallet validation uses `TypeError` for malformed recovery phrases and `RangeError` for unsupported private-key schemes or oversized bridge requests. Wallet setup pages continue to display the error message; operational failures such as expired sessions and unavailable keychain storage remain generic errors.
+
 ## Install
 
 Runtime requirement:

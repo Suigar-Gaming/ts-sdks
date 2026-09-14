@@ -77,18 +77,18 @@ export function getRangePointMax(scale?: number) {
 export function toAtomicAmount(value: string | undefined, decimals: number) {
 	const trimmed = value?.trim().replace(',', '.') ?? '';
 	if (!trimmed) {
-		throw new Error('Stake is required.');
+		throw new TypeError('Stake is required.');
 	}
 
 	if (!DECIMAL_AMOUNT_PATTERN.test(trimmed)) {
-		throw new Error('Stake must be a positive number.');
+		throw new TypeError('Stake must be a positive number.');
 	}
 
 	try {
 		return parseToUnits(trimmed, decimals);
 	} catch (error) {
 		if (error instanceof Error && error.message.startsWith('Too many decimal')) {
-			throw new Error(`Stake supports up to ${decimals} decimal places for this coin.`);
+			throw new RangeError(`Stake supports up to ${decimals} decimal places for this coin.`);
 		}
 		throw error;
 	}

@@ -6,3 +6,7 @@
 Update dependencies.
 
 Refactor SDK package and object ID validation to use an internal type assertion. Invalid package IDs, object IDs, and partner addresses now throw `TypeError` with configuration-specific messages, including non-string partner values supplied by JavaScript callers.
+
+Report invalid SDK coin metadata and missing price-info object configuration as `TypeError`.
+
+Classify MCP wallet recovery phrase validation as `TypeError`, and unsupported private-key schemes and oversized wallet bridge requests as `RangeError`. Operational failures retain generic errors.

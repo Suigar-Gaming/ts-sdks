@@ -30,12 +30,12 @@ function getBetCountInput(fields: StandardSharedFields) {
 
 function parseBetCount(value: string) {
 	if (!NON_NEGATIVE_INTEGER_PATTERN.test(value)) {
-		throw new Error('Bet count must be a whole number.');
+		throw new TypeError('Bet count must be a whole number.');
 	}
 
 	const betCount = BigInt(value);
 	if (betCount < BigInt(1)) {
-		throw new Error('Bet count must be at least 1.');
+		throw new RangeError('Bet count must be at least 1.');
 	}
 
 	return betCount;
@@ -100,7 +100,7 @@ function parseKenoPicks(value: Array<string> | string) {
 	const picks = rawPicks.map(Number);
 
 	if (picks.some((pick) => !Number.isSafeInteger(pick))) {
-		throw new Error('Keno picks must be comma-separated whole numbers.');
+		throw new TypeError('Keno picks must be comma-separated whole numbers.');
 	}
 
 	return picks;

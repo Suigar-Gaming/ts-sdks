@@ -10,6 +10,8 @@ Next.js example app for the Suigar SDK. It runs on Sui testnet and uses:
 - `@mysten/sui`
 - Suigar-inspired UI and theme tokens based on the frontend app
 
+Input parsers use `TypeError` for malformed stake, bet-count, and Keno-pick values, and `RangeError` for stake precision limits and bet counts below one. Transaction and resource failures remain generic errors.
+
 ## What it covers
 
 The example reflects the current package export split:
