@@ -1,8 +1,6 @@
 packages:
   - packages/*
   - playground
-  - '!**/dist/**'
-  - '!**/.next/**'
 
 catalogs:
   frontend:
