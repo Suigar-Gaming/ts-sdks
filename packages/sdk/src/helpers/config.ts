@@ -1,7 +1,7 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import { normalizeStructTag } from '@mysten/sui/utils';
+import { isValidStructTag, isValidSuiObjectId, normalizeStructTag } from '@mysten/sui/utils';
 import { COINS, OBJECT_IDS, PACKAGE_IDS } from '../configs/index.js';
 import type {
 	SuigarCoin,
@@ -74,9 +74,9 @@ function resolveCoinMetadata({
 }): SuigarCoinMetadata {
 	const metadata = { ...coinMetadata, ...configCoinMetadata };
 	if (
-		!metadata.coinType ||
+		!isValidStructTag(metadata.coinType) ||
 		!Number.isSafeInteger(metadata.decimals) ||
-		!metadata.priceInfoObjectId
+		!isValidSuiObjectId(metadata.priceInfoObjectId)
 	) {
 		throw new Error(`Missing coin metadata configuration for supported coin ${coin}`);
 	}
