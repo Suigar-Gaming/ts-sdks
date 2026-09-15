@@ -26,14 +26,16 @@ export function resolvePartnerAddress(partner: string | undefined): string | und
 		return undefined;
 	}
 
-	if (typeof partner !== 'string') {
-		throw new TypeError('Invalid partner address configuration');
+	if (typeof partner !== 'string' || partner.trim().length <= 0) {
+		throw new TypeError('Partner must be a non-empty string');
 	}
 
 	const normalizedPartner = normalizeSuiAddress(partner);
+
 	if (!isValidSuiAddress(normalizedPartner)) {
-		throw new TypeError('Invalid partner address configuration');
+		throw new TypeError('Invalid partner address');
 	}
+
 	return normalizedPartner;
 }
 
