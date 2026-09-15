@@ -680,14 +680,18 @@ describe('SuigarClient', () => {
 		expect(options.arguments[6]).toEqual([Array.from(fromHex(partner))]);
 	});
 
-	it.each(['not-an-address', null, 123, true, {}])(
-		'rejects an invalid configured partner address: %j',
-		(partner) => {
-			expect(() => new TestClient().$extend(suigar({ partner: partner as string }))).toThrow(
-				new TypeError('Invalid partner address configuration'),
-			);
-		},
-	);
+	it.each([
+		['not-an-address', 'Invalid partner address'],
+		['', 'Partner must be a non-empty string'],
+		[null, 'Partner must be a non-empty string'],
+		[123, 'Partner must be a non-empty string'],
+		[true, 'Partner must be a non-empty string'],
+		[{}, 'Partner must be a non-empty string'],
+	])('rejects an invalid configured partner address: %j', (partner, message) => {
+		expect(() => new TestClient().$extend(suigar({ partner: partner as string }))).toThrow(
+			new TypeError(message),
+		);
+	});
 
 	it('exposes standard, PvP, and NFT transaction factories', () => {
 		const client = createSuigarTestClient({
