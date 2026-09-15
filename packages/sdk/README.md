@@ -193,7 +193,7 @@ Supported override areas:
 - `config.objectIds`
 - `config.coins`
 
-Invalid package IDs, object IDs, coin metadata, or partner addresses throw `TypeError` during client setup. Resolving a coin with missing price-info object configuration also throws `TypeError`. Non-string partner values passed from JavaScript also throw `TypeError` with an `Invalid partner address configuration` message.
+Invalid configuration or missing price-info object IDs throw `TypeError`.
 
 Use `config` when the application needs to patch the NFT V1 package id, override an MVR-backed package id, patch singleton object ids, or adjust supported `sui`/`usdc` coin metadata before a new SDK release is published. Game, referral, and core bindings use `@suigar/*` MVR names by default; optional `packageIds` entries override those defaults when needed. `packageIds.nftV1` remains configured by network because it is not resolved from MVR. Each coin entry includes its price-info object id.
 

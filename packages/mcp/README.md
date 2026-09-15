@@ -218,7 +218,7 @@ When `betCount` is provided for Keno, Limbo, Plinko, Range, Soccer, or Wheel, th
 | Soccer | `configId`, `countryId`, `shotZoneId` | — | — |
 | Range | `leftPoint`, `rightPoint` | `outOfRange` | — |
 | PvP Coinflip Create | `creatorSide` | `isPrivate` | — |
-| PvP Coinflip Join | `gameId` | — | Resolves the live game stake when built. |
+| PvP Coinflip Join | `gameId` | — | Reads the game’s stake when building the transaction. |
 | PvP Coinflip Cancel | `gameId` | — | Does not accept `metadata` or `useGasCoin`. |
 | Referral Commission Claim | `owner` | `coinType` | `coinType` defaults to configured SUI. |
 | Referral Level-up USD Rewards Claim | `owner` | — | Uses configured USDC. |
@@ -264,9 +264,3 @@ Game, referral, and core calls use the `@suigar/*` MVR package names by default.
 Partner attribution should be passed as top-level `partner`; the MCP server forwards it through `suigar({ partner })`.
 
 Transaction tools that accept `metadata` require JSON-compatible strings, numbers, or booleans. Send large integer metadata values as strings.
-
-## Notes
-
-- Coin object ids and explicit coin sourcing are intentionally not exposed.
-- The MCP package uses `@suigar/sdk` public builders instead of copied internal transaction builders.
-- PvP Coinflip join may need live object reads when serialized or dry-run, because the SDK resolves the current game stake from the game object.
