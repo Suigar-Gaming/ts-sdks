@@ -96,7 +96,7 @@
 		"@modelcontextprotocol/server": "^2.0.0",
 		"@mysten/bcs": "catalog:mysten",
 		"@mysten/sui": "catalog:mysten",
-		"@napi-rs/keyring": "^2.0.0",
+		"@napi-rs/keyring": "^2.1.0",
 		"@noble/ciphers": "^2.4.0",
 		"@scure/base": "^2.4.0",
 		"@scure/bip39": "^2.4.0",
