@@ -18,8 +18,8 @@
 	},
 	"dependencies": {
 		"@mysten/bcs": "catalog:mysten",
-		"@mysten/dapp-kit-core": "^1.6.27",
-		"@mysten/dapp-kit-react": "^2.1.29",
+		"@mysten/dapp-kit-core": "^1.6.28",
+		"@mysten/dapp-kit-react": "^2.1.30",
 		"@mysten/sui": "catalog:mysten",
 		"@radix-ui/react-accordion": "^1.2.20",
 		"@radix-ui/react-dialog": "^1.1.23",
