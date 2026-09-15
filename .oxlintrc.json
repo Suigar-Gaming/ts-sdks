@@ -37,14 +37,16 @@
 				"default": "generic"
 			}
 		],
-		"typescript/no-deprecated": "warn"
+		"typescript/no-deprecated": "warn",
+		"typescript/no-unnecessary-type-assertion": "warn"
 	},
 	"overrides": [
 		{
 			"files": ["packages/*/src/contracts/**/*.ts"],
 			"rules": {
 				"typescript/no-base-to-string": "off",
-				"typescript/restrict-template-expressions": "off"
+				"typescript/restrict-template-expressions": "off",
+				"typescript/no-unnecessary-type-assertion": "off"
 			}
 		}
 	]

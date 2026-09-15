@@ -1,31 +1,29 @@
 packages:
   - packages/*
   - playground
-  - '!**/dist/**'
-  - '!**/.next/**'
 
 catalogs:
   frontend:
     'clsx': ^2.1.1
-    'react': ^19.2.8
-    'react-dom': ^19.2.8
-    'tailwind-merge': ^3.6.0
+    'react': ^19.3.0
+    'react-dom': ^19.3.0
+    'tailwind-merge': ^3.7.0
   mysten:
     '@mysten/bcs': ^2.1.1
-    '@mysten/codegen': ^0.12.7
-    '@mysten/sui': ^2.29.0
+    '@mysten/codegen': ^0.12.10
+    '@mysten/sui': ^2.31.1
   test:
-    'vitest': ^4.1.11
+    'vitest': ^5.0.0
   tooling:
     '@tailwindcss/postcss': ^4.3.3
     '@tailwindcss/vite': ^4.3.3
-    'react-doctor': ^0.9.13
+    'react-doctor': ^0.9.14
     'tailwindcss': ^4.3.3
-    'tsdown': ^0.22.14
+    'tsdown': ^0.23.0
   typescript:
-    '@types/node': ^24.13.3
-    '@types/react': ^19.2.18
-    '@types/react-dom': ^19.2.5
+    '@types/node': ^24.13.4
+    '@types/react': ^19.3.0
+    '@types/react-dom': ^19.3.0
     'typescript': ^7.0.2
 
 allowBuilds:

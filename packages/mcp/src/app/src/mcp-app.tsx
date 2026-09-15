@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { useApp, useHostStyles, type McpUiHostContext } from '@modelcontextprotocol/ext-apps/react';
-import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { StrictMode, useEffect, useReducer, type JSX } from 'react';
+import type { CallToolResult } from '@modelcontextprotocol/server';
+import { StrictMode, useEffect, useReducer, useRef, type JSX } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
 	ExecutionApproval,
@@ -13,6 +13,7 @@ import {
 	RawPayload,
 } from './components/inspector-components.js';
 import { asRecord } from './lib/format.js';
+import { getToolResultPayload } from './lib/tool-result.js';
 import type { InspectorState } from './lib/types.js';
 import { resolveAppView } from './views/index.js';
 
@@ -59,15 +60,13 @@ type AppViewAction =
 function reducer(state: AppViewState, action: AppViewAction): AppViewState {
 	switch (action.type) {
 		case 'host-context':
-			return { ...state, hostContext: action.context };
+			return action.context
+				? { ...state, hostContext: { ...state.hostContext, ...action.context } }
+				: state;
 		case 'tool-input':
-			return {
-				...state,
-				// A host delivers arguments before it delivers the tool result. Those
-				// arguments are not inspector data, so rendering them creates an empty
-				// Transaction Inspector above the actual result.
-				inspector: null,
-			};
+			// Keep the last result visible while a host starts or repeats a tool call.
+			// Some hosts can deliver tool-input after the app has already rendered.
+			return state;
 		case 'tool-result':
 			return {
 				...state,
@@ -95,20 +94,28 @@ export function SuigarInspectorApp(): JSX.Element | null {
 		hostContext: undefined,
 		inspector: null,
 	});
-	const { app, error } = useApp({
+	const removeAppListeners = useRef<(() => void) | null>(null);
+	useEffect(
+		() => () => {
+			removeAppListeners.current?.();
+			removeAppListeners.current = null;
+		},
+		[],
+	);
+
+	const { app, error, isConnected } = useApp({
 		appInfo: {
 			name: 'suigar-mcp-app',
 			version: __SUIGAR_MCP_APP_VERSION__,
 		},
 		capabilities: {},
 		onAppCreated: (createdApp) => {
-			// oxlint-disable-next-line typescript/no-deprecated
-			createdApp.ontoolinput = () => {
+			removeAppListeners.current?.();
+			const onToolInput = () => {
 				dispatch({ type: 'tool-input' });
 			};
 
-			// oxlint-disable-next-line typescript/no-deprecated
-			createdApp.ontoolresult = (result) => {
+			const onToolResult = (result: CallToolResult) => {
 				if (result.isError) {
 					const errors = textErrors(result);
 					dispatch({
@@ -119,15 +126,13 @@ export function SuigarInspectorApp(): JSX.Element | null {
 					return;
 				}
 
-				const payload = result.structuredContent ?? {};
-				const record =
-					payload && typeof payload === 'object' ? (payload as Record<string, unknown>) : {};
-				const execution = asRecord(record.execution);
+				const payload = getToolResultPayload(result);
+				const execution = asRecord(payload.execution);
 				dispatch({
 					type: 'tool-result',
 					status:
-						typeof record.mode === 'string'
-							? record.mode
+						typeof payload.mode === 'string'
+							? payload.mode
 							: typeof execution.status === 'string'
 								? execution.status
 								: 'read',
@@ -135,20 +140,28 @@ export function SuigarInspectorApp(): JSX.Element | null {
 				});
 			};
 
-			// oxlint-disable-next-line typescript/no-deprecated
-			createdApp.onhostcontextchanged = (context: McpUiHostContext) => {
+			const onHostContextChanged = (context: McpUiHostContext) => {
 				dispatch({ type: 'host-context', context });
+			};
+
+			createdApp.addEventListener('toolinput', onToolInput);
+			createdApp.addEventListener('toolresult', onToolResult);
+			createdApp.addEventListener('hostcontextchanged', onHostContextChanged);
+			removeAppListeners.current = () => {
+				createdApp.removeEventListener('toolinput', onToolInput);
+				createdApp.removeEventListener('toolresult', onToolResult);
+				createdApp.removeEventListener('hostcontextchanged', onHostContextChanged);
 			};
 		},
 	});
-	const hostContext = app?.getHostContext() as McpUiHostContext | undefined;
+	const hostContext = app?.getHostContext();
 	useHostStyles(app, hostContext);
 
 	useEffect(() => {
 		if (!app) {
 			return;
 		}
-		const context = app.getHostContext() as McpUiHostContext | undefined;
+		const context = app.getHostContext();
 		dispatch({ type: 'host-context', context });
 	}, [app]);
 
@@ -157,23 +170,30 @@ export function SuigarInspectorApp(): JSX.Element | null {
 	const execution = asRecord(asRecord(inspector.payload).execution);
 	const approvalUrl = typeof execution.approvalUrl === 'string' ? execution.approvalUrl : null;
 	const viewError = error ?? viewState.error;
+	const safeAreaInsets = viewState.hostContext?.safeAreaInsets;
+	const safeAreaStyle = {
+		paddingTop: safeAreaInsets?.top,
+		paddingRight: safeAreaInsets?.right,
+		paddingBottom: safeAreaInsets?.bottom,
+		paddingLeft: safeAreaInsets?.left,
+	};
 
 	if (viewError) {
 		return (
-			<main className={shellClassName}>
+			<main className={shellClassName} style={safeAreaStyle}>
 				<Header status="Error" title={title} />
 				<ListPanel className="errors" items={[viewError.message]} title="Errors" />
 			</main>
 		);
 	}
 
-	if (!viewState.hostContext && !viewState.inspector) {
+	if (!isConnected) {
 		return (
-			<main className={shellClassName}>
+			<main className={shellClassName} style={safeAreaStyle}>
 				<Header status="Connecting" title="Suigar MCP" />
 				<Panel title="Connection">
 					<p className="text-muted-foreground text-xs leading-5 font-semibold">
-						Waiting for host context.
+						Connecting to host.
 					</p>
 				</Panel>
 			</main>
@@ -182,13 +202,22 @@ export function SuigarInspectorApp(): JSX.Element | null {
 
 	if (Object.keys(asRecord(inspector.payload)).length === 0) {
 		if (inspector.errors.length === 0) {
-			return null;
+			return (
+				<main className={shellClassName} style={safeAreaStyle}>
+					<Header status="Waiting for tool result" title="Suigar MCP" />
+					<Panel title="Tool result">
+						<p className="text-muted-foreground text-xs leading-5 font-semibold">
+							The app is connected, but the host has not delivered a readable tool result.
+						</p>
+					</Panel>
+				</main>
+			);
 		}
 	}
 
 	if (inspector.errors.length > 0) {
 		return (
-			<main className={shellClassName}>
+			<main className={shellClassName} style={safeAreaStyle}>
 				<Header status="Error" title="Tool Error" />
 				<ListPanel className="errors" items={inspector.errors} title="Unable to complete request" />
 			</main>
@@ -196,7 +225,7 @@ export function SuigarInspectorApp(): JSX.Element | null {
 	}
 
 	return (
-		<main className={shellClassName}>
+		<main className={shellClassName} style={safeAreaStyle}>
 			<Header coinBadge={coinBadge} status={inspector.status} title={title} />
 			<ExecutionApproval url={approvalUrl} />
 			<View payload={inspector.payload} errors={inspector.errors} />

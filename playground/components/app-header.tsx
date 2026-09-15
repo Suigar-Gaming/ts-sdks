@@ -124,7 +124,9 @@ export function AppHeader({
 				}
 			}),
 		).then((entries) => {
-			if (!cancelled) setLocalBalances(Object.fromEntries(entries));
+			if (!cancelled) {
+				setLocalBalances(Object.fromEntries(entries));
+			}
 		});
 
 		return () => {
@@ -133,8 +135,11 @@ export function AppHeader({
 	}, [account, client, coinBalances, coinEntries]);
 
 	const handleCoinChange = (coin: SupportedCoinKey) => {
-		if (onSelectedCoinChange) onSelectedCoinChange(coin);
-		else setLocalSelectedCoin(coin);
+		if (onSelectedCoinChange) {
+			onSelectedCoinChange(coin);
+		} else {
+			setLocalSelectedCoin(coin);
+		}
 	};
 
 	const balanceNode = account ? (

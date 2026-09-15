@@ -30,6 +30,7 @@ import {
 	DEFAULT_CACHE_TTL_MS,
 	normalizeGameParameterValues,
 	readCache,
+	resolvePartnerAddress,
 	resolveSuigarConfig,
 } from './helpers/index.js';
 import {
@@ -120,7 +121,7 @@ export class SuigarClient {
 		}
 
 		this.#client = client;
-		this.#partner = partner;
+		this.#partner = resolvePartnerAddress(partner);
 		this.#cache = client.cache.scope(`@suigar/sdk:${name}`);
 		this.#cacheTtl = cacheTtl ?? DEFAULT_CACHE_TTL_MS;
 

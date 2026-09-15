@@ -92,25 +92,26 @@
 		"lint:fix": "pnpm run oxlint:fix && pnpm run oxfmt:fix"
 	},
 	"dependencies": {
-		"@modelcontextprotocol/ext-apps": "^1.7.5",
-		"@modelcontextprotocol/sdk": "^1.30.0",
+		"@modelcontextprotocol/ext-apps": "^2.0.0",
+		"@modelcontextprotocol/server": "^2.0.0",
 		"@mysten/bcs": "catalog:mysten",
 		"@mysten/sui": "catalog:mysten",
-		"@napi-rs/keyring": "^2.0.0",
+		"@napi-rs/keyring": "^2.1.0",
 		"@noble/ciphers": "^2.4.0",
 		"@scure/base": "^2.4.0",
 		"@scure/bip39": "^2.4.0",
 		"@suigar/sdk": "workspace:^",
 		"clsx": "catalog:frontend",
-		"open": "^11.0.2",
+		"open": "^11.0.3",
 		"qr": "^0.7.0",
 		"react": "catalog:frontend",
 		"react-dom": "catalog:frontend",
 		"tailwind-merge": "catalog:frontend",
 		"yargs": "^18.1.0",
-		"zod": "^4.5.4"
+		"zod": "^4.6.4"
 	},
 	"devDependencies": {
+		"@modelcontextprotocol/client": "^2.0.0",
 		"@tailwindcss/vite": "catalog:tooling",
 		"@types/node": "catalog:typescript",
 		"@types/react": "catalog:typescript",
@@ -121,7 +122,7 @@
 		"tailwindcss": "catalog:tooling",
 		"tsdown": "catalog:tooling",
 		"typescript": "catalog:typescript",
-		"vite": "^8.2.2",
+		"vite": "^8.3.0",
 		"vite-plugin-singlefile": "^2.3.3",
 		"vitest": "catalog:test"
 	},

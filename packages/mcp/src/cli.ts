@@ -201,7 +201,9 @@ export async function runSuigarCli(argv: Array<string> = hideBin(process.argv)):
 			'Start the stdio MCP server',
 			(command: Argv) => command.option('network', { choices: SUPPORTED_SUI_NETWORKS }),
 			async (args: NetworkArgs) => {
-				if (args.network) await setDefaultNetwork(args.network);
+				if (args.network) {
+					await setDefaultNetwork(args.network);
+				}
 				await startSuigarMcpServer();
 			},
 		);

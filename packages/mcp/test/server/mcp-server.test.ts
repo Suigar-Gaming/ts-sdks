@@ -1,15 +1,19 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
-import { LATEST_PROTOCOL_VERSION } from '@modelcontextprotocol/sdk/types.js';
-import { describe, expect, it } from 'vitest';
+import { Client } from '@modelcontextprotocol/client';
+import {
+	InMemoryTransport,
+	ProtocolError,
+	ProtocolErrorCode,
+	type JSONRPCMessage,
+} from '@modelcontextprotocol/server';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
 	NFT_IMAGE_RESOURCE_DOMAINS,
 	SUIGAR_MCP_APP_RESOURCE_URI,
 } from '../../src/server/app-resource.js';
-import { createSuigarMcpServer } from '../../src/server/mcp-server.js';
+import { createSuigarMcpServer, serveSuigarMcpStdio } from '../../src/server/mcp-server.js';
 
 const publicToolNames = [
 	'build_coinflip_transaction',
@@ -77,11 +81,14 @@ describe('MCP server registration', () => {
 				'AI agent MCP server for Suigar provably fair on-chain Sui casino game',
 			);
 
+			for (const tool of result.tools) {
+				expect(tool.execution).toBeUndefined();
+			}
+
 			const readConfigTool = result.tools.find((tool) => tool.name === 'read_config');
 			const readGameMetadataTool = result.tools.find((tool) => tool.name === 'read_game_metadata');
 			expect(readConfigTool).toMatchObject({
 				title: 'Read Suigar Config',
-				execution: { taskSupport: 'forbidden' },
 			});
 			expect(readConfigTool?.inputSchema).toMatchObject({
 				type: 'object',
@@ -92,7 +99,6 @@ describe('MCP server registration', () => {
 			});
 			expect(readGameMetadataTool).toMatchObject({
 				title: 'Read Suigar Game Metadata',
-				execution: { taskSupport: 'forbidden' },
 			});
 			expect(readGameMetadataTool?._meta).toMatchObject({
 				ui: { resourceUri: SUIGAR_MCP_APP_RESOURCE_URI },
@@ -100,14 +106,18 @@ describe('MCP server registration', () => {
 			const getSessionWalletTool = result.tools.find((tool) => tool.name === 'get_session_wallet');
 			expect(getSessionWalletTool).toMatchObject({
 				title: 'Get Session Wallet',
-				execution: { taskSupport: 'forbidden' },
-				_meta: { ui: { resourceUri: SUIGAR_MCP_APP_RESOURCE_URI } },
+				_meta: {
+					ui: { resourceUri: SUIGAR_MCP_APP_RESOURCE_URI },
+					'ui/resourceUri': SUIGAR_MCP_APP_RESOURCE_URI,
+				},
 			});
 			const listNftsTool = result.tools.find((tool) => tool.name === 'list_nfts');
 			expect(listNftsTool).toMatchObject({
 				title: 'List Suigar NFTs',
-				execution: { taskSupport: 'forbidden' },
-				_meta: { ui: { resourceUri: SUIGAR_MCP_APP_RESOURCE_URI } },
+				_meta: {
+					ui: { resourceUri: SUIGAR_MCP_APP_RESOURCE_URI },
+					'ui/resourceUri': SUIGAR_MCP_APP_RESOURCE_URI,
+				},
 			});
 		} finally {
 			await client.close();
@@ -115,15 +125,76 @@ describe('MCP server registration', () => {
 		}
 	});
 
-	it('uses the current SDK protocol and exposes app resource metadata', async () => {
+	it.each(['legacy', 'modern'] as const)(
+		'serves valid calls and distinguishes errors for %s clients',
+		async (era) => {
+			const client = new Client(
+				{ name: 'suigar-test', version: '0.0.0' },
+				{
+					versionNegotiation: { mode: era === 'modern' ? { pin: '2026-07-28' } : 'legacy' },
+				},
+			);
+			const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+			const handle = serveSuigarMcpStdio(serverTransport);
+			try {
+				await client.connect(clientTransport);
+				const config = await client.callTool({
+					name: 'read_config',
+					arguments: { network: 'testnet' },
+				});
+				expect(config.isError).not.toBe(true);
+				expect(config.structuredContent).toMatchObject({ network: 'testnet' });
+				expect(config.content).toEqual(
+					expect.arrayContaining([expect.objectContaining({ type: 'text' })]),
+				);
+
+				const failure = await client.callTool({
+					name: 'read_config',
+					arguments: { config: { coins: { sui: { coinType: 'invalid' } } } },
+				});
+				expect(failure.isError).toBe(true);
+				expect(failure.structuredContent).toMatchObject({ errors: expect.any(Array) });
+
+				const missingTool = client.callTool({ name: 'missing_tool', arguments: {} });
+				await expect(missingTool).rejects.toBeInstanceOf(ProtocolError);
+				await expect(missingTool).rejects.toMatchObject({ code: ProtocolErrorCode.InvalidParams });
+				const invalidInput = await client.callTool({
+					name: 'read_config',
+					arguments: { network: 'invalid' },
+				});
+				expect(invalidInput).toMatchObject({
+					isError: true,
+					content: [{ type: 'text', text: expect.stringContaining('network') }],
+				});
+
+				// A failed call must not poison the connection or mix inputs across concurrent calls.
+				const networks = ['mainnet', 'testnet', 'mainnet', 'testnet'] as const;
+				const results = await Promise.all(
+					networks.map((network) =>
+						client.callTool({
+							name: 'read_config',
+							arguments: { network },
+						}),
+					),
+				);
+				for (const [index, result] of results.entries()) {
+					expect(result.isError).not.toBe(true);
+					expect(result.structuredContent).toMatchObject({ network: networks[index] });
+				}
+			} finally {
+				await client.close();
+				await handle.close();
+			}
+		},
+	);
+
+	it('preserves app resource metadata for legacy clients', async () => {
 		const server = createSuigarMcpServer();
 		const client = new Client({ name: 'suigar-test', version: '0.0.0' });
 		const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
 
 		try {
 			await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
-
-			expect(LATEST_PROTOCOL_VERSION).toBe('2025-11-25');
 
 			const result = await client.listResources();
 			const appResource = result.resources.find(
@@ -147,6 +218,140 @@ describe('MCP server registration', () => {
 		} finally {
 			await client.close();
 			await server.close();
+		}
+	});
+});
+
+const modernMeta = {
+	'io.modelcontextprotocol/protocolVersion': '2026-07-28',
+	'io.modelcontextprotocol/clientCapabilities': {},
+	'io.modelcontextprotocol/clientInfo': { name: 'suigar-test', version: '0.0.0' },
+};
+
+describe('MCP 2026-07-28 stdio protocol', () => {
+	let clientTransport: InMemoryTransport;
+	let handle: ReturnType<typeof serveSuigarMcpStdio>;
+	let requestId: number;
+
+	beforeEach(() => {
+		const transports = InMemoryTransport.createLinkedPair();
+		clientTransport = transports[0];
+		handle = serveSuigarMcpStdio(transports[1]);
+		requestId = 0;
+	});
+
+	afterEach(async () => {
+		await handle.close();
+	});
+
+	async function request(
+		method: string,
+		params: Record<string, unknown> = {},
+		meta: Record<string, unknown> = modernMeta,
+	) {
+		const id = ++requestId;
+		const response = new Promise<JSONRPCMessage>((resolve) => {
+			clientTransport.onmessage = (message) => {
+				if ('id' in message && message.id === id) {
+					resolve(message);
+				}
+			};
+		});
+		await clientTransport.send({
+			jsonrpc: '2.0',
+			id,
+			method,
+			params: { ...params, _meta: meta },
+		});
+		return response;
+	}
+
+	it('discovers the server and serves complete, cacheable results without initialization', async () => {
+		expect(await request('server/discover')).toMatchObject({
+			result: {
+				resultType: 'complete',
+				supportedVersions: ['2026-07-28'],
+				capabilities: { tools: {}, resources: {} },
+				_meta: { 'io.modelcontextprotocol/serverInfo': { name: 'suigar' } },
+			},
+		});
+		for (const method of ['tools/list', 'resources/list', 'resources/templates/list']) {
+			expect(await request(method)).toMatchObject({
+				result: {
+					resultType: 'complete',
+					ttlMs: 0,
+					cacheScope: 'private',
+					_meta: { 'io.modelcontextprotocol/serverInfo': { name: 'suigar' } },
+				},
+			});
+		}
+		expect(
+			await request('tools/call', {
+				name: 'read_config',
+				arguments: { network: 'testnet' },
+			}),
+		).toMatchObject({
+			result: {
+				resultType: 'complete',
+				structuredContent: { network: 'testnet' },
+			},
+		});
+		expect(await request('resources/read', { uri: 'ui://missing' })).toMatchObject({
+			error: { code: -32602 },
+		});
+	});
+
+	it('requires request metadata and rejects unsupported versions', async () => {
+		expect(
+			await request(
+				'server/discover',
+				{},
+				{
+					...modernMeta,
+					'io.modelcontextprotocol/protocolVersion': '2099-01-01',
+				},
+			),
+		).toMatchObject({
+			error: {
+				code: -32022,
+				data: {
+					requested: '2099-01-01',
+					supported: expect.arrayContaining(['2026-07-28']),
+				},
+			},
+		});
+		expect(await request('tools/list')).toHaveProperty('result');
+		expect(await request('tools/list', {}, {})).toMatchObject({
+			error: { code: -32602 },
+		});
+		expect(
+			await request(
+				'tools/list',
+				{},
+				{ ...modernMeta, 'io.modelcontextprotocol/protocolVersion': '2099-01-01' },
+			),
+		).toMatchObject({ error: { code: -32022 } });
+		expect(
+			await request(
+				'tools/list',
+				{},
+				{
+					'io.modelcontextprotocol/protocolVersion': '2026-07-28',
+				},
+			),
+		).toMatchObject({ error: { code: -32602 } });
+		expect(await request('tools/list')).toHaveProperty('result');
+	});
+
+	it('continues to accept the legacy initialization handshake through the stdio entry', async () => {
+		const client = new Client({ name: 'legacy-test', version: '0.0.0' });
+		try {
+			await client.connect(clientTransport);
+			expect(sorted((await client.listTools()).tools.map((tool) => tool.name))).toEqual(
+				sorted(publicToolNames),
+			);
+		} finally {
+			await client.close();
 		}
 	});
 });
