@@ -19,6 +19,7 @@ import {
 	CoinFlipSettingsKey,
 	Parameters as GeneratedCoinflipParameters,
 } from '../../src/contracts/coinflip/coinflip.js';
+import type * as CoinflipContract from '../../src/contracts/coinflip/coinflip.js';
 import { RedeemRequestCreatedEvent as GeneratedRedeemRequestCreatedEvent } from '../../src/contracts/core/sweethouse.js';
 import {
 	Parameters as GeneratedLimboParameters,
@@ -644,8 +645,7 @@ describe('SuigarClient', () => {
 
 		vi.resetModules();
 		vi.doMock('../../src/contracts/coinflip/coinflip.js', async (importOriginal) => {
-			const actual =
-				await importOriginal<typeof import('../../src/contracts/coinflip/coinflip.js')>();
+			const actual = await importOriginal<typeof CoinflipContract>();
 			return { ...actual, playV2 };
 		});
 		for (const contractPath of [

@@ -5,14 +5,13 @@ import type { SuiClientTypes } from '@mysten/sui/client';
 import { describe, expect, expectTypeOf, it } from 'vitest';
 import { GameCancelledEvent } from '../../../src/contracts/pvp-coinflip/pvp_coinflip.js';
 import type { BetResultSuigarEvent } from '../../../src/types/event.type.js';
-import type {
-	BetResultGameDetails,
-	GameDetail,
-	GameDetails,
+import {
+	type BetResultGameDetails,
+	type GameDetail,
+	type GameDetails,
+	GAME_DETAIL_BCS,
 } from '../../../src/types/game-details.type.js';
-import { GAME_DETAIL_BCS } from '../../../src/types/game-details.type.js';
-import type { Game, SuigarGameEvent } from '../../../src/types/game.type.js';
-import { GAME_EVENTS } from '../../../src/types/game.type.js';
+import { type Game, type SuigarGameEvent, GAME_EVENTS } from '../../../src/types/game.type.js';
 import {
 	parseCoinType,
 	parseGameDetails,

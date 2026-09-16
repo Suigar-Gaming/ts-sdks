@@ -1,7 +1,11 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import { coinWithBalance, Transaction, type TransactionArgument } from '@mysten/sui/transactions';
+import {
+	type Transaction,
+	coinWithBalance,
+	type TransactionArgument,
+} from '@mysten/sui/transactions';
 import { normalizeStructTag } from '@mysten/sui/utils';
 import {
 	cancelGame,

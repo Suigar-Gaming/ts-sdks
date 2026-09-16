@@ -8,7 +8,7 @@ import type {
 	SuiClientRegistration,
 	SuiClientTypes,
 } from '@mysten/sui/client';
-import { BuildTransactionOptions, Transaction } from '@mysten/sui/transactions';
+import type { BuildTransactionOptions, Transaction } from '@mysten/sui/transactions';
 import { normalizeStructTag, toBase64 } from '@mysten/sui/utils';
 import { CoinStruct } from './bcs/index.js';
 import { BetResultEvent } from './contracts/core/core.js';
