@@ -102,7 +102,7 @@
 		"@scure/bip39": "^2.4.0",
 		"@suigar/sdk": "workspace:^",
 		"clsx": "catalog:frontend",
-		"open": "^11.0.3",
+		"open": "^11.0.4",
 		"qr": "^0.7.0",
 		"react": "catalog:frontend",
 		"react-dom": "catalog:frontend",
