@@ -4,7 +4,7 @@
 import type { Transaction } from '@mysten/sui/transactions';
 import { playV2 } from '../contracts/soccer/soccer.js';
 import type { SoccerTransactionOptions, WithPartner } from '../types/index.js';
-import { toU8, toU16 } from '../utils/numeric.js';
+import { toU16, toU8 } from '../utils/numeric.js';
 import { buildSharedStandardGameBetTransaction } from './shared.js';
 
 export function buildSoccerTransaction(

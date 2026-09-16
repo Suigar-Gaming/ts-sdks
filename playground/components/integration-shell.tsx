@@ -35,9 +35,9 @@ import {
 	StakeDescription,
 } from '@/components/integration-shell/components/stake-descriptions';
 import {
+	type CoinBalanceState,
 	formatBalance,
 	resolveCoinKeyForType,
-	type CoinBalanceState,
 } from '@/components/integration-shell/helpers/coin';
 import { parseError } from '@/components/integration-shell/helpers/errors';
 import { stringifyGameParameters } from '@/components/integration-shell/helpers/game-settings';
@@ -83,12 +83,12 @@ import {
 	parseOptionalNumber,
 } from '@/lib/suigar-app';
 import type {
+	GameConfigOption,
 	PvPAction,
 	PvPCoinflipForms,
 	PvPCoinflipLobbyGame,
 	PvPGameId,
 	PvPGameParametersSummary,
-	GameConfigOption,
 	StakeRangeSummary,
 	StandardForms,
 	StandardGameId,

@@ -7,11 +7,11 @@ import { GameCancelledEvent } from '../../../src/contracts/pvp-coinflip/pvp_coin
 import type { BetResultSuigarEvent } from '../../../src/types/event.type.js';
 import {
 	type BetResultGameDetails,
+	GAME_DETAIL_BCS,
 	type GameDetail,
 	type GameDetails,
-	GAME_DETAIL_BCS,
 } from '../../../src/types/game-details.type.js';
-import { type Game, type SuigarGameEvent, GAME_EVENTS } from '../../../src/types/game.type.js';
+import { type Game, GAME_EVENTS, type SuigarGameEvent } from '../../../src/types/game.type.js';
 import {
 	parseCoinType,
 	parseGameDetails,

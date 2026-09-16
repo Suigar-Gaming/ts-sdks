@@ -34,26 +34,26 @@ import {
 	resolveSuigarConfig,
 } from './helpers/index.js';
 import {
+	buildClaimOwnSweetHouseRedeemRequestAfterDelayTransaction,
 	buildClaimReferralCommissionTransaction,
 	buildClaimReferralLevelUpUsdRewardsTransaction,
 	buildCoinflipTransaction,
+	buildDepositSweetHouseTransaction,
 	buildKenoTransaction,
 	buildLimboTransaction,
 	buildMintNftV1Transaction,
 	buildPlinkoTransaction,
 	buildPvPCoinflipTransaction,
 	buildRangeTransaction,
-	buildSoccerTransaction,
-	buildClaimOwnSweetHouseRedeemRequestAfterDelayTransaction,
-	buildDepositSweetHouseTransaction,
 	buildRedeemSweetHouseRequestTransaction,
+	buildSoccerTransaction,
 	buildWheelTransaction,
 } from './transactions/index.js';
 import { GAME_SETTINGS } from './types/game-settings.type.js';
 import type {
+	ClaimOwnSweetHouseRedeemRequestAfterDelayOptions,
 	ClaimReferralCommissionOptions,
 	ClaimReferralLevelUpUsdRewardsOptions,
-	ClaimOwnSweetHouseRedeemRequestAfterDelayOptions,
 	CreateGameBetOptions,
 	DepositSweetHouseOptions,
 	Game,

@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import {
-	type Transaction,
 	coinWithBalance,
+	type Transaction,
 	type TransactionArgument,
 } from '@mysten/sui/transactions';
 import { normalizeStructTag } from '@mysten/sui/utils';

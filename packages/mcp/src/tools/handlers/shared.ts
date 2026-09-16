@@ -2,13 +2,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { parseStructTag } from '@mysten/sui/utils';
-import { GAMES, type Game } from '@suigar/sdk/games';
+import { type Game, GAMES } from '@suigar/sdk/games';
 import {
-	resolveDefaultCoinType,
-	resolveOwnerAddress,
 	type BuilderMode,
 	type McpConfig,
 	type ReadConfigResult,
+	resolveDefaultCoinType,
+	resolveOwnerAddress,
 	type SuigarClientBundle,
 	type ToolTextResult,
 } from '../../runtime/index.js';

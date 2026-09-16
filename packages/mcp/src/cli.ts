@@ -3,23 +3,23 @@
 
 import yargs, { type ArgumentsCamelCase, type Argv, type Options } from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import { SUPPORTED_SUI_NETWORKS, type SuigarNetwork } from '@suigar/sdk';
+import { type SuigarNetwork, SUPPORTED_SUI_NETWORKS } from '@suigar/sdk';
 import { startSuigarMcpServer } from './server/index.js';
 import { VERSION } from './version.js';
 import {
 	BRIDGE_MAX_BODY_BYTES_ENV,
 	BRIDGE_TIMEOUT_MS_ENV,
 	BRIDGE_WEB_URL_ENV,
+	type BridgeOptions,
 	clearCredentials,
 	createLoginBridge,
 	createLogoutBridge,
 	DEFAULT_MAX_BODY_BYTES,
 	DEFAULT_TIMEOUT_MS,
 	loadCredentials,
+	type LogoutBridge,
 	resolveWebOrigin,
 	setDefaultNetwork,
-	type BridgeOptions,
-	type LogoutBridge,
 } from './wallet/index.js';
 
 type NetworkArgs = ArgumentsCamelCase<{ network?: SuigarNetwork }>;

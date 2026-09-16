@@ -1,9 +1,9 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import { useApp, useHostStyles, type McpUiHostContext } from '@modelcontextprotocol/ext-apps/react';
+import { type McpUiHostContext, useApp, useHostStyles } from '@modelcontextprotocol/ext-apps/react';
 import type { CallToolResult } from '@modelcontextprotocol/server';
-import { StrictMode, useEffect, useReducer, useRef, type JSX } from 'react';
+import { type JSX, StrictMode, useEffect, useReducer, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
 	ExecutionApproval,

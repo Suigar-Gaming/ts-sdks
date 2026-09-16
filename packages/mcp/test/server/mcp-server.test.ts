@@ -4,9 +4,9 @@
 import { Client } from '@modelcontextprotocol/client';
 import {
 	InMemoryTransport,
+	type JSONRPCMessage,
 	ProtocolError,
 	ProtocolErrorCode,
-	type JSONRPCMessage,
 } from '@modelcontextprotocol/server';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {

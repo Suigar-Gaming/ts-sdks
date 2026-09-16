@@ -38,6 +38,13 @@
 				"caughtErrorsIgnorePattern": "^_"
 			}
 		],
+		"sort-imports": [
+			"warn",
+			{
+				"ignoreCase": true,
+				"ignoreDeclarationSort": true
+			}
+		],
 		"typescript/array-type": [
 			"warn",
 			{
@@ -53,6 +60,7 @@
 			"files": ["packages/*/src/contracts/**/*.ts"],
 			"rules": {
 				"import/consistent-type-specifier-style": "off",
+				"sort-imports": "off",
 				"typescript/no-base-to-string": "off",
 				"typescript/restrict-template-expressions": "off",
 				"typescript/no-unnecessary-type-assertion": "off"

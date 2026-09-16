@@ -1,8 +1,8 @@
 'use client';
 
 import {
-	type ThemeProviderProps,
 	ThemeProvider as NextThemesProvider,
+	type ThemeProviderProps,
 	useTheme,
 } from 'next-themes';
 

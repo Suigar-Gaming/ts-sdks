@@ -5,7 +5,7 @@ import { readFileSync } from 'node:fs';
 import { chmod, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { isValidSuiAddress } from '@mysten/sui/utils';
-import { SUPPORTED_SUI_NETWORKS, type SuigarNetwork } from '@suigar/sdk';
+import { type SuigarNetwork, SUPPORTED_SUI_NETWORKS } from '@suigar/sdk';
 import { ensureSuigarMcpDataDirectory, SUIGAR_MCP_DATA_DIRECTORY } from './storage.js';
 
 const CREDENTIALS_FILE: string = join(SUIGAR_MCP_DATA_DIRECTORY, 'credentials.json');

@@ -9,9 +9,9 @@ import { usePathname } from 'next/navigation';
 import * as React from 'react';
 import { CoinSelectLabel } from '@/components/integration-shell/components/coin-select-label';
 import {
+	type CoinBalanceState,
 	formatBalance,
 	getCoinDisplayAmount,
-	type CoinBalanceState,
 } from '@/components/integration-shell/helpers/coin';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Button } from '@/components/ui/button';
