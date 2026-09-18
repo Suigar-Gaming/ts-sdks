@@ -6,10 +6,9 @@ import {
 	buildTransactionResult,
 	createSuigarClient,
 	executeSessionTransaction,
+	type McpConfig,
 	resolveDefaultCoinType,
 	resolveOwnerAddress,
-	type BuilderMode,
-	type McpConfig,
 	type SuigarClientBundle,
 	type ToolTextResult,
 	type TransactionSummaryContext,
@@ -178,7 +177,7 @@ async function buildSweetHouseTransactionTool({
 
 	return asTextResponse(
 		await buildTransactionResult({
-			mode: mode as Exclude<BuilderMode, 'read-only' | 'execute'>,
+			mode,
 			transaction,
 			config: bundle.config,
 			client: bundle.client,

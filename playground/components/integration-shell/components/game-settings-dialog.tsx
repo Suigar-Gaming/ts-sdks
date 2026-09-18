@@ -288,7 +288,7 @@ function CurrentConfigValue({
 	coinLabel: string;
 	summarizedTopLevelDetails: Array<GameSettingsDetail>;
 }) {
-	if (activeConfigOption)
+	if (activeConfigOption) {
 		return (
 			<ActiveConfigDetails
 				activeConfigOption={activeConfigOption}
@@ -298,7 +298,10 @@ function CurrentConfigValue({
 				coinLabel={coinLabel}
 			/>
 		);
-	if (!summarizedTopLevelDetails.length) return <span className="text-base">N/A</span>;
+	}
+	if (!summarizedTopLevelDetails.length) {
+		return <span className="text-base">N/A</span>;
+	}
 	return (
 		<div className="space-y-1.5 text-sm">
 			{summarizedTopLevelDetails.map((detail) => (

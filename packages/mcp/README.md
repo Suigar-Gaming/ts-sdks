@@ -2,7 +2,9 @@
 
 AI agent MCP server for Suigar provably fair on-chain Sui casino game, SweetHouse, NFT, and referral transactions.
 
-The server targets the MCP [`2025-11-25`](https://modelcontextprotocol.io/specification/2025-11-25) specification and registers tools/resources through the modern MCP server and MCP Apps APIs. Tool calls return tool execution errors (`isError: true`) for retryable validation or config failures rather than signing or executing transactions.
+The server targets the MCP [`2026-07-28`](https://modelcontextprotocol.io/specification/2026-07-28) specification and registers tools/resources through the modern MCP server and MCP Apps APIs. The server and bundled App use MCP SDK 2 and ext-apps 2; existing MCP Apps 1.x hosts remain compatible. Known tools return `isError: true` for input-validation and handler failures; calls to unknown tools reject with a JSON-RPC invalid-params error (`-32602`). Handler failures include both text and structured error details.
+
+The stdio server supports MCP `2026-07-28` and older initialization-based clients. For programmatic use, call `startSuigarMcpServer()` to start stdio, or `createSuigarMcpServer()` to obtain an `McpServer` from `@modelcontextprotocol/server` v2.
 
 It provides:
 
@@ -14,6 +16,8 @@ It provides:
 - Text and structured-content fallbacks for normal MCP clients
 
 Transactions remain unsigned by default. `mode: "execute"` uses the paired Suigar browser wallet and opens an explicit approval request unless `executionWallet: "session"` is selected. Session execution signs and submits directly from the local session-wallet key held in the operating-system keychain; it returns the final transaction digest without an approval URL. Wallet balance reads aggregate all result pages and display human-readable amounts using configured or on-chain coin metadata.
+
+Wallet validation uses `TypeError` for malformed recovery phrases and `RangeError` for unsupported private-key schemes or oversized bridge requests. Wallet setup pages continue to display the error message; operational failures such as expired sessions and unavailable keychain storage remain generic errors.
 
 ## Install
 
@@ -214,7 +218,7 @@ When `betCount` is provided for Keno, Limbo, Plinko, Range, Soccer, or Wheel, th
 | Soccer | `configId`, `countryId`, `shotZoneId` | — | — |
 | Range | `leftPoint`, `rightPoint` | `outOfRange` | — |
 | PvP Coinflip Create | `creatorSide` | `isPrivate` | — |
-| PvP Coinflip Join | `gameId` | — | Resolves the live game stake when built. |
+| PvP Coinflip Join | `gameId` | — | Reads the game’s stake when building the transaction. |
 | PvP Coinflip Cancel | `gameId` | — | Does not accept `metadata` or `useGasCoin`. |
 | Referral Commission Claim | `owner` | `coinType` | `coinType` defaults to configured SUI. |
 | Referral Level-up USD Rewards Claim | `owner` | — | Uses configured USDC. |
@@ -260,9 +264,3 @@ Game, referral, and core calls use the `@suigar/*` MVR package names by default.
 Partner attribution should be passed as top-level `partner`; the MCP server forwards it through `suigar({ partner })`.
 
 Transaction tools that accept `metadata` require JSON-compatible strings, numbers, or booleans. Send large integer metadata values as strings.
-
-## Notes
-
-- Coin object ids and explicit coin sourcing are intentionally not exposed.
-- The MCP package uses `@suigar/sdk` public builders instead of copied internal transaction builders.
-- PvP Coinflip join may need live object reads when serialized or dry-run, because the SDK resolves the current game stake from the game object.

@@ -1,8 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { create } from 'zustand';
-import type { StoreApi, UseBoundStore } from 'zustand';
+import { create, type StoreApi, type UseBoundStore } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
 type PersistentFormsStore<T> = {

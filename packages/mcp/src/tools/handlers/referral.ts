@@ -4,11 +4,11 @@
 import {
 	buildTransactionResult,
 	createSuigarClient,
-	resolveOwnerAddress,
 	type McpConfig,
 	type ReferralClaimKind,
 	type ReferralClaimReadOnlyPlan,
 	type ReferralClaimReadResult,
+	resolveOwnerAddress,
 	type ToolTextResult,
 } from '../../runtime/index.js';
 import { formatBaseUnitAmount } from '../../utils/index.js';

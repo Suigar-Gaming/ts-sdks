@@ -2,8 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { formatAddress } from '@mysten/sui/utils';
-import type { JSX } from 'react';
-import { useState } from 'react';
+import { type JSX, useState } from 'react';
 import { DefinitionList, InspectorTable, Panel } from '../components/inspector-components.js';
 import { asRecord } from '../lib/format.js';
 
