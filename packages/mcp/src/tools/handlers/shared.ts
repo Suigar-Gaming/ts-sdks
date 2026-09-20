@@ -2,13 +2,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { parseStructTag } from '@mysten/sui/utils';
-import { GAMES, type Game } from '@suigar/sdk/games';
+import { type Game, GAMES } from '@suigar/sdk/games';
 import {
-	resolveDefaultCoinType,
-	resolveOwnerAddress,
 	type BuilderMode,
 	type McpConfig,
 	type ReadConfigResult,
+	resolveDefaultCoinType,
+	resolveOwnerAddress,
 	type SuigarClientBundle,
 	type ToolTextResult,
 } from '../../runtime/index.js';
@@ -212,7 +212,9 @@ export async function resolveWalletOwner(
 	},
 	bundle: SuigarClientBundle,
 ): Promise<string> {
-	if (input.owner) return await resolveOwnerAddress(input.owner, bundle);
+	if (input.owner) {
+		return await resolveOwnerAddress(input.owner, bundle);
+	}
 	if (input.sessionWalletId) {
 		const sessionWallet = await loadSessionWallet(input.sessionWalletId);
 		if (!sessionWallet) {
@@ -222,10 +224,11 @@ export async function resolveWalletOwner(
 	}
 	const credentials = await loadCredentials();
 	const profile = credentials.profiles[bundle.config.network];
-	if (!profile)
+	if (!profile) {
 		throw new Error(
 			`No wallet is connected for ${bundle.config.network}. Call "suigar_login" first.`,
 		);
+	}
 	return profile.address;
 }
 

@@ -24,11 +24,25 @@
 				"ignorePackages": true
 			}
 		],
+		"import/consistent-type-specifier-style": ["warn", "prefer-top-level-if-only-type-imports"],
+		"import/no-duplicates": [
+			"warn",
+			{
+				"preferInline": true
+			}
+		],
 		"no-unused-vars": [
 			"error",
 			{
 				"reportUsedIgnorePattern": true,
 				"caughtErrorsIgnorePattern": "^_"
+			}
+		],
+		"sort-imports": [
+			"warn",
+			{
+				"ignoreCase": true,
+				"ignoreDeclarationSort": true
 			}
 		],
 		"typescript/array-type": [
@@ -37,14 +51,19 @@
 				"default": "generic"
 			}
 		],
-		"typescript/no-deprecated": "warn"
+		"typescript/consistent-type-imports": "warn",
+		"typescript/no-deprecated": "warn",
+		"typescript/no-unnecessary-type-assertion": "warn"
 	},
 	"overrides": [
 		{
 			"files": ["packages/*/src/contracts/**/*.ts"],
 			"rules": {
+				"import/consistent-type-specifier-style": "off",
+				"sort-imports": "off",
 				"typescript/no-base-to-string": "off",
-				"typescript/restrict-template-expressions": "off"
+				"typescript/restrict-template-expressions": "off",
+				"typescript/no-unnecessary-type-assertion": "off"
 			}
 		}
 	]

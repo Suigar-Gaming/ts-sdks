@@ -51,9 +51,9 @@ import {
 	parseGameEvent,
 	RANGE_POINT_LIMIT,
 	toBigInt,
-	toU8,
 	toU16,
 	toU32,
+	toU8,
 } from '../../src/utils/index.js';
 
 describe('public source subpath modules', () => {

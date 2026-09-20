@@ -4,7 +4,7 @@
 import type { BcsType, InferBcsType } from '@mysten/bcs';
 import { bcs } from '@mysten/sui/bcs';
 import { Float } from '../contracts/core/float.js';
-import { BetResultEventData } from './event.type.js';
+import type { BetResultEventData } from './event.type.js';
 import type { Game } from './game.type.js';
 
 export type BetResultGameDetails = BetResultEventData['game_details'];

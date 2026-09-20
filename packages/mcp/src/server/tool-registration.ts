@@ -1,9 +1,12 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import { registerAppTool, type ToolConfig } from '@modelcontextprotocol/ext-apps/server';
-import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import type { ToolAnnotations } from '@modelcontextprotocol/sdk/types.js';
+import { registerAppTool } from '@modelcontextprotocol/ext-apps/server';
+import type {
+	McpServer,
+	StandardSchemaWithJSON,
+	ToolAnnotations,
+} from '@modelcontextprotocol/server';
 import type { ToolTextResult } from '../runtime/index.js';
 import {
 	buildCoinflipTransactionTool,
@@ -116,15 +119,15 @@ const transactionToolAnnotations = {
 	openWorldHint: true,
 } satisfies ToolAnnotations;
 
-type ToolHandler<TInput = never> = Parameters<typeof withToolErrors<TInput>>[0];
+type ToolHandler<TInput> = Parameters<typeof withToolErrors<TInput>>[0];
 
 type ToolDefinition = {
 	name: string;
 	title: string;
 	description: string;
-	inputSchema: NonNullable<ToolConfig['inputSchema']>;
+	inputSchema: StandardSchemaWithJSON;
 	annotations: ToolAnnotations;
-	handler: ToolHandler;
+	handler: ToolHandler<never>;
 	isAppTool: boolean;
 };
 
@@ -414,26 +417,20 @@ const toolDefinitions = [
 	},
 ] satisfies Array<ToolDefinition>;
 
-const registerTool = (server: McpServer, appToolMeta: AppToolMeta, tool: ToolDefinition) => {
-	const config = {
-		title: tool.title,
-		description: tool.description,
-		inputSchema: tool.inputSchema,
-		annotations: tool.annotations,
-		outputSchema: toolOutputSchema,
-	};
-	const handler = withToolErrors(tool.handler);
-
-	if (tool.isAppTool) {
-		registerAppTool(server, tool.name, { ...config, _meta: appToolMeta }, handler);
-		return;
-	}
-
-	server.registerTool(tool.name, config, handler);
-};
-
 export function registerSuigarTools(server: McpServer, appToolMeta: AppToolMeta): void {
 	for (const tool of toolDefinitions) {
-		registerTool(server, appToolMeta, tool);
+		const config = {
+			title: tool.title,
+			description: tool.description,
+			inputSchema: tool.inputSchema,
+			annotations: tool.annotations,
+			outputSchema: toolOutputSchema,
+		};
+		const handler = withToolErrors((input: unknown) => tool.handler(input as never));
+		if (tool.isAppTool) {
+			registerAppTool(server, tool.name, { ...config, _meta: appToolMeta }, handler);
+		} else {
+			server.registerTool(tool.name, config, handler);
+		}
 	}
 }

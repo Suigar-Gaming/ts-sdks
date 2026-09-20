@@ -1,7 +1,7 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { McpServer } from '@modelcontextprotocol/server';
 import { describe, expect, it } from 'vitest';
 import type { ToolTextResult } from '../../src/runtime/types.js';
 import { SUIGAR_MCP_APP_RESOURCE_URI } from '../../src/server/app-resource.js';

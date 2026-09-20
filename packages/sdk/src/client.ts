@@ -8,7 +8,7 @@ import type {
 	SuiClientRegistration,
 	SuiClientTypes,
 } from '@mysten/sui/client';
-import { BuildTransactionOptions, Transaction } from '@mysten/sui/transactions';
+import type { BuildTransactionOptions, Transaction } from '@mysten/sui/transactions';
 import { normalizeStructTag, toBase64 } from '@mysten/sui/utils';
 import { CoinStruct } from './bcs/index.js';
 import { BetResultEvent } from './contracts/core/core.js';
@@ -30,29 +30,30 @@ import {
 	DEFAULT_CACHE_TTL_MS,
 	normalizeGameParameterValues,
 	readCache,
+	resolvePartnerAddress,
 	resolveSuigarConfig,
 } from './helpers/index.js';
 import {
+	buildClaimOwnSweetHouseRedeemRequestAfterDelayTransaction,
 	buildClaimReferralCommissionTransaction,
 	buildClaimReferralLevelUpUsdRewardsTransaction,
 	buildCoinflipTransaction,
+	buildDepositSweetHouseTransaction,
 	buildKenoTransaction,
 	buildLimboTransaction,
 	buildMintNftV1Transaction,
 	buildPlinkoTransaction,
 	buildPvPCoinflipTransaction,
 	buildRangeTransaction,
-	buildSoccerTransaction,
-	buildClaimOwnSweetHouseRedeemRequestAfterDelayTransaction,
-	buildDepositSweetHouseTransaction,
 	buildRedeemSweetHouseRequestTransaction,
+	buildSoccerTransaction,
 	buildWheelTransaction,
 } from './transactions/index.js';
 import { GAME_SETTINGS } from './types/game-settings.type.js';
 import type {
+	ClaimOwnSweetHouseRedeemRequestAfterDelayOptions,
 	ClaimReferralCommissionOptions,
 	ClaimReferralLevelUpUsdRewardsOptions,
-	ClaimOwnSweetHouseRedeemRequestAfterDelayOptions,
 	CreateGameBetOptions,
 	DepositSweetHouseOptions,
 	Game,
@@ -120,7 +121,7 @@ export class SuigarClient {
 		}
 
 		this.#client = client;
-		this.#partner = partner;
+		this.#partner = resolvePartnerAddress(partner);
 		this.#cache = client.cache.scope(`@suigar/sdk:${name}`);
 		this.#cacheTtl = cacheTtl ?? DEFAULT_CACHE_TTL_MS;
 

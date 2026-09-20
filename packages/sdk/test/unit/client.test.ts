@@ -19,6 +19,7 @@ import {
 	CoinFlipSettingsKey,
 	Parameters as GeneratedCoinflipParameters,
 } from '../../src/contracts/coinflip/coinflip.js';
+import type * as CoinflipContract from '../../src/contracts/coinflip/coinflip.js';
 import { RedeemRequestCreatedEvent as GeneratedRedeemRequestCreatedEvent } from '../../src/contracts/core/sweethouse.js';
 import {
 	Parameters as GeneratedLimboParameters,
@@ -39,7 +40,6 @@ const TEST_SPEC_ID = testAddress('c');
 
 afterEach(() => {
 	vi.resetModules();
-	vi.clearAllMocks();
 });
 
 function serializeDummyFieldKey(
@@ -276,7 +276,7 @@ function createDecodedPvPCoinflipGame(gameId: string): DecodedPvPCoinflipGame {
 		stake_per_player: '1',
 		house_edge_bps: '100',
 		stake_pot: { value: '2' },
-	} as DecodedPvPCoinflipGame;
+	};
 }
 
 type SuigarTestClient = TestClient & { suigar: SuigarClient };
@@ -645,8 +645,7 @@ describe('SuigarClient', () => {
 
 		vi.resetModules();
 		vi.doMock('../../src/contracts/coinflip/coinflip.js', async (importOriginal) => {
-			const actual =
-				await importOriginal<typeof import('../../src/contracts/coinflip/coinflip.js')>();
+			const actual = await importOriginal<typeof CoinflipContract>();
 			return { ...actual, playV2 };
 		});
 		for (const contractPath of [
@@ -679,6 +678,19 @@ describe('SuigarClient', () => {
 		}>(playV2);
 		expect(options.arguments[5]).toEqual(['partner']);
 		expect(options.arguments[6]).toEqual([Array.from(fromHex(partner))]);
+	});
+
+	it.each([
+		['not-an-address', 'Invalid partner address'],
+		['', 'Partner must be a non-empty string'],
+		[null, 'Partner must be a non-empty string'],
+		[123, 'Partner must be a non-empty string'],
+		[true, 'Partner must be a non-empty string'],
+		[{}, 'Partner must be a non-empty string'],
+	])('rejects an invalid configured partner address: %j', (partner, message) => {
+		expect(() => new TestClient().$extend(suigar({ partner: partner as string }))).toThrow(
+			new TypeError(message),
+		);
 	});
 
 	it('exposes standard, PvP, and NFT transaction factories', () => {
@@ -798,7 +810,7 @@ describe('SuigarClient', () => {
 			type: TypeName.name,
 			bcs: SUI_TYPE_NAME_FIELD_BCS,
 		});
-		expect(TypeName.parse(client.getDynamicObjectFieldCalls[1]!.name.bcs).name).toBe(
+		expect(TypeName.parse(client.getDynamicObjectFieldCalls[1].name.bcs).name).toBe(
 			normalizeStructTag(COINS.testnet.sui.coinType).replace(/^0x/u, ''),
 		);
 		expect(client.listDynamicFieldsCalls).toHaveLength(0);
@@ -806,7 +818,7 @@ describe('SuigarClient', () => {
 	});
 
 	it('loads game parameters with an overridden settings package key type', async () => {
-		const coinflipPackageId = '0xcafe';
+		const coinflipPackageId = testAddress('1');
 		const client = createSuigarTestClient({
 			config: {
 				packageIds: {
@@ -1127,7 +1139,7 @@ describe('SuigarClient', () => {
 	});
 
 	it('keeps game parameter cache entries separate across settings package overrides', async () => {
-		const coinflipPackageId = '0xcafe';
+		const coinflipPackageId = testAddress('1');
 		const baseClient = new TestClient();
 		baseClient.mockObjects = [createCoinflipParametersObject({ objectId: '0x111', minStake: 25n })];
 		baseClient.mockDynamicFieldLookups = [
@@ -1221,7 +1233,7 @@ describe('SuigarClient', () => {
 	});
 
 	it('resolves the pvp coinflip registry with an overridden package key type', async () => {
-		const pvpCoinflipPackageId = '0xface';
+		const pvpCoinflipPackageId = testAddress('2');
 		const client = createSuigarTestClient({
 			config: {
 				packageIds: {
@@ -1256,7 +1268,7 @@ describe('SuigarClient', () => {
 	});
 
 	it('keeps pvp coinflip registry cache entries separate across package overrides', async () => {
-		const pvpCoinflipPackageId = '0xface';
+		const pvpCoinflipPackageId = testAddress('2');
 		const baseClient = new TestClient();
 		baseClient.mockDynamicFieldLookups = [
 			{

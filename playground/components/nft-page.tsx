@@ -61,9 +61,13 @@ async function getOwnedNftsBySpec(
 			cursor,
 		});
 		for (const nft of page.objects) {
-			if (nft instanceof Error || !nft.content) continue;
+			if (nft instanceof Error || !nft.content) {
+				continue;
+			}
 			const parsedNft = client.suigar.bcs.NftV1.parse(nft.content);
-			if (ownedNftsBySpec.has(parsedNft.spec_id)) continue;
+			if (ownedNftsBySpec.has(parsedNft.spec_id)) {
+				continue;
+			}
 
 			ownedNftsBySpec.set(parsedNft.spec_id, {
 				name: parsedNft.name,
@@ -122,7 +126,9 @@ const ownedNfts = page.objects.map(({ content }) =>
 					objectId: nftFactoryId,
 					include: { content: true },
 				});
-				if (object instanceof Error) throw object;
+				if (object instanceof Error) {
+					throw object;
+				}
 				if (!object.content) {
 					throw new Error('The NFT factory did not return BCS content.');
 				}

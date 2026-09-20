@@ -3,7 +3,7 @@
 
 import type { SuiClientTypes } from '@mysten/sui/client';
 import { SUI_DECIMALS } from '@mysten/sui/utils';
-import { GAMES, type Game } from '@suigar/sdk/games';
+import { type Game, GAMES } from '@suigar/sdk/games';
 import { parseGameEvent, parseSuigarEvent } from '@suigar/sdk/utils';
 import { formatAmount, isAmountFieldName } from '../utils/index.js';
 import type {

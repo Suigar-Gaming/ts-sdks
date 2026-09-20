@@ -1,6 +1,7 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
+import type * as SuiTransactions from '@mysten/sui/transactions';
 import { fromHex, normalizeStructTag, normalizeSuiAddress } from '@mysten/sui/utils';
 import { describe, expect, it, vi } from 'vitest';
 import { createBaseTransaction } from '../../../src/transactions/shared.js';
@@ -67,7 +68,7 @@ describe('shared transaction helpers', () => {
 			({ type }: { type: string }) => ReturnType<typeof createZeroCoinThunk>
 		>(({ type }) => createZeroCoinThunk(type));
 		vi.doMock('@mysten/sui/transactions', async (importOriginal) => {
-			const actual = await importOriginal<typeof import('@mysten/sui/transactions')>();
+			const actual = await importOriginal<typeof SuiTransactions>();
 			return {
 				...actual,
 				coinWithBalance: coinWithBalanceMock,

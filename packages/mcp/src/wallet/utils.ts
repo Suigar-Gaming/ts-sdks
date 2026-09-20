@@ -6,9 +6,12 @@ export function resolvePositiveInteger(
 	name: string,
 	defaultValue: number,
 ): number {
-	if (value === undefined || value === '') return defaultValue;
+	if (value === undefined || value === '') {
+		return defaultValue;
+	}
 	const parsed = typeof value === 'number' ? value : Number(value);
-	if (!Number.isInteger(parsed) || parsed <= 0)
+	if (!Number.isInteger(parsed) || parsed <= 0) {
 		throw new RangeError(`${name} must be a positive integer.`);
+	}
 	return parsed;
 }

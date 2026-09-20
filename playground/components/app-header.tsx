@@ -9,9 +9,9 @@ import { usePathname } from 'next/navigation';
 import * as React from 'react';
 import { CoinSelectLabel } from '@/components/integration-shell/components/coin-select-label';
 import {
+	type CoinBalanceState,
 	formatBalance,
 	getCoinDisplayAmount,
-	type CoinBalanceState,
 } from '@/components/integration-shell/helpers/coin';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Button } from '@/components/ui/button';
@@ -124,7 +124,9 @@ export function AppHeader({
 				}
 			}),
 		).then((entries) => {
-			if (!cancelled) setLocalBalances(Object.fromEntries(entries));
+			if (!cancelled) {
+				setLocalBalances(Object.fromEntries(entries));
+			}
 		});
 
 		return () => {
@@ -133,8 +135,11 @@ export function AppHeader({
 	}, [account, client, coinBalances, coinEntries]);
 
 	const handleCoinChange = (coin: SupportedCoinKey) => {
-		if (onSelectedCoinChange) onSelectedCoinChange(coin);
-		else setLocalSelectedCoin(coin);
+		if (onSelectedCoinChange) {
+			onSelectedCoinChange(coin);
+		} else {
+			setLocalSelectedCoin(coin);
+		}
 	};
 
 	const balanceNode = account ? (

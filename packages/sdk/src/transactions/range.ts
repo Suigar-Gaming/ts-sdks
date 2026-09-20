@@ -1,7 +1,7 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import { Transaction } from '@mysten/sui/transactions';
+import type { Transaction } from '@mysten/sui/transactions';
 import { playV2 } from '../contracts/range/range.js';
 import type { RangeTransactionOptions, WithPartner } from '../types/index.js';
 import { DEFAULT_RANGE_SCALE } from '../utils/constants.js';
