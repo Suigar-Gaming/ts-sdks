@@ -1,5 +1,15 @@
 # @suigar/sdk
 
+## 2.0.0-beta.43
+
+### Minor Changes
+
+- [#171](https://github.com/Suigar-Gaming/ts-sdks/pull/171) [`895e939`](https://github.com/Suigar-Gaming/ts-sdks/commit/895e939b786951bb62589dac0c0057dfaed5f337) - Update dependencies.
+
+  Use an internal type assertion for SDK package and object IDs. Invalid configuration or missing price-info object IDs throw `TypeError`.
+
+  Classify MCP wallet recovery phrase validation as `TypeError`, and unsupported private-key schemes and oversized wallet bridge requests as `RangeError`. Operational failures retain generic errors.
+
 ## 2.0.0-beta.42
 
 ### Patch Changes
