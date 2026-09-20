@@ -1,5 +1,31 @@
 # @suigar/mcp
 
+## 1.0.0-beta.29
+
+### Major Changes
+
+- [#171](https://github.com/Suigar-Gaming/ts-sdks/pull/171) [`895e939`](https://github.com/Suigar-Gaming/ts-sdks/commit/895e939b786951bb62589dac0c0057dfaed5f337) - Migrate the server and bundled MCP App to ext-apps 2 and the split MCP SDK 2 packages. The exported `createSuigarMcpServer()` now returns the v2 `McpServer`; programmatic consumers must migrate SDK imports and cannot mix v1 SDK classes or types with it. Unknown tool calls now reject with a JSON-RPC invalid-params error instead of returning a tool error result. Existing MCP Apps 1.x hosts remain compatible, and the bundled App uses the official React types and composable event listeners instead of deprecated handler setters.
+
+  Support MCP 2026-07-28 through SDK-managed stdio negotiation and discovery, including per-request metadata, complete-result discriminators, and cache hints, while retaining compatibility with legacy initialization-based clients.
+
+  Preserve existing MCP App host context when the host sends partial updates, and respect host-provided safe-area padding across inspector views.
+
+  Remove App event listeners on unmount or App replacement, and show the connecting state until the host handshake completes.
+
+### Minor Changes
+
+- [#171](https://github.com/Suigar-Gaming/ts-sdks/pull/171) [`895e939`](https://github.com/Suigar-Gaming/ts-sdks/commit/895e939b786951bb62589dac0c0057dfaed5f337) - Update dependencies.
+
+  Use an internal type assertion for SDK package and object IDs. Invalid configuration or missing price-info object IDs throw `TypeError`.
+
+  Classify MCP wallet recovery phrase validation as `TypeError`, and unsupported private-key schemes and oversized wallet bridge requests as `RangeError`. Operational failures retain generic errors.
+
+### Patch Changes
+
+- [#170](https://github.com/Suigar-Gaming/ts-sdks/pull/170) [`14e3d43`](https://github.com/Suigar-Gaming/ts-sdks/commit/14e3d4305e4ed644e6b72a0264c76c2040263220) - Improve MCP App table rendering consistency for NFT and wallet inspection.
+- Updated dependencies [[`895e939`](https://github.com/Suigar-Gaming/ts-sdks/commit/895e939b786951bb62589dac0c0057dfaed5f337)]:
+  - @suigar/sdk@2.0.0-beta.43
+
 ## 1.0.0-beta.28
 
 ### Patch Changes
