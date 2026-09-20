@@ -4,8 +4,8 @@
 import {
 	buildTransactionResult,
 	createSuigarClient,
-	resolveOwnerAddress,
 	type NftV1MintReadOnlyPlan,
+	resolveOwnerAddress,
 	type ToolTextResult,
 } from '../../runtime/index.js';
 import { createExecutionBridge, resolveWebOrigin } from '../../wallet/index.js';

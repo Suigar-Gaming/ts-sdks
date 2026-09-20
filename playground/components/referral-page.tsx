@@ -96,7 +96,9 @@ export function ReferralPage() {
 	const [status, setStatus] = React.useState<{ owner: string; digest: string } | null>(null);
 
 	const refreshClaims = React.useCallback(async () => {
-		if (!owner) return;
+		if (!owner) {
+			return;
+		}
 
 		setIsRefreshing(true);
 		setStatus(null);
@@ -109,11 +111,15 @@ export function ReferralPage() {
 	}, [client, owner]);
 
 	React.useEffect(() => {
-		if (!owner) return;
+		if (!owner) {
+			return;
+		}
 
 		let cancelled = false;
 		void getReferralClaims(client, owner).then((claims) => {
-			if (!cancelled) setClaimResult({ owner, claims });
+			if (!cancelled) {
+				setClaimResult({ owner, claims });
+			}
 		});
 
 		return () => {
@@ -126,7 +132,9 @@ export function ReferralPage() {
 	const submittedDigest = owner && status?.owner === owner ? status.digest : null;
 
 	const executeClaim = async (kind: ClaimKind) => {
-		if (!owner) return;
+		if (!owner) {
+			return;
+		}
 
 		setIsExecuting(kind);
 		setStatus(null);

@@ -18,7 +18,9 @@ vi.mock('@napi-rs/keyring', () => ({
 			private readonly service: string,
 			private readonly account: string,
 		) {
-			if (keychainUnavailable.value) throw new Error('native keyring unavailable');
+			if (keychainUnavailable.value) {
+				throw new Error('native keyring unavailable');
+			}
 		}
 
 		getPassword() {
@@ -163,10 +165,10 @@ describe('session wallet setup', () => {
 				address: secondSigner.toSuiAddress(),
 			}),
 		]);
-		expect((await session.loadSessionSigner(wallets[0]!.id)).toSuiAddress()).toBe(
+		expect((await session.loadSessionSigner(wallets[0].id)).toSuiAddress()).toBe(
 			firstSigner.toSuiAddress(),
 		);
-		expect((await session.loadSessionSigner(wallets[1]!.id)).toSuiAddress()).toBe(
+		expect((await session.loadSessionSigner(wallets[1].id)).toSuiAddress()).toBe(
 			secondSigner.toSuiAddress(),
 		);
 	});

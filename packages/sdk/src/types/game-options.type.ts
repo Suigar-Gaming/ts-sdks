@@ -19,11 +19,11 @@ type WithoutConfig<T> = Omit<T, 'config'>;
 type StandardGameTransactionOptionsRegistry = {
 	coinflip: CoinflipTransactionOptions;
 	keno: KenoTransactionOptions;
-	wheel: WheelTransactionOptions;
 	limbo: LimboTransactionOptions;
 	plinko: PlinkoTransactionOptions;
 	range: RangeTransactionOptions;
 	soccer: SoccerTransactionOptions;
+	wheel: WheelTransactionOptions;
 };
 
 export type CreateGameBetOptions<TGame extends StandardGame = StandardGame> = {

@@ -8,4 +8,4 @@ yarn-error.log*
 .pnpm-debug.log*
 dist/
 tmp-generated/
-.vitest-cache/
+.vitest/

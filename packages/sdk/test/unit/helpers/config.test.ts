@@ -53,6 +53,33 @@ describe('resolveSuigarConfig', () => {
 		).toBe('0xabc');
 	});
 
+	it('rejects a missing price info object id with TypeError', () => {
+		const config = resolveSuigarConfig({ network: 'testnet' });
+		config.coins.sui.priceInfoObjectId = '';
+
+		expect(() =>
+			resolvePriceInfoObjectId({ config, coinType: COINS.testnet.sui.coinType }),
+		).toThrow(
+			new TypeError(
+				`Missing price info object configuration for coin type ${COINS.testnet.sui.coinType}`,
+			),
+		);
+	});
+
+	it.each([
+		{ coinType: 'not-a-coin-type' },
+		{ decimals: Number.NaN },
+		{ decimals: 1.5 },
+		{ priceInfoObjectId: 'not-an-object-id' },
+	])('rejects invalid coin metadata with TypeError: %j', (metadata) => {
+		expect(() =>
+			resolveSuigarConfig({
+				network: 'testnet',
+				config: { coins: { sui: metadata } },
+			}),
+		).toThrow(new TypeError('Invalid coin metadata configuration for supported coin sui'));
+	});
+
 	it('maps configured coins to supported coin object ids', () => {
 		const config = resolveSuigarConfig({ network: 'testnet' });
 		config.coins.sui.priceInfoObjectId = '0xsui';
@@ -77,46 +104,56 @@ describe('resolveSuigarConfig', () => {
 			network: 'testnet',
 			config: {
 				packageIds: {
-					nftV1: '0xnft',
-					range: '0xoverride-range',
+					nftV1: `0x${'a'.repeat(64)}`,
+					range: `0x${'b'.repeat(64)}`,
 				},
 				objectIds: {
-					sweetHouse: '0xoverride-sweet-house',
+					sweetHouse: `0x${'c'.repeat(64)}`,
 				},
 				coins: {
 					sui: {
 						coinType: '0x2::sui::SUI',
 						decimals: SUI_DECIMALS,
-						priceInfoObjectId: '0xsui',
+						priceInfoObjectId: `0x${'d'.repeat(64)}`,
 					},
 					usdc: {
 						coinType: '0x999::usdc::USDC',
 						decimals: 4,
-						priceInfoObjectId: '0xprice',
+						priceInfoObjectId: `0x${'e'.repeat(64)}`,
 					},
 				},
 			},
 		});
 
-		expect(config.packageIds.nftV1).toBe('0xnft');
-		expect(config.packageIds.range).toBe('0xoverride-range');
-		expect(config.objectIds.sweetHouse).toBe('0xoverride-sweet-house');
+		expect(config.packageIds.nftV1).toBe(`0x${'a'.repeat(64)}`);
+		expect(config.packageIds.range).toBe(`0x${'b'.repeat(64)}`);
+		expect(config.objectIds.sweetHouse).toBe(`0x${'c'.repeat(64)}`);
 		expect(config.coins.sui).toEqual({
 			coinType: normalizeStructTag(SUI_TYPE_ARG),
 			decimals: SUI_DECIMALS,
-			priceInfoObjectId: '0xsui',
+			priceInfoObjectId: `0x${'d'.repeat(64)}`,
 		});
 		expect(config.coins.usdc).toEqual({
 			coinType: normalizeStructTag('0x999::usdc::USDC'),
 			decimals: 4,
-			priceInfoObjectId: '0xprice',
+			priceInfoObjectId: `0x${'e'.repeat(64)}`,
 		});
 		expect(
 			resolvePriceInfoObjectId({
 				config,
 				coinType: '0x999::usdc::USDC',
 			}),
-		).toBe('0xprice');
+		).toBe(`0x${'e'.repeat(64)}`);
+	});
+
+	it.each([
+		['packageIds', { packageIds: { nftV1: 'not-an-object-id' } }],
+		['objectIds', { objectIds: { sweetHouse: 'not-an-object-id' } }],
+	])('rejects invalid %s overrides', (_kind, config) => {
+		expect(() => resolveSuigarConfig({ network: 'testnet', config })).toThrow(TypeError);
+		expect(() => resolveSuigarConfig({ network: 'testnet', config })).toThrow(
+			/Invalid (package|object) id configuration/,
+		);
 	});
 
 	it('builds the SweetHouse settings key type with the generated typeTag helper', () => {

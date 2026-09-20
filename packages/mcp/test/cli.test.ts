@@ -58,7 +58,6 @@ const address = `0x${'a'.repeat(64)}`;
 
 describe('suigar cli bridge options', () => {
 	beforeEach(() => {
-		vi.clearAllMocks();
 		vi.unstubAllEnvs();
 	});
 

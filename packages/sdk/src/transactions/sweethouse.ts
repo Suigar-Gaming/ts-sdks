@@ -1,7 +1,7 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import { coinWithBalance, Transaction } from '@mysten/sui/transactions';
+import { coinWithBalance, type Transaction } from '@mysten/sui/transactions';
 import { normalizeStructTag, normalizeSuiAddress } from '@mysten/sui/utils';
 import { StakedCoin } from '../contracts/core/house.js';
 import {

@@ -25,7 +25,9 @@ const address = `0x${'a'.repeat(64)}`;
 
 const bridgeOrigin = (url: string, portParameter: string) => {
 	const port = new URL(url).searchParams.get(portParameter);
-	if (!port) throw new Error(`Missing ${portParameter} in bridge URL`);
+	if (!port) {
+		throw new Error(`Missing ${portParameter} in bridge URL`);
+	}
 	return loopback.loopbackOrigin(port);
 };
 
