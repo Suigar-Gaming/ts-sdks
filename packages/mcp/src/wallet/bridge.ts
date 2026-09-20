@@ -13,7 +13,6 @@ import {
 	removeProfile,
 	saveProfile,
 	type WalletProfile,
-	type WalletType,
 } from './credentials.js';
 import { LOCALHOST_HOST, LOOPBACK_HOST, loopbackOrigin } from './loopback.js';
 import { resolvePositiveInteger } from './utils.js';
@@ -89,7 +88,7 @@ function readBody(request: IncomingMessage, maxBodyBytes: number): Promise<strin
 			length += chunk.length;
 			if (length > maxBodyBytes) {
 				request.destroy();
-				reject(new Error('Request body is too large.'));
+				reject(new RangeError('Request body is too large.'));
 				return;
 			}
 			body += decoder.decode(chunk, { stream: true });
@@ -130,8 +129,9 @@ async function createLoopbackServer(webOrigin: string): Promise<{
 			return false;
 		}
 		if (request.method === 'OPTIONS') {
-			if (request.headers['access-control-request-private-network'] === 'true')
+			if (request.headers['access-control-request-private-network'] === 'true') {
 				response.setHeader('access-control-allow-private-network', 'true');
+			}
 			response.writeHead(204).end();
 			return false;
 		}
@@ -201,7 +201,7 @@ export async function createLoginBridge({
 			preflight = false;
 			const profile: WalletProfile = {
 				address: payload.address,
-				walletType: payload.walletType as WalletType,
+				walletType: payload.walletType,
 				frontendOrigin: webOrigin,
 				connectedAt: new Date().toISOString(),
 			};
@@ -239,8 +239,9 @@ export async function createExecutionBridge({
 	const options = resolveBridgeOptions(bridgeOptions);
 	const credentials = await loadCredentials();
 	const profile = credentials.profiles[network];
-	if (!profile)
+	if (!profile) {
 		throw new Error(`No wallet is connected for ${network}. Call "suigar_login" first.`);
+	}
 	const state = randomHex(32);
 	const requestId = randomHex(16);
 	EXECUTIONS.set(requestId, { requestId, status: 'pending' });

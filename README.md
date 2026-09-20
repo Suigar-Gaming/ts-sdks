@@ -8,6 +8,8 @@ For SDK documentation, visit [suigar.com/docs/sdk](https://suigar.com/docs/sdk).
 
 For MCP documentation, visit [suigar.com/docs/mcp](https://suigar.com/docs/mcp).
 
+See also the local [SDK](packages/sdk/README.md) and [MCP](packages/mcp/README.md) guides.
+
 For Sui TypeScript SDK documentation, visit [sdk.mystenlabs.com](https://sdk.mystenlabs.com/).
 
 ## Install the MCP server

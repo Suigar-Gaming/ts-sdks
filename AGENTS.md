@@ -42,10 +42,10 @@ pnpm --dir packages/sdk run typecheck
 pnpm --dir packages/mcp run typecheck
 
 # Run a specific vitest file
-pnpm --dir packages/sdk exec vitest run test/unit/transactions.test.ts
+pnpm --dir packages/sdk exec vitest run test/unit/transactions/coinflip.test.ts
 
 # Run a specific test name
-pnpm --dir packages/sdk exec vitest run -t "builds a coinflip transaction with the configured package id"
+pnpm --dir packages/sdk exec vitest run -t "builds a coinflip transaction with a configured package override"
 ```
 
 ### Linting and Formatting
@@ -170,6 +170,8 @@ Config is normalized in `packages/sdk/src/helpers/config.ts`. This layer is resp
 
 Treat unsupported network resolution and unsupported configured coin types as `RangeError` cases when documenting or testing these flows.
 
+Invalid configuration or missing price-info object IDs throw `TypeError`. Operational failures retain `Error`. Keep generated error classes aligned with `@mysten/codegen`.
+
 #### Game Parameters
 
 `client.suigar.getGameParameters({ game, coinType, ...options })` requires a coin type. It reads the selected game's settings object from SweetHouse, then that coin's `Parameters<T>` object. It parses the result, decodes Move float fields into JavaScript numbers—including nested Keno, Plinko, and Wheel multipliers—and caches it for `cacheTtl`.
@@ -201,19 +203,25 @@ This is a core invariant: standard game transactions must fail clearly when the 
 
 `packages/mcp` exposes a local stdio MCP server plus a bundled MCP App resource. It should stay thin over `@suigar/sdk` and `@mysten/sui`.
 
-- Register tools with modern MCP SDK APIs such as `McpServer.registerTool` and `registerAppTool`.
+- Use ext-apps 2 with MCP SDK 2: `@modelcontextprotocol/server`, `@modelcontextprotocol/server/stdio`, and `@modelcontextprotocol/client`. Prefer shared types, errors, and transports exported by `@modelcontextprotocol/server`; reserve `@modelcontextprotocol/client` for client-specific APIs. The client package is a development dependency for tests and the bundled App build; core is supplied transitively by the SDK packages. Use the published ext-apps React types. Register tools with complete Standard JSON Schema schemas (such as Zod objects) and preserve schema/handler type inference.
+- Target MCP 2026-07-28 and use SDK 2 `serveStdio` for stdio version negotiation, retaining legacy initialization compatibility. Let the SDK validate request metadata and supply discovery, result discriminators, server identity, and cache hints. Keep tool listings deterministic and application state explicit in tool arguments. Test modern wire responses as well as legacy clients.
+- Unknown tool calls reject with a protocol invalid-params error; schema-validation failures return `isError: true`. Keep Suigar handler failures actionable with both text and structured error details.
 - Always return both text `content` and `structuredContent`.
 - Keep tool errors actionable and include the field/config/network detail needed for an agent to retry.
 - Keep SDK-style MCP config documentation aligned with `SuigarConfigOverrides`: both `coins.sui` and `coins.usdc` accept optional `coinType`, `decimals`, and `priceInfoObjectId` metadata.
+- Merge partial MCP App host-context updates with the existing context and apply host-provided safe-area insets to every inspector screen.
 - The MCP App is an inspector UI only. It must not sign or execute transactions, and it should include restrictive `_meta.ui.csp` metadata.
 - Do not reintroduce explicit coin object sourcing or copied transaction builders unless the SDK adds a public API for that behavior.
 - If a new MCP behavior requires an SDK change, add the SDK change, tests, docs, and an `@suigar/sdk` changeset entry in the same task.
 
 ### Testing Conventions
 
-- `packages/sdk/test/unit/transactions.test.ts` covers transaction composition, normalization, and generated wrapper integration.
-- `packages/sdk/test/unit/config.test.ts` covers config resolution and defaults.
-- When changing transaction behavior, update tests to cover package id resolution, owner-address normalization, and action-specific argument mapping.
+- Both packages use Vitest 5 in the Node.js environment. Run tests through the package scripts or from the package root so its Vitest config is loaded. For `-t` filters, match an individual test name or use `.*` between suite and test names.
+- Organize tests by the behavior they cover, following the existing directories rather than adding a single catch-all suite. SDK tests live under `packages/sdk/test/unit/`, grouped into `transactions/`, `helpers/`, and `utils/`, with client and public-export coverage alongside them. MCP tests live under `packages/mcp/test/`, grouped into `tools/handlers/`, `tools/schemas/`, `runtime/`, `server/`, `wallet/`, `app/`, and `utils/`, with CLI and package-export coverage alongside them.
+- Add regression coverage near the affected behavior. Check observable results, argument normalization, configuration overrides, and actionable failures where relevant. Transaction tests should cover the applicable game or action and its generated contract-call arguments; keep standard and PvP flows separate.
+- Reuse nearby test fixtures and helpers. Mock external services and generated contract boundaries where needed, while exercising the package's own behavior. Keep tests independent of live networks and real wallet credentials; wallet bridge tests may use local loopback servers and temporary storage.
+- Vitest clears mock call history before each test by default. Reset mock implementations, module state, environment variables, timers, and resources explicitly when a test changes them; clearing call history does not reset those. Keep `vi.mock`, `vi.unmock`, and `vi.hoisted` at module scope, and use `vi.doMock` for runtime mocking. Await asynchronous assertions.
+- Run tests and typechecks for each affected package. When changing SDK tests, also run `pnpm --dir packages/sdk exec tsc --noEmit -p test/tsconfig.json`, since the SDK's main typecheck excludes tests.
 
 ### Changeset Conventions
 

@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import type { Transaction as SuiTransaction } from '@mysten/sui/transactions';
+import type * as SuiTransactions from '@mysten/sui/transactions';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { BuildTransactionResult, ReadOnlyPlan } from '../../../src/runtime/types.js';
 import {
@@ -22,7 +23,7 @@ const mocks = vi.hoisted(() => ({
 }));
 
 vi.mock('@mysten/sui/transactions', async (importOriginal) => {
-	const actual = await importOriginal<typeof import('@mysten/sui/transactions')>();
+	const actual = await importOriginal<typeof SuiTransactions>();
 
 	return {
 		...actual,

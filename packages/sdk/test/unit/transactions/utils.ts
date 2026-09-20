@@ -1,12 +1,11 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import { Transaction } from '@mysten/sui/transactions';
+import type { Transaction } from '@mysten/sui/transactions';
 import { afterEach, vi } from 'vitest';
 
 afterEach(() => {
 	vi.resetModules();
-	vi.clearAllMocks();
 });
 
 export async function loadTransactionModuleWithMock<TModule extends Record<string, unknown>>(

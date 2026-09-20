@@ -1,7 +1,13 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import { normalizeStructTag } from '@mysten/sui/utils';
+import {
+	isValidStructTag,
+	isValidSuiAddress,
+	isValidSuiObjectId,
+	normalizeStructTag,
+	normalizeSuiAddress,
+} from '@mysten/sui/utils';
 import { COINS, OBJECT_IDS, PACKAGE_IDS } from '../configs/index.js';
 import type {
 	SuigarCoin,
@@ -14,6 +20,24 @@ import type {
 } from '../types/index.js';
 
 export const DEFAULT_CACHE_TTL_MS: number = 30 * 60 * 1000;
+
+export function resolvePartnerAddress(partner: string | undefined): string | undefined {
+	if (partner === undefined) {
+		return undefined;
+	}
+
+	if (typeof partner !== 'string' || partner.trim().length <= 0) {
+		throw new TypeError('Partner must be a non-empty string');
+	}
+
+	const normalizedPartner = normalizeSuiAddress(partner);
+
+	if (!isValidSuiAddress(normalizedPartner)) {
+		throw new TypeError('Invalid partner address');
+	}
+
+	return normalizedPartner;
+}
 
 export function resolveSuigarConfig({
 	network,
@@ -37,10 +61,15 @@ export function resolveSuigarConfig({
 		},
 		{} as SuigarConfig['coins'],
 	);
+	const resolvedPackageIds = { ...packageIds, ...config.packageIds };
+	const resolvedObjectIds = { ...objectIds, ...config.objectIds };
+
+	assertSuiObjectIds('package', resolvedPackageIds);
+	assertSuiObjectIds('object', resolvedObjectIds);
 
 	return {
-		packageIds: { ...packageIds, ...config.packageIds },
-		objectIds: { ...objectIds, ...config.objectIds },
+		packageIds: resolvedPackageIds,
+		objectIds: resolvedObjectIds,
 		coins: resolvedCoins,
 	};
 }
@@ -53,7 +82,7 @@ export function resolvePriceInfoObjectId({ config, coinType }: WithConfig<WithCo
 	const objectId = config.coins[supportedCoin].priceInfoObjectId;
 
 	if (!objectId) {
-		throw new Error(`Missing price info object configuration for coin type ${coinType}`);
+		throw new TypeError(`Missing price info object configuration for coin type ${coinType}`);
 	}
 
 	return objectId;
@@ -61,6 +90,17 @@ export function resolvePriceInfoObjectId({ config, coinType }: WithConfig<WithCo
 
 function getSupportedCoins(coins: SuigarConfig['coins']): Array<SuigarCoin> {
 	return Object.keys(coins) as Array<SuigarCoin>;
+}
+
+function assertSuiObjectIds<T extends Record<string, string | undefined>>(
+	kind: 'package' | 'object',
+	ids: T,
+): asserts ids is T & { [K in keyof T]: Exclude<T[K], undefined> } {
+	for (const [name, id] of Object.entries(ids)) {
+		if (typeof id !== 'string' || !isValidSuiObjectId(id)) {
+			throw new TypeError(`Invalid ${kind} id configuration for ${name}`);
+		}
+	}
 }
 
 function resolveCoinMetadata({
@@ -74,11 +114,11 @@ function resolveCoinMetadata({
 }): SuigarCoinMetadata {
 	const metadata = { ...coinMetadata, ...configCoinMetadata };
 	if (
-		!metadata.coinType ||
+		!isValidStructTag(metadata.coinType) ||
 		!Number.isSafeInteger(metadata.decimals) ||
-		!metadata.priceInfoObjectId
+		!isValidSuiObjectId(metadata.priceInfoObjectId)
 	) {
-		throw new Error(`Missing coin metadata configuration for supported coin ${coin}`);
+		throw new TypeError(`Invalid coin metadata configuration for supported coin ${coin}`);
 	}
 
 	return {

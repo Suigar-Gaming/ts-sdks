@@ -3,6 +3,7 @@
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { toolOutputSchema } from '../../../src/tools/schemas/output.js';
+import type * as McpUtils from '../../../src/utils/index.js';
 import { loopbackOrigin } from '../../../src/wallet/loopback.js';
 
 const mocks = vi.hoisted(() => ({
@@ -31,7 +32,7 @@ vi.mock('../../../src/runtime/index.js', () => ({
 }));
 
 vi.mock('../../../src/utils/index.js', async (importOriginal) => {
-	const actual = await importOriginal<typeof import('../../../src/utils/index.js')>();
+	const actual = await importOriginal<typeof McpUtils>();
 	return {
 		...actual,
 		formatBaseUnitAmount: (value: string) =>

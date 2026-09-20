@@ -4,7 +4,7 @@
 import {
 	coinWithBalance,
 	Transaction,
-	TransactionArgument,
+	type TransactionArgument,
 	type TransactionResult,
 } from '@mysten/sui/transactions';
 import { normalizeStructTag, normalizeSuiAddress } from '@mysten/sui/utils';
