@@ -256,7 +256,7 @@ export async function getSessionWalletTool(input: SessionWalletInput): Promise<T
 			),
 		),
 	);
-	const addressQrCodeDataUrl = createQrCodeDataUrl({ value: wallet.address });
+	const addressQrCodeDataUrl = createQrCodeDataUrl({ text: wallet.address });
 	const pairedWallet = credentials.profiles[bundle.config.network];
 	const fundingUrl = pairedWallet
 		? (() => {

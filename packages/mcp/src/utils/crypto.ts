@@ -14,7 +14,7 @@ const nodeTimingSafeEqual = import('node:crypto')
 	.then(({ timingSafeEqual }) => timingSafeEqual)
 	.catch(() => null);
 
-export async function equalBytes({ a, b }: { a: Uint8Array; b: Uint8Array }): Promise<boolean> {
+export async function equalBytes(a: Uint8Array, b: Uint8Array): Promise<boolean> {
 	if (a.length !== b.length) {
 		return false;
 	}

@@ -54,7 +54,7 @@ async function sameState({ left, right }: { left: string; right: string }): Prom
 	if (left.length !== right.length || !HEX_32_BYTE_PATTERN.test(left)) {
 		return false;
 	}
-	return equalBytes({ a: hex.decode(left), b: hex.decode(right) });
+	return equalBytes(hex.decode(left), hex.decode(right));
 }
 
 function resolveBridgeOptions(options: BridgeOptions = {}): Required<BridgeOptions> {
