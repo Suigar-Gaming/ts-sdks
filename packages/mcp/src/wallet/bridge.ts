@@ -134,7 +134,7 @@ async function createLoopbackServer(webOrigin: string): Promise<{
 }> {
 	const server = createServer();
 	await new Promise<void>((resolve) => server.listen(0, LOOPBACK_HOST, resolve));
-	const port = (server.address() as AddressInfo).port;
+	const { port } = server.address() as AddressInfo;
 	const allowedHosts = new Set([`${LOOPBACK_HOST}:${port}`, `${LOCALHOST_HOST}:${port}`]);
 	const authorize = ({
 		request,

@@ -318,7 +318,7 @@ export async function createSessionWalletSetup({
 		}
 	});
 	await new Promise<void>((resolve) => server.listen(0, LOOPBACK_HOST, resolve));
-	const port = (server.address() as AddressInfo).port;
+	const { port } = server.address() as AddressInfo;
 	const timeout = setTimeout(() => server.close(), resolvedTimeoutMs).unref();
 	server.once('close', () => clearTimeout(timeout));
 	return { setupUrl: `${loopbackOrigin(port)}/` };

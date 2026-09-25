@@ -133,7 +133,9 @@ export async function getExecutionStatusTool(
 
 export async function getConnectionStatusTool(input: ConnectionInput): Promise<ToolTextResult> {
 	const { config } = createSuigarClient(getConfigInput(input));
-	const profile = (await loadCredentials()).profiles[config.network];
+	const {
+		profiles: { [config.network]: profile },
+	} = await loadCredentials();
 	return asTextResponse({
 		network: config.network,
 		config,
