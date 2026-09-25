@@ -1,5 +1,13 @@
 # @suigar/sdk
 
+## 2.0.0-beta.44
+
+### Patch Changes
+
+- [#176](https://github.com/Suigar-Gaming/ts-sdks/pull/176) [`bf55617`](https://github.com/Suigar-Gaming/ts-sdks/commit/bf55617bcd9cc9fdbb2ceb29aced889208974ff1) - Normalize helper signatures to accept a single object when multiple values are required.
+
+- [#173](https://github.com/Suigar-Gaming/ts-sdks/pull/173) [`76ef9f6`](https://github.com/Suigar-Gaming/ts-sdks/commit/76ef9f63169029daded89276c20dac2327029bb8) - Update dependencies.
+
 ## 2.0.0-beta.43
 
 ### Minor Changes
