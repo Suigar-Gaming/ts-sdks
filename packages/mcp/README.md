@@ -158,7 +158,7 @@ All tools return `content` text plus `structuredContent`. App-capable hosts rend
   - `fund_session_wallet` requires a paired wallet and opens a prefilled mcp-website transfer form. The user chooses an owned coin and amount, then reviews and signs the transfer in their browser.
   - In an App-capable host, it displays a dedicated Session Wallet view with balances for the selected network, a funding QR code, and a paired-wallet funding link when available. If no wallet exists, the same view provides the local setup link.
   - Fund only the amount the user is willing to delegate to the local MCP process.
-  - For game tools, use `mode: "execute", executionWallet: "session"` to make the session wallet the sender and submit immediately. `owner` is optional in this mode; if supplied, it must match the session-wallet address. Ensure it is funded for both the wager and gas.
+  - For game tools, use `mode: "execute", executionWallet: "session"` to make the session wallet the sender and submit immediately. `owner` is optional in this mode; if supplied, it must match the session-wallet address. Ensure it is funded for both the wager and gas. You can set a custom provider URL and partner; custom SDK config overrides are rejected. Before signing, the server verifies that the built transaction calls only the selected Suigar game package.
 - **Command-line wallet management**
   - Run `npx -y @suigar/mcp login --network testnet` (or `mainnet`), `status`, `logout`, or `clean`.
   - Login uses a short-lived, localhost-only browser pairing flow and stores non-secret network-specific metadata in `~/.suigar-mcp/credentials.json` with owner-only permissions.
