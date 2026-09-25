@@ -23,11 +23,15 @@ export const suiObjectIdSchema = z
 	.min(1)
 	.refine(isValidSuiObjectId, { message: 'Expected a valid Sui object id.' });
 
-export function requireTransactionFields(
-	input: { mode?: string; executionWallet?: string } & Record<string, unknown>,
-	context: z.RefinementCtx,
-	fields: ReadonlyArray<string>,
-): void {
+export function requireTransactionFields({
+	input,
+	context,
+	fields,
+}: {
+	input: { mode?: string; executionWallet?: string } & Record<string, unknown>;
+	context: z.RefinementCtx;
+	fields: ReadonlyArray<string>;
+}): void {
 	if (input.mode === 'read-only') {
 		return;
 	}

@@ -1,11 +1,15 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-export function resolvePositiveInteger(
-	value: number | string | undefined,
-	name: string,
-	defaultValue: number,
-): number {
+export function resolvePositiveInteger({
+	value,
+	name,
+	defaultValue,
+}: {
+	value: number | string | undefined;
+	name: string;
+	defaultValue: number;
+}): number {
 	if (value === undefined || value === '') {
 		return defaultValue;
 	}

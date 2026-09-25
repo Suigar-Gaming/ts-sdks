@@ -6,7 +6,7 @@ import { visibleDefinitionEntries } from '../lib/format.js';
 import { createInspectorViewModel } from '../lib/inspector.js';
 
 export function TransactionView({ payload, errors }: { payload: unknown; errors: Array<string> }) {
-	const viewModel = createInspectorViewModel(payload, errors);
+	const viewModel = createInspectorViewModel({ payload, explicitErrors: errors });
 
 	return (
 		<>

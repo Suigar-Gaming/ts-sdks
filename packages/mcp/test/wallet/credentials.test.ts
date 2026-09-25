@@ -46,17 +46,23 @@ describe('wallet credentials', () => {
 	});
 
 	it('persists network-specific profiles with restrictive permissions', async () => {
-		await credentials.saveProfile('mainnet', {
-			address,
-			walletType: 'wallet',
-			frontendOrigin,
-			connectedAt: '2026-01-01T00:00:00.000Z',
+		await credentials.saveProfile({
+			network: 'mainnet',
+			profile: {
+				address,
+				walletType: 'wallet',
+				frontendOrigin,
+				connectedAt: '2026-01-01T00:00:00.000Z',
+			},
 		});
-		await credentials.saveProfile('testnet', {
-			address: zkLoginAddress,
-			walletType: 'zklogin',
-			frontendOrigin,
-			connectedAt: '2026-01-02T00:00:00.000Z',
+		await credentials.saveProfile({
+			network: 'testnet',
+			profile: {
+				address: zkLoginAddress,
+				walletType: 'zklogin',
+				frontendOrigin,
+				connectedAt: '2026-01-02T00:00:00.000Z',
+			},
 		});
 
 		const saved = await credentials.loadCredentials();

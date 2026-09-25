@@ -35,7 +35,7 @@ vi.mock('../../../src/utils/index.js', async (importOriginal) => {
 	const actual = await importOriginal<typeof McpUtils>();
 	return {
 		...actual,
-		formatBaseUnitAmount: (value: string) =>
+		formatBaseUnitAmount: ({ value }: { value: string }) =>
 			value === '1200000000'
 				? '1.2'
 				: value === '1000000000'

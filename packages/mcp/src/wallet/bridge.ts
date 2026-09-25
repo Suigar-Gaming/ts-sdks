@@ -50,7 +50,7 @@ export function getExecutionStatus(requestId: string): ExecutionStatus | null {
 	return EXECUTIONS.get(requestId) ?? null;
 }
 
-async function sameState(left: string, right: string): Promise<boolean> {
+async function sameState({ left, right }: { left: string; right: string }): Promise<boolean> {
 	if (left.length !== right.length || !HEX_32_BYTE_PATTERN.test(left)) {
 		return false;
 	}
@@ -59,27 +59,39 @@ async function sameState(left: string, right: string): Promise<boolean> {
 
 function resolveBridgeOptions(options: BridgeOptions = {}): Required<BridgeOptions> {
 	return {
-		timeoutMs: resolvePositiveInteger(
-			options.timeoutMs ?? process.env[BRIDGE_TIMEOUT_MS_ENV],
-			'Bridge timeout',
-			DEFAULT_TIMEOUT_MS,
-		),
-		maxBodyBytes: resolvePositiveInteger(
-			options.maxBodyBytes ?? process.env[BRIDGE_MAX_BODY_BYTES_ENV],
-			'Maximum bridge request body size',
-			DEFAULT_MAX_BODY_BYTES,
-		),
+		timeoutMs: resolvePositiveInteger({
+			value: options.timeoutMs ?? process.env[BRIDGE_TIMEOUT_MS_ENV],
+			name: 'Bridge timeout',
+			defaultValue: DEFAULT_TIMEOUT_MS,
+		}),
+		maxBodyBytes: resolvePositiveInteger({
+			value: options.maxBodyBytes ?? process.env[BRIDGE_MAX_BODY_BYTES_ENV],
+			name: 'Maximum bridge request body size',
+			defaultValue: DEFAULT_MAX_BODY_BYTES,
+		}),
 		open: options.open ?? true,
 	};
 }
 
-async function openBridgeUrl(url: string, shouldOpen: boolean): Promise<void> {
+async function openBridgeUrl({
+	url,
+	shouldOpen,
+}: {
+	url: string;
+	shouldOpen: boolean;
+}): Promise<void> {
 	if (shouldOpen) {
 		await open(url).catch(() => undefined);
 	}
 }
 
-function readBody(request: IncomingMessage, maxBodyBytes: number): Promise<string> {
+function readBody({
+	request,
+	maxBodyBytes,
+}: {
+	request: IncomingMessage;
+	maxBodyBytes: number;
+}): Promise<string> {
 	return new Promise<string>((resolve, reject) => {
 		const decoder = new TextDecoder();
 		let body = '';
@@ -98,7 +110,15 @@ function readBody(request: IncomingMessage, maxBodyBytes: number): Promise<strin
 	});
 }
 
-function respond(response: ServerResponse, status: number, body: unknown): void {
+function respond({
+	response,
+	status,
+	body,
+}: {
+	response: ServerResponse;
+	status: number;
+	body: unknown;
+}): void {
 	response.writeHead(status, {
 		'content-type': 'application/json',
 		'cache-control': 'no-store',
@@ -110,13 +130,19 @@ async function createLoopbackServer(webOrigin: string): Promise<{
 	server: Server;
 	port: number;
 	close: () => Server;
-	authorize: (request: IncomingMessage, response: ServerResponse) => boolean;
+	authorize: (input: { request: IncomingMessage; response: ServerResponse }) => boolean;
 }> {
 	const server = createServer();
 	await new Promise<void>((resolve) => server.listen(0, LOOPBACK_HOST, resolve));
-	const port = (server.address() as AddressInfo).port;
+	const { port } = server.address() as AddressInfo;
 	const allowedHosts = new Set([`${LOOPBACK_HOST}:${port}`, `${LOCALHOST_HOST}:${port}`]);
-	const authorize = (request: IncomingMessage, response: ServerResponse) => {
+	const authorize = ({
+		request,
+		response,
+	}: {
+		request: IncomingMessage;
+		response: ServerResponse;
+	}) => {
 		response.setHeader('access-control-allow-origin', webOrigin);
 		response.setHeader('access-control-allow-methods', 'GET, POST, OPTIONS');
 		response.setHeader('access-control-allow-headers', 'content-type');
@@ -125,7 +151,7 @@ async function createLoopbackServer(webOrigin: string): Promise<{
 			!allowedHosts.has((request.headers.host ?? '').toLowerCase()) ||
 			request.headers.origin !== webOrigin
 		) {
-			respond(response, 403, { error: 'Forbidden' });
+			respond({ response, status: 403, body: { error: 'Forbidden' } });
 			return false;
 		}
 		if (request.method === 'OPTIONS') {
@@ -160,34 +186,36 @@ export async function createLoginBridge({
 	}, options.timeoutMs).unref();
 
 	server.on('request', async (request, response) => {
-		if (!loopback.authorize(request, response)) {
+		if (!loopback.authorize({ request, response })) {
 			return;
 		}
 		const url = new URL(request.url ?? '/', loopbackOrigin(port));
 		if (request.method === 'GET' && url.pathname === '/handshake') {
-			if (!(await sameState(url.searchParams.get('state') ?? '', state))) {
-				respond(response, 403, { ok: false, error: 'Invalid pairing state' });
+			if (!(await sameState({ left: url.searchParams.get('state') ?? '', right: state }))) {
+				respond({ response, status: 403, body: { ok: false, error: 'Invalid pairing state' } });
 				return;
 			}
 			preflight = true;
-			respond(response, 200, { ok: true, network });
+			respond({ response, status: 200, body: { ok: true, network } });
 			return;
 		}
 		if (request.method !== 'POST' || url.pathname !== '/callback') {
-			respond(response, 404, { error: 'Not found' });
+			respond({ response, status: 404, body: { error: 'Not found' } });
 			return;
 		}
 		if (!request.headers['content-type']?.startsWith('application/json')) {
-			respond(response, 415, { error: 'Expected JSON' });
+			respond({ response, status: 415, body: { error: 'Expected JSON' } });
 			return;
 		}
 		try {
-			const payload = JSON.parse(await readBody(request, options.maxBodyBytes)) as Record<
-				string,
-				unknown
-			>;
-			if (typeof payload.state !== 'string' || !(await sameState(payload.state, state))) {
-				respond(response, 403, { error: 'Invalid pairing state' });
+			const payload = JSON.parse(
+				await readBody({ request, maxBodyBytes: options.maxBodyBytes }),
+			) as Record<string, unknown>;
+			if (
+				typeof payload.state !== 'string' ||
+				!(await sameState({ left: payload.state, right: state }))
+			) {
+				respond({ response, status: 403, body: { error: 'Invalid pairing state' } });
 				return;
 			}
 			if (
@@ -195,7 +223,7 @@ export async function createLoginBridge({
 				typeof payload.address !== 'string' ||
 				(payload.walletType !== 'wallet' && payload.walletType !== 'zklogin')
 			) {
-				respond(response, 400, { error: 'Invalid wallet callback' });
+				respond({ response, status: 400, body: { error: 'Invalid wallet callback' } });
 				return;
 			}
 			preflight = false;
@@ -205,13 +233,13 @@ export async function createLoginBridge({
 				frontendOrigin: webOrigin,
 				connectedAt: new Date().toISOString(),
 			};
-			await saveProfile(network, profile);
+			await saveProfile({ network, profile });
 			clearTimeout(timeout);
-			respond(response, 200, { ok: true });
+			respond({ response, status: 200, body: { ok: true } });
 			resolve(profile);
 			setTimeout(close, 100).unref();
 		} catch {
-			respond(response, 400, { error: 'Invalid request' });
+			respond({ response, status: 400, body: { error: 'Invalid request' } });
 		}
 	});
 
@@ -220,7 +248,7 @@ export async function createLoginBridge({
 	url.searchParams.set('state', state);
 	url.searchParams.set('action', 'login');
 	const bridgeUrl = url.toString();
-	await openBridgeUrl(bridgeUrl, options.open);
+	await openBridgeUrl({ url: bridgeUrl, shouldOpen: options.open });
 	return { url: bridgeUrl, done, close };
 }
 
@@ -253,23 +281,27 @@ export async function createExecutionBridge({
 	}, options.timeoutMs).unref();
 	server.on('request', async (request, response) => {
 		const url = new URL(request.url ?? '/', loopbackOrigin(port));
-		if (!loopback.authorize(request, response)) {
+		if (!loopback.authorize({ request, response })) {
 			return;
 		}
 		if (
-			!(await sameState(url.searchParams.get('state') ?? '', state)) &&
+			!(await sameState({ left: url.searchParams.get('state') ?? '', right: state })) &&
 			request.method === 'GET'
 		) {
-			respond(response, 403, { error: 'Invalid approval state' });
+			respond({ response, status: 403, body: { error: 'Invalid approval state' } });
 			return;
 		}
 		if (request.method === 'GET' && url.pathname === '/request') {
-			respond(response, 200, {
-				requestId,
-				network,
-				address: profile.address,
-				transactionBytesBase64,
-				summary,
+			respond({
+				response,
+				status: 200,
+				body: {
+					requestId,
+					network,
+					address: profile.address,
+					transactionBytesBase64,
+					summary,
+				},
 			});
 			return;
 		}
@@ -278,20 +310,19 @@ export async function createExecutionBridge({
 			url.pathname !== '/callback' ||
 			!request.headers['content-type']?.startsWith('application/json')
 		) {
-			respond(response, 404, { error: 'Not found' });
+			respond({ response, status: 404, body: { error: 'Not found' } });
 			return;
 		}
 		try {
-			const payload = JSON.parse(await readBody(request, options.maxBodyBytes)) as Record<
-				string,
-				unknown
-			>;
+			const payload = JSON.parse(
+				await readBody({ request, maxBodyBytes: options.maxBodyBytes }),
+			) as Record<string, unknown>;
 			if (
 				typeof payload.state !== 'string' ||
-				!(await sameState(payload.state, state)) ||
+				!(await sameState({ left: payload.state, right: state })) ||
 				payload.address !== profile.address
 			) {
-				respond(response, 403, { error: 'Invalid approval callback' });
+				respond({ response, status: 403, body: { error: 'Invalid approval callback' } });
 				return;
 			}
 			const status: ExecutionStatus =
@@ -306,17 +337,17 @@ export async function createExecutionBridge({
 							};
 			EXECUTIONS.set(requestId, status);
 			clearTimeout(expire);
-			respond(response, 200, { ok: true });
+			respond({ response, status: 200, body: { ok: true } });
 			setTimeout(close, 100).unref();
 		} catch {
-			respond(response, 400, { error: 'Invalid request' });
+			respond({ response, status: 400, body: { error: 'Invalid request' } });
 		}
 	});
 	const url = new URL('/approval', webOrigin);
 	url.searchParams.set('port', String(port));
 	url.searchParams.set('state', state);
 	const approvalUrl = url.toString();
-	await openBridgeUrl(approvalUrl, options.open);
+	await openBridgeUrl({ url: approvalUrl, shouldOpen: options.open });
 	return { requestId, approvalUrl };
 }
 
@@ -348,16 +379,16 @@ export async function createLogoutBridge({
 	}, options.timeoutMs).unref();
 
 	server.on('request', async (request, response) => {
-		if (!loopback.authorize(request, response)) {
+		if (!loopback.authorize({ request, response })) {
 			return;
 		}
 		const url = new URL(request.url ?? '/', loopbackOrigin(port));
 		if (request.method === 'GET' && url.pathname === '/request') {
-			if (!(await sameState(url.searchParams.get('state') ?? '', state))) {
-				respond(response, 403, { error: 'Invalid logout state' });
+			if (!(await sameState({ left: url.searchParams.get('state') ?? '', right: state }))) {
+				respond({ response, status: 403, body: { error: 'Invalid logout state' } });
 				return;
 			}
-			respond(response, 200, { network, all });
+			respond({ response, status: 200, body: { network, all } });
 			return;
 		}
 		if (
@@ -365,16 +396,18 @@ export async function createLogoutBridge({
 			url.pathname !== '/callback' ||
 			!request.headers['content-type']?.startsWith('application/json')
 		) {
-			respond(response, 404, { error: 'Not found' });
+			respond({ response, status: 404, body: { error: 'Not found' } });
 			return;
 		}
 		try {
-			const payload = JSON.parse(await readBody(request, options.maxBodyBytes)) as Record<
-				string,
-				unknown
-			>;
-			if (typeof payload.state !== 'string' || !(await sameState(payload.state, state))) {
-				respond(response, 403, { error: 'Invalid logout callback' });
+			const payload = JSON.parse(
+				await readBody({ request, maxBodyBytes: options.maxBodyBytes }),
+			) as Record<string, unknown>;
+			if (
+				typeof payload.state !== 'string' ||
+				!(await sameState({ left: payload.state, right: state }))
+			) {
+				respond({ response, status: 403, body: { error: 'Invalid logout callback' } });
 				return;
 			}
 			if (all) {
@@ -383,11 +416,11 @@ export async function createLogoutBridge({
 				await removeProfile(network);
 			}
 			clearTimeout(timeout);
-			respond(response, 200, { ok: true });
+			respond({ response, status: 200, body: { ok: true } });
 			resolve({ network, all });
 			setTimeout(close, 100).unref();
 		} catch {
-			respond(response, 400, { error: 'Invalid request' });
+			respond({ response, status: 400, body: { error: 'Invalid request' } });
 		}
 	});
 
@@ -399,6 +432,6 @@ export async function createLogoutBridge({
 		url.searchParams.set('all', 'true');
 	}
 	const bridgeUrl = url.toString();
-	await openBridgeUrl(bridgeUrl, options.open);
+	await openBridgeUrl({ url: bridgeUrl, shouldOpen: options.open });
 	return { url: bridgeUrl, done, close };
 }

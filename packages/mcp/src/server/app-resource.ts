@@ -32,7 +32,7 @@ export function createSuigarMcpAppResourceMeta(): SuigarMcpAppResourceMeta {
 	};
 }
 
-function hasErrorCode(error: unknown, code: string): error is Error & { code: string } {
+function hasErrorCode({ error, code }: { error: unknown; code: string }): boolean {
 	return error instanceof Error && 'code' in error && (error as { code: unknown }).code === code;
 }
 
@@ -40,7 +40,7 @@ async function readSuigarMcpAppHtml(): Promise<string> {
 	try {
 		return await readFile(new URL('../../dist/app/index.html', import.meta.url), 'utf8');
 	} catch (error) {
-		if (!hasErrorCode(error, 'ENOENT')) {
+		if (!hasErrorCode({ error, code: 'ENOENT' })) {
 			throw error;
 		}
 		throw new Error('Unable to find bundled Suigar MCP App HTML.', {

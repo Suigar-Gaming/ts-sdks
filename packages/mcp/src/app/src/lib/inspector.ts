@@ -92,10 +92,13 @@ function firstString(...values: Array<unknown>): string | undefined {
 	return values.find((value): value is string => typeof value === 'string' && value !== '');
 }
 
-export function createInspectorViewModel(
-	payload: unknown,
-	explicitErrors: Array<string>,
-): InspectorViewModel {
+export function createInspectorViewModel({
+	payload,
+	explicitErrors,
+}: {
+	payload: unknown;
+	explicitErrors: Array<string>;
+}): InspectorViewModel {
 	const record = asRecord(payload);
 	const config = asRecord(record.config);
 	const summary = asRecord(record.summary);

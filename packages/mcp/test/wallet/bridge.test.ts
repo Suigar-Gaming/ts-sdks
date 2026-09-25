@@ -129,11 +129,14 @@ describe('wallet loopback bridges', () => {
 	});
 
 	it('returns an approval request only to the paired frontend and records rejection', async () => {
-		await credentials.saveProfile('testnet', {
-			address,
-			walletType: 'wallet',
-			frontendOrigin: webOrigin,
-			connectedAt: '2026-01-01T00:00:00.000Z',
+		await credentials.saveProfile({
+			network: 'testnet',
+			profile: {
+				address,
+				walletType: 'wallet',
+				frontendOrigin: webOrigin,
+				connectedAt: '2026-01-01T00:00:00.000Z',
+			},
 		});
 		const approval = await bridge.createExecutionBridge({
 			network: 'testnet',
@@ -169,11 +172,14 @@ describe('wallet loopback bridges', () => {
 	});
 
 	it('requires browser confirmation before removing the selected wallet profile', async () => {
-		await credentials.saveProfile('testnet', {
-			address,
-			walletType: 'wallet',
-			frontendOrigin: webOrigin,
-			connectedAt: '2026-01-01T00:00:00.000Z',
+		await credentials.saveProfile({
+			network: 'testnet',
+			profile: {
+				address,
+				walletType: 'wallet',
+				frontendOrigin: webOrigin,
+				connectedAt: '2026-01-01T00:00:00.000Z',
+			},
 		});
 		const logout = await bridge.createLogoutBridge({
 			network: 'testnet',

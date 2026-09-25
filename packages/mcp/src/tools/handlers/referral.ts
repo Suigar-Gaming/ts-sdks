@@ -28,8 +28,14 @@ import {
 	requireString,
 } from './shared.js';
 
-function referralClaimTarget(config: McpConfig, kind: ReferralClaimKind): string {
-	return `${getSuigarPackageId(config, 'referral')}::referral::${
+function referralClaimTarget({
+	config,
+	kind,
+}: {
+	config: McpConfig;
+	kind: ReferralClaimKind;
+}): string {
+	return `${getSuigarPackageId({ config, pkg: 'referral' })}::referral::${
 		kind === 'commission' ? 'claim_commission_balance' : 'claim_referrer_level_up_usd_rewards'
 	}`;
 }
@@ -42,10 +48,13 @@ async function referralClaimReadResult({
 	kind: ReferralClaimKind;
 }): Promise<ToolTextResult> {
 	const bundle = createSuigarClient(getConfigInput(input));
-	const owner = await resolveOwnerAddress(requireString(input.owner, 'owner'), bundle);
+	const owner = await resolveOwnerAddress({
+		owner: requireString({ value: input.owner, fieldName: 'owner' }),
+		bundle,
+	});
 	const coin =
 		kind === 'commission' && 'coinType' in input
-			? coinMetadataForAmount(bundle.config, input.coinType)
+			? coinMetadataForAmount({ config: bundle.config, coinType: input.coinType })
 			: bundle.config.sdk.coins.usdc;
 	const amount =
 		kind === 'commission'
@@ -65,7 +74,7 @@ async function referralClaimReadResult({
 			kind,
 			coinType: coin.coinType,
 			amount: amount.toString(),
-			amountDisplay: formatBaseUnitAmount(amount, coin.decimals),
+			amountDisplay: formatBaseUnitAmount({ value: amount, decimals: coin.decimals }),
 			notes: [
 				'Amount is simulated with the SDK claim transaction and is not a signed or executed claim.',
 			],
@@ -97,10 +106,10 @@ function referralReadOnlyPlan({
 	const { config } = createSuigarClient(getConfigInput(input));
 	const coin =
 		kind === 'commission' && 'coinType' in input
-			? coinMetadataForAmount(config, input.coinType)
+			? coinMetadataForAmount({ config, coinType: input.coinType })
 			: config.sdk.coins.usdc;
 	const plan = {
-		target: referralClaimTarget(config, kind),
+		target: referralClaimTarget({ config, kind }),
 		typeArguments: [coin.coinType],
 		requiredInputs: ['owner'],
 		notes: [
@@ -115,7 +124,7 @@ function referralReadOnlyPlan({
 		referral: {
 			kind,
 			coinType: coin.coinType,
-			packageId: getSuigarPackageId(config, 'referral'),
+			packageId: getSuigarPackageId({ config, pkg: 'referral' }),
 		},
 	} satisfies ReferralClaimReadOnlyPlan);
 }
@@ -135,10 +144,13 @@ async function buildReferralClaimTransactionTool({
 	}
 
 	const bundle = createSuigarClient(getConfigInput(input));
-	const owner = await resolveOwnerAddress(requireString(input.owner, 'owner'), bundle);
+	const owner = await resolveOwnerAddress({
+		owner: requireString({ value: input.owner, fieldName: 'owner' }),
+		bundle,
+	});
 	const coin =
 		kind === 'commission' && 'coinType' in input
-			? coinMetadataForAmount(bundle.config, input.coinType)
+			? coinMetadataForAmount({ config: bundle.config, coinType: input.coinType })
 			: bundle.config.sdk.coins.usdc;
 	const transaction =
 		kind === 'commission'
@@ -165,7 +177,7 @@ async function buildReferralClaimTransactionTool({
 		});
 		const execution = await createExecutionBridge({
 			network: bundle.config.network,
-			webOrigin: resolveWebOrigin(bundle.config.network),
+			webOrigin: resolveWebOrigin({ network: bundle.config.network }),
 			transactionBytesBase64: built.transactionBytesBase64 ?? '',
 			summary: built.summary,
 		});

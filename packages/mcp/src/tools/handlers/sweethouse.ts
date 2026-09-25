@@ -40,14 +40,20 @@ type SweetHouseInput =
 	| BuildSweetHouseRedeemRequestTransactionInput
 	| BuildSweetHouseClaimOwnRedeemRequestAfterDelayTransactionInput;
 
-function sweetHouseTarget(config: McpConfig, action: SweetHouseAction): string {
+function sweetHouseTarget({
+	config,
+	action,
+}: {
+	config: McpConfig;
+	action: SweetHouseAction;
+}): string {
 	const functionName =
 		action === 'deposit'
 			? 'deposit_public_pool_and_mint_staked_coins'
 			: action === 'redeem-request'
 				? 'redeem_request'
 				: 'claim_own_redeem_request_after_delay';
-	return `${getSuigarPackageId(config, 'core')}::sweethouse::${functionName}`;
+	return `${getSuigarPackageId({ config, pkg: 'core' })}::sweethouse::${functionName}`;
 }
 
 function sweetHousePlan({
@@ -62,13 +68,13 @@ function sweetHousePlan({
 	notes: Array<string>;
 }): ToolTextResult {
 	const { config } = createSuigarClient(getConfigInput(input));
-	const coinType = resolveDefaultCoinType(config, input.coinType);
+	const coinType = resolveDefaultCoinType({ config, coinType: input.coinType });
 	return asTextResponse({
 		mode: 'read-only',
 		network: config.network,
 		config,
 		plan: {
-			target: sweetHouseTarget(config, action),
+			target: sweetHouseTarget({ config, action }),
 			typeArguments: [coinType],
 			requiredInputs,
 			notes,
@@ -76,16 +82,19 @@ function sweetHousePlan({
 		sweethouse: {
 			action,
 			coinType,
-			packageId: getSuigarPackageId(config, 'core'),
+			packageId: getSuigarPackageId({ config, pkg: 'core' }),
 			sweetHouseId: config.sdk.objectIds.sweetHouse,
 		},
 	});
 }
 
-async function resolveTransactionOwner(
-	input: Pick<SweetHouseInput, 'mode' | 'executionWallet' | 'owner' | 'sessionWalletId'>,
-	bundle: SuigarClientBundle,
-): Promise<string> {
+async function resolveTransactionOwner({
+	input,
+	bundle,
+}: {
+	input: Pick<SweetHouseInput, 'mode' | 'executionWallet' | 'owner' | 'sessionWalletId'>;
+	bundle: SuigarClientBundle;
+}): Promise<string> {
 	const sessionExecution = getMode(input.mode) === 'execute' && input.executionWallet === 'session';
 	if (sessionExecution) {
 		const sessionWallet = await loadSessionWallet(input.sessionWalletId);
@@ -101,7 +110,7 @@ async function resolveTransactionOwner(
 			);
 		}
 		if (input.owner) {
-			const requestedOwner = await resolveOwnerAddress(input.owner, bundle);
+			const requestedOwner = await resolveOwnerAddress({ owner: input.owner, bundle });
 			if (requestedOwner !== sessionAddress) {
 				throw new RangeError(
 					'owner must match the local session wallet address when executionWallet is "session".',
@@ -111,7 +120,10 @@ async function resolveTransactionOwner(
 		return sessionAddress;
 	}
 
-	return resolveOwnerAddress(requireString(input.owner, 'owner'), bundle);
+	return resolveOwnerAddress({
+		owner: requireString({ value: input.owner, fieldName: 'owner' }),
+		bundle,
+	});
 }
 
 async function buildSweetHouseTransactionTool({
@@ -162,7 +174,7 @@ async function buildSweetHouseTransactionTool({
 		});
 		const execution = await createExecutionBridge({
 			network: bundle.config.network,
-			webOrigin: resolveWebOrigin(bundle.config.network),
+			webOrigin: resolveWebOrigin({ network: bundle.config.network }),
 			transactionBytesBase64: built.transactionBytesBase64 ?? '',
 			summary: built.summary,
 		});
@@ -201,7 +213,7 @@ function sweetHouseContext({
 	amountDisplay?: string;
 	requestId?: string;
 }): TransactionSummaryContext {
-	const coin = coinMetadataForAmount(bundle.config, coinType);
+	const coin = coinMetadataForAmount({ config: bundle.config, coinType });
 	return {
 		coinType: coin.coinType,
 		...(amount == null ? {} : { stake: amount, stakeDisplay: amountDisplay }),
@@ -228,25 +240,29 @@ export async function buildSweetHouseDepositTransactionTool(
 	return buildSweetHouseTransactionTool({
 		input,
 		createTransaction: async (bundle) => {
-			const coin = coinMetadataForAmount(bundle.config, input.coinType);
+			const coin = coinMetadataForAmount({ config: bundle.config, coinType: input.coinType });
 			return bundle.client.suigar.tx.sweetHouse.deposit({
-				owner: await resolveTransactionOwner(input, bundle),
+				owner: await resolveTransactionOwner({ input, bundle }),
 				coinType: coin.coinType,
-				amount: toBaseUnits(input.amount, 'amount', coin.decimals),
+				amount: toBaseUnits({ value: input.amount, fieldName: 'amount', decimals: coin.decimals }),
 				gasBudget: input.gasBudget,
 				useGasCoin: input.useGasCoin,
 			});
 		},
 		context: (bundle) => {
-			const coin = coinMetadataForAmount(bundle.config, input.coinType);
-			const amount = toBaseUnits(input.amount, 'amount', coin.decimals);
+			const coin = coinMetadataForAmount({ config: bundle.config, coinType: input.coinType });
+			const amount = toBaseUnits({
+				value: input.amount,
+				fieldName: 'amount',
+				decimals: coin.decimals,
+			});
 			return {
 				...sweetHouseContext({
 					bundle,
 					coinType: input.coinType,
 					action: 'deposit',
 					amount,
-					amountDisplay: toCurrencyAmountText(input.amount, 'amount'),
+					amountDisplay: toCurrencyAmountText({ value: input.amount, fieldName: 'amount' }),
 				}),
 				gasBudget: input.gasBudget,
 			};
@@ -269,24 +285,28 @@ export async function buildSweetHouseRedeemRequestTransactionTool(
 	return buildSweetHouseTransactionTool({
 		input,
 		createTransaction: async (bundle) => {
-			const coin = coinMetadataForAmount(bundle.config, input.coinType);
+			const coin = coinMetadataForAmount({ config: bundle.config, coinType: input.coinType });
 			return bundle.client.suigar.tx.sweetHouse.redeemRequest({
-				owner: await resolveTransactionOwner(input, bundle),
+				owner: await resolveTransactionOwner({ input, bundle }),
 				coinType: coin.coinType,
-				amount: toBaseUnits(input.amount, 'amount', coin.decimals),
+				amount: toBaseUnits({ value: input.amount, fieldName: 'amount', decimals: coin.decimals }),
 				gasBudget: input.gasBudget,
 			});
 		},
 		context: (bundle) => {
-			const coin = coinMetadataForAmount(bundle.config, input.coinType);
-			const amount = toBaseUnits(input.amount, 'amount', coin.decimals);
+			const coin = coinMetadataForAmount({ config: bundle.config, coinType: input.coinType });
+			const amount = toBaseUnits({
+				value: input.amount,
+				fieldName: 'amount',
+				decimals: coin.decimals,
+			});
 			return {
 				...sweetHouseContext({
 					bundle,
 					coinType: input.coinType,
 					action: 'redeem-request',
 					amount,
-					amountDisplay: toCurrencyAmountText(input.amount, 'amount'),
+					amountDisplay: toCurrencyAmountText({ value: input.amount, fieldName: 'amount' }),
 				}),
 				gasBudget: input.gasBudget,
 			};
@@ -308,13 +328,13 @@ export async function buildSweetHouseClaimOwnRedeemRequestAfterDelayTransactionT
 		});
 	}
 
-	const requestId = requireString(input.requestId, 'requestId');
+	const requestId = requireString({ value: input.requestId, fieldName: 'requestId' });
 	return buildSweetHouseTransactionTool({
 		input,
 		createTransaction: async (bundle) => {
-			const coinType = resolveDefaultCoinType(bundle.config, input.coinType);
+			const coinType = resolveDefaultCoinType({ config: bundle.config, coinType: input.coinType });
 			return bundle.client.suigar.tx.sweetHouse.claimOwnRedeemRequestAfterDelay({
-				owner: await resolveTransactionOwner(input, bundle),
+				owner: await resolveTransactionOwner({ input, bundle }),
 				coinType,
 				requestId,
 				gasBudget: input.gasBudget,
