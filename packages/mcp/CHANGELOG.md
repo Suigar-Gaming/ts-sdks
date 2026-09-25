@@ -1,5 +1,17 @@
 # @suigar/mcp
 
+## 1.0.0-beta.30
+
+### Patch Changes
+
+- [#176](https://github.com/Suigar-Gaming/ts-sdks/pull/176) [`bf55617`](https://github.com/Suigar-Gaming/ts-sdks/commit/bf55617bcd9cc9fdbb2ceb29aced889208974ff1) - Normalize helper signatures to accept a single object when multiple values are required.
+
+- [#173](https://github.com/Suigar-Gaming/ts-sdks/pull/173) [`76ef9f6`](https://github.com/Suigar-Gaming/ts-sdks/commit/76ef9f63169029daded89276c20dac2327029bb8) - Update dependencies.
+
+- [#175](https://github.com/Suigar-Gaming/ts-sdks/pull/175) [`95f7802`](https://github.com/Suigar-Gaming/ts-sdks/commit/95f78026c860191b9a98cafb719cf3189d64593c) - Allow session-wallet game execution to use a custom provider URL and partner attribution while continuing to reject custom SDK config overrides. Verify that the transaction contains exactly one MoveCall targeting the selected game's package and module before signing.
+- Updated dependencies [[`bf55617`](https://github.com/Suigar-Gaming/ts-sdks/commit/bf55617bcd9cc9fdbb2ceb29aced889208974ff1), [`76ef9f6`](https://github.com/Suigar-Gaming/ts-sdks/commit/76ef9f63169029daded89276c20dac2327029bb8)]:
+  - @suigar/sdk@2.0.0-beta.44
+
 ## 1.0.0-beta.29
 
 ### Major Changes
