@@ -71,16 +71,16 @@ export async function buildCoinflipTransactionTool(
 		);
 	}
 
-	const side = requireString(input.side, 'side') as CoinSide;
+	const side = requireString({ value: input.side, fieldName: 'side' }) as CoinSide;
 	return buildTransactionTool({
 		input,
 		game: 'coinflip',
-		stakeDisplay: toCurrencyAmountText(input.stake, 'stake'),
+		stakeDisplay: toCurrencyAmountText({ value: input.stake, fieldName: 'stake' }),
 		gameInputs: { side },
 		createTransaction: async (bundle) =>
 			bundle.client.suigar.tx.createGameBet({
 				game: 'coinflip',
-				...(await stakeOptions(input, bundle)),
+				...(await stakeOptions({ input, bundle })),
 				side,
 			}),
 	});
@@ -100,16 +100,19 @@ export async function buildLimboTransactionTool(input: LimboInput = {}): Promise
 		);
 	}
 
-	const targetMultiplier = requireNumber(input.targetMultiplier, 'targetMultiplier');
+	const targetMultiplier = requireNumber({
+		value: input.targetMultiplier,
+		fieldName: 'targetMultiplier',
+	});
 	return buildTransactionTool({
 		input,
 		game: 'limbo',
-		stakeDisplay: toCurrencyAmountText(input.stake, 'stake'),
+		stakeDisplay: toCurrencyAmountText({ value: input.stake, fieldName: 'stake' }),
 		gameInputs: { targetMultiplier },
 		createTransaction: async (bundle) =>
 			bundle.client.suigar.tx.createGameBet({
 				game: 'limbo',
-				...(await stakeOptions(input, bundle)),
+				...(await stakeOptions({ input, bundle })),
 				targetMultiplier,
 			}),
 	});
@@ -127,27 +130,30 @@ export async function buildKenoTransactionTool(input: KenoInput = {}): Promise<T
 		);
 	}
 
-	const configId = requireNumber(input.configId, 'configId');
-	const picks = requireNumberArray(input.picks, 'picks');
+	const configId = requireNumber({ value: input.configId, fieldName: 'configId' });
+	const picks = requireNumberArray({ value: input.picks, fieldName: 'picks' });
 	return buildTransactionTool({
 		input,
 		game: 'keno',
-		stakeDisplay: toCurrencyAmountText(input.stake, 'stake'),
+		stakeDisplay: toCurrencyAmountText({ value: input.stake, fieldName: 'stake' }),
 		gameInputs: { configId, picks },
 		createTransaction: async (bundle) =>
 			bundle.client.suigar.tx.createGameBet({
 				game: 'keno',
-				...(await stakeOptions(input, bundle)),
+				...(await stakeOptions({ input, bundle })),
 				configId,
 				picks,
 			}),
 	});
 }
 
-async function buildConfigIdTransactionTool(
-	input: ConfigIdInput,
-	game: Extract<StandardGame, 'plinko' | 'wheel'>,
-): Promise<ToolTextResult> {
+async function buildConfigIdTransactionTool({
+	input,
+	game,
+}: {
+	input: ConfigIdInput;
+	game: Extract<StandardGame, 'plinko' | 'wheel'>;
+}): Promise<ToolTextResult> {
 	if (getMode(input.mode) === 'read-only') {
 		return asTextResponse(
 			readOnlyPlan({
@@ -159,27 +165,27 @@ async function buildConfigIdTransactionTool(
 		);
 	}
 
-	const configId = requireNumber(input.configId, 'configId');
+	const configId = requireNumber({ value: input.configId, fieldName: 'configId' });
 	return buildTransactionTool({
 		input,
 		game,
-		stakeDisplay: toCurrencyAmountText(input.stake, 'stake'),
+		stakeDisplay: toCurrencyAmountText({ value: input.stake, fieldName: 'stake' }),
 		gameInputs: { configId },
 		createTransaction: async (bundle) =>
 			bundle.client.suigar.tx.createGameBet({
 				game,
-				...(await stakeOptions(input, bundle)),
+				...(await stakeOptions({ input, bundle })),
 				configId,
 			}),
 	});
 }
 
 export function buildPlinkoTransactionTool(input: ConfigIdInput = {}): Promise<ToolTextResult> {
-	return buildConfigIdTransactionTool(input, 'plinko');
+	return buildConfigIdTransactionTool({ input, game: 'plinko' });
 }
 
 export function buildWheelTransactionTool(input: ConfigIdInput = {}): Promise<ToolTextResult> {
-	return buildConfigIdTransactionTool(input, 'wheel');
+	return buildConfigIdTransactionTool({ input, game: 'wheel' });
 }
 
 export async function buildRangeTransactionTool(input: RangeInput = {}): Promise<ToolTextResult> {
@@ -194,18 +200,18 @@ export async function buildRangeTransactionTool(input: RangeInput = {}): Promise
 		);
 	}
 
-	const leftPoint = requireNumber(input.leftPoint, 'leftPoint');
-	const rightPoint = requireNumber(input.rightPoint, 'rightPoint');
+	const leftPoint = requireNumber({ value: input.leftPoint, fieldName: 'leftPoint' });
+	const rightPoint = requireNumber({ value: input.rightPoint, fieldName: 'rightPoint' });
 	const outOfRange = Boolean(input.outOfRange);
 	return buildTransactionTool({
 		input,
 		game: 'range',
-		stakeDisplay: toCurrencyAmountText(input.stake, 'stake'),
+		stakeDisplay: toCurrencyAmountText({ value: input.stake, fieldName: 'stake' }),
 		gameInputs: { leftPoint, rightPoint, outOfRange },
 		createTransaction: async (bundle) =>
 			bundle.client.suigar.tx.createGameBet({
 				game: 'range',
-				...(await stakeOptions(input, bundle)),
+				...(await stakeOptions({ input, bundle })),
 				leftPoint,
 				rightPoint,
 				outOfRange,
@@ -225,18 +231,18 @@ export async function buildSoccerTransactionTool(input: SoccerInput = {}): Promi
 		);
 	}
 
-	const configId = requireNumber(input.configId, 'configId');
-	const countryId = requireNumber(input.countryId, 'countryId');
-	const shotZoneId = requireNumber(input.shotZoneId, 'shotZoneId');
+	const configId = requireNumber({ value: input.configId, fieldName: 'configId' });
+	const countryId = requireNumber({ value: input.countryId, fieldName: 'countryId' });
+	const shotZoneId = requireNumber({ value: input.shotZoneId, fieldName: 'shotZoneId' });
 	return buildTransactionTool({
 		input,
 		game: 'soccer',
-		stakeDisplay: toCurrencyAmountText(input.stake, 'stake'),
+		stakeDisplay: toCurrencyAmountText({ value: input.stake, fieldName: 'stake' }),
 		gameInputs: { configId, countryId, shotZoneId },
 		createTransaction: async (bundle) =>
 			bundle.client.suigar.tx.createGameBet({
 				game: 'soccer',
-				...(await stakeOptions(input, bundle)),
+				...(await stakeOptions({ input, bundle })),
 				configId,
 				countryId,
 				shotZoneId,
@@ -261,21 +267,27 @@ export async function buildPvpCoinflipCreateTransactionTool(
 		);
 	}
 
-	const creatorSide = requireString(input.creatorSide, 'creatorSide') as CoinSide;
+	const creatorSide = requireString({
+		value: input.creatorSide,
+		fieldName: 'creatorSide',
+	}) as CoinSide;
 	return buildTransactionTool({
 		input,
 		game: 'pvp-coinflip',
 		action: 'create',
-		stakeDisplay: toCurrencyAmountText(input.stake, 'stake'),
+		stakeDisplay: toCurrencyAmountText({ value: input.stake, fieldName: 'stake' }),
 		gameInputs: {
 			creatorSide,
 			...(input.isPrivate == null ? {} : { isPrivate: input.isPrivate }),
 		},
 		createTransaction: async (bundle) => {
-			const { decimals } = coinMetadataForAmount(bundle.config, input.coinType);
+			const { decimals } = coinMetadataForAmount({
+				config: bundle.config,
+				coinType: input.coinType,
+			});
 			return bundle.client.suigar.tx.pvpCoinflip.createGame({
-				...(await gameTransactionOptions(input, bundle)),
-				stake: toBaseUnits(input.stake, 'stake', decimals),
+				...(await gameTransactionOptions({ input, bundle })),
+				stake: toBaseUnits({ value: input.stake, fieldName: 'stake', decimals }),
 				side: creatorSide,
 				isPrivate: input.isPrivate,
 			});
@@ -300,7 +312,7 @@ export async function buildPvpCoinflipJoinTransactionTool(
 		);
 	}
 
-	const gameId = requireString(input.gameId, 'gameId');
+	const gameId = requireString({ value: input.gameId, fieldName: 'gameId' });
 	return buildTransactionTool({
 		input,
 		game: 'pvp-coinflip',
@@ -308,7 +320,7 @@ export async function buildPvpCoinflipJoinTransactionTool(
 		gameInputs: { gameId },
 		createTransaction: async (bundle) =>
 			bundle.client.suigar.tx.pvpCoinflip.joinGame({
-				...(await gameTransactionOptions(input, bundle)),
+				...(await gameTransactionOptions({ input, bundle })),
 				gameId,
 			}),
 	});
@@ -329,7 +341,7 @@ export async function buildPvpCoinflipCancelTransactionTool(
 		);
 	}
 
-	const gameId = requireString(input.gameId, 'gameId');
+	const gameId = requireString({ value: input.gameId, fieldName: 'gameId' });
 	return buildTransactionTool({
 		input,
 		game: 'pvp-coinflip',
@@ -337,7 +349,7 @@ export async function buildPvpCoinflipCancelTransactionTool(
 		gameInputs: { gameId },
 		createTransaction: async (bundle) =>
 			bundle.client.suigar.tx.pvpCoinflip.cancelGame({
-				...(await cancelTransactionOptions(input, bundle)),
+				...(await cancelTransactionOptions({ input, bundle })),
 				gameId,
 			}),
 	});
@@ -351,7 +363,13 @@ const BET_COUNT_LIMITS: Partial<Record<Game, { parameter: string; label: string 
 	wheel: { parameter: 'max_number_of_spins', label: 'spins' },
 };
 
-function toPositiveInteger(value: unknown, fieldName: string): number | bigint {
+function toPositiveInteger({
+	value,
+	fieldName,
+}: {
+	value: unknown;
+	fieldName: string;
+}): number | bigint {
 	if (typeof value === 'number' && Number.isSafeInteger(value) && value > 0) {
 		return value;
 	}
@@ -361,14 +379,20 @@ function toPositiveInteger(value: unknown, fieldName: string): number | bigint {
 	throw new TypeError(`Missing or invalid ${fieldName}. Provide a positive integer.`);
 }
 
-function requireNumber(value: unknown, fieldName: string): number {
+function requireNumber({ value, fieldName }: { value: unknown; fieldName: string }): number {
 	if (typeof value === 'number' && Number.isFinite(value)) {
 		return value;
 	}
 	throw new TypeError(`Missing or invalid numeric field: ${fieldName}.`);
 }
 
-function requireNumberArray(value: unknown, fieldName: string): Array<number> {
+function requireNumberArray({
+	value,
+	fieldName,
+}: {
+	value: unknown;
+	fieldName: string;
+}): Array<number> {
 	if (
 		Array.isArray(value) &&
 		value.length > 0 &&
@@ -379,8 +403,16 @@ function requireNumberArray(value: unknown, fieldName: string): Array<number> {
 	throw new TypeError(`Missing or invalid numeric array field: ${fieldName}.`);
 }
 
-function getTarget(config: McpConfig, game: Game, action?: PvPCoinflipAction): string {
-	const packageId = getSuigarPackageId(config, game);
+function getTarget({
+	config,
+	game,
+	action,
+}: {
+	config: McpConfig;
+	game: Game;
+	action?: PvPCoinflipAction;
+}): string {
+	const packageId = getSuigarPackageId({ config, pkg: game });
 	if (game === 'pvp-coinflip') {
 		const functionName = `${action?.toLowerCase() ?? 'create'}_game`;
 		return `${packageId}::${game}::${functionName}`;
@@ -402,7 +434,7 @@ function readOnlyPlan({
 	notes: Array<string>;
 }): ReadOnlyPlan {
 	const { config } = createSuigarClient(getConfigInput(input));
-	const coinType = resolveDefaultCoinType(config, input.coinType);
+	const coinType = resolveDefaultCoinType({ config, coinType: input.coinType });
 	return {
 		mode: 'read-only',
 		network: config.network,
@@ -410,7 +442,7 @@ function readOnlyPlan({
 		action,
 		config,
 		plan: {
-			target: getTarget(config, game, action),
+			target: getTarget({ config, game, action }),
 			typeArguments: [coinType],
 			requiredInputs,
 			notes,
@@ -418,26 +450,32 @@ function readOnlyPlan({
 	};
 }
 
-async function gameTransactionOptions(
-	input: BetTransactionToolInput,
-	bundle: SuigarClientBundle,
-): Promise<
+async function gameTransactionOptions({
+	input,
+	bundle,
+}: {
+	input: BetTransactionToolInput;
+	bundle: SuigarClientBundle;
+}): Promise<
 	Required<Pick<BetTransactionToolInput, 'owner' | 'coinType'>> &
 		Pick<BetTransactionToolInput, 'metadata' | 'gasBudget' | 'useGasCoin'>
 > {
 	return {
-		owner: await resolveTransactionOwner(input, bundle),
-		coinType: resolveDefaultCoinType(bundle.config, input.coinType),
+		owner: await resolveTransactionOwner({ input, bundle }),
+		coinType: resolveDefaultCoinType({ config: bundle.config, coinType: input.coinType }),
 		metadata: input.metadata,
 		gasBudget: input.gasBudget,
 		useGasCoin: input.useGasCoin,
 	};
 }
 
-async function resolveTransactionOwner(
-	input: Pick<TransactionToolInput, 'mode' | 'executionWallet' | 'owner' | 'sessionWalletId'>,
-	bundle: SuigarClientBundle,
-): Promise<string> {
+async function resolveTransactionOwner({
+	input,
+	bundle,
+}: {
+	input: Pick<TransactionToolInput, 'mode' | 'executionWallet' | 'owner' | 'sessionWalletId'>;
+	bundle: SuigarClientBundle;
+}): Promise<string> {
 	const sessionExecution = getMode(input.mode) === 'execute' && input.executionWallet === 'session';
 	if (sessionExecution) {
 		const sessionWallet = await loadSessionWallet(input.sessionWalletId);
@@ -453,7 +491,7 @@ async function resolveTransactionOwner(
 			);
 		}
 		if (input.owner) {
-			const requestedOwner = await resolveOwnerAddress(input.owner, bundle);
+			const requestedOwner = await resolveOwnerAddress({ owner: input.owner, bundle });
 			if (requestedOwner !== sessionAddress) {
 				throw new RangeError(
 					'owner must match the local session wallet address when executionWallet is "session".',
@@ -463,28 +501,38 @@ async function resolveTransactionOwner(
 		return sessionAddress;
 	}
 
-	return resolveOwnerAddress(requireString(input.owner, 'owner'), bundle);
+	return resolveOwnerAddress({
+		owner: requireString({ value: input.owner, fieldName: 'owner' }),
+		bundle,
+	});
 }
 
-async function cancelTransactionOptions(
-	input: PvpCoinflipCancelInput,
-	bundle: SuigarClientBundle,
-): Promise<
+async function cancelTransactionOptions({
+	input,
+	bundle,
+}: {
+	input: PvpCoinflipCancelInput;
+	bundle: SuigarClientBundle;
+}): Promise<
 	Required<Pick<TransactionToolInput, 'owner' | 'coinType'>> &
 		Pick<TransactionToolInput, 'gasBudget'>
 > {
 	return {
-		owner: await resolveTransactionOwner(input, bundle),
-		coinType: resolveDefaultCoinType(bundle.config, input.coinType),
+		owner: await resolveTransactionOwner({ input, bundle }),
+		coinType: resolveDefaultCoinType({ config: bundle.config, coinType: input.coinType }),
 		gasBudget: input.gasBudget,
 	};
 }
 
-async function enforceBetCountLimit(
-	game: Game,
-	input: TransactionToolInput,
-	bundle: SuigarClientBundle,
-): Promise<void> {
+async function enforceBetCountLimit({
+	game,
+	input,
+	bundle,
+}: {
+	game: Game;
+	input: TransactionToolInput;
+	bundle: SuigarClientBundle;
+}): Promise<void> {
 	if (!('betCount' in input) || input.betCount == null) {
 		return;
 	}
@@ -494,10 +542,10 @@ async function enforceBetCountLimit(
 		return;
 	}
 
-	const requested = BigInt(toPositiveInteger(input.betCount, 'betCount'));
+	const requested = BigInt(toPositiveInteger({ value: input.betCount, fieldName: 'betCount' }));
 	const parameters = await bundle.client.suigar.getGameParameters({
 		game,
-		coinType: resolveDefaultCoinType(bundle.config, input.coinType),
+		coinType: resolveDefaultCoinType({ config: bundle.config, coinType: input.coinType }),
 	});
 	const max = (parameters as Record<string, unknown>)[limit.parameter];
 	if (
@@ -517,10 +565,13 @@ async function enforceBetCountLimit(
 	}
 }
 
-async function stakeOptions(
-	input: StandardTransactionToolInput,
-	bundle: SuigarClientBundle,
-): Promise<
+async function stakeOptions({
+	input,
+	bundle,
+}: {
+	input: StandardTransactionToolInput;
+	bundle: SuigarClientBundle;
+}): Promise<
 	Required<Pick<BetTransactionToolInput, 'owner' | 'coinType'>> &
 		Pick<BetTransactionToolInput, 'metadata' | 'gasBudget' | 'useGasCoin'> & {
 			betCount?: number | bigint;
@@ -528,24 +579,30 @@ async function stakeOptions(
 			stake: bigint;
 		}
 > {
-	const { decimals } = coinMetadataForAmount(bundle.config, input.coinType);
+	const { decimals } = coinMetadataForAmount({ config: bundle.config, coinType: input.coinType });
 	return {
-		...(await gameTransactionOptions(input, bundle)),
-		stake: toBaseUnits(input.stake, 'stake', decimals),
+		...(await gameTransactionOptions({ input, bundle })),
+		stake: toBaseUnits({ value: input.stake, fieldName: 'stake', decimals }),
 		...(input.cashStake == null
 			? {}
 			: {
-					cashStake: toBaseUnits(input.cashStake, 'cashStake', decimals),
+					cashStake: toBaseUnits({ value: input.cashStake, fieldName: 'cashStake', decimals }),
 				}),
-		...(input.betCount == null ? {} : { betCount: toPositiveInteger(input.betCount, 'betCount') }),
+		...(input.betCount == null
+			? {}
+			: { betCount: toPositiveInteger({ value: input.betCount, fieldName: 'betCount' }) }),
 	};
 }
 
-export function assertSessionGameTransaction(
-	transaction: Transaction,
-	config: McpConfig,
-	game: Game,
-): void {
+export function assertSessionGameTransaction({
+	transaction,
+	config,
+	game,
+}: {
+	transaction: Transaction;
+	config: McpConfig;
+	game: Game;
+}): void {
 	const moveCalls = transaction
 		.getData()
 		.commands.flatMap((command) => (command.$kind === 'MoveCall' ? [command.MoveCall] : []));
@@ -557,7 +614,7 @@ export function assertSessionGameTransaction(
 	const [suigarCall] = moveCalls;
 
 	if (
-		suigarCall.package.toLowerCase() !== getSuigarPackageId(config, game).toLowerCase() ||
+		suigarCall.package.toLowerCase() !== getSuigarPackageId({ config, pkg: game }).toLowerCase() ||
 		suigarCall.module !== game.replaceAll('-', '_').toLowerCase()
 	) {
 		throw new Error(
@@ -593,10 +650,13 @@ async function buildTransactionTool({
 		);
 	}
 	const bundle = createSuigarClient(getConfigInput(input));
-	await enforceBetCountLimit(game, input, bundle);
-	const coin = coinMetadataForAmount(bundle.config, input.coinType);
+	await enforceBetCountLimit({ game, input, bundle });
+	const coin = coinMetadataForAmount({ config: bundle.config, coinType: input.coinType });
 	const baseStake =
-		stake ?? (stakeDisplay == null ? undefined : toBaseUnits(stakeDisplay, 'stake', coin.decimals));
+		stake ??
+		(stakeDisplay == null
+			? undefined
+			: toBaseUnits({ value: stakeDisplay, fieldName: 'stake', decimals: coin.decimals }));
 	const transaction = await createTransaction(bundle);
 	const context = {
 		game,
@@ -610,7 +670,7 @@ async function buildTransactionTool({
 	};
 	if (mode === 'execute') {
 		if (input.executionWallet === 'session') {
-			assertSessionGameTransaction(transaction, bundle.config, game);
+			assertSessionGameTransaction({ transaction, config: bundle.config, game });
 			const built = await buildTransactionResult({
 				mode: 'build',
 				transaction,
@@ -640,7 +700,7 @@ async function buildTransactionTool({
 		});
 		const execution = await createExecutionBridge({
 			network: bundle.config.network,
-			webOrigin: resolveWebOrigin(bundle.config.network),
+			webOrigin: resolveWebOrigin({ network: bundle.config.network }),
 			transactionBytesBase64: built.transactionBytesBase64 ?? '',
 			summary: built.summary,
 		});

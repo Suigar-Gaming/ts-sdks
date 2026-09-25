@@ -230,11 +230,12 @@ This is a core invariant: standard game transactions must fail clearly when the 
 - **`major`**: Breaking API changes, changed behavior contracts, or removed support
 - Changeset notes must describe only package behavior for the packages listed in the changeset frontmatter. Do not mention root-only, workspace-only, playground-only, or tooling-only changes unless they directly affect that package's published behavior.
 - Do not edit changeset files inherited from `main` or previous work. When a branch needs a release note, update the changeset already committed on the current branch; create one only if the branch has none.
+- Keep one changeset per branch by default. Its frontmatter must list every publishable package with source changes anywhere on the branch, including earlier work; when another package is changed later, update the existing branch changeset to add that package and describe the combined package changes. Create another changeset only when multiple distinct release notes are explicitly intended.
 
 ### Development Workflow
 
 1. Update or add code in the relevant package under `packages/*/src/`
-2. If the branch modifies source files under any publishable package, update the `.changeset/*.md` file already committed on that branch; create one only when no branch changeset exists
+2. If the branch modifies source files under any publishable package, update the `.changeset/*.md` file already committed on that branch so it lists every publishable package changed anywhere on the branch; create one only when no branch changeset exists
 3. Reuse that committed branch changeset for later publishable-package source edits instead of creating a new changeset, unless the user explicitly wants multiple distinct release notes
 4. When SDK contract bindings or generated SDK sources change, regenerate them with `pnpm --dir packages/sdk run codegen`; otherwise run any generation required by each changed package
 5. Run tests for every changed package, for example `pnpm --dir packages/sdk run test` or `pnpm --dir packages/mcp run test`

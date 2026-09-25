@@ -97,7 +97,7 @@ describe('MCP tool registration', () => {
 	it('registers all Suigar tools with shared definitions', () => {
 		const server = new McpServer({ name: 'suigar-test', version: '0.0.0' });
 
-		registerSuigarTools(server, appToolMeta);
+		registerSuigarTools({ server, appToolMeta });
 
 		const registeredTools = (
 			server as unknown as {

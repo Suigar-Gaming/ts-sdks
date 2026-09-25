@@ -109,10 +109,13 @@ export async function saveCredentials(credentials: Credentials): Promise<void> {
 	await chmod(CREDENTIALS_FILE, 0o600);
 }
 
-export async function saveProfile(
-	network: SuigarNetwork,
-	profile: WalletProfile,
-): Promise<Credentials> {
+export async function saveProfile({
+	network,
+	profile,
+}: {
+	network: SuigarNetwork;
+	profile: WalletProfile;
+}): Promise<Credentials> {
 	const credentials = await loadCredentials();
 	credentials.defaultNetwork = network;
 	credentials.profiles[network] = profile;

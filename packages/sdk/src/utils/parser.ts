@@ -144,18 +144,21 @@ function parseStringGameDetail(value: Array<number>): string {
 	}
 }
 
-function normalizeBcsGameDetailValue<TValueType extends GameDetailValueType>(
-	valueType: TValueType,
-	parsed: unknown,
-): GameDetail<TValueType> {
+function normalizeBcsGameDetailValue<TValueType extends GameDetailValueType>({
+	valueType,
+	value,
+}: {
+	valueType: TValueType;
+	value: unknown;
+}): GameDetail<TValueType> {
 	switch (valueType) {
 		case 'float':
-			return fromMoveFloat(parsed as MoveFloat) as GameDetail<TValueType>;
+			return fromMoveFloat(value as MoveFloat) as GameDetail<TValueType>;
 		case 'u64':
 		case 'u128':
-			return BigInt(parsed as string | number | bigint) as GameDetail<TValueType>;
+			return BigInt(value as string | number | bigint) as GameDetail<TValueType>;
 		default:
-			return parsed as GameDetail<TValueType>;
+			return value as GameDetail<TValueType>;
 	}
 }
 
@@ -190,7 +193,7 @@ function parseVectorGameDetail<TValueType extends GameDetailVectorValueType>({
 	}
 
 	return parsed.map((item) =>
-		normalizeBcsGameDetailValue(elementType, item),
+		normalizeBcsGameDetailValue({ valueType: elementType, value: item }),
 	) as GameDetail<TValueType>;
 }
 
@@ -216,7 +219,10 @@ function parseGameDetail<TValueType extends GameDetailSchemaValueType>({
 
 	const scalarValueType = valueType as GameDetailValueType;
 	const parsed = GAME_DETAIL_BCS[scalarValueType].parse(Uint8Array.from(value));
-	return normalizeBcsGameDetailValue(scalarValueType, parsed) as GameDetail<TValueType>;
+	return normalizeBcsGameDetailValue({
+		valueType: scalarValueType,
+		value: parsed,
+	}) as GameDetail<TValueType>;
 }
 
 /**

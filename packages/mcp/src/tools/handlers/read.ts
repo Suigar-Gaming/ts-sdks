@@ -29,7 +29,7 @@ export async function readGameMetadataTool(
 ): Promise<ToolTextResult> {
 	const game = requireGame(input.game);
 	const { client, config } = createSuigarClient(getConfigInput(input));
-	const coin = coinMetadataForAmount(config, input.coinType);
+	const coin = coinMetadataForAmount({ config, coinType: input.coinType });
 	const ignoreCache = input.ignoreCache ?? true;
 	const parameters = await client.suigar.getGameParameters({
 		game,
@@ -45,9 +45,10 @@ export async function readGameMetadataTool(
 		game: {
 			id: game,
 			label: GAME_LABELS[game],
-			packageId: getSuigarPackageId(config, game),
+			packageId: getSuigarPackageId({ config, pkg: game }),
 			coinType: coin.coinType,
-			parameters: toJsonValue(formatGameParameters(parameters, coin.decimals)) ?? null,
+			parameters:
+				toJsonValue(formatGameParameters({ parameters, decimals: coin.decimals })) ?? null,
 			ignoreCache,
 			notes: [
 				'Parameters are loaded for the requested coin type from the on-chain game settings objects through client.suigar.getGameParameters().',
@@ -61,9 +62,12 @@ export async function readGameMetadataTool(
 
 export async function listNftsTool(input: Partial<ListNftsInput> = {}): Promise<ToolTextResult> {
 	const bundle = createSuigarClient(getConfigInput(input));
-	const owner = await resolveOwnerAddress(requireString(input.owner, 'owner'), bundle);
+	const owner = await resolveOwnerAddress({
+		owner: requireString({ value: input.owner, fieldName: 'owner' }),
+		bundle,
+	});
 	const { client, config } = bundle;
-	const nftV1PackageId = getSuigarPackageId(config, 'nftV1');
+	const nftV1PackageId = getSuigarPackageId({ config, pkg: 'nftV1' });
 	const nftType = client.suigar.bcs.NftV1.typeTag({
 		package: nftV1PackageId,
 	});
@@ -109,7 +113,7 @@ export async function listNftsTool(input: Partial<ListNftsInput> = {}): Promise<
 			supply: value.supply.toString(),
 			available: value.available.toString(),
 			price: value.price.toString(),
-			priceDisplay: formatBaseUnitAmount(value.price),
+			priceDisplay: formatBaseUnitAmount({ value: value.price }),
 		})),
 		ownedNfts,
 	} satisfies ListNftsResult);

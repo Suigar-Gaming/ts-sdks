@@ -32,10 +32,13 @@ export function isAmountFieldName(key: string): key is AmountFieldName {
 	return (AMOUNT_FIELD_NAMES as ReadonlySet<string>).has(key);
 }
 
-export function formatBaseUnitAmount(
-	value: string | number | bigint,
+export function formatBaseUnitAmount({
+	value,
 	decimals = SUI_DECIMALS,
-): string {
+}: {
+	value: string | number | bigint;
+	decimals?: number;
+}): string {
 	const raw = String(value);
 	const negative = raw.startsWith('-');
 	const digits = negative ? raw.slice(1) : raw;
@@ -52,18 +55,30 @@ export function formatBaseUnitAmount(
 	return `${negative ? '-' : ''}${whole}${fraction ? `.${fraction}` : ''}`;
 }
 
-export function formatAmount(value: unknown, decimals?: number): FormattedAmount | null {
+export function formatAmount({
+	value,
+	decimals,
+}: {
+	value: unknown;
+	decimals?: number;
+}): FormattedAmount | null {
 	if (typeof value !== 'string' && typeof value !== 'number' && typeof value !== 'bigint') {
 		return null;
 	}
 	const raw = String(value);
 	return {
 		raw,
-		display: formatBaseUnitAmount(raw, decimals),
+		display: formatBaseUnitAmount({ value: raw, decimals }),
 	};
 }
 
-export function toCurrencyAmountText(value: unknown, fieldName: string): string {
+export function toCurrencyAmountText({
+	value,
+	fieldName,
+}: {
+	value: unknown;
+	fieldName: string;
+}): string {
 	if (typeof value === 'number' && Number.isFinite(value) && value >= 0) {
 		return String(value);
 	}
@@ -75,8 +90,16 @@ export function toCurrencyAmountText(value: unknown, fieldName: string): string 
 	);
 }
 
-export function toBaseUnits(value: unknown, fieldName: string, decimals: number): bigint {
-	const amount = toCurrencyAmountText(value, fieldName);
+export function toBaseUnits({
+	value,
+	fieldName,
+	decimals,
+}: {
+	value: unknown;
+	fieldName: string;
+	decimals: number;
+}): bigint {
+	const amount = toCurrencyAmountText({ value, fieldName });
 	try {
 		return parseToUnits(amount, decimals);
 	} catch (error) {

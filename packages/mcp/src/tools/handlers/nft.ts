@@ -23,7 +23,7 @@ export async function buildNftV1MintTransactionTool(
 ): Promise<ToolTextResult> {
 	const mode = getMode(input.mode);
 	const { config } = createSuigarClient(getConfigInput(input));
-	const nftV1PackageId = getSuigarPackageId(config, 'nftV1');
+	const nftV1PackageId = getSuigarPackageId({ config, pkg: 'nftV1' });
 
 	if (mode === 'read-only') {
 		return asTextResponse({
@@ -46,8 +46,11 @@ export async function buildNftV1MintTransactionTool(
 	}
 
 	const bundle = createSuigarClient(getConfigInput(input));
-	const owner = await resolveOwnerAddress(requireString(input.owner, 'owner'), bundle);
-	const specId = requireString(input.specId, 'specId');
+	const owner = await resolveOwnerAddress({
+		owner: requireString({ value: input.owner, fieldName: 'owner' }),
+		bundle,
+	});
+	const specId = requireString({ value: input.specId, fieldName: 'specId' });
 	const coin = bundle.config.sdk.coins.sui;
 	const transaction = bundle.client.suigar.tx.nftV1.mint({
 		owner,
@@ -71,7 +74,7 @@ export async function buildNftV1MintTransactionTool(
 		});
 		const execution = await createExecutionBridge({
 			network: bundle.config.network,
-			webOrigin: resolveWebOrigin(bundle.config.network),
+			webOrigin: resolveWebOrigin({ network: bundle.config.network }),
 			transactionBytesBase64: built.transactionBytesBase64 ?? '',
 			summary: built.summary,
 		});
