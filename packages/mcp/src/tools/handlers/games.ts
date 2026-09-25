@@ -541,6 +541,31 @@ async function stakeOptions(
 	};
 }
 
+function assertSessionGameTransaction(
+	transaction: Transaction,
+	config: McpConfig,
+	game: Game,
+): void {
+	const moveCalls = transaction
+		.getData()
+		.commands.flatMap((command) => (command.$kind === 'MoveCall' ? [command.MoveCall] : []));
+
+	if (moveCalls.length !== 1) {
+		throw new Error('Session execution only supports one verified Suigar game action.');
+	}
+
+	const [suigarCall] = moveCalls;
+
+	if (
+		suigarCall.package.toLowerCase() !== getSuigarPackageId(config, game).toLowerCase() ||
+		suigarCall.module !== game.replaceAll('-', '_').toLowerCase()
+	) {
+		throw new Error(
+			'Session execution rejected a transaction outside the trusted Suigar game package.',
+		);
+	}
+}
+
 async function buildTransactionTool({
 	input,
 	game,
@@ -562,6 +587,11 @@ async function buildTransactionTool({
 		throw new Error('read-only mode must be handled before transaction execution.');
 	}
 
+	if (mode === 'execute' && input.executionWallet === 'session' && input.config) {
+		throw new Error(
+			'Session execution uses the trusted Suigar SDK configuration; custom config overrides are not allowed.',
+		);
+	}
 	const bundle = createSuigarClient(getConfigInput(input));
 	await enforceBetCountLimit(game, input, bundle);
 	const coin = coinMetadataForAmount(bundle.config, input.coinType);
@@ -580,6 +610,7 @@ async function buildTransactionTool({
 	};
 	if (mode === 'execute') {
 		if (input.executionWallet === 'session') {
+			assertSessionGameTransaction(transaction, bundle.config, game);
 			const built = await buildTransactionResult({
 				mode: 'build',
 				transaction,
