@@ -93,7 +93,7 @@
 	},
 	"dependencies": {
 		"@modelcontextprotocol/ext-apps": "^2.0.0",
-		"@modelcontextprotocol/server": "^2.0.0",
+		"@modelcontextprotocol/server": "^2.1.0",
 		"@mysten/bcs": "catalog:mysten",
 		"@mysten/sui": "catalog:mysten",
 		"@napi-rs/keyring": "^2.1.0",
@@ -107,11 +107,11 @@
 		"react": "catalog:frontend",
 		"react-dom": "catalog:frontend",
 		"tailwind-merge": "catalog:frontend",
-		"yargs": "^18.1.0",
+		"yargs": "^18.2.0",
 		"zod": "^4.6.5"
 	},
 	"devDependencies": {
-		"@modelcontextprotocol/client": "^2.0.0",
+		"@modelcontextprotocol/client": "^2.1.0",
 		"@tailwindcss/vite": "catalog:tooling",
 		"@types/node": "catalog:typescript",
 		"@types/react": "catalog:typescript",
