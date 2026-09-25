@@ -1,7 +1,6 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import type { Transaction as SuiTransaction } from '@mysten/sui/transactions';
 import type * as SuiTransactions from '@mysten/sui/transactions';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { BuildTransactionResult } from '../../../src/runtime/types.js';
@@ -21,7 +20,7 @@ vi.mock('@mysten/sui/transactions', async (importOriginal) => {
 	return {
 		...actual,
 		Transaction: class MockTransaction extends actual.Transaction {
-			override build = mocks.buildTransactionBytes as SuiTransaction['build'];
+			override build = mocks.buildTransactionBytes as SuiTransactions.Transaction['build'];
 		},
 	};
 });
