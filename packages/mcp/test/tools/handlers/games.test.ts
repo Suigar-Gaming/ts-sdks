@@ -1,10 +1,15 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import type { Transaction as SuiTransaction } from '@mysten/sui/transactions';
+import { type Transaction as SuiTransaction, Transaction } from '@mysten/sui/transactions';
 import type * as SuiTransactions from '@mysten/sui/transactions';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { BuildTransactionResult, ReadOnlyPlan } from '../../../src/runtime/types.js';
+import type {
+	BuildTransactionResult,
+	McpConfig,
+	ReadOnlyPlan,
+} from '../../../src/runtime/types.js';
+import { assertSessionGameTransaction } from '../../../src/tools/handlers/games.js';
 import {
 	buildCoinflipTransactionTool,
 	buildKenoTransactionTool,
@@ -17,6 +22,7 @@ import {
 	buildSoccerTransactionTool,
 	buildWheelTransactionTool,
 } from '../../../src/tools/handlers/index.js';
+import { getSuigarPackageId } from '../../../src/tools/handlers/shared.js';
 
 const mocks = vi.hoisted(() => ({
 	buildTransactionBytes: vi.fn<(...args: Array<unknown>) => Promise<Uint8Array>>(),
@@ -36,6 +42,17 @@ vi.mock('@mysten/sui/transactions', async (importOriginal) => {
 const testAddress = (fill: string) => `0x${fill.repeat(64)}`;
 const owner = testAddress('a');
 const gameId = testAddress('b');
+const testConfig = {
+	network: 'testnet',
+	providerUrl: 'https://sui.test',
+	sdk: { packageIds: { coinflip: testAddress('d'), pvpCoinflip: testAddress('e') } },
+} as McpConfig;
+
+function createMoveCallTransaction(packageId: string, module: string): Transaction {
+	const transaction = new Transaction();
+	transaction.moveCall({ target: `${packageId}::${module}::test_action` });
+	return transaction;
+}
 
 beforeEach(() => {
 	mocks.buildTransactionBytes.mockResolvedValue(new Uint8Array([1]));
@@ -46,6 +63,61 @@ afterEach(() => {
 });
 
 describe('game transaction tools', () => {
+	it('accepts one MoveCall to the selected game package and module', () => {
+		const packageId = getSuigarPackageId(testConfig, 'coinflip');
+
+		expect(() =>
+			assertSessionGameTransaction(
+				createMoveCallTransaction(packageId, 'coinflip'),
+				testConfig,
+				'coinflip',
+			),
+		).not.toThrow();
+	});
+
+	it('rejects transactions without exactly one MoveCall', () => {
+		const noCalls = new Transaction();
+		const packageId = getSuigarPackageId(testConfig, 'coinflip');
+		const multipleCalls = createMoveCallTransaction(packageId, 'coinflip');
+		multipleCalls.moveCall({
+			target: `${packageId}::coinflip::another_action`,
+		});
+
+		expect(() => assertSessionGameTransaction(noCalls, testConfig, 'coinflip')).toThrow(
+			/one verified Suigar game action/u,
+		);
+		expect(() => assertSessionGameTransaction(multipleCalls, testConfig, 'coinflip')).toThrow(
+			/one verified Suigar game action/u,
+		);
+	});
+
+	it('rejects a MoveCall to another package or module', () => {
+		expect(() =>
+			assertSessionGameTransaction(
+				createMoveCallTransaction(testAddress('c'), 'coinflip'),
+				testConfig,
+				'coinflip',
+			),
+		).toThrow(/outside the trusted Suigar game package/u);
+		expect(() =>
+			assertSessionGameTransaction(
+				createMoveCallTransaction(getSuigarPackageId(testConfig, 'coinflip'), 'keno'),
+				testConfig,
+				'coinflip',
+			),
+		).toThrow(/outside the trusted Suigar game package/u);
+	});
+
+	it('derives the PvP Coinflip module name from the game id', () => {
+		expect(() =>
+			assertSessionGameTransaction(
+				createMoveCallTransaction(getSuigarPackageId(testConfig, 'pvp-coinflip'), 'pvp_coinflip'),
+				testConfig,
+				'pvp-coinflip',
+			),
+		).not.toThrow();
+	});
+
 	it.each([
 		['coinflip', () => buildCoinflipTransactionTool({ mode: 'read-only', side: 'heads' })],
 		['keno', () => buildKenoTransactionTool({ mode: 'read-only', configId: 0, picks: [1, 2] })],

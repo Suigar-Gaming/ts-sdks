@@ -541,7 +541,7 @@ async function stakeOptions(
 	};
 }
 
-function assertSessionGameTransaction(
+export function assertSessionGameTransaction(
 	transaction: Transaction,
 	config: McpConfig,
 	game: Game,
