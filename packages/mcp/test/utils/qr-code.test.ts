@@ -17,7 +17,7 @@ describe('createQrCodeDataUrl', () => {
 	it('uses the QR encoder data-url output with default options', () => {
 		mocks.encodeQR.mockReturnValue('data:image/gif;base64,R0lGODlh');
 
-		const result = createQrCodeDataUrl('0xabc');
+		const result = createQrCodeDataUrl({ text: '0xabc' });
 
 		expect(mocks.encodeQR).toHaveBeenCalledWith('0xabc', 'data-url', {
 			ecc: 'medium',
@@ -30,10 +30,13 @@ describe('createQrCodeDataUrl', () => {
 	it('passes through QR rendering options', () => {
 		mocks.encodeQR.mockReturnValue('data:image/gif;base64,R0lGODlh');
 
-		createQrCodeDataUrl('suigar', {
-			ecc: 'high',
-			border: 4,
-			scale: 6,
+		createQrCodeDataUrl({
+			text: 'suigar',
+			options: {
+				ecc: 'high',
+				border: 4,
+				scale: 6,
+			},
 		});
 
 		expect(mocks.encodeQR).toHaveBeenCalledWith('suigar', 'data-url', {

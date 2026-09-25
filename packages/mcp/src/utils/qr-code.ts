@@ -3,8 +3,14 @@
 
 import encodeQR, { type QrOpts } from 'qr';
 
-export function createQrCodeDataUrl(value: string, options: QrOpts = {}): string {
-	return encodeQR(value, 'data-url', {
+export function createQrCodeDataUrl({
+	text,
+	options = {},
+}: {
+	text: string;
+	options?: QrOpts;
+}): string {
+	return encodeQR(text, 'data-url', {
 		...options,
 		ecc: options.ecc ?? 'medium',
 		border: options.border ?? 2,

@@ -417,7 +417,13 @@ const toolDefinitions = [
 	},
 ] satisfies Array<ToolDefinition>;
 
-export function registerSuigarTools(server: McpServer, appToolMeta: AppToolMeta): void {
+export function registerSuigarTools({
+	server,
+	appToolMeta,
+}: {
+	server: McpServer;
+	appToolMeta: AppToolMeta;
+}): void {
 	for (const tool of toolDefinitions) {
 		const config = {
 			title: tool.title,

@@ -46,7 +46,7 @@ vi.mock('../src/wallet/index.js', () => ({
 	DEFAULT_TIMEOUT_MS: 5 * 60_000,
 	loadCredentials: mocks.loadCredentials,
 	BRIDGE_MAX_BODY_BYTES_ENV: 'SUIGAR_MCP_BRIDGE_MAX_BODY_BYTES',
-	resolveWebOrigin: (network: 'mainnet' | 'testnet', webUrl?: string) =>
+	resolveWebOrigin: ({ network, webUrl }: { network: 'mainnet' | 'testnet'; webUrl?: string }) =>
 		webUrl ?? (network === 'mainnet' ? 'https://mcp.suigar.com' : 'https://mcp.testnet.suigar.com'),
 	setDefaultNetwork: vi.fn<() => void>(),
 	BRIDGE_WEB_URL_ENV: 'SUIGAR_MCP_BRIDGE_WEB_URL',

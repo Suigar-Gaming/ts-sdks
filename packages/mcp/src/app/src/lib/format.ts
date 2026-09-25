@@ -80,7 +80,13 @@ export function visibleDefinitionEntries(entries: Array<DefinitionEntry>): Array
 	}, []);
 }
 
-export function valueTone(label: string, value: unknown): 'error' | 'success' | null {
+export function valueTone({
+	label,
+	value,
+}: {
+	label: string;
+	value: unknown;
+}): 'error' | 'success' | null {
 	const text = String(value).toLowerCase();
 	const lowerLabel = label.toLowerCase();
 	if (text === 'success') {

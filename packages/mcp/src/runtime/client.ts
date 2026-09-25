@@ -44,7 +44,13 @@ export function normalizeNetwork(network?: string): SuigarNetwork {
 	throw new RangeError(`Unsupported network: ${resolvedNetwork}. Use "mainnet" or "testnet".`);
 }
 
-export function getProviderUrl(network: SuigarNetwork, providerUrl?: string): string {
+export function getProviderUrl({
+	network,
+	providerUrl,
+}: {
+	network: SuigarNetwork;
+	providerUrl?: string;
+}): string {
 	return providerUrl ?? DEFAULT_PROVIDER_URLS[network];
 }
 
@@ -60,7 +66,7 @@ export type SuigarClientBundle = {
 
 export function createSuigarClient(input: SuigarMcpConfigInput = {}): SuigarClientBundle {
 	const network = normalizeNetwork(input.network);
-	const providerUrl = getProviderUrl(network, input.providerUrl);
+	const providerUrl = getProviderUrl({ network, providerUrl: input.providerUrl });
 	const baseClient = new SuiGrpcClient({
 		baseUrl: providerUrl,
 		network,
@@ -82,14 +88,23 @@ export function createSuigarClient(input: SuigarMcpConfigInput = {}): SuigarClie
 	};
 }
 
-export function resolveDefaultCoinType(config: McpConfig, coinType?: string): string {
+export function resolveDefaultCoinType({
+	config,
+	coinType,
+}: {
+	config: McpConfig;
+	coinType?: string;
+}): string {
 	return normalizeStructTag(coinType ?? config.sdk.coins.sui.coinType);
 }
 
-export async function resolveOwnerAddress(
-	owner: string,
-	bundle: SuigarClientBundle,
-): Promise<string> {
+export async function resolveOwnerAddress({
+	owner,
+	bundle,
+}: {
+	owner: string;
+	bundle: SuigarClientBundle;
+}): Promise<string> {
 	try {
 		const normalizedAddress = normalizeSuiAddress(owner);
 		if (isValidSuiAddress(normalizedAddress)) {
@@ -116,10 +131,13 @@ export async function resolveOwnerAddress(
 	return normalizeSuiAddress(address);
 }
 
-async function dryRunTransaction(
-	transaction: Transaction,
-	client: SuigarClientBundle['client'],
-): Promise<RawDryRunResult> {
+async function dryRunTransaction({
+	transaction,
+	client,
+}: {
+	transaction: Transaction;
+	client: SuigarClientBundle['client'];
+}): Promise<RawDryRunResult> {
 	return client.core.simulateTransaction({
 		transaction,
 		include: {
@@ -130,10 +148,13 @@ async function dryRunTransaction(
 	});
 }
 
-function summarizeTransaction(
-	transaction: Transaction,
-	context: TransactionSummaryContext = {},
-): TransactionSummary {
+function summarizeTransaction({
+	transaction,
+	context = {},
+}: {
+	transaction: Transaction;
+	context?: TransactionSummaryContext;
+}): TransactionSummary {
 	let data: ReturnType<Transaction['getData']>;
 	try {
 		data = transaction.getData();
@@ -142,7 +163,10 @@ function summarizeTransaction(
 		return {
 			sender: null,
 			gasBudget,
-			gasBudgetDisplay: gasBudget == null ? null : formatBaseUnitAmount(gasBudget, SUI_DECIMALS),
+			gasBudgetDisplay:
+				gasBudget == null
+					? null
+					: formatBaseUnitAmount({ value: gasBudget, decimals: SUI_DECIMALS }),
 			gasPrice: null,
 			commandCount: 0,
 			commands: [],
@@ -183,7 +207,9 @@ function summarizeTransaction(
 		sender: data.sender ?? null,
 		gasBudget: data.gasData?.budget == null ? null : String(data.gasData.budget),
 		gasBudgetDisplay:
-			data.gasData?.budget == null ? null : formatBaseUnitAmount(data.gasData.budget, SUI_DECIMALS),
+			data.gasData?.budget == null
+				? null
+				: formatBaseUnitAmount({ value: data.gasData.budget, decimals: SUI_DECIMALS }),
 		gasPrice: data.gasData?.price == null ? null : String(data.gasData.price),
 		commandCount: commands.length,
 		commands,
@@ -212,11 +238,11 @@ export async function buildTransactionResult({
 	client: SuigarClientBundle['client'];
 	context: TransactionSummaryContext;
 }): Promise<BuildTransactionResult> {
-	const summary = summarizeTransaction(transaction, context);
+	const summary = summarizeTransaction({ transaction, context });
 	if (mode === 'dry-run') {
-		const rawDryRun = await dryRunTransaction(transaction, client);
+		const rawDryRun = await dryRunTransaction({ transaction, client });
 		const dryRun = toJsonValue(rawDryRun) as DryRunResult;
-		const dryRunSummary = summarizeDryRun(rawDryRun, context);
+		const dryRunSummary = summarizeDryRun({ dryRun: rawDryRun, context });
 		const errors = extractDryRunErrors(rawDryRun);
 		return {
 			mode,

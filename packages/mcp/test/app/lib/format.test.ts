@@ -113,16 +113,16 @@ describe('visibleDefinitionEntries', () => {
 
 describe('valueTone', () => {
 	it('marks successful values as success', () => {
-		expect(valueTone('Status', 'success')).toBe('success');
+		expect(valueTone({ label: 'Status', value: 'success' })).toBe('success');
 	});
 
 	it('marks failed and error values as error', () => {
-		expect(valueTone('Execution Error', 'pending')).toBe('error');
-		expect(valueTone('Status', 'failed')).toBe('error');
-		expect(valueTone('Status', false)).toBe('error');
+		expect(valueTone({ label: 'Execution Error', value: 'pending' })).toBe('error');
+		expect(valueTone({ label: 'Status', value: 'failed' })).toBe('error');
+		expect(valueTone({ label: 'Status', value: false })).toBe('error');
 	});
 
 	it('returns null for neutral values', () => {
-		expect(valueTone('Status', 'pending')).toBeNull();
+		expect(valueTone({ label: 'Status', value: 'pending' })).toBeNull();
 	});
 });

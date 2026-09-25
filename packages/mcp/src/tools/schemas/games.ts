@@ -69,7 +69,7 @@ export const coinflipInputSchema = stakeBuildInputSchema
 	})
 	.strict()
 	.superRefine((input, context) =>
-		requireTransactionFields(input, context, ['owner', 'stake', 'side']),
+		requireTransactionFields({ input, context, fields: ['owner', 'stake', 'side'] }),
 	);
 
 export const kenoInputSchema = stakeBuildInputSchema
@@ -82,7 +82,7 @@ export const kenoInputSchema = stakeBuildInputSchema
 	})
 	.strict()
 	.superRefine((input, context) =>
-		requireTransactionFields(input, context, ['owner', 'stake', 'configId', 'picks']),
+		requireTransactionFields({ input, context, fields: ['owner', 'stake', 'configId', 'picks'] }),
 	);
 
 export const limboInputSchema = stakeBuildInputSchema
@@ -91,7 +91,7 @@ export const limboInputSchema = stakeBuildInputSchema
 	})
 	.strict()
 	.superRefine((input, context) =>
-		requireTransactionFields(input, context, ['owner', 'stake', 'targetMultiplier']),
+		requireTransactionFields({ input, context, fields: ['owner', 'stake', 'targetMultiplier'] }),
 	);
 
 export const configIdInputSchema = stakeBuildInputSchema
@@ -100,7 +100,7 @@ export const configIdInputSchema = stakeBuildInputSchema
 	})
 	.strict()
 	.superRefine((input, context) =>
-		requireTransactionFields(input, context, ['owner', 'stake', 'configId']),
+		requireTransactionFields({ input, context, fields: ['owner', 'stake', 'configId'] }),
 	);
 
 export const rangeInputSchema = stakeBuildInputSchema
@@ -114,7 +114,11 @@ export const rangeInputSchema = stakeBuildInputSchema
 	})
 	.strict()
 	.superRefine((input, context) =>
-		requireTransactionFields(input, context, ['owner', 'stake', 'leftPoint', 'rightPoint']),
+		requireTransactionFields({
+			input,
+			context,
+			fields: ['owner', 'stake', 'leftPoint', 'rightPoint'],
+		}),
 	);
 
 export const soccerInputSchema = stakeBuildInputSchema
@@ -137,13 +141,11 @@ export const soccerInputSchema = stakeBuildInputSchema
 	})
 	.strict()
 	.superRefine((input, context) =>
-		requireTransactionFields(input, context, [
-			'owner',
-			'stake',
-			'configId',
-			'countryId',
-			'shotZoneId',
-		]),
+		requireTransactionFields({
+			input,
+			context,
+			fields: ['owner', 'stake', 'configId', 'countryId', 'shotZoneId'],
+		}),
 	);
 
 export const pvpCoinflipCreateInputSchema = commonBuildInputSchema
@@ -156,7 +158,7 @@ export const pvpCoinflipCreateInputSchema = commonBuildInputSchema
 	})
 	.strict()
 	.superRefine((input, context) =>
-		requireTransactionFields(input, context, ['owner', 'stake', 'creatorSide']),
+		requireTransactionFields({ input, context, fields: ['owner', 'stake', 'creatorSide'] }),
 	);
 
 export const pvpCoinflipJoinInputSchema = commonBuildInputSchema
@@ -165,7 +167,9 @@ export const pvpCoinflipJoinInputSchema = commonBuildInputSchema
 		coinType: z.string().min(1).optional().describe(COIN_TYPE_DESCRIPTION),
 	})
 	.strict()
-	.superRefine((input, context) => requireTransactionFields(input, context, ['owner', 'gameId']));
+	.superRefine((input, context) =>
+		requireTransactionFields({ input, context, fields: ['owner', 'gameId'] }),
+	);
 
 export const pvpCoinflipCancelInputSchema = cancelBuildInputSchema
 	.extend({
@@ -173,7 +177,9 @@ export const pvpCoinflipCancelInputSchema = cancelBuildInputSchema
 		coinType: z.string().min(1).optional().describe(COIN_TYPE_DESCRIPTION),
 	})
 	.strict()
-	.superRefine((input, context) => requireTransactionFields(input, context, ['owner', 'gameId']));
+	.superRefine((input, context) =>
+		requireTransactionFields({ input, context, fields: ['owner', 'gameId'] }),
+	);
 
 export type CommonBuildInput = z.input<typeof commonBuildInputSchema>;
 export type CoinflipInput = z.input<typeof coinflipInputSchema>;

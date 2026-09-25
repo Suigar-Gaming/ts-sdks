@@ -121,7 +121,7 @@ export function DefinitionList({ entries }: { entries: Array<DefinitionEntry> })
 		<dl className="grid grid-cols-1 gap-x-3 gap-y-2 sm:grid-cols-[minmax(92px,0.42fr)_minmax(0,1fr)]">
 			{visibleEntries.map(([label, value]) => {
 				const text = String(value);
-				const tone = valueTone(label, value);
+				const tone = valueTone({ label, value });
 				return (
 					<div className="contents" key={label}>
 						<dt className="text-muted-foreground flex min-h-8 items-center text-xs leading-5 font-bold">

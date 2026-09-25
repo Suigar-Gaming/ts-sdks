@@ -25,6 +25,8 @@ export const buildNftV1MintTransactionInputSchema = configInputSchema
 			.describe('Allow the SUI gas coin to be used for the NFT payment.'),
 	})
 	.strict()
-	.superRefine((input, context) => requireTransactionFields(input, context, ['owner', 'specId']));
+	.superRefine((input, context) =>
+		requireTransactionFields({ input, context, fields: ['owner', 'specId'] }),
+	);
 
 export type BuildNftV1MintTransactionInput = z.input<typeof buildNftV1MintTransactionInputSchema>;
