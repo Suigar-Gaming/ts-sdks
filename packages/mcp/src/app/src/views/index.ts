@@ -40,7 +40,7 @@ export function resolveAppView(payload: unknown): ResolvedAppView {
 	if (result.referral && !result.summary) {
 		return { coinBadge: null, title: 'Referral Rewards', View: ReferralView };
 	}
-	const coinBadge = createInspectorViewModel(payload, []).coinBadge;
+	const coinBadge = createInspectorViewModel({ payload, explicitErrors: [] }).coinBadge;
 	if (Array.isArray(result.ownedNfts)) {
 		return { coinBadge, title: 'NFT Collection', View: NftView };
 	}

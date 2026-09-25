@@ -13,8 +13,8 @@ const usdcCoinType = `${testAddress('d')}::usdc::USDC`;
 
 describe('createInspectorViewModel', () => {
 	it('derives transaction, event, and display data from a transaction result', () => {
-		const view = createInspectorViewModel(
-			{
+		const view = createInspectorViewModel({
+			payload: {
 				network: 'testnet',
 				summary: {
 					game: 'coinflip',
@@ -39,8 +39,8 @@ describe('createInspectorViewModel', () => {
 					],
 				},
 			},
-			[],
-		);
+			explicitErrors: [],
+		});
 
 		expect(view.coinBadge).toBe('SUI');
 		expect(view.transactionEntries).toContainEqual(['Stake', '1 SUI (1000000000 base units)']);
@@ -50,8 +50,8 @@ describe('createInspectorViewModel', () => {
 	});
 
 	it('presents SweetHouse and NFT transaction plans with feature context', () => {
-		const sweetHouseView = createInspectorViewModel(
-			{
+		const sweetHouseView = createInspectorViewModel({
+			payload: {
 				network: 'testnet',
 				plan: {
 					target: `${packageId}::sweethouse::redeem_request`,
@@ -65,16 +65,16 @@ describe('createInspectorViewModel', () => {
 					sweetHouseId: objectId,
 				},
 			},
-			[],
-		);
-		const nftView = createInspectorViewModel(
-			{
+			explicitErrors: [],
+		});
+		const nftView = createInspectorViewModel({
+			payload: {
 				network: 'testnet',
 				plan: { target: `${packageId}::nft::mint_to_sender`, requiredInputs: ['owner', 'specId'] },
 				nft: { packageId, factoryId: objectId },
 			},
-			[],
-		);
+			explicitErrors: [],
+		});
 
 		expect(sweetHouseView.contextEntries).toContainEqual(['Feature', 'SweetHouse']);
 		expect(sweetHouseView.contextEntries).toContainEqual(['Action', 'redeem-request']);
@@ -86,8 +86,8 @@ describe('createInspectorViewModel', () => {
 	});
 
 	it('recognizes feature metadata carried in built transaction summaries', () => {
-		const sweetHouseView = createInspectorViewModel(
-			{
+		const sweetHouseView = createInspectorViewModel({
+			payload: {
 				summary: {
 					coinType: usdcCoinType,
 					stake: '10000000',
@@ -95,16 +95,16 @@ describe('createInspectorViewModel', () => {
 					gameInputs: { sweetHouseAction: 'deposit' },
 				},
 			},
-			[],
-		);
-		const nftView = createInspectorViewModel(
-			{ summary: { gameInputs: { nftSpecId: '0xspec' } } },
-			[],
-		);
-		const referralView = createInspectorViewModel(
-			{ summary: { gameInputs: { referralClaim: 'commission' } } },
-			[],
-		);
+			explicitErrors: [],
+		});
+		const nftView = createInspectorViewModel({
+			payload: { summary: { gameInputs: { nftSpecId: '0xspec' } } },
+			explicitErrors: [],
+		});
+		const referralView = createInspectorViewModel({
+			payload: { summary: { gameInputs: { referralClaim: 'commission' } } },
+			explicitErrors: [],
+		});
 
 		expect(sweetHouseView.contextEntries).toContainEqual(['Feature', 'SweetHouse']);
 		expect(sweetHouseView.contextEntries).toContainEqual(['Action', 'deposit']);
@@ -117,9 +117,10 @@ describe('createInspectorViewModel', () => {
 	});
 
 	it('prioritizes explicit host errors over errors in the tool payload', () => {
-		const view = createInspectorViewModel({ errors: ['Server-side error'] }, [
-			'RangeError: unsupported coin',
-		]);
+		const view = createInspectorViewModel({
+			payload: { errors: ['Server-side error'] },
+			explicitErrors: ['RangeError: unsupported coin'],
+		});
 
 		expect(view.errors).toEqual(['RangeError: unsupported coin']);
 	});

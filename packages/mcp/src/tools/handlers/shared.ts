@@ -89,13 +89,17 @@ export function asTextResponse<T extends ToolTextResult['structuredContent']>(
 	};
 }
 
-export function coinMetadataForAmount(
-	config: McpConfig,
-	coinType?: string,
-): { coinType: string; decimals: number } {
-	const resolvedCoinType = resolveDefaultCoinType(config, coinType);
+export function coinMetadataForAmount({
+	config,
+	coinType,
+}: {
+	config: McpConfig;
+	coinType?: string;
+}): { coinType: string; decimals: number } {
+	const resolvedCoinType = resolveDefaultCoinType({ config, coinType });
 	const coin = Object.values(config.sdk.coins).find(
-		(metadata) => resolveDefaultCoinType(config, metadata.coinType) === resolvedCoinType,
+		(metadata) =>
+			resolveDefaultCoinType({ config, coinType: metadata.coinType }) === resolvedCoinType,
 	);
 
 	if (!coin) {
@@ -110,7 +114,7 @@ export function coinMetadataForAmount(
 	};
 }
 
-export function requireString(value: unknown, fieldName: string): string {
+export function requireString({ value, fieldName }: { value: unknown; fieldName: string }): string {
 	if (typeof value === 'string' && value.trim()) {
 		return value.trim();
 	}
@@ -118,36 +122,47 @@ export function requireString(value: unknown, fieldName: string): string {
 }
 
 export function requireGame(value: unknown): Game {
-	const game = requireString(value, 'game');
+	const game = requireString({ value, fieldName: 'game' });
 	if (GAMES.includes(game as Game)) {
 		return game as Game;
 	}
 	throw new RangeError(`Unsupported game: ${game}. Use one of: ${GAMES.join(', ')}.`);
 }
 
-function formatGameParameterValue(key: string, value: unknown, decimals: number): unknown {
+function formatGameParameterValue({
+	key,
+	value,
+	decimals,
+}: {
+	key: string;
+	value: unknown;
+	decimals: number;
+}): unknown {
 	if (Array.isArray(value)) {
-		return value.map((item) => formatGameParameterValue(key, item, decimals));
+		return value.map((item) => formatGameParameterValue({ key, value: item, decimals }));
 	}
 	if (value && typeof value === 'object') {
-		return formatGameParameters(value as Record<string, unknown>, decimals);
+		return formatGameParameters({ parameters: value as Record<string, unknown>, decimals });
 	}
 	return isAmountFieldName(key) &&
 		(typeof value === 'string' || typeof value === 'number' || typeof value === 'bigint')
 		? {
 				raw: String(value),
-				display: formatBaseUnitAmount(value, decimals),
+				display: formatBaseUnitAmount({ value, decimals }),
 			}
 		: value;
 }
 
-export function formatGameParameters(
-	parameters: Record<string, unknown>,
-	decimals: number,
-): Record<string, unknown> {
+export function formatGameParameters({
+	parameters,
+	decimals,
+}: {
+	parameters: Record<string, unknown>;
+	decimals: number;
+}): Record<string, unknown> {
 	const formatted: Record<string, ReturnType<typeof formatGameParameterValue>> = {};
 	for (const key of Object.keys(parameters)) {
-		formatted[key] = formatGameParameterValue(key, parameters[key], decimals);
+		formatted[key] = formatGameParameterValue({ key, value: parameters[key], decimals });
 	}
 	return formatted;
 }
@@ -173,10 +188,13 @@ function coinSymbol(coinType: string): string {
 	}
 }
 
-export async function resolveCoinDisplayMetadata(
-	coinType: string,
-	bundle: SuigarClientBundle,
-): Promise<{ decimals: number | undefined; symbol: string }> {
+export async function resolveCoinDisplayMetadata({
+	coinType,
+	bundle,
+}: {
+	coinType: string;
+	bundle: SuigarClientBundle;
+}): Promise<{ decimals: number | undefined; symbol: string }> {
 	const configuredCoin = Object.values(bundle.config.sdk.coins).find(
 		(coin) => coin.coinType === coinType,
 	);
@@ -204,16 +222,19 @@ export async function resolveCoinDisplayMetadata(
 	return { decimals: undefined, symbol: coinSymbol(coinType) };
 }
 
-export async function resolveWalletOwner(
+export async function resolveWalletOwner({
+	input,
+	bundle,
+}: {
 	input: {
 		owner?: string;
 		network?: 'mainnet' | 'testnet';
 		sessionWalletId?: string;
-	},
-	bundle: SuigarClientBundle,
-): Promise<string> {
+	};
+	bundle: SuigarClientBundle;
+}): Promise<string> {
 	if (input.owner) {
-		return await resolveOwnerAddress(input.owner, bundle);
+		return await resolveOwnerAddress({ owner: input.owner, bundle });
 	}
 	if (input.sessionWalletId) {
 		const sessionWallet = await loadSessionWallet(input.sessionWalletId);
@@ -269,7 +290,13 @@ export function supportedFeatures(): ReadConfigResult['supportedFeatures'] {
 	];
 }
 
-export function getSuigarPackageId(config: McpConfig, pkg: ResolvablePackage): string {
+export function getSuigarPackageId({
+	config,
+	pkg,
+}: {
+	config: McpConfig;
+	pkg: ResolvablePackage;
+}): string {
 	const packageId =
 		config.sdk.packageIds[SUIGAR_PACKAGE_KEYS[pkg]] ?? SUIGAR_PACKAGE_FALLBACKS[pkg];
 	if (!packageId) {

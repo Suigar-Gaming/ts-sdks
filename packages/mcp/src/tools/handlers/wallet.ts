@@ -46,7 +46,7 @@ export async function getWalletBalancesTool(
 	input: GetWalletBalancesInput,
 ): Promise<ToolTextResult> {
 	const bundle = createSuigarClient(getConfigInput(input));
-	const owner = await resolveWalletOwner(input, bundle);
+	const owner = await resolveWalletOwner({ input, bundle });
 	const balances = [];
 	let cursor: string | null = null;
 	let hasNextPage = false;
@@ -61,7 +61,10 @@ export async function getWalletBalancesTool(
 		await Promise.all(
 			balances.map(
 				async (balance) =>
-					[balance.coinType, await resolveCoinDisplayMetadata(balance.coinType, bundle)] as const,
+					[
+						balance.coinType,
+						await resolveCoinDisplayMetadata({ coinType: balance.coinType, bundle }),
+					] as const,
 			),
 		),
 	);
@@ -74,7 +77,7 @@ export async function getWalletBalancesTool(
 				const coin = metadata.get(balance.coinType)!;
 				return {
 					...balance,
-					balanceDisplay: formatBaseUnitAmount(balance.balance, coin.decimals),
+					balanceDisplay: formatBaseUnitAmount({ value: balance.balance, decimals: coin.decimals }),
 					symbol: coin.symbol,
 				};
 			}),
@@ -84,7 +87,7 @@ export async function getWalletBalancesTool(
 
 export async function listWalletCoinsTool(input: ListWalletCoinsInput): Promise<ToolTextResult> {
 	const bundle = createSuigarClient(getConfigInput(input));
-	const owner = await resolveWalletOwner(input, bundle);
+	const owner = await resolveWalletOwner({ input, bundle });
 
 	const result = await bundle.client.core.listCoins({
 		owner,
@@ -92,10 +95,10 @@ export async function listWalletCoinsTool(input: ListWalletCoinsInput): Promise<
 		cursor: input.cursor,
 		limit: input.limit ?? 50,
 	});
-	const metadata = await resolveCoinDisplayMetadata(
-		input.coinType ?? bundle.config.sdk.coins.sui.coinType,
+	const metadata = await resolveCoinDisplayMetadata({
+		coinType: input.coinType ?? bundle.config.sdk.coins.sui.coinType,
 		bundle,
-	);
+	});
 	return asTextResponse({
 		network: bundle.config.network,
 		config: bundle.config,
@@ -104,7 +107,10 @@ export async function listWalletCoinsTool(input: ListWalletCoinsInput): Promise<
 			coins: result.objects.map((coin) => {
 				return {
 					...coin,
-					balanceDisplay: formatBaseUnitAmount(coin.balance, metadata.decimals),
+					balanceDisplay: formatBaseUnitAmount({
+						value: coin.balance,
+						decimals: metadata.decimals,
+					}),
 					symbol: metadata.symbol,
 				};
 			}),
@@ -185,7 +191,7 @@ export async function suigarLogoutTool(input: ConnectionInput): Promise<ToolText
 export async function setupSessionWalletTool(input: SessionWalletInput): Promise<ToolTextResult> {
 	const { config } = createSuigarClient(getConfigInput(input));
 	const setup = await createSessionWalletSetup({
-		accountUrl: new URL('/account', resolveWebOrigin(config.network)).toString(),
+		accountUrl: new URL('/account', resolveWebOrigin({ network: config.network })).toString(),
 	});
 	return asTextResponse({
 		network: config.network,
@@ -207,7 +213,10 @@ export async function getSessionWalletTool(input: SessionWalletInput): Promise<T
 	]);
 	if (!wallet) {
 		const setup = await createSessionWalletSetup({
-			accountUrl: new URL('/account', resolveWebOrigin(bundle.config.network)).toString(),
+			accountUrl: new URL(
+				'/account',
+				resolveWebOrigin({ network: bundle.config.network }),
+			).toString(),
 		});
 		return asTextResponse({
 			network: bundle.config.network,
@@ -240,15 +249,21 @@ export async function getSessionWalletTool(input: SessionWalletInput): Promise<T
 		await Promise.all(
 			balances.map(
 				async (balance) =>
-					[balance.coinType, await resolveCoinDisplayMetadata(balance.coinType, bundle)] as const,
+					[
+						balance.coinType,
+						await resolveCoinDisplayMetadata({ coinType: balance.coinType, bundle }),
+					] as const,
 			),
 		),
 	);
-	const addressQrCodeDataUrl = createQrCodeDataUrl(wallet.address);
+	const addressQrCodeDataUrl = createQrCodeDataUrl({ value: wallet.address });
 	const pairedWallet = credentials.profiles[bundle.config.network];
 	const fundingUrl = pairedWallet
 		? (() => {
-				const url = new URL('/fund-session-wallet', resolveWebOrigin(bundle.config.network));
+				const url = new URL(
+					'/fund-session-wallet',
+					resolveWebOrigin({ network: bundle.config.network }),
+				);
 				url.searchParams.set('destination', wallet.address);
 				url.searchParams.set('owner', pairedWallet.address);
 				url.searchParams.set('network', bundle.config.network);
@@ -267,7 +282,7 @@ export async function getSessionWalletTool(input: SessionWalletInput): Promise<T
 				const coin = metadata.get(balance.coinType)!;
 				return {
 					...balance,
-					balanceDisplay: formatBaseUnitAmount(balance.balance, coin.decimals),
+					balanceDisplay: formatBaseUnitAmount({ value: balance.balance, decimals: coin.decimals }),
 					symbol: coin.symbol,
 				};
 			}),
@@ -297,7 +312,7 @@ export async function fundSessionWalletTool(input: SessionWalletInput): Promise<
 		throw new Error('No session wallet exists. Call "setup_session_wallet" first.');
 	}
 
-	const fundingUrl = new URL('/fund-session-wallet', resolveWebOrigin(config.network));
+	const fundingUrl = new URL('/fund-session-wallet', resolveWebOrigin({ network: config.network }));
 	fundingUrl.searchParams.set('destination', sessionWallet.address);
 	fundingUrl.searchParams.set('owner', profile.address);
 	fundingUrl.searchParams.set('network', config.network);

@@ -41,8 +41,10 @@ describe('network resolution', () => {
 	});
 
 	it('uses default provider URLs unless one is provided', () => {
-		expect(getProviderUrl('testnet')).toBe('https://fullnode.testnet.sui.io:443');
-		expect(getProviderUrl('mainnet', 'https://example.com')).toBe('https://example.com');
+		expect(getProviderUrl({ network: 'testnet' })).toBe('https://fullnode.testnet.sui.io:443');
+		expect(getProviderUrl({ network: 'mainnet', providerUrl: 'https://example.com' })).toBe(
+			'https://example.com',
+		);
 	});
 });
 
@@ -60,10 +62,10 @@ describe('coin type resolution', () => {
 			},
 		} as McpConfig;
 
-		expect(resolveDefaultCoinType(config)).toBe(
+		expect(resolveDefaultCoinType({ config })).toBe(
 			'0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI',
 		);
-		expect(resolveDefaultCoinType(config, customCoinType)).toBe(customCoinType);
+		expect(resolveDefaultCoinType({ config, coinType: customCoinType })).toBe(customCoinType);
 	});
 });
 
@@ -71,37 +73,39 @@ describe('owner resolution', () => {
 	it('normalizes raw Sui addresses without a SuiNS lookup', async () => {
 		const lookup = vi.fn<ResolveNameServiceAddress>();
 
-		await expect(resolveOwnerAddress(owner, createResolverBundle(lookup))).resolves.toBe(owner);
+		await expect(
+			resolveOwnerAddress({ owner, bundle: createResolverBundle(lookup) }),
+		).resolves.toBe(owner);
 		expect(lookup).not.toHaveBeenCalled();
 	});
 
 	it('resolves SuiNS names and subnames before transaction construction', async () => {
 		const lookup = vi.fn<ResolveNameServiceAddress>().mockResolvedValue({ address: resolvedOwner });
 
-		await expect(resolveOwnerAddress('furbor.sui', createResolverBundle(lookup))).resolves.toBe(
-			resolvedOwner,
-		);
+		await expect(
+			resolveOwnerAddress({ owner: 'furbor.sui', bundle: createResolverBundle(lookup) }),
+		).resolves.toBe(resolvedOwner);
 		expect(lookup).toHaveBeenCalledWith({ name: 'furbor.sui' });
 
 		await expect(
-			resolveOwnerAddress('desk.furbor.sui', createResolverBundle(lookup)),
+			resolveOwnerAddress({ owner: 'desk.furbor.sui', bundle: createResolverBundle(lookup) }),
 		).resolves.toBe(resolvedOwner);
 		expect(lookup).toHaveBeenLastCalledWith({ name: 'desk.furbor.sui' });
 	});
 
 	it('rejects invalid or unresolved SuiNS owners with actionable errors', async () => {
 		await expect(
-			resolveOwnerAddress(
-				'not a name',
-				createResolverBundle(async () => ({ address: resolvedOwner })),
-			),
+			resolveOwnerAddress({
+				owner: 'not a name',
+				bundle: createResolverBundle(async () => ({ address: resolvedOwner })),
+			}),
 		).rejects.toThrow(/Sui address or SuiNS name/u);
 
 		await expect(
-			resolveOwnerAddress(
-				'missing.sui',
-				createResolverBundle(async () => ({ address: null })),
-			),
+			resolveOwnerAddress({
+				owner: 'missing.sui',
+				bundle: createResolverBundle(async () => ({ address: null })),
+			}),
 		).rejects.toThrow(/did not resolve/u);
 	});
 });

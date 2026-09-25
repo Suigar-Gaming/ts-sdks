@@ -39,11 +39,11 @@ export const buildReferralCommissionClaimTransactionInputSchema = referralClaimI
 		coinType: z.string().min(1).optional().describe(COIN_TYPE_DESCRIPTION),
 	})
 	.strict()
-	.superRefine((input, context) => requireTransactionFields(input, context, ['owner']));
+	.superRefine((input, context) => requireTransactionFields({ input, context, fields: ['owner'] }));
 
 export const buildReferralLevelUpUsdRewardsClaimTransactionInputSchema = referralClaimInputSchema
 	.strict()
-	.superRefine((input, context) => requireTransactionFields(input, context, ['owner']));
+	.superRefine((input, context) => requireTransactionFields({ input, context, fields: ['owner'] }));
 
 export type GetReferralCommissionInput = z.input<typeof getReferralCommissionInputSchema>;
 export type GetReferralLevelUpUsdRewardsInput = z.input<

@@ -99,8 +99,11 @@ describe('dry-run summaries', () => {
 			},
 		};
 
-		const summary = summarizeDryRun(dryRun as never, {
-			coinDecimals: 9,
+		const summary = summarizeDryRun({
+			dryRun: dryRun as never,
+			context: {
+				coinDecimals: 9,
+			},
 		});
 
 		expect(summary).toMatchObject({
@@ -178,8 +181,11 @@ describe('dry-run summaries', () => {
 			},
 		};
 
-		const summary = summarizeDryRun(dryRun as never, {
-			coinDecimals: 9,
+		const summary = summarizeDryRun({
+			dryRun: dryRun as never,
+			context: {
+				coinDecimals: 9,
+			},
 		});
 
 		expect(summary.events).toMatchObject([
@@ -208,8 +214,8 @@ describe('dry-run summaries', () => {
 	});
 
 	it('summarizes failed dry-runs without gas, balance, or event data', () => {
-		const summary = summarizeDryRun(
-			{
+		const summary = summarizeDryRun({
+			dryRun: {
 				$kind: 'FailedTransaction',
 				FailedTransaction: {
 					effects: {
@@ -222,8 +228,8 @@ describe('dry-run summaries', () => {
 					},
 				},
 			} as never,
-			{ coinDecimals: 9 },
-		);
+			context: { coinDecimals: 9 },
+		});
 
 		expect(summary).toEqual({
 			success: false,

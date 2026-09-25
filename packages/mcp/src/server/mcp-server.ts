@@ -45,7 +45,7 @@ export function createSuigarMcpServer(): McpServer {
 		},
 	} as const;
 
-	registerSuigarTools(server, APP_TOOL_META);
+	registerSuigarTools({ server, appToolMeta: APP_TOOL_META });
 
 	return server;
 }

@@ -63,7 +63,7 @@ export function toJsonValue(value: unknown): JsonValue | undefined {
 	return undefined;
 }
 
-function collectStrings(value: unknown, path: Array<string>): Array<string> {
+function collectStrings({ value, path }: { value: unknown; path: Array<string> }): Array<string> {
 	if (!isRecord(value)) {
 		return [];
 	}
@@ -77,7 +77,7 @@ function collectStrings(value: unknown, path: Array<string>): Array<string> {
 			return next.filter((item): item is string => typeof item === 'string');
 		}
 		if (isRecord(next)) {
-			return collectStrings(next, path);
+			return collectStrings({ value: next, path });
 		}
 		return [];
 	});
@@ -90,19 +90,31 @@ export function extractDryRunErrors(dryRun: RawDryRunResult): Array<string> {
 	const errorSources = [source, effects, status].filter(isRecord);
 
 	const errors = errorSources.flatMap((item) =>
-		collectStrings(item, ['error', 'cleverError', 'message']),
+		collectStrings({ value: item, path: ['error', 'cleverError', 'message'] }),
 	);
 	return [...new Set(errors)];
 }
 
-function stringField(record: Record<string, unknown>, key: string): string | undefined {
+function stringField({
+	record,
+	key,
+}: {
+	record: Record<string, unknown>;
+	key: string;
+}): string | undefined {
 	const value = record[key];
 	return typeof value === 'string' || typeof value === 'number' || typeof value === 'bigint'
 		? String(value)
 		: undefined;
 }
 
-function gasUsedSummary(effects: unknown, decimals?: number): DryRunSummary['gasUsed'] {
+function gasUsedSummary({
+	effects,
+	decimals,
+}: {
+	effects: unknown;
+	decimals?: number;
+}): DryRunSummary['gasUsed'] {
 	const gasUsed = isRecord(effects) ? effects.gasUsed : undefined;
 	if (!isRecord(gasUsed)) {
 		return {
@@ -114,28 +126,31 @@ function gasUsedSummary(effects: unknown, decimals?: number): DryRunSummary['gas
 		};
 	}
 
-	const computation = stringField(gasUsed, 'computationCost');
-	const storage = stringField(gasUsed, 'storageCost');
-	const rebate = stringField(gasUsed, 'storageRebate');
-	const nonRefundableStorageFee = stringField(gasUsed, 'nonRefundableStorageFee');
+	const computation = stringField({ record: gasUsed, key: 'computationCost' });
+	const storage = stringField({ record: gasUsed, key: 'storageCost' });
+	const rebate = stringField({ record: gasUsed, key: 'storageRebate' });
+	const nonRefundableStorageFee = stringField({ record: gasUsed, key: 'nonRefundableStorageFee' });
 	const net =
 		computation && storage && rebate
 			? String(-(BigInt(computation) + BigInt(storage) - BigInt(rebate)))
 			: undefined;
 
 	return {
-		computation: formatAmount(computation, decimals),
-		storage: formatAmount(storage, decimals),
-		rebate: formatAmount(rebate, decimals),
-		nonRefundableStorageFee: formatAmount(nonRefundableStorageFee, decimals),
-		net: formatAmount(net, decimals),
+		computation: formatAmount({ value: computation, decimals }),
+		storage: formatAmount({ value: storage, decimals }),
+		rebate: formatAmount({ value: rebate, decimals }),
+		nonRefundableStorageFee: formatAmount({ value: nonRefundableStorageFee, decimals }),
+		net: formatAmount({ value: net, decimals }),
 	};
 }
 
-function eventFields(
-	fields: Record<string, unknown>,
-	decimals?: number,
-): Record<string, JsonValue> {
+function eventFields({
+	fields,
+	decimals,
+}: {
+	fields: Record<string, unknown>;
+	decimals?: number;
+}): Record<string, JsonValue> {
 	const formattedFields: Record<string, JsonValue> = {};
 	for (const key in fields) {
 		if (!Object.hasOwn(fields, key)) {
@@ -150,7 +165,7 @@ function eventFields(
 
 		formattedFields[key] = jsonValue;
 		if (isAmountFieldName(key)) {
-			const displayValue = formatAmount(value, decimals);
+			const displayValue = formatAmount({ value, decimals });
 			if (displayValue) {
 				formattedFields[`${key}_display`] = displayValue.display;
 			}
@@ -159,10 +174,13 @@ function eventFields(
 	return formattedFields;
 }
 
-function parseDryRunEvent(
-	event: Record<string, unknown>,
-	eventType: string,
-): ReturnType<typeof parseGameEvent> {
+function parseDryRunEvent({
+	event,
+	eventType,
+}: {
+	event: Record<string, unknown>;
+	eventType: string;
+}): ReturnType<typeof parseGameEvent> {
 	const module =
 		typeof event.module === 'string'
 			? event.module
@@ -199,7 +217,13 @@ function parseDryRunEvent(
 		: null;
 }
 
-function summarizeDryRunEvent(event: unknown, decimals?: number): DryRunEventSummary | null {
+function summarizeDryRunEvent({
+	event,
+	decimals,
+}: {
+	event: unknown;
+	decimals?: number;
+}): DryRunEventSummary | null {
 	if (!isRecord(event)) {
 		return null;
 	}
@@ -224,7 +248,7 @@ function summarizeDryRunEvent(event: unknown, decimals?: number): DryRunEventSum
 	let gameEvent: ReturnType<typeof parseDryRunEvent> = null;
 
 	try {
-		gameEvent = parseDryRunEvent(event, eventType);
+		gameEvent = parseDryRunEvent({ event, eventType });
 		if (gameEvent && event.bcs instanceof Uint8Array) {
 			const suigarEvent = parseSuigarEvent({
 				...event,
@@ -240,10 +264,10 @@ function summarizeDryRunEvent(event: unknown, decimals?: number): DryRunEventSum
 				...baseSummary,
 				game: suigarEvent.game,
 				event: suigarEvent.event.type,
-				fields: eventFields(
-					{ ...data, ...(details ? { game_details: details, ...details } : {}) },
+				fields: eventFields({
+					fields: { ...data, ...(details ? { game_details: details, ...details } : {}) },
 					decimals,
-				),
+				}),
 			};
 		}
 	} catch {
@@ -264,15 +288,18 @@ function summarizeDryRunEvent(event: unknown, decimals?: number): DryRunEventSum
 							event: gameEvent.event,
 						}
 					: {}),
-				fields: eventFields(json, decimals),
+				fields: eventFields({ fields: json, decimals }),
 			}
 		: null;
 }
 
-export function summarizeDryRun(
-	dryRun: RawDryRunResult,
-	context: TransactionSummaryFormattingContext = {},
-): DryRunSummary {
+export function summarizeDryRun({
+	dryRun,
+	context = {},
+}: {
+	dryRun: RawDryRunResult;
+	context?: TransactionSummaryFormattingContext;
+}): DryRunSummary {
 	const transaction = getDryRunTransaction(dryRun);
 	const transactionRecord: Record<string, unknown> = isRecord(transaction) ? transaction : {};
 	const effects = transactionRecord.effects;
@@ -294,7 +321,7 @@ export function summarizeDryRun(
 							address: typeof change.address === 'string' ? change.address : '',
 							coinType: typeof change.coinType === 'string' ? change.coinType : '',
 							amount:
-								formatAmount(change.amount, context.coinDecimals) ??
+								formatAmount({ value: change.amount, decimals: context.coinDecimals }) ??
 								({
 									raw:
 										typeof rawAmount === 'string' ||
@@ -313,7 +340,7 @@ export function summarizeDryRun(
 		: [];
 	const events = Array.isArray(transactionRecord.events)
 		? transactionRecord.events.reduce<Array<DryRunEventSummary>>((summaries, event) => {
-				const summary = summarizeDryRunEvent(event, context.coinDecimals);
+				const summary = summarizeDryRunEvent({ event, decimals: context.coinDecimals });
 				if (summary) {
 					summaries.push(summary);
 				}
@@ -324,7 +351,7 @@ export function summarizeDryRun(
 	return {
 		success,
 		error,
-		gasUsed: gasUsedSummary(effects, SUI_DECIMALS),
+		gasUsed: gasUsedSummary({ effects, decimals: SUI_DECIMALS }),
 		balanceChanges,
 		events,
 	};

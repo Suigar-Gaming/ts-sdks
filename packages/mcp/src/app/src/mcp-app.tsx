@@ -57,7 +57,13 @@ type AppViewAction =
 			payload: unknown;
 	  };
 
-function reducer(state: AppViewState, action: AppViewAction): AppViewState {
+function reduceAppViewState({
+	state,
+	action,
+}: {
+	state: AppViewState;
+	action: AppViewAction;
+}): AppViewState {
 	switch (action.type) {
 		case 'host-context':
 			return action.context
@@ -86,6 +92,10 @@ function reducer(state: AppViewState, action: AppViewAction): AppViewState {
 				},
 			};
 	}
+}
+
+function reducer(state: AppViewState, action: AppViewAction): AppViewState {
+	return reduceAppViewState({ state, action });
 }
 
 export function SuigarInspectorApp(): JSX.Element | null {

@@ -87,7 +87,7 @@ export async function runSuigarCli(argv: Array<string> = hideBin(process.argv)):
 				const network = args.network as SuigarNetwork;
 				const bridge = await createLoginBridge({
 					network,
-					webOrigin: resolveWebOrigin(network, bridgeArgs.webUrl),
+					webOrigin: resolveWebOrigin({ network, webUrl: bridgeArgs.webUrl }),
 					...getBridgeOptions(bridgeArgs),
 				});
 				process.stderr.write(`Open this URL to connect your wallet:\n${bridge.url}\n`);
@@ -131,7 +131,7 @@ export async function runSuigarCli(argv: Array<string> = hideBin(process.argv)):
 							await createLogoutBridge({
 								network: logoutNetwork,
 								all: true,
-								webOrigin: resolveWebOrigin(logoutNetwork),
+								webOrigin: resolveWebOrigin({ network: logoutNetwork }),
 								...bridgeOptions,
 							}),
 						);
@@ -141,7 +141,7 @@ export async function runSuigarCli(argv: Array<string> = hideBin(process.argv)):
 						await createLogoutBridge({
 							network: args.all ? undefined : network,
 							all: args.all,
-							webOrigin: resolveWebOrigin(network, bridgeArgs.webUrl),
+							webOrigin: resolveWebOrigin({ network, webUrl: bridgeArgs.webUrl }),
 							...bridgeOptions,
 						}),
 					);

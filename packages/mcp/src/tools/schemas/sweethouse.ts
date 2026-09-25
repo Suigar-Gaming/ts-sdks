@@ -46,7 +46,9 @@ export const buildSweetHouseDepositTransactionInputSchema = sweethouseBuildInput
 			.describe('Allow the SUI gas coin to be used for native SUI deposits.'),
 	})
 	.strict()
-	.superRefine((input, context) => requireTransactionFields(input, context, ['owner', 'amount']));
+	.superRefine((input, context) =>
+		requireTransactionFields({ input, context, fields: ['owner', 'amount'] }),
+	);
 
 export const buildSweetHouseRedeemRequestTransactionInputSchema = sweethouseBuildInputSchema
 	.extend({
@@ -57,7 +59,9 @@ export const buildSweetHouseRedeemRequestTransactionInputSchema = sweethouseBuil
 			),
 	})
 	.strict()
-	.superRefine((input, context) => requireTransactionFields(input, context, ['owner', 'amount']));
+	.superRefine((input, context) =>
+		requireTransactionFields({ input, context, fields: ['owner', 'amount'] }),
+	);
 
 export const buildSweetHouseClaimOwnRedeemRequestAfterDelayTransactionInputSchema =
 	sweethouseBuildInputSchema
@@ -66,7 +70,7 @@ export const buildSweetHouseClaimOwnRedeemRequestAfterDelayTransactionInputSchem
 		})
 		.strict()
 		.superRefine((input, context) =>
-			requireTransactionFields(input, context, ['owner', 'requestId']),
+			requireTransactionFields({ input, context, fields: ['owner', 'requestId'] }),
 		);
 
 export type BuildSweetHouseDepositTransactionInput = z.input<

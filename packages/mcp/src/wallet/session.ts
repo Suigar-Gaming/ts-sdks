@@ -112,13 +112,17 @@ function signerFromPrivateKey(privateKey: string): Keypair {
 	}
 }
 
-async function persistSessionWallet(
-	signer: Keypair,
-	source: SessionWallet['source'],
-	name: string,
-): Promise<SessionWallet> {
+async function persistSessionWallet({
+	signer,
+	source,
+	name,
+}: {
+	signer: Keypair;
+	source: SessionWallet['source'];
+	name: string;
+}): Promise<SessionWallet> {
 	const id = randomUuid();
-	await writeSessionWalletSecret(id, signer.getSecretKey());
+	await writeSessionWalletSecret({ id, secret: signer.getSecretKey() });
 	const wallet: SessionWallet = {
 		id,
 		name: name.trim() || `Session ${new Date().toLocaleDateString('en-CA')}`,
@@ -130,7 +134,13 @@ async function persistSessionWallet(
 	return wallet;
 }
 
-async function writeSessionWalletSecret(id: string, secret: string): Promise<void> {
+async function writeSessionWalletSecret({
+	id,
+	secret,
+}: {
+	id: string;
+	secret: string;
+}): Promise<void> {
 	try {
 		(await keychain(id)).setPassword(secret);
 	} catch (error) {
@@ -143,12 +153,16 @@ async function writeSessionWalletSecret(id: string, secret: string): Promise<voi
 	}
 }
 
-function persistMnemonicSessionWallet(
-	mnemonic: string,
-	source: Extract<SessionWallet['source'], 'created' | 'imported'>,
-	name: string,
-): Promise<SessionWallet> {
-	return persistSessionWallet(Ed25519Keypair.deriveKeypair(mnemonic), source, name);
+function persistMnemonicSessionWallet({
+	mnemonic,
+	source,
+	name,
+}: {
+	mnemonic: string;
+	source: Extract<SessionWallet['source'], 'created' | 'imported'>;
+	name: string;
+}): Promise<SessionWallet> {
+	return persistSessionWallet({ signer: Ed25519Keypair.deriveKeypair(mnemonic), source, name });
 }
 
 const styles = `<style>
@@ -193,7 +207,7 @@ function page({
 	});
 }
 
-function success(wallet: SessionWallet, accountUrl?: string): string {
+function success({ wallet, accountUrl }: { wallet: SessionWallet; accountUrl?: string }): string {
 	const destination = accountUrl
 		? (() => {
 				const url = new URL(accountUrl);
@@ -236,11 +250,11 @@ function readForm(request: IncomingMessage): Promise<URLSearchParams> {
 export async function createSessionWalletSetup({
 	accountUrl,
 }: SessionWalletSetupOptions = {}): Promise<{ setupUrl: string }> {
-	const resolvedTimeoutMs = resolvePositiveInteger(
-		process.env[SESSION_SETUP_TIMEOUT_MS_ENV],
-		'Session wallet setup timeout',
-		DEFAULT_SESSION_SETUP_TIMEOUT_MS,
-	);
+	const resolvedTimeoutMs = resolvePositiveInteger({
+		value: process.env[SESSION_SETUP_TIMEOUT_MS_ENV],
+		name: 'Session wallet setup timeout',
+		defaultValue: DEFAULT_SESSION_SETUP_TIMEOUT_MS,
+	});
 	const state = randomHex(32);
 	const mnemonic = generateMnemonic(wordlist, 256);
 	const currentWallet = await loadSessionWallet();
@@ -263,16 +277,16 @@ export async function createSessionWalletSetup({
 		}
 		try {
 			const form = await readForm(request);
-			if (!(await equalBytes(hex.decode(form.get('state') ?? ''), hex.decode(state)))) {
+			if (!(await equalBytes({ a: hex.decode(form.get('state') ?? ''), b: hex.decode(state) }))) {
 				throw new Error('Invalid setup state.');
 			}
 			const wallet =
 				url.pathname === '/import-private-key'
-					? await persistSessionWallet(
-							signerFromPrivateKey(form.get('privateKey')?.trim() ?? ''),
-							'private-key',
-							form.get('name')?.trim() ?? '',
-						)
+					? await persistSessionWallet({
+							signer: signerFromPrivateKey(form.get('privateKey')?.trim() ?? ''),
+							source: 'private-key',
+							name: form.get('name')?.trim() ?? '',
+						})
 					: await (async () => {
 							const phrase = form.get('mnemonic')?.trim().replace(/\s+/gu, ' ') ?? '';
 							if (!validateMnemonic(phrase, wordlist)) {
@@ -281,17 +295,17 @@ export async function createSessionWalletSetup({
 							if (url.pathname === '/save' && form.get('confirmed') !== 'on') {
 								throw new Error('Confirm that you saved the recovery phrase.');
 							}
-							return persistMnemonicSessionWallet(
-								phrase,
-								url.pathname === '/save' ? 'created' : 'imported',
-								form.get('name')?.trim() ?? '',
-							);
+							return persistMnemonicSessionWallet({
+								mnemonic: phrase,
+								source: url.pathname === '/save' ? 'created' : 'imported',
+								name: form.get('name')?.trim() ?? '',
+							});
 						})();
 			response.writeHead(200, {
 				'content-type': 'text/html; charset=utf-8',
 				'cache-control': 'no-store',
 			});
-			response.end(success(wallet, accountUrl));
+			response.end(success({ wallet, accountUrl }));
 			setTimeout(() => server.close(), 500).unref();
 		} catch (error) {
 			response.writeHead(400, {

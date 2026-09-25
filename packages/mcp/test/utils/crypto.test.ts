@@ -15,8 +15,14 @@ describe('crypto utilities', () => {
 	});
 
 	it('compares byte arrays using the native Node implementation when available', async () => {
-		expect(await equalBytes(new Uint8Array([1, 2, 3]), new Uint8Array([1, 2, 3]))).toBe(true);
-		expect(await equalBytes(new Uint8Array([1, 2, 3]), new Uint8Array([1, 2, 4]))).toBe(false);
-		expect(await equalBytes(new Uint8Array([1, 2]), new Uint8Array([1, 2, 3]))).toBe(false);
+		expect(await equalBytes({ a: new Uint8Array([1, 2, 3]), b: new Uint8Array([1, 2, 3]) })).toBe(
+			true,
+		);
+		expect(await equalBytes({ a: new Uint8Array([1, 2, 3]), b: new Uint8Array([1, 2, 4]) })).toBe(
+			false,
+		);
+		expect(await equalBytes({ a: new Uint8Array([1, 2]), b: new Uint8Array([1, 2, 3]) })).toBe(
+			false,
+		);
 	});
 });
