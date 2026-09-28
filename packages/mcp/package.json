@@ -92,7 +92,7 @@
 		"lint:fix": "pnpm run oxlint:fix && pnpm run oxfmt:fix"
 	},
 	"dependencies": {
-		"@modelcontextprotocol/ext-apps": "^2.0.0",
+		"@modelcontextprotocol/ext-apps": "^2.0.3",
 		"@modelcontextprotocol/server": "^2.1.0",
 		"@mysten/bcs": "catalog:mysten",
 		"@mysten/sui": "catalog:mysten",
