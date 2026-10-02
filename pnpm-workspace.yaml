@@ -13,7 +13,7 @@ catalogs:
     '@mysten/codegen': ^0.12.16
     '@mysten/sui': ^2.33.2
   test:
-    'vitest': ^5.0.2
+    'vitest': ^5.0.3
   tooling:
     '@tailwindcss/postcss': ^4.3.3
     '@tailwindcss/vite': ^4.3.3
