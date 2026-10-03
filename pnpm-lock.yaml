@@ -181,11 +181,11 @@ catalogs:
       specifier: ^2.1.2
       version: 2.1.2
     '@mysten/codegen':
-      specifier: ^0.12.16
-      version: 0.12.16
+      specifier: ^0.12.17
+      version: 0.12.17
     '@mysten/sui':
-      specifier: ^2.33.2
-      version: 2.33.2
+      specifier: ^2.34.0
+      version: 2.34.0
   test:
     vitest:
       specifier: ^5.0.3
@@ -258,8 +258,8 @@ importers:
         specifier: ^6.1.3
         version: 6.1.3
       turbo:
-        specifier: ^2.11.5
-        version: 2.11.5
+        specifier: ^2.11.6
+        version: 2.11.6
 
   packages/mcp:
     dependencies:
@@ -274,7 +274,7 @@ importers:
         version: 2.1.2
       '@mysten/sui':
         specifier: catalog:mysten
-        version: 2.33.2(typescript@7.0.2)
+        version: 2.34.0(typescript@7.0.2)
       '@napi-rs/keyring':
         specifier: ^2.1.0
         version: 2.1.0
@@ -320,7 +320,7 @@ importers:
         version: 2.2.0
       '@tailwindcss/vite':
         specifier: catalog:tooling
-        version: 4.3.3(vite@8.3.1(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1))
+        version: 4.3.3(vite@8.3.2(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1))
       '@types/node':
         specifier: catalog:typescript
         version: 24.19.0
@@ -335,7 +335,7 @@ importers:
         version: 17.0.35
       '@vitejs/plugin-react':
         specifier: ^6.1.1
-        version: 6.1.1(vite@8.3.1(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1))
+        version: 6.1.1(vite@8.3.2(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1))
       react-doctor:
         specifier: catalog:tooling
         version: 0.9.14(@opentelemetry/core@2.11.0(@opentelemetry/api@1.9.1))(oxlint-tsgolint@7.0.2003)(react@19.3.0)
@@ -349,14 +349,14 @@ importers:
         specifier: catalog:typescript
         version: 7.0.2
       vite:
-        specifier: ^8.3.1
-        version: 8.3.1(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)
+        specifier: ^8.3.2
+        version: 8.3.2(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)
       vite-plugin-singlefile:
         specifier: ^2.3.3
-        version: 2.3.3(vite@8.3.1(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1))
+        version: 2.3.3(vite@8.3.2(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1))
       vitest:
         specifier: catalog:test
-        version: 5.0.3(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(vite@8.3.1(@types/node@24.19.0))
+        version: 5.0.3(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(vite@8.3.2(@types/node@24.19.0))
 
   packages/sdk:
     devDependencies:
@@ -365,10 +365,10 @@ importers:
         version: 2.1.2
       '@mysten/codegen':
         specifier: catalog:mysten
-        version: 0.12.16
+        version: 0.12.17
       '@mysten/sui':
         specifier: catalog:mysten
-        version: 2.33.2(typescript@7.0.2)
+        version: 2.34.0(typescript@7.0.2)
       '@types/node':
         specifier: catalog:typescript
         version: 24.19.0
@@ -380,7 +380,7 @@ importers:
         version: 7.0.2
       vitest:
         specifier: catalog:test
-        version: 5.0.3(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(vite@8.3.1(@types/node@24.19.0))
+        version: 5.0.3(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(vite@8.3.2(@types/node@24.19.0))
 
   playground:
     dependencies:
@@ -388,14 +388,14 @@ importers:
         specifier: catalog:mysten
         version: 2.1.2
       '@mysten/dapp-kit-core':
-        specifier: ^1.6.35
-        version: 1.6.35(@mysten/sui@2.33.2(typescript@7.0.2))(typescript@7.0.2)
+        specifier: ^1.6.36
+        version: 1.6.36(@mysten/sui@2.34.0(typescript@7.0.2))(typescript@7.0.2)
       '@mysten/dapp-kit-react':
-        specifier: ^2.1.37
-        version: 2.1.37(@mysten/sui@2.33.2(typescript@7.0.2))(@types/react@19.3.0)(react@19.3.0)(typescript@7.0.2)
+        specifier: ^2.1.38
+        version: 2.1.38(@mysten/sui@2.34.0(typescript@7.0.2))(@types/react@19.3.0)(react@19.3.0)(typescript@7.0.2)
       '@mysten/sui':
         specifier: catalog:mysten
-        version: 2.33.2(typescript@7.0.2)
+        version: 2.34.0(typescript@7.0.2)
       '@radix-ui/react-accordion':
         specifier: ^1.2.20
         version: 1.2.20(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -942,37 +942,37 @@ packages:
   '@mysten/bcs@2.1.2':
     resolution: {integrity: sha512-fv6lyuZMTHN0xRlu4GYiV/UXUrdJDOHbXm1KfZYEU0sy/t+22yTrTVtWnAQv1Km7eyB3qHhwIrAG2aem4JMocw==}
 
-  '@mysten/codegen@0.12.16':
-    resolution: {integrity: sha512-S7JotlvOuAhfvOthb6R181En9C5cIjOey9grE8YPeiei5SUXGv/wJvMSZhMASo7CuV67wUkXsbxCzEm80bzxqw==}
+  '@mysten/codegen@0.12.17':
+    resolution: {integrity: sha512-hFIZhkU/p2ATV69aBiBaGlWlpGf87J4R1DK/KPTmhtfWvXPZoVplOtXNtAQ7L1ZPduf73+PVoHWFCFhkd7cJUw==}
     hasBin: true
 
-  '@mysten/dapp-kit-core@1.6.35':
-    resolution: {integrity: sha512-mJI9r9YChIJzRT9VUWPSYCBPr1xRN4qMWjeyDdpQqnVOPg8cRU+wYQnw6MSSGJqEBlh1VN3QpejI1TLyIaL6DQ==}
+  '@mysten/dapp-kit-core@1.6.36':
+    resolution: {integrity: sha512-gQS6hEKOCmFnLJQWJptgAJasr/ak+dRH03TxJV1qpesNwWN6Y4jWZwCZ3KdIEkFieFQUhIxnhLJbWgWEtgeUww==}
     peerDependencies:
-      '@mysten/sui': ^2.33.2
+      '@mysten/sui': ^2.34.0
 
-  '@mysten/dapp-kit-react@2.1.37':
-    resolution: {integrity: sha512-Axw/ScRJwk56UEN94r+bajIPdyS0u6Z833k3YprVHg4zkuTzFKezJZZsIcMZatpKklmS04SLMS/MRNX8P7b1HA==}
+  '@mysten/dapp-kit-react@2.1.38':
+    resolution: {integrity: sha512-fWwsIOs9YF6f9g1MAwqnDluK0O6QWhajfPdUZ3i921fqeQCokaAFv+XwBx1RDXFa9t/JVZqx2cWkKkYyk96r+w==}
     peerDependencies:
       '@types/react': '>=17.0.0'
       react: '>=17.0.0'
 
-  '@mysten/slush-wallet@1.3.1':
-    resolution: {integrity: sha512-SkbGCtDSYuOQGe12U3wiRb+l749pUNP7CdRieletZURjCp11/27JaVnEYHmYKaaQWzte7IERgn1yJQgJyP8SOg==}
+  '@mysten/slush-wallet@1.3.2':
+    resolution: {integrity: sha512-a9fhaXPh6dwQeiDXKgVS4XxdEO4OY43i0fIukirakAZTjFXCncwyA6qMoohkEdDd/rIgk3+4KEFAPrE08oO2fQ==}
     peerDependencies:
-      '@mysten/sui': ^2.33.2
+      '@mysten/sui': ^2.34.0
 
-  '@mysten/sui@2.33.2':
-    resolution: {integrity: sha512-rKgdnEjJrFR8LZLVRygIbadMDBKaJeysk8Sr6rMd7j0mXaQrnUERQwnpxDODv2k1axT737ZvDrOrThOam1r5Tw==}
+  '@mysten/sui@2.34.0':
+    resolution: {integrity: sha512-Qf/xt10YIJv3Yo0hQTU70xPgimFfw2mudBzI/dylGXZNuhuQVmkmxUm0fz49BFPOFvBxWc/MRFl204zwpwRnXw==}
     engines: {node: '>=22'}
 
   '@mysten/utils@0.4.1':
     resolution: {integrity: sha512-gffLJ84CbqG/CcOPuVlwXIRu37tFn0BtUx7CQtbLwJzWjUE7FU2Gq8BXWjzxImnvufcyLTaNWtCPG6wq22Zhog==}
 
-  '@mysten/wallet-standard@0.21.31':
-    resolution: {integrity: sha512-qTtpG5Iej3bA0l3Zd+1OI2SLcWeAZgrfGez3Z9xRLWsOtmg6Hc4Zt+p51pR3b0mvwqI4r6mMmc4PrlOt6zf7+w==}
+  '@mysten/wallet-standard@0.21.32':
+    resolution: {integrity: sha512-qexU/zyXz1ZG76GUZyWTp0Xluc4kZoC/00+nSSGXZEEv2gFjdEicBdC37CAl+uVA8M1dqHSaLfUszi41LO1rEQ==}
     peerDependencies:
-      '@mysten/sui': ^2.33.2
+      '@mysten/sui': ^2.34.0
 
   '@mysten/window-wallet-core@0.4.0':
     resolution: {integrity: sha512-FGHQJaYigUJHw5d2xq4bvLSmjAy/oTsgSDDBTqM1Y2rhVjtIwJgZLZTbocWZrQ1Gj4JFZVnsJJUZVRFwM5PLWg==}
@@ -2456,33 +2456,33 @@ packages:
     peerDependencies:
       vite: ^5.2.0 || ^6 || ^7 || ^8
 
-  '@turbo/darwin-64@2.11.5':
-    resolution: {integrity: sha512-KdY4y7BBjIisl+jAkb3FFaRjClGqHyaeHCcVcCT8LBzFFwUu6thgfxyRZAx0uL4KoxLmH+iOan8UhVf/aDDcaA==}
+  '@turbo/darwin-64@2.11.6':
+    resolution: {integrity: sha512-nAvJwDBgz/cKoSPhB7YOGPFmDEwCRavFjy0jUsrGqR97cLyJqXU2rZC/zTnw+9J3DkB2gfjpolX7mKsBatMcCQ==}
     cpu: [x64]
     os: [darwin]
 
-  '@turbo/darwin-arm64@2.11.5':
-    resolution: {integrity: sha512-ToZDGi2u410+TfRtC/O1/LpujGgvNJoRBZnwVXob7oO0+3OSlwIO3zofXKUvwQvlba7a8ZXPyCZwufjAXd7f0w==}
+  '@turbo/darwin-arm64@2.11.6':
+    resolution: {integrity: sha512-odk6UHW9hympllPlezz7oJhPmO40+oU8BUh4zvNuSIqQ1QQll4zo1DN4IrD/3jUzkLefvMJ8UHEHlGq9WdR7tw==}
     cpu: [arm64]
     os: [darwin]
 
-  '@turbo/linux-64@2.11.5':
-    resolution: {integrity: sha512-Ub2d/nAbdWLaSytcEaPp1wm/YuIvHEIqNrCRMI/UgOGyFdOhgxm8VyWPAJilQWRYxYVrqEUoy2K5S5K8SG50rA==}
+  '@turbo/linux-64@2.11.6':
+    resolution: {integrity: sha512-PvXbwMqZPEWdWnJSIJ5D/tugnSOrRvLYKkH7iC8TLGVI+4J5znSLn3Tx1YkH5OUzFEFhxJQyHjtiRqBPbCoVlg==}
     cpu: [x64]
     os: [android, linux]
 
-  '@turbo/linux-arm64@2.11.5':
-    resolution: {integrity: sha512-JQjmGxp724Wuft9FAxPMtmBur1CEdUyxJ+FVoIvKkgj63rXHl9PYCWrsU2tMjVi609XTQ3M8vZD9Yc9qVAVYrw==}
+  '@turbo/linux-arm64@2.11.6':
+    resolution: {integrity: sha512-8FKA3SqJk6fTv7Hqrmv2JnJfqiXslTRJYBwiI6eU3QXokVMYFLh1wUywF+w3MPtDfx1O/1otbps5AnijbzY1Kg==}
     cpu: [arm64]
     os: [android, linux]
 
-  '@turbo/windows-64@2.11.5':
-    resolution: {integrity: sha512-AFkbPmXNd8XgCi/66YEHR2bVl3gtusXyDihTIVEPAuSB+7ulLmJePvz1unWPVKLHdbCTTIdKq2mpJ1B1e3lJXw==}
+  '@turbo/windows-64@2.11.6':
+    resolution: {integrity: sha512-XPSgTg494cV31u0Uch8zRq/Jnpe8h4muwNpg9IRPrJqADrjjzxzFMtJCtBZTKVaSEDUU/ol8Gr4SYxtiHt2Tzg==}
     cpu: [x64]
     os: [win32]
 
-  '@turbo/windows-arm64@2.11.5':
-    resolution: {integrity: sha512-52ziXYP3snGOxjv19xA3WL1WDKv9Q6uDAa/7EKIR5j4hocMlYURkrOHbJ2ZZI+VfPU5MwKpcGeRfHxHJu7Y/Pw==}
+  '@turbo/windows-arm64@2.11.6':
+    resolution: {integrity: sha512-dZ0/ZFH2AU/l1KdqISVkWUSnm0ufWZyiYRLDYCL+rJAhkUDMFhTZkSnYEL2O/m0tOu/Jy/EKAnZfocuyMX3LMQ==}
     cpu: [arm64]
     os: [win32]
 
@@ -3993,8 +3993,8 @@ packages:
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
-  turbo@2.11.5:
-    resolution: {integrity: sha512-qLXheqz3TUvJpHIV6MUBwkNkvwKxMVG/QsimyiKT9DfNWPHJ294G/i5nDaH+fbHJt3UH7orubNNxAqYkbUNGAQ==}
+  turbo@2.11.6:
+    resolution: {integrity: sha512-UppAr5XEHLfVdVp75nd+tzPp/wVEwS7Ken9aYjMlBnHqXynKn9IcQHd6GDOXBxDViSjpS+SzJcOF86v9Hf8GfQ==}
     hasBin: true
 
   type-fest@5.10.0:
@@ -4081,8 +4081,8 @@ packages:
       rollup:
         optional: true
 
-  vite@8.3.1:
-    resolution: {integrity: sha512-/bvH9E9tmCXRGp2uXY3WbOldqpTwFkbha/8ANaEQ6VkxhH60KyqLwgZq6lG2y+4uT55x9+9eUHMpQ7uGnOCKjA==}
+  vite@8.3.2:
+    resolution: {integrity: sha512-SQr1x6W5vVSbROg7vsyXIaxK9b0G7zsT68acdWWRmnBUsgDieLCRG+Rep9WdZgcposvv/GSnr4GUUBqB3vXq6w==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
@@ -4775,10 +4775,10 @@ snapshots:
       '@mysten/utils': 0.4.1
       '@scure/base': 2.4.0
 
-  '@mysten/codegen@0.12.16':
+  '@mysten/codegen@0.12.17':
     dependencies:
       '@mysten/bcs': 2.1.2
-      '@mysten/sui': 2.33.2(@typescript/typescript6@6.0.2)
+      '@mysten/sui': 2.34.0(@typescript/typescript6@6.0.2)
       '@stricli/auto-complete': 1.3.0
       '@stricli/core': 1.3.0
       '@types/node': 26.6.3
@@ -4791,15 +4791,15 @@ snapshots:
       - '@gql.tada/svelte-support'
       - '@gql.tada/vue-support'
 
-  '@mysten/dapp-kit-core@1.6.35(@mysten/sui@2.33.2(typescript@7.0.2))(typescript@7.0.2)':
+  '@mysten/dapp-kit-core@1.6.36(@mysten/sui@2.34.0(typescript@7.0.2))(typescript@7.0.2)':
     dependencies:
       '@floating-ui/dom': 1.8.0
       '@lit-labs/scoped-registry-mixin': 1.0.4
       '@lit/task': 1.0.3
-      '@mysten/slush-wallet': 1.3.1(@mysten/sui@2.33.2(typescript@7.0.2))(typescript@7.0.2)
-      '@mysten/sui': 2.33.2(typescript@7.0.2)
+      '@mysten/slush-wallet': 1.3.2(@mysten/sui@2.34.0(typescript@7.0.2))(typescript@7.0.2)
+      '@mysten/sui': 2.34.0(typescript@7.0.2)
       '@mysten/utils': 0.4.1
-      '@mysten/wallet-standard': 0.21.31(@mysten/sui@2.33.2(typescript@7.0.2))
+      '@mysten/wallet-standard': 0.21.32(@mysten/sui@2.34.0(typescript@7.0.2))
       '@nanostores/lit': 0.2.3(lit@3.3.3)(nanostores@1.5.4)
       '@wallet-standard/ui': 1.0.3
       '@wallet-standard/ui-registry': 1.1.1
@@ -4809,10 +4809,10 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@mysten/dapp-kit-react@2.1.37(@mysten/sui@2.33.2(typescript@7.0.2))(@types/react@19.3.0)(react@19.3.0)(typescript@7.0.2)':
+  '@mysten/dapp-kit-react@2.1.38(@mysten/sui@2.34.0(typescript@7.0.2))(@types/react@19.3.0)(react@19.3.0)(typescript@7.0.2)':
     dependencies:
       '@lit/react': 1.0.8(@types/react@19.3.0)
-      '@mysten/dapp-kit-core': 1.6.35(@mysten/sui@2.33.2(typescript@7.0.2))(typescript@7.0.2)
+      '@mysten/dapp-kit-core': 1.6.36(@mysten/sui@2.34.0(typescript@7.0.2))(typescript@7.0.2)
       '@nanostores/react': 1.1.0(nanostores@1.5.4)(react@19.3.0)
       '@types/react': 19.3.0
       nanostores: 1.5.4
@@ -4821,17 +4821,17 @@ snapshots:
       - '@mysten/sui'
       - typescript
 
-  '@mysten/slush-wallet@1.3.1(@mysten/sui@2.33.2(typescript@7.0.2))(typescript@7.0.2)':
+  '@mysten/slush-wallet@1.3.2(@mysten/sui@2.34.0(typescript@7.0.2))(typescript@7.0.2)':
     dependencies:
-      '@mysten/sui': 2.33.2(typescript@7.0.2)
+      '@mysten/sui': 2.34.0(typescript@7.0.2)
       '@mysten/utils': 0.4.1
-      '@mysten/wallet-standard': 0.21.31(@mysten/sui@2.33.2(typescript@7.0.2))
+      '@mysten/wallet-standard': 0.21.32(@mysten/sui@2.34.0(typescript@7.0.2))
       '@mysten/window-wallet-core': 0.4.0(typescript@7.0.2)
       valibot: 1.5.0(typescript@7.0.2)
     transitivePeerDependencies:
       - typescript
 
-  '@mysten/sui@2.33.2(@typescript/typescript6@6.0.2)':
+  '@mysten/sui@2.34.0(@typescript/typescript6@6.0.2)':
     dependencies:
       '@graphql-typed-document-node/core': 3.2.0(graphql@17.0.2)
       '@mysten/bcs': 2.1.2
@@ -4853,7 +4853,7 @@ snapshots:
       - '@gql.tada/vue-support'
       - typescript
 
-  '@mysten/sui@2.33.2(typescript@7.0.2)':
+  '@mysten/sui@2.34.0(typescript@7.0.2)':
     dependencies:
       '@graphql-typed-document-node/core': 3.2.0(graphql@17.0.2)
       '@mysten/bcs': 2.1.2
@@ -4879,9 +4879,9 @@ snapshots:
     dependencies:
       '@scure/base': 2.4.0
 
-  '@mysten/wallet-standard@0.21.31(@mysten/sui@2.33.2(typescript@7.0.2))':
+  '@mysten/wallet-standard@0.21.32(@mysten/sui@2.34.0(typescript@7.0.2))':
     dependencies:
-      '@mysten/sui': 2.33.2(typescript@7.0.2)
+      '@mysten/sui': 2.34.0(typescript@7.0.2)
       '@wallet-standard/core': 1.1.2
 
   '@mysten/window-wallet-core@0.4.0(typescript@7.0.2)':
@@ -5899,29 +5899,29 @@ snapshots:
       postcss: 8.5.28
       tailwindcss: 4.3.3
 
-  '@tailwindcss/vite@4.3.3(vite@8.3.1(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1))':
+  '@tailwindcss/vite@4.3.3(vite@8.3.2(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1))':
     dependencies:
       '@tailwindcss/node': 4.3.3
       '@tailwindcss/oxide': 4.3.3
       tailwindcss: 4.3.3
-      vite: 8.3.1(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)
+      vite: 8.3.2(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)
 
-  '@turbo/darwin-64@2.11.5':
+  '@turbo/darwin-64@2.11.6':
     optional: true
 
-  '@turbo/darwin-arm64@2.11.5':
+  '@turbo/darwin-arm64@2.11.6':
     optional: true
 
-  '@turbo/linux-64@2.11.5':
+  '@turbo/linux-64@2.11.6':
     optional: true
 
-  '@turbo/linux-arm64@2.11.5':
+  '@turbo/linux-arm64@2.11.6':
     optional: true
 
-  '@turbo/windows-64@2.11.5':
+  '@turbo/windows-64@2.11.6':
     optional: true
 
-  '@turbo/windows-arm64@2.11.5':
+  '@turbo/windows-arm64@2.11.6':
     optional: true
 
   '@tybys/wasm-util@0.10.4':
@@ -6030,19 +6030,19 @@ snapshots:
     dependencies:
       '@typescript/old': typescript@6.0.3
 
-  '@vitejs/plugin-react@6.1.1(vite@8.3.1(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1))':
+  '@vitejs/plugin-react@6.1.1(vite@8.3.2(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1))':
     dependencies:
       '@rolldown/pluginutils': 1.0.1
-      vite: 8.3.1(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)
+      vite: 8.3.2(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)
 
-  '@vitest/mocker@5.0.3(vite@8.3.1(@types/node@24.19.0))':
+  '@vitest/mocker@5.0.3(vite@8.3.2(@types/node@24.19.0))':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       '@vitest/spy': 5.0.3
       estree-walker: 3.0.3
       magic-string: 1.4.2
     optionalDependencies:
-      vite: 8.3.1(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)
+      vite: 8.3.2(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)
 
   '@vitest/spy@5.0.3': {}
 
@@ -7254,14 +7254,14 @@ snapshots:
 
   tslib@2.8.1: {}
 
-  turbo@2.11.5:
+  turbo@2.11.6:
     optionalDependencies:
-      '@turbo/darwin-64': 2.11.5
-      '@turbo/darwin-arm64': 2.11.5
-      '@turbo/linux-64': 2.11.5
-      '@turbo/linux-arm64': 2.11.5
-      '@turbo/windows-64': 2.11.5
-      '@turbo/windows-arm64': 2.11.5
+      '@turbo/darwin-64': 2.11.6
+      '@turbo/darwin-arm64': 2.11.6
+      '@turbo/linux-64': 2.11.6
+      '@turbo/linux-arm64': 2.11.6
+      '@turbo/windows-64': 2.11.6
+      '@turbo/windows-arm64': 2.11.6
 
   type-fest@5.10.0:
     dependencies:
@@ -7338,12 +7338,12 @@ snapshots:
 
   verkit@0.4.1: {}
 
-  vite-plugin-singlefile@2.3.3(vite@8.3.1(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)):
+  vite-plugin-singlefile@2.3.3(vite@8.3.2(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)):
     dependencies:
       micromatch: 4.0.8
-      vite: 8.3.1(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)
+      vite: 8.3.2(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)
 
-  vite@8.3.1(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1):
+  vite@8.3.2(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1):
     dependencies:
       lightningcss: 1.33.0
       picomatch: 4.0.7
@@ -7356,10 +7356,10 @@ snapshots:
       jiti: 2.7.0
       yaml: 2.9.1
 
-  vitest@5.0.3(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(vite@8.3.1(@types/node@24.19.0)):
+  vitest@5.0.3(@opentelemetry/api@1.9.1)(@types/node@24.19.0)(vite@8.3.2(@types/node@24.19.0)):
     dependencies:
       '@types/chai': 5.2.3
-      '@vitest/mocker': 5.0.3(vite@8.3.1(@types/node@24.19.0))
+      '@vitest/mocker': 5.0.3(vite@8.3.2(@types/node@24.19.0))
       chai: 6.3.0
       es-module-lexer: 2.3.2
       expect-type: 1.4.0
@@ -7370,7 +7370,7 @@ snapshots:
       tinybench: 6.2.0
       tinyexec: 1.3.1
       tinyglobby: 0.2.17
-      vite: 8.3.1(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)
+      vite: 8.3.2(@types/node@24.19.0)(jiti@2.7.0)(yaml@2.9.1)
       why-is-node-running: 3.2.1
     optionalDependencies:
       '@opentelemetry/api': 1.9.1
