@@ -32,6 +32,27 @@ jobs:
 
           git tag --points-at "$GITHUB_SHA" | grep --fixed-strings --line-regexp "$RELEASE_TAG"
 
+      - name: Wait for the MCP package to become available on npm
+        shell: bash
+        run: |
+          PACKAGE_VERSION="$(jq --raw-output '.version' packages/mcp/package.json)"
+          ATTEMPT=0
+          MAX_ATTEMPTS=12
+          RETRY_DELAY_SECONDS=10
+
+          until npm view "@suigar/mcp@${PACKAGE_VERSION}" version --json >/dev/null 2>&1; do
+            if [ "$ATTEMPT" -ge "$MAX_ATTEMPTS" ]; then
+              echo "@suigar/mcp@${PACKAGE_VERSION} is still unavailable on npm after $((MAX_ATTEMPTS * RETRY_DELAY_SECONDS)) seconds." >&2
+              exit 1
+            fi
+
+            echo "Waiting for @suigar/mcp@${PACKAGE_VERSION} to propagate on npm (attempt ${ATTEMPT}/${MAX_ATTEMPTS})."
+            sleep "$RETRY_DELAY_SECONDS"
+            ATTEMPT=$((ATTEMPT + 1))
+          done
+
+          echo "@suigar/mcp@${PACKAGE_VERSION} is available on npm."
+
       - name: Install MCP Registry publisher
         shell: bash
         run: |
