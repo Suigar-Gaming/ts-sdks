@@ -1,5 +1,11 @@
 # @suigar/sdk
 
+## 2.0.0-beta.45
+
+### Patch Changes
+
+- [#177](https://github.com/Suigar-Gaming/ts-sdks/pull/177) [`7785d92`](https://github.com/Suigar-Gaming/ts-sdks/commit/7785d92576eef489f72a0849be3d70de274ea5d1) - Update dependencies.
+
 ## 2.0.0-beta.44
 
 ### Patch Changes
