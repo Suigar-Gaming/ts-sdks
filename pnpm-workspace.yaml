@@ -10,18 +10,18 @@ catalogs:
     'tailwind-merge': ^3.7.0
   mysten:
     '@mysten/bcs': ^2.1.2
-    '@mysten/codegen': ^0.12.15
-    '@mysten/sui': ^2.33.1
+    '@mysten/codegen': ^0.12.18
+    '@mysten/sui': ^2.35.0
   test:
-    'vitest': ^5.0.1
+    'vitest': ^5.0.3
   tooling:
     '@tailwindcss/postcss': ^4.3.3
     '@tailwindcss/vite': ^4.3.3
-    'react-doctor': ^0.9.14
+    'react-doctor': ^0.9.17
     'tailwindcss': ^4.3.3
     'tsdown': ^0.23.0
   typescript:
-    '@types/node': ^24.13.6
+    '@types/node': ^24.19.1
     '@types/react': ^19.3.0
     '@types/react-dom': ^19.3.0
     'typescript': ^7.0.2
@@ -50,3 +50,10 @@ peerDependencyRules:
     - typescript
   ignoreMissing:
     - eslint
+
+patchedDependencies:
+  braces@3.0.3: patches/braces@3.0.3.patch
+
+auditConfig:
+  ignoreGhsas:
+    - GHSA-vfj7-8cjw-p6xm # braces stack-exhaustion denial of service
