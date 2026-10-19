@@ -276,7 +276,7 @@ export async function createSessionWalletSetup({
 		}
 		try {
 			const form = await readForm(request);
-			if (!(await sameState({ left: form.get('state') ?? '', right: state }))) {
+			if (!(await sameState(form.get('state') ?? '', state))) {
 				throw new Error('Invalid setup state.');
 			}
 			const wallet =

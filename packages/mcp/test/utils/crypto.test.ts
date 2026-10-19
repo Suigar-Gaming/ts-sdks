@@ -29,9 +29,9 @@ describe('crypto utilities', () => {
 	it('compares valid states by their decoded bytes', async () => {
 		const state = 'ab'.repeat(32);
 
-		expect(await sameState({ left: state, right: state })).toBe(true);
-		expect(await sameState({ left: state.toUpperCase(), right: state })).toBe(true);
-		expect(await sameState({ left: 'ac'.repeat(32), right: state })).toBe(false);
+		expect(await sameState(state, state)).toBe(true);
+		expect(await sameState(state.toUpperCase(), state)).toBe(true);
+		expect(await sameState('ac'.repeat(32), state)).toBe(false);
 	});
 
 	it.each([
@@ -44,8 +44,8 @@ describe('crypto utilities', () => {
 	])('rejects malformed states without decoding: %s', async (invalid) => {
 		const state = 'ab'.repeat(32);
 
-		expect(await sameState({ left: invalid, right: state })).toBe(false);
-		expect(await sameState({ left: state, right: invalid })).toBe(false);
-		expect(await sameState({ left: invalid, right: invalid })).toBe(false);
+		expect(await sameState(invalid, state)).toBe(false);
+		expect(await sameState(state, invalid)).toBe(false);
+		expect(await sameState(invalid, invalid)).toBe(false);
 	});
 });

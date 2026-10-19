@@ -24,13 +24,7 @@ export async function equalBytes(a: Uint8Array, b: Uint8Array): Promise<boolean>
 	return timingSafeEqual === null ? nobleEqualBytes(a, b) : timingSafeEqual(a, b);
 }
 
-export async function sameState({
-	left,
-	right,
-}: {
-	left: string;
-	right: string;
-}): Promise<boolean> {
+export async function sameState(left: string, right: string): Promise<boolean> {
 	if (
 		left.length !== right.length ||
 		!HEX_32_BYTE_PATTERN.test(left) ||
