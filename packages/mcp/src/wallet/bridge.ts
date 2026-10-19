@@ -3,10 +3,9 @@
 
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from 'node:http';
 import type { AddressInfo } from 'node:net';
-import { hex } from '@scure/base';
 import open from 'open';
 import type { SuigarNetwork } from '@suigar/sdk';
-import { equalBytes, HEX_32_BYTE_PATTERN, randomHex } from '../utils/crypto.js';
+import { randomHex, sameState } from '../utils/crypto.js';
 import {
 	clearCredentials,
 	loadCredentials,
@@ -48,13 +47,6 @@ const EXECUTIONS: Map<string, ExecutionStatus> = new Map();
 
 export function getExecutionStatus(requestId: string): ExecutionStatus | null {
 	return EXECUTIONS.get(requestId) ?? null;
-}
-
-async function sameState({ left, right }: { left: string; right: string }): Promise<boolean> {
-	if (left.length !== right.length || !HEX_32_BYTE_PATTERN.test(left)) {
-		return false;
-	}
-	return equalBytes(hex.decode(left), hex.decode(right));
 }
 
 function resolveBridgeOptions(options: BridgeOptions = {}): Required<BridgeOptions> {
