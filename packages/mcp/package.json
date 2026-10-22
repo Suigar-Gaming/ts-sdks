@@ -96,9 +96,8 @@
 		"@modelcontextprotocol/server": "^2.3.1",
 		"@mysten/bcs": "catalog:mysten",
 		"@mysten/sui": "catalog:mysten",
-		"@napi-rs/keyring": "^2.1.0",
+		"@napi-rs/keyring": "^2.1.2",
 		"@noble/ciphers": "^2.4.0",
-		"@scure/base": "^2.4.0",
 		"@scure/bip39": "^2.4.0",
 		"@suigar/sdk": "workspace:^",
 		"clsx": "catalog:frontend",
@@ -108,7 +107,7 @@
 		"react-dom": "catalog:frontend",
 		"tailwind-merge": "catalog:frontend",
 		"yargs": "^18.2.0",
-		"zod": "^4.6.5"
+		"zod": "^4.6.7"
 	},
 	"devDependencies": {
 		"@modelcontextprotocol/client": "^2.3.1",
@@ -122,8 +121,8 @@
 		"tailwindcss": "catalog:tooling",
 		"tsdown": "catalog:tooling",
 		"typescript": "catalog:typescript",
-		"vite": "^8.3.2",
-		"vite-plugin-singlefile": "^2.3.3",
+		"vite": "^8.3.4",
+		"vite-plugin-singlefile": "^2.3.4",
 		"vitest": "catalog:test"
 	},
 	"engines": {

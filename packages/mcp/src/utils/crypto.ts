@@ -1,6 +1,7 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
+import { fromHex } from '@mysten/sui/utils';
 import { bytesToHex, equalBytes as nobleEqualBytes, randomBytes } from '@noble/ciphers/utils.js';
 
 const UUID_BYTE_TO_HEX = Array.from({ length: 256 }, (_, byte) =>
@@ -21,6 +22,18 @@ export async function equalBytes(a: Uint8Array, b: Uint8Array): Promise<boolean>
 
 	const timingSafeEqual = await nodeTimingSafeEqual;
 	return timingSafeEqual === null ? nobleEqualBytes(a, b) : timingSafeEqual(a, b);
+}
+
+export async function sameState(left: string, right: string): Promise<boolean> {
+	if (
+		left.length !== right.length ||
+		!HEX_32_BYTE_PATTERN.test(left) ||
+		!HEX_32_BYTE_PATTERN.test(right)
+	) {
+		return false;
+	}
+
+	return equalBytes(fromHex(left), fromHex(right));
 }
 
 export function randomHex(byteLength: number): string {
