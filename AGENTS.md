@@ -210,6 +210,7 @@ This is a core invariant: standard game transactions must fail clearly when the 
 - Keep tool errors actionable and include the field/config/network detail needed for an agent to retry.
 - Keep SDK-style MCP config documentation aligned with `SuigarConfigOverrides`: both `coins.sui` and `coins.usdc` accept optional `coinType`, `decimals`, and `priceInfoObjectId` metadata.
 - Merge partial MCP App host-context updates with the existing context and apply host-provided safe-area insets to every inspector screen.
+- Wallet bridge and session setup state comparisons use `sameState()` from `packages/mcp/src/utils/crypto.ts`; keep hex decoding and strict 32-byte state validation in that shared helper.
 - The MCP App is an inspector UI only. It must not sign or execute transactions, and it should include restrictive `_meta.ui.csp` metadata.
 - Do not reintroduce explicit coin object sourcing or copied transaction builders unless the SDK adds a public API for that behavior.
 - If a new MCP behavior requires an SDK change, add the SDK change, tests, docs, and an `@suigar/sdk` changeset entry in the same task.
