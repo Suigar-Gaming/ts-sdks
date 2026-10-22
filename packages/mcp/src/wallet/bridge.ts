@@ -3,10 +3,9 @@
 
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from 'node:http';
 import type { AddressInfo } from 'node:net';
-import { hex } from '@scure/base';
 import open from 'open';
 import type { SuigarNetwork } from '@suigar/sdk';
-import { equalBytes, HEX_32_BYTE_PATTERN, randomHex } from '../utils/crypto.js';
+import { randomHex, sameState } from '../utils/crypto.js';
 import {
 	clearCredentials,
 	loadCredentials,
@@ -48,13 +47,6 @@ const EXECUTIONS: Map<string, ExecutionStatus> = new Map();
 
 export function getExecutionStatus(requestId: string): ExecutionStatus | null {
 	return EXECUTIONS.get(requestId) ?? null;
-}
-
-async function sameState({ left, right }: { left: string; right: string }): Promise<boolean> {
-	if (left.length !== right.length || !HEX_32_BYTE_PATTERN.test(left)) {
-		return false;
-	}
-	return equalBytes(hex.decode(left), hex.decode(right));
 }
 
 function resolveBridgeOptions(options: BridgeOptions = {}): Required<BridgeOptions> {
@@ -191,7 +183,7 @@ export async function createLoginBridge({
 		}
 		const url = new URL(request.url ?? '/', loopbackOrigin(port));
 		if (request.method === 'GET' && url.pathname === '/handshake') {
-			if (!(await sameState({ left: url.searchParams.get('state') ?? '', right: state }))) {
+			if (!(await sameState(url.searchParams.get('state') ?? '', state))) {
 				respond({ response, status: 403, body: { ok: false, error: 'Invalid pairing state' } });
 				return;
 			}
@@ -211,10 +203,7 @@ export async function createLoginBridge({
 			const payload = JSON.parse(
 				await readBody({ request, maxBodyBytes: options.maxBodyBytes }),
 			) as Record<string, unknown>;
-			if (
-				typeof payload.state !== 'string' ||
-				!(await sameState({ left: payload.state, right: state }))
-			) {
+			if (typeof payload.state !== 'string' || !(await sameState(payload.state, state))) {
 				respond({ response, status: 403, body: { error: 'Invalid pairing state' } });
 				return;
 			}
@@ -285,7 +274,7 @@ export async function createExecutionBridge({
 			return;
 		}
 		if (
-			!(await sameState({ left: url.searchParams.get('state') ?? '', right: state })) &&
+			!(await sameState(url.searchParams.get('state') ?? '', state)) &&
 			request.method === 'GET'
 		) {
 			respond({ response, status: 403, body: { error: 'Invalid approval state' } });
@@ -319,7 +308,7 @@ export async function createExecutionBridge({
 			) as Record<string, unknown>;
 			if (
 				typeof payload.state !== 'string' ||
-				!(await sameState({ left: payload.state, right: state })) ||
+				!(await sameState(payload.state, state)) ||
 				payload.address !== profile.address
 			) {
 				respond({ response, status: 403, body: { error: 'Invalid approval callback' } });
@@ -384,7 +373,7 @@ export async function createLogoutBridge({
 		}
 		const url = new URL(request.url ?? '/', loopbackOrigin(port));
 		if (request.method === 'GET' && url.pathname === '/request') {
-			if (!(await sameState({ left: url.searchParams.get('state') ?? '', right: state }))) {
+			if (!(await sameState(url.searchParams.get('state') ?? '', state))) {
 				respond({ response, status: 403, body: { error: 'Invalid logout state' } });
 				return;
 			}
@@ -403,10 +392,7 @@ export async function createLogoutBridge({
 			const payload = JSON.parse(
 				await readBody({ request, maxBodyBytes: options.maxBodyBytes }),
 			) as Record<string, unknown>;
-			if (
-				typeof payload.state !== 'string' ||
-				!(await sameState({ left: payload.state, right: state }))
-			) {
+			if (typeof payload.state !== 'string' || !(await sameState(payload.state, state))) {
 				respond({ response, status: 403, body: { error: 'Invalid logout callback' } });
 				return;
 			}

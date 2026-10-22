@@ -11,10 +11,9 @@ import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 import { Secp256k1Keypair } from '@mysten/sui/keypairs/secp256k1';
 import { Secp256r1Keypair } from '@mysten/sui/keypairs/secp256r1';
 import type { Entry } from '@napi-rs/keyring';
-import { hex } from '@scure/base';
 import { generateMnemonic, validateMnemonic } from '@scure/bip39';
 import { wordlist } from '@scure/bip39/wordlists/english.js';
-import { equalBytes, randomHex, randomUuid } from '../utils/crypto.js';
+import { randomHex, randomUuid, sameState } from '../utils/crypto.js';
 import { LOOPBACK_HOST, LOOPBACK_ORIGIN, loopbackOrigin } from './loopback.js';
 import { ensureSuigarMcpDataDirectory, SUIGAR_MCP_DATA_DIRECTORY } from './storage.js';
 import { resolvePositiveInteger } from './utils.js';
@@ -277,7 +276,7 @@ export async function createSessionWalletSetup({
 		}
 		try {
 			const form = await readForm(request);
-			if (!(await equalBytes(hex.decode(form.get('state') ?? ''), hex.decode(state)))) {
+			if (!(await sameState(form.get('state') ?? '', state))) {
 				throw new Error('Invalid setup state.');
 			}
 			const wallet =
