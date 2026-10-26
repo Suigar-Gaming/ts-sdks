@@ -48,6 +48,7 @@ update:
 
 peerDependencyRules:
   allowAny:
+    - '@opentelemetry/api'
     - typescript
   ignoreMissing:
     - eslint
