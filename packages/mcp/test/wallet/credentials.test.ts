@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const testHome = vi.hoisted(
-	() => `${process.env.TMPDIR ?? '/tmp'}/suigar-mcp-credentials-${process.pid}`,
+	() => `${process.env['TMPDIR'] ?? '/tmp'}/suigar-mcp-credentials-${process.pid}`,
 );
 
 vi.mock('node:os', () => ({ homedir: () => testHome }));

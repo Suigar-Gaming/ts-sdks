@@ -3,10 +3,10 @@
 
 import { rm } from 'node:fs/promises';
 import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, assert, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const testHome = vi.hoisted(
-	() => `${process.env.TMPDIR ?? '/tmp'}/suigar-mcp-session-${process.pid}`,
+	() => `${process.env['TMPDIR'] ?? '/tmp'}/suigar-mcp-session-${process.pid}`,
 );
 const keychainEntries = vi.hoisted(() => new Map<string, string>());
 const keychainUnavailable = vi.hoisted(() => ({ value: false }));
@@ -165,6 +165,8 @@ describe('session wallet setup', () => {
 				address: secondSigner.toSuiAddress(),
 			}),
 		]);
+		assert.isDefined(wallets[0]);
+		assert.isDefined(wallets[1]);
 		expect((await session.loadSessionSigner(wallets[0].id)).toSuiAddress()).toBe(
 			firstSigner.toSuiAddress(),
 		);

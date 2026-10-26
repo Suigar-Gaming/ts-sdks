@@ -10,11 +10,13 @@ import {
 	resolveDefaultCoinType,
 	resolveOwnerAddress,
 	type SuigarClientBundle,
+	type SuigarMcpConfigInput,
 	type ToolTextResult,
 } from '../../runtime/index.js';
 import { formatBaseUnitAmount, isAmountFieldName } from '../../utils/index.js';
+import { optionalOptions } from '../../utils/options.js';
 import { loadCredentials, loadSessionWallet } from '../../wallet/index.js';
-import type { ConfigInput, ReadConfigInput } from '../schemas/index.js';
+import type { ReadConfigInput } from '../schemas/index.js';
 
 export const GAME_LABELS = {
 	coinflip: 'Coinflip',
@@ -94,7 +96,7 @@ export function coinMetadataForAmount({
 	coinType,
 }: {
 	config: McpConfig;
-	coinType?: string;
+	coinType?: string | undefined;
 }): { coinType: string; decimals: number } {
 	const resolvedCoinType = resolveDefaultCoinType({ config, coinType });
 	const coin = Object.values(config.sdk.coins).find(
@@ -171,11 +173,23 @@ export function getMode(mode: BuilderMode | undefined): BuilderMode {
 	return mode ?? 'build';
 }
 
-export function getConfigInput(input: ReadConfigInput): ConfigInput {
+export function getConfigInput(input: ReadConfigInput): SuigarMcpConfigInput {
+	const config = input.config;
 	return {
 		network: input.network,
 		providerUrl: input.providerUrl,
-		config: input.config,
+		config:
+			config &&
+			optionalOptions({
+				packageIds: config.packageIds && optionalOptions(config.packageIds),
+				objectIds: config.objectIds && optionalOptions(config.objectIds),
+				coins:
+					config.coins &&
+					optionalOptions({
+						sui: config.coins.sui && optionalOptions(config.coins.sui),
+						usdc: config.coins.usdc && optionalOptions(config.coins.usdc),
+					}),
+			}),
 		partner: input.partner,
 	};
 }
@@ -227,9 +241,9 @@ export async function resolveWalletOwner({
 	bundle,
 }: {
 	input: {
-		owner?: string;
-		network?: 'mainnet' | 'testnet';
-		sessionWalletId?: string;
+		owner?: string | undefined;
+		network?: 'mainnet' | 'testnet' | undefined;
+		sessionWalletId?: string | undefined;
 	};
 	bundle: SuigarClientBundle;
 }): Promise<string> {

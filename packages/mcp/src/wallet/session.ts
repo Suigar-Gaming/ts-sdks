@@ -35,7 +35,7 @@ export type SessionWallet = {
 };
 
 export type SessionWalletSetupOptions = {
-	accountUrl?: string;
+	accountUrl?: string | undefined;
 };
 
 async function keychain(id: string): Promise<Entry> {
@@ -206,7 +206,13 @@ function page({
 	});
 }
 
-function success({ wallet, accountUrl }: { wallet: SessionWallet; accountUrl?: string }): string {
+function success({
+	wallet,
+	accountUrl,
+}: {
+	wallet: SessionWallet;
+	accountUrl?: string | undefined;
+}): string {
 	const destination = accountUrl
 		? (() => {
 				const url = new URL(accountUrl);

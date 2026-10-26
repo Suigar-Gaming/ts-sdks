@@ -34,11 +34,11 @@ export function formatValue(value: unknown): unknown {
 	}
 	if (value && typeof value === 'object') {
 		const record = asRecord(value);
-		if (typeof record.label === 'string' && typeof record.id === 'string') {
-			return `${record.label} (${record.id})`;
+		if (typeof record['label'] === 'string' && typeof record['id'] === 'string') {
+			return `${record['label']} (${record['id']})`;
 		}
-		if (typeof record.id === 'string') {
-			return record.id;
+		if (typeof record['id'] === 'string') {
+			return record['id'];
 		}
 		return stringify(value);
 	}
@@ -64,8 +64,8 @@ export function dynamicEntries(record: AnyRecord): Array<DefinitionEntry> {
 
 export function amountText(value: unknown): unknown {
 	const amount = asRecord(value);
-	if (typeof amount.display === 'string' && typeof amount.raw === 'string') {
-		return `${amount.display} (${amount.raw} base units)`;
+	if (typeof amount['display'] === 'string' && typeof amount['raw'] === 'string') {
+		return `${amount['display']} (${amount['raw']} base units)`;
 	}
 	return value;
 }

@@ -1,7 +1,7 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import { describe, expect, it, vi } from 'vitest';
+import { assert, describe, expect, it, vi } from 'vitest';
 
 const mocks = vi.hoisted(() => ({
 	readFile: vi.fn<(path: URL, encoding: 'utf8') => Promise<string>>(),
@@ -23,6 +23,7 @@ describe('MCP App resource', () => {
 
 		const result = await createSuigarMcpAppResourceResult();
 		const [content] = result.contents;
+		assert.isDefined(content);
 
 		expect(content.uri).toBe(SUIGAR_MCP_APP_RESOURCE_URI);
 		expect(content.mimeType).toBe('text/html;profile=mcp-app');

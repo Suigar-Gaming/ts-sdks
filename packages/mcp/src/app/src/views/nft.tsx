@@ -50,17 +50,17 @@ function NftImageCell({ name, url }: { name: string; url: unknown }): JSX.Elemen
 
 export function NftView({ payload }: { payload: unknown }): JSX.Element {
 	const result = asRecord(payload);
-	const catalog = Array.isArray(result.nftCatalog) ? result.nftCatalog : [];
-	const ownedNfts = Array.isArray(result.ownedNfts) ? result.ownedNfts : [];
+	const catalog = Array.isArray(result['nftCatalog']) ? result['nftCatalog'] : [];
+	const ownedNfts = Array.isArray(result['ownedNfts']) ? result['ownedNfts'] : [];
 
 	return (
 		<section className="grid grid-cols-1 gap-3.5 md:grid-cols-2">
 			<Panel title="Context">
 				<DefinitionList
 					entries={[
-						['Network', result.network],
-						['Owner', result.owner],
-						['NFT type', result.nftType],
+						['Network', result['network']],
+						['Owner', result['owner']],
+						['NFT type', result['nftType']],
 					]}
 				/>
 			</Panel>
@@ -69,18 +69,18 @@ export function NftView({ payload }: { payload: unknown }): JSX.Element {
 					{catalog.map((item) => {
 						const nft = asRecord(item);
 						return (
-							<tr className="bg-card/45" key={String(nft.id)}>
-								<NftImageCell name={String(nft.name)} url={nft.url} />
+							<tr className="bg-card/45" key={String(nft['id'])}>
+								<NftImageCell name={String(nft['name'])} url={nft['url']} />
 								<td className="px-3 py-2 font-bold">
-									<div>{String(nft.name)}</div>
-									<div className="text-muted-foreground font-mono" title={String(nft.id)}>
-										{formatAddress(String(nft.id))}
+									<div>{String(nft['name'])}</div>
+									<div className="text-muted-foreground font-mono" title={String(nft['id'])}>
+										{formatAddress(String(nft['id']))}
 									</div>
 								</td>
-								<td className="px-3 py-2 font-mono">{String(nft.available)}</td>
-								<td className="px-3 py-2 font-mono">{String(nft.supply)}</td>
-								<td className="px-3 py-2 font-mono" title={`${String(nft.price)} MIST`}>
-									{String(nft.priceDisplay ?? nft.price)}
+								<td className="px-3 py-2 font-mono">{String(nft['available'])}</td>
+								<td className="px-3 py-2 font-mono">{String(nft['supply'])}</td>
+								<td className="px-3 py-2 font-mono" title={`${String(nft['price'])} MIST`}>
+									{String(nft['priceDisplay'] ?? nft['price'])}
 								</td>
 							</tr>
 						);
@@ -97,14 +97,14 @@ export function NftView({ payload }: { payload: unknown }): JSX.Element {
 						{ownedNfts.map((item) => {
 							const nft = asRecord(item);
 							return (
-								<tr className="bg-card/45" key={String(nft.id)}>
-									<NftImageCell name={String(nft.name)} url={nft.imageUrl} />
-									<td className="px-3 py-2 font-bold">{String(nft.name)}</td>
-									<td className="px-3 py-2 font-mono" title={String(nft.id)}>
-										{formatAddress(String(nft.id))}
+								<tr className="bg-card/45" key={String(nft['id'])}>
+									<NftImageCell name={String(nft['name'])} url={nft['imageUrl']} />
+									<td className="px-3 py-2 font-bold">{String(nft['name'])}</td>
+									<td className="px-3 py-2 font-mono" title={String(nft['id'])}>
+										{formatAddress(String(nft['id']))}
 									</td>
-									<td className="px-3 py-2 font-mono" title={String(nft.specId)}>
-										{formatAddress(String(nft.specId))}
+									<td className="px-3 py-2 font-mono" title={String(nft['specId'])}>
+										{formatAddress(String(nft['specId']))}
 									</td>
 								</tr>
 							);

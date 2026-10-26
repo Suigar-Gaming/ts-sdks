@@ -29,9 +29,9 @@ export function Header({
 	status,
 	title = 'Transaction Inspector',
 }: {
-	coinBadge?: string | null;
+	coinBadge?: string | null | undefined;
 	status: string;
-	title?: string;
+	title?: string | undefined;
 }) {
 	return (
 		<header className="border-border/70 bg-card/88 flex min-w-0 flex-col gap-4 rounded-lg border p-4 sm:flex-row sm:items-center sm:justify-between">
@@ -93,8 +93,8 @@ export function Panel({
 	title,
 }: {
 	children: ReactNode;
-	className?: string;
-	hidden?: boolean;
+	className?: string | undefined;
+	hidden?: boolean | undefined;
 	title: string;
 }) {
 	if (hidden) {

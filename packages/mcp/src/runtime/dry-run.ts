@@ -85,8 +85,8 @@ function collectStrings({ value, path }: { value: unknown; path: Array<string> }
 
 export function extractDryRunErrors(dryRun: RawDryRunResult): Array<string> {
 	const source: unknown = getDryRunTransaction(dryRun) ?? dryRun;
-	const effects = isRecord(source) ? source.effects : undefined;
-	const status = isRecord(effects) ? effects.status : undefined;
+	const effects = isRecord(source) ? source['effects'] : undefined;
+	const status = isRecord(effects) ? effects['status'] : undefined;
 	const errorSources = [source, effects, status].filter(isRecord);
 
 	const errors = errorSources.flatMap((item) =>
@@ -113,9 +113,9 @@ function gasUsedSummary({
 	decimals,
 }: {
 	effects: unknown;
-	decimals?: number;
+	decimals?: number | undefined;
 }): DryRunSummary['gasUsed'] {
-	const gasUsed = isRecord(effects) ? effects.gasUsed : undefined;
+	const gasUsed = isRecord(effects) ? effects['gasUsed'] : undefined;
 	if (!isRecord(gasUsed)) {
 		return {
 			computation: null,
@@ -149,7 +149,7 @@ function eventFields({
 	decimals,
 }: {
 	fields: Record<string, unknown>;
-	decimals?: number;
+	decimals?: number | undefined;
 }): Record<string, JsonValue> {
 	const formattedFields: Record<string, JsonValue> = {};
 	for (const key in fields) {
@@ -182,8 +182,8 @@ function parseDryRunEvent({
 	eventType: string;
 }): ReturnType<typeof parseGameEvent> {
 	const module =
-		typeof event.module === 'string'
-			? event.module
+		typeof event['module'] === 'string'
+			? event['module']
 			: eventType.includes('::core::')
 				? 'core'
 				: eventType.includes('::pvp_coinflip::')
@@ -222,24 +222,24 @@ function summarizeDryRunEvent({
 	decimals,
 }: {
 	event: unknown;
-	decimals?: number;
+	decimals?: number | undefined;
 }): DryRunEventSummary | null {
 	if (!isRecord(event)) {
 		return null;
 	}
 
 	const eventType =
-		typeof event.eventType === 'string'
-			? event.eventType
-			: typeof event.type === 'string'
-				? event.type
+		typeof event['eventType'] === 'string'
+			? event['eventType']
+			: typeof event['type'] === 'string'
+				? event['type']
 				: 'unknown';
 	const baseSummary = {
 		type: eventType,
 	};
 	const module =
-		typeof event.module === 'string'
-			? event.module
+		typeof event['module'] === 'string'
+			? event['module']
 			: eventType.includes('::core::')
 				? 'core'
 				: eventType.includes('::pvp_coinflip::')
@@ -249,7 +249,7 @@ function summarizeDryRunEvent({
 
 	try {
 		gameEvent = parseDryRunEvent({ event, eventType });
-		if (gameEvent && event.bcs instanceof Uint8Array) {
+		if (gameEvent && event['bcs'] instanceof Uint8Array) {
 			const suigarEvent = parseSuigarEvent({
 				...event,
 				eventType,
@@ -274,10 +274,10 @@ function summarizeDryRunEvent({
 		// Fall back to API-provided JSON below.
 	}
 
-	const json = isRecord(event.json)
-		? event.json
-		: isRecord(event.parsedJson)
-			? event.parsedJson
+	const json = isRecord(event['json'])
+		? event['json']
+		: isRecord(event['parsedJson'])
+			? event['parsedJson']
 			: null;
 	return json
 		? {
@@ -298,30 +298,30 @@ export function summarizeDryRun({
 	context = {},
 }: {
 	dryRun: RawDryRunResult;
-	context?: TransactionSummaryFormattingContext;
+	context?: TransactionSummaryFormattingContext | undefined;
 }): DryRunSummary {
 	const transaction = getDryRunTransaction(dryRun);
 	const transactionRecord: Record<string, unknown> = isRecord(transaction) ? transaction : {};
-	const effects = transactionRecord.effects;
-	const status = isRecord(effects) ? effects.status : undefined;
-	const success = isRecord(status) ? status.success === true : false;
-	const statusError = isRecord(status) ? status.error : undefined;
+	const effects = transactionRecord['effects'];
+	const status = isRecord(effects) ? effects['status'] : undefined;
+	const success = isRecord(status) ? status['success'] === true : false;
+	const statusError = isRecord(status) ? status['error'] : undefined;
 	const error =
 		typeof statusError === 'string'
 			? statusError
-			: isRecord(statusError) && typeof statusError.message === 'string'
-				? statusError.message
+			: isRecord(statusError) && typeof statusError['message'] === 'string'
+				? statusError['message']
 				: null;
-	const balanceChanges = Array.isArray(transactionRecord.balanceChanges)
-		? transactionRecord.balanceChanges.reduce<DryRunSummary['balanceChanges']>(
+	const balanceChanges = Array.isArray(transactionRecord['balanceChanges'])
+		? transactionRecord['balanceChanges'].reduce<DryRunSummary['balanceChanges']>(
 				(changes, change) => {
 					if (isRecord(change)) {
-						const rawAmount = toJsonValue(change.amount);
+						const rawAmount = toJsonValue(change['amount']);
 						changes.push({
-							address: typeof change.address === 'string' ? change.address : '',
-							coinType: typeof change.coinType === 'string' ? change.coinType : '',
+							address: typeof change['address'] === 'string' ? change['address'] : '',
+							coinType: typeof change['coinType'] === 'string' ? change['coinType'] : '',
 							amount:
-								formatAmount({ value: change.amount, decimals: context.coinDecimals }) ??
+								formatAmount({ value: change['amount'], decimals: context.coinDecimals }) ??
 								({
 									raw:
 										typeof rawAmount === 'string' ||
@@ -338,8 +338,8 @@ export function summarizeDryRun({
 				[],
 			)
 		: [];
-	const events = Array.isArray(transactionRecord.events)
-		? transactionRecord.events.reduce<Array<DryRunEventSummary>>((summaries, event) => {
+	const events = Array.isArray(transactionRecord['events'])
+		? transactionRecord['events'].reduce<Array<DryRunEventSummary>>((summaries, event) => {
 				const summary = summarizeDryRunEvent({ event, decimals: context.coinDecimals });
 				if (summary) {
 					summaries.push(summary);
