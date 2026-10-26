@@ -21,8 +21,8 @@ export function PvPCoinflipCreateForm({
 }: {
 	value: PvPCoinflipCreateFormValues;
 	onChange: (patch: Partial<PvPCoinflipCreateFormValues>) => void;
-	onStakeBlur?: () => void;
-	stakeDescription?: React.ReactNode;
+	onStakeBlur?: (() => void) | undefined;
+	stakeDescription?: React.ReactNode | undefined;
 }) {
 	return (
 		<div className="space-y-6">

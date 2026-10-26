@@ -1,4 +1,4 @@
-export function UsdcCoinIcon({ className }: { className?: string }) {
+export function UsdcCoinIcon({ className }: { className?: string | undefined }) {
 	return (
 		<svg viewBox="0 0 22 23" aria-hidden="true" className={className}>
 			<circle cx="11" cy="11.06" r="11" fill="var(--secondary)" opacity="0.22" />

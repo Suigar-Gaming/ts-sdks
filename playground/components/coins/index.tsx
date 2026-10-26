@@ -7,7 +7,7 @@ export function CoinIcon({
 	className,
 }: {
 	coinKey: SupportedCoinKey;
-	className?: string;
+	className?: string | undefined;
 }) {
 	if (coinKey === 'sui') {
 		return <SuiCoinIcon className={className} />;

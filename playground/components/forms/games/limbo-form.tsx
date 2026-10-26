@@ -17,9 +17,9 @@ export function LimboForm({
 }: {
 	value: LimboFormValues;
 	onChange: (patch: Partial<LimboFormValues>) => void;
-	onStakeBlur?: () => void;
-	stakeDescription?: React.ReactNode;
-	targetMultiplierDescription?: React.ReactNode;
+	onStakeBlur?: (() => void) | undefined;
+	stakeDescription?: React.ReactNode | undefined;
+	targetMultiplierDescription?: React.ReactNode | undefined;
 }) {
 	const configuredScale = parseOptionalNumber(value.scale);
 	const effectiveScale =

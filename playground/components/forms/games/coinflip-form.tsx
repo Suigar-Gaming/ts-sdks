@@ -20,8 +20,8 @@ export function CoinflipForm({
 }: {
 	value: CoinflipFormValues;
 	onChange: (patch: Partial<CoinflipFormValues>) => void;
-	onStakeBlur?: () => void;
-	stakeDescription?: React.ReactNode;
+	onStakeBlur?: (() => void) | undefined;
+	stakeDescription?: React.ReactNode | undefined;
 }) {
 	return (
 		<div className="space-y-6">
