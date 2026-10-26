@@ -3,6 +3,7 @@
 
 import type { Transaction } from '@mysten/sui/transactions';
 import { playV2 } from '../contracts/coinflip/coinflip.js';
+import { optionalOptions } from '../helpers/options.js';
 import type { CoinflipTransactionOptions, WithPartner } from '../types/index.js';
 import { buildSharedStandardGameBetTransaction } from './shared.js';
 
@@ -21,7 +22,7 @@ export function buildCoinflipTransaction(
 			betCoin,
 		}) =>
 			playV2({
-				package: config.packageIds.coinflip,
+				...optionalOptions({ package: config.packageIds.coinflip }),
 				typeArguments: [coinType],
 				arguments: [
 					config.objectIds.sweetHouse,

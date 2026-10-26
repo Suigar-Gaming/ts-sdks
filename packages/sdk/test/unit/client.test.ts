@@ -11,7 +11,7 @@ import {
 	normalizeSuiAddress,
 	SUI_ADDRESS_LENGTH,
 } from '@mysten/sui/utils';
-import { afterEach, describe, expect, expectTypeOf, it, vi } from 'vitest';
+import { afterEach, assert, describe, expect, expectTypeOf, it, vi } from 'vitest';
 import { CoinStruct } from '../../src/bcs/index.js';
 import { suigar, type SuigarClient } from '../../src/client.js';
 import { COINS, OBJECT_IDS } from '../../src/configs/index.js';
@@ -309,7 +309,7 @@ class TestClient extends CoreClient {
 		super({ network: 'testnet', base: undefined as never });
 	}
 
-	mvr: SuiClientTypes.MvrMethods = {
+	override mvr: SuiClientTypes.MvrMethods = {
 		resolvePackage: async ({ package: packageName }) => ({
 			package: TEST_MVR_PACKAGES[packageName] ?? packageName,
 		}),
@@ -475,7 +475,7 @@ class TestClient extends CoreClient {
 		};
 	};
 
-	getDynamicObjectField: CoreClient['getDynamicObjectField'] = async <
+	override getDynamicObjectField: CoreClient['getDynamicObjectField'] = async <
 		Include extends SuiClientTypes.ObjectInclude,
 	>(
 		options: SuiClientTypes.GetDynamicObjectFieldOptions<Include>,
@@ -563,9 +563,7 @@ function createSuigarTestClient({
 	objects = [],
 	dynamicFields = [],
 	dynamicFieldLookups = [],
-	partner,
-	cacheTtl,
-	config,
+	...options
 }: {
 	objects?: SuigarTestClient['mockObjects'];
 	dynamicFields?: Array<SuiClientTypes.DynamicFieldEntry>;
@@ -576,7 +574,7 @@ function createSuigarTestClient({
 } = {}): SuigarTestClient {
 	const client = new TestClient();
 	const pvpCoinflipPackageId =
-		config?.packageIds?.pvpCoinflip ?? TEST_CONFIG.packageIds.pvpCoinflip;
+		options.config?.packageIds?.pvpCoinflip ?? TEST_CONFIG.packageIds.pvpCoinflip;
 	client.mockObjects = objects;
 	client.mockDynamicFields = dynamicFields;
 	client.mockDynamicFieldLookups = [
@@ -588,10 +586,44 @@ function createSuigarTestClient({
 		...dynamicFieldLookups,
 	];
 
-	return client.$extend(suigar({ partner, cacheTtl, config }));
+	return client.$extend(suigar(options));
 }
 
 describe('SuigarClient', () => {
+	it('treats explicit undefined extension and bet options like omitted options', () => {
+		const defaultClient = new TestClient().$extend(
+			suigar({ config: undefined, partner: undefined, cacheTtl: undefined }),
+		);
+		expect(defaultClient.suigar.getConfig()).toEqual(createSuigarTestClient().suigar.getConfig());
+		const client = new TestClient().$extend(
+			suigar({
+				config: { packageIds: { coinflip: TEST_CONFIG.packageIds.coinflip } },
+				partner: undefined,
+				cacheTtl: undefined,
+			}),
+		);
+		const bet = {
+			game: 'coinflip',
+			owner: '0x123',
+			coinType: COINS.testnet.sui.coinType,
+			stake: 1000n,
+			side: 'heads',
+		} as const;
+
+		expect(
+			client.suigar.tx
+				.createGameBet({
+					...bet,
+					metadata: undefined,
+					gasBudget: undefined,
+					cashStake: undefined,
+					betCount: undefined,
+					useGasCoin: undefined,
+				})
+				.getData(),
+		).toEqual(client.suigar.tx.createGameBet(bet).getData());
+	});
+
 	it('creates an extension-compatible client surface', () => {
 		const client = createSuigarTestClient();
 
@@ -810,7 +842,9 @@ describe('SuigarClient', () => {
 			type: TypeName.name,
 			bcs: SUI_TYPE_NAME_FIELD_BCS,
 		});
-		expect(TypeName.parse(client.getDynamicObjectFieldCalls[1].name.bcs).name).toBe(
+		const parametersCall = client.getDynamicObjectFieldCalls[1];
+		assert.isDefined(parametersCall);
+		expect(TypeName.parse(parametersCall.name.bcs).name).toBe(
 			normalizeStructTag(COINS.testnet.sui.coinType).replace(/^0x/u, ''),
 		);
 		expect(client.listDynamicFieldsCalls).toHaveLength(0);

@@ -3,6 +3,7 @@
 
 import type { Transaction } from '@mysten/sui/transactions';
 import { playV2 } from '../contracts/keno/keno.js';
+import { optionalOptions } from '../helpers/options.js';
 import type { KenoTransactionOptions, WithPartner } from '../types/index.js';
 import { toU8 } from '../utils/numeric.js';
 import { buildSharedStandardGameBetTransaction } from './shared.js';
@@ -23,7 +24,7 @@ export function buildKenoTransaction(options: WithPartner<KenoTransactionOptions
 			betCoin,
 		}) =>
 			playV2({
-				package: config.packageIds.keno,
+				...optionalOptions({ package: config.packageIds.keno }),
 				typeArguments: [coinType],
 				arguments: [
 					config.objectIds.sweetHouse,

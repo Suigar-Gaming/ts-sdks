@@ -4,6 +4,7 @@
 import type { Transaction, TransactionArgument } from '@mysten/sui/transactions';
 import { normalizeSuiAddress } from '@mysten/sui/utils';
 import { Factory, mintToSender } from '../contracts/nft-v1/nft.js';
+import { optionalOptions } from '../helpers/options.js';
 import type { MintNftV1Options, WithClient, WithConfig } from '../types/index.js';
 import { createBaseTransaction } from './shared.js';
 
@@ -30,20 +31,16 @@ function buildMintNftV1PaymentCoin({
 		return tx.coin({
 			type: config.coins.sui.coinType,
 			balance: BigInt(spec.price),
-			useGasCoin,
+			...optionalOptions({ useGasCoin }),
 		});
 	};
 }
 
-export function buildMintNftV1Transaction({
-	client,
-	config,
-	owner,
-	gasBudget,
-	specId,
-	useGasCoin,
-}: WithClient<WithConfig<MintNftV1Options>>): Transaction {
-	const tx = createBaseTransaction({ owner, gasBudget });
+export function buildMintNftV1Transaction(
+	options: WithClient<WithConfig<MintNftV1Options>>,
+): Transaction {
+	const { config, specId } = options;
+	const tx = createBaseTransaction(options);
 
 	tx.add(
 		mintToSender({
@@ -52,12 +49,7 @@ export function buildMintNftV1Transaction({
 				config.objectIds.nftV1Factory,
 				config.objectIds.sweetHouse,
 				specId,
-				buildMintNftV1PaymentCoin({
-					client,
-					config,
-					specId,
-					useGasCoin,
-				}),
+				buildMintNftV1PaymentCoin(options),
 			],
 		}),
 	);

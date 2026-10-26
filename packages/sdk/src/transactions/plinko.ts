@@ -3,6 +3,7 @@
 
 import type { Transaction } from '@mysten/sui/transactions';
 import { playV2 } from '../contracts/plinko/plinko.js';
+import { optionalOptions } from '../helpers/options.js';
 import type { PlinkoTransactionOptions, WithPartner } from '../types/index.js';
 import { toU8 } from '../utils/numeric.js';
 import { buildSharedStandardGameBetTransaction } from './shared.js';
@@ -24,7 +25,7 @@ export function buildPlinkoTransaction(
 			betCoin,
 		}) =>
 			playV2({
-				package: config.packageIds.plinko,
+				...optionalOptions({ package: config.packageIds.plinko }),
 				typeArguments: [coinType],
 				arguments: [
 					config.objectIds.sweetHouse,

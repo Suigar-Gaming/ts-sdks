@@ -3,6 +3,7 @@
 
 import type { Transaction } from '@mysten/sui/transactions';
 import { playV2 } from '../contracts/range/range.js';
+import { optionalOptions } from '../helpers/options.js';
 import type { RangeTransactionOptions, WithPartner } from '../types/index.js';
 import { DEFAULT_RANGE_SCALE } from '../utils/constants.js';
 import { buildSharedStandardGameBetTransaction } from './shared.js';
@@ -24,7 +25,7 @@ export function buildRangeTransaction(options: WithPartner<RangeTransactionOptio
 			betCoin,
 		}) =>
 			playV2({
-				package: config.packageIds.range,
+				...optionalOptions({ package: config.packageIds.range }),
 				typeArguments: [coinType],
 				arguments: [
 					config.objectIds.sweetHouse,

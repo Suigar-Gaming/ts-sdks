@@ -31,6 +31,8 @@ This SDK targets Sui TypeScript SDK 2.0+ only. Follow the official [Sui 2.0 migr
 
 ## What This Package Exposes
 
+The optional extension fields `config`, `partner`, and `cacheTtl`, and SDK-owned optional transaction fields accept explicit `undefined`, even with `exactOptionalPropertyTypes` enabled. For example, `suigar({ partner: undefined })` and `createGameBet({ ...betOptions, betCount: undefined, metadata: undefined })` use the same defaults as omitting those options. Nested configuration override values still require valid configured values.
+
 The package ships three public entrypoints:
 
 - `@suigar/sdk` for the extension factory, runtime client class, and core SDK types
@@ -784,6 +786,8 @@ Use the matching helper for each PvP Coinflip event payload found in `transactio
 - `client.suigar.bcs.PvPCoinflipGameCancelledEvent`
 
 ## Development
+
+The SDK uses the shared strict TypeScript checks, including `exactOptionalPropertyTypes` and `noUncheckedIndexedAccess`. The shared configuration disables `isolatedDeclarations` because the current Move code generator does not emit the required explicit type annotations. Do not edit `src/contracts` manually to satisfy that check.
 
 From the repository root:
 
