@@ -385,11 +385,11 @@ importers:
         specifier: catalog:mysten
         version: 2.1.3
       '@mysten/dapp-kit-core':
-        specifier: ^1.6.40
-        version: 1.6.40(@mysten/sui@2.38.0(typescript@7.0.2))(typescript@7.0.2)
+        specifier: ^1.6.41
+        version: 1.6.41(@mysten/sui@2.38.0(typescript@7.0.2))(typescript@7.0.2)
       '@mysten/dapp-kit-react':
-        specifier: ^2.1.42
-        version: 2.1.42(@mysten/sui@2.38.0(typescript@7.0.2))(@types/react@19.3.0)(react@19.3.1)(typescript@7.0.2)
+        specifier: ^2.1.43
+        version: 2.1.43(@mysten/sui@2.38.0(typescript@7.0.2))(@types/react@19.3.0)(react@19.3.1)(typescript@7.0.2)
       '@mysten/sui':
         specifier: catalog:mysten
         version: 2.38.0(typescript@7.0.2)
@@ -944,13 +944,13 @@ packages:
     resolution: {integrity: sha512-/lEBFstPoHBSpfOYW5Wth0+NGv6kgkofnWt7KFjAmQsf4TpSm6BrMUTRg/HlPiWlWPu/BvGXzxPmQUCW8xX7dg==}
     hasBin: true
 
-  '@mysten/dapp-kit-core@1.6.40':
-    resolution: {integrity: sha512-LuVIFusX+pg6DrgDjVNhPMdxdOoB7AgQLlAh+iYSAUA8zVRX7Xgqjuc2AyAeR4YWTNf4Jt7aX8KZgeT0A2nqGg==}
+  '@mysten/dapp-kit-core@1.6.41':
+    resolution: {integrity: sha512-V1RN35SLYi0kcdo8EiatobO/19U9JBMLjf2cLXrH/rmm5K50qc9w9Tw0WwnHaAP5iBrUDeq7o1vEtMIHDrpQLA==}
     peerDependencies:
       '@mysten/sui': ^2.38.0
 
-  '@mysten/dapp-kit-react@2.1.42':
-    resolution: {integrity: sha512-M8IfeuJLOMKT/df9BgYGmVMJNLVNw7W1bVGmZeZN6DjmloEG445/QIpBv2mqYTfhsKYkjVcBYiDVar5BJrta7g==}
+  '@mysten/dapp-kit-react@2.1.43':
+    resolution: {integrity: sha512-j+TKy+UvJxsb5SiSyUUGUCNAxTjIUHYqRtuMOiiZMLK+XNvKxWpGmncPnKQd/QpcbkAVugQIRs1UEB8JYO8U9g==}
     peerDependencies:
       '@types/react': '>=17.0.0'
       react: '>=17.0.0'
@@ -2834,8 +2834,8 @@ packages:
     resolution: {integrity: sha512-BLrgEcRTwX2o6gGxGOCNyMvGSp35YofuYzw9h1IMTRmKqttAZZVU67bdb9Pr2vUHA8+j3i2tJfjO6C6+4myGTA==}
     engines: {node: 18 || 20 || >=22}
 
-  baseline-browser-mapping@2.11.32:
-    resolution: {integrity: sha512-UvuxFU9P3hM29LrQdwu0cD6w6/+SFr+UlB9s/knI7+O2rK9xFxKUwSDWxGdbbqQ9/V7BJ5s0NI5nQAE4uJp3gQ==}
+  baseline-browser-mapping@2.11.33:
+    resolution: {integrity: sha512-yiVKDX+qCMRKBE084lXvq9EcwFUhKZ2nU8TK1EQQuOgPNR/lmbGxXOeDdlGUqC2Zz11Cs9rk1d/8NfgBmlkt0w==}
     engines: {node: '>=6.0.0'}
     hasBin: true
 
@@ -3407,8 +3407,8 @@ packages:
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
 
-  magic-string@1.4.3:
-    resolution: {integrity: sha512-z12OxmaPGE0F4xlpGdjuAUckipLpQlTAuAmyGhNoD7ODpYUzvDfvtxUbjM/jwznyP178oju/KDdyi220wNJ0RQ==}
+  magic-string@1.4.4:
+    resolution: {integrity: sha512-jQz9sVhrZuphH4NrAIHSgkDJCluQO7Ioi4KGRLa7aTUjAODQ13hENX0YIytqYE/rIkO485gQG2LeBxJaW53kkQ==}
 
   magicast@0.5.5:
     resolution: {integrity: sha512-UicdXN8zQ3JHlxVq+28afMXPr1z7WNY6+7EJnzTdQWkTAlMLF5fNCCKxJHBQwGaNGR11581EiQmQzx73+MvszA==}
@@ -4706,7 +4706,7 @@ snapshots:
       - '@gql.tada/svelte-support'
       - '@gql.tada/vue-support'
 
-  '@mysten/dapp-kit-core@1.6.40(@mysten/sui@2.38.0(typescript@7.0.2))(typescript@7.0.2)':
+  '@mysten/dapp-kit-core@1.6.41(@mysten/sui@2.38.0(typescript@7.0.2))(typescript@7.0.2)':
     dependencies:
       '@floating-ui/dom': 1.8.0
       '@lit-labs/scoped-registry-mixin': 1.0.4
@@ -4724,10 +4724,10 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@mysten/dapp-kit-react@2.1.42(@mysten/sui@2.38.0(typescript@7.0.2))(@types/react@19.3.0)(react@19.3.1)(typescript@7.0.2)':
+  '@mysten/dapp-kit-react@2.1.43(@mysten/sui@2.38.0(typescript@7.0.2))(@types/react@19.3.0)(react@19.3.1)(typescript@7.0.2)':
     dependencies:
       '@lit/react': 1.0.8(@types/react@19.3.0)
-      '@mysten/dapp-kit-core': 1.6.40(@mysten/sui@2.38.0(typescript@7.0.2))(typescript@7.0.2)
+      '@mysten/dapp-kit-core': 1.6.41(@mysten/sui@2.38.0(typescript@7.0.2))(typescript@7.0.2)
       '@nanostores/react': 1.1.0(nanostores@1.5.5)(react@19.3.1)
       '@types/react': 19.3.0
       nanostores: 1.5.5
@@ -5957,7 +5957,7 @@ snapshots:
       '@jridgewell/trace-mapping': 0.3.31
       '@vitest/spy': 5.0.5
       estree-walker: 3.0.3
-      magic-string: 1.4.3
+      magic-string: 1.4.4
     optionalDependencies:
       vite: 8.3.5(@types/node@24.19.2)(jiti@2.7.0)(yaml@2.9.1)
 
@@ -6098,7 +6098,7 @@ snapshots:
 
   balanced-match@4.0.4: {}
 
-  baseline-browser-mapping@2.11.32: {}
+  baseline-browser-mapping@2.11.33: {}
 
   bippy@0.6.1(react@19.3.1):
     dependencies:
@@ -6110,7 +6110,7 @@ snapshots:
 
   browserslist@4.29.4:
     dependencies:
-      baseline-browser-mapping: 2.11.32
+      baseline-browser-mapping: 2.11.33
       caniuse-lite: 1.0.30001819
       electron-to-chromium: 1.5.464
       node-releases: 2.0.60
@@ -6560,7 +6560,7 @@ snapshots:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.6.0
 
-  magic-string@1.4.3:
+  magic-string@1.4.4:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.6.0
 
@@ -6597,7 +6597,7 @@ snapshots:
     dependencies:
       '@next/env': 16.4.3
       '@swc/helpers': 0.5.23
-      baseline-browser-mapping: 2.11.32
+      baseline-browser-mapping: 2.11.33
       caniuse-lite: 1.0.30001819
       postcss: 8.5.23
       react: 19.3.1
@@ -7220,7 +7220,7 @@ snapshots:
       chai: 6.3.0
       es-module-lexer: 2.3.2
       expect-type: 1.4.0
-      magic-string: 1.4.3
+      magic-string: 1.4.4
       obug: 3.0.0
       picomatch: 4.0.7
       std-env: 4.3.0
