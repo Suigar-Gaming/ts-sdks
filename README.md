@@ -66,6 +66,8 @@ When running a task that depends on generated or built artifacts, use `turbo` to
 
 ### Setup
 
+Use the Node.js version specified in [`.node-version`](.node-version). GitHub Actions reads the same file through the shared pnpm setup action.
+
 ```bash
 pnpm install
 pnpm run build
