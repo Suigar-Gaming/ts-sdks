@@ -90,7 +90,7 @@ export type GameParameters<TGame extends Game> = GameParameterValue<OnChainGameP
 export type GetGameParametersOptions<TGame extends Game = Game> = WithGame<
 	WithCoinType<
 		SuiClientTypes.CoreClientMethodOptions & {
-			ignoreCache?: boolean;
+			ignoreCache?: boolean | undefined;
 		}
 	>,
 	TGame

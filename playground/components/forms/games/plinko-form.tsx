@@ -25,11 +25,11 @@ export function PlinkoForm({
 }: {
 	value: PlinkoFormValues;
 	onChange: (patch: Partial<PlinkoFormValues>) => void;
-	onStakeBlur?: () => void;
-	configOptions?: Array<GameConfigOption>;
-	isConfigLoading?: boolean;
-	configError?: string | null;
-	stakeDescription?: React.ReactNode;
+	onStakeBlur?: (() => void) | undefined;
+	configOptions?: Array<GameConfigOption> | undefined;
+	isConfigLoading?: boolean | undefined;
+	configError?: string | null | undefined;
+	stakeDescription?: React.ReactNode | undefined;
 }) {
 	const selectedConfig = configOptions?.find((option) => option.id === value.configId) ?? null;
 	const playableConfigOptions = configOptions?.filter((option) => option.isPlayable) ?? [];

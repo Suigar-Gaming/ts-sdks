@@ -28,7 +28,10 @@ export function requireTransactionFields({
 	context,
 	fields,
 }: {
-	input: { mode?: string; executionWallet?: string } & Record<string, unknown>;
+	input: { mode?: string | undefined; executionWallet?: string | undefined } & Record<
+		string,
+		unknown
+	>;
 	context: z.RefinementCtx;
 	fields: ReadonlyArray<string>;
 }): void {

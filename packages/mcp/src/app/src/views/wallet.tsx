@@ -6,19 +6,19 @@ import { asRecord } from '../lib/format.js';
 
 export function WalletView({ payload }: { payload: unknown }) {
 	const result = asRecord(payload);
-	const wallet = asRecord(result.wallet);
-	const balances = Array.isArray(wallet.balances) ? wallet.balances : [];
-	const coins = Array.isArray(wallet.coins) ? wallet.coins : [];
+	const wallet = asRecord(result['wallet']);
+	const balances = Array.isArray(wallet['balances']) ? wallet['balances'] : [];
+	const coins = Array.isArray(wallet['coins']) ? wallet['coins'] : [];
 
 	return (
 		<section className="grid grid-cols-1 gap-3.5">
 			<Panel title="Wallet">
 				<DefinitionList
 					entries={[
-						['Network', result.network],
-						['Owner', wallet.owner],
-						['Has next page', wallet.hasNextPage],
-						['Next cursor', wallet.nextCursor],
+						['Network', result['network']],
+						['Owner', wallet['owner']],
+						['Has next page', wallet['hasNextPage']],
+						['Next cursor', wallet['nextCursor']],
 					]}
 				/>
 			</Panel>
@@ -32,16 +32,16 @@ export function WalletView({ payload }: { payload: unknown }) {
 						{balances.map((item) => {
 							const balance = asRecord(item);
 							return (
-								<tr className="bg-card/45" key={String(balance.coinType)}>
+								<tr className="bg-card/45" key={String(balance['coinType'])}>
 									<td
 										className="max-w-72 truncate px-3 py-2 font-mono"
-										title={String(balance.coinType)}
+										title={String(balance['coinType'])}
 									>
-										{String(balance.symbol ?? balance.coinType)}
+										{String(balance['symbol'] ?? balance['coinType'])}
 									</td>
 									<td className="px-3 py-2 font-mono">
-										{String(balance.balanceDisplay ?? balance.balance)}{' '}
-										{typeof balance.symbol === 'string' ? balance.symbol : ''}
+										{String(balance['balanceDisplay'] ?? balance['balance'])}{' '}
+										{typeof balance['symbol'] === 'string' ? balance['symbol'] : ''}
 									</td>
 								</tr>
 							);
@@ -59,13 +59,16 @@ export function WalletView({ payload }: { payload: unknown }) {
 						{coins.map((item) => {
 							const coin = asRecord(item);
 							return (
-								<tr className="bg-card/45" key={String(coin.objectId)}>
+								<tr className="bg-card/45" key={String(coin['objectId'])}>
 									<td className="px-3 py-2 font-mono">
-										{String(coin.balanceDisplay ?? coin.balance)}{' '}
-										{typeof coin.symbol === 'string' ? coin.symbol : ''}
+										{String(coin['balanceDisplay'] ?? coin['balance'])}{' '}
+										{typeof coin['symbol'] === 'string' ? coin['symbol'] : ''}
 									</td>
-									<td className="max-w-72 truncate px-3 py-2 font-mono" title={String(coin.type)}>
-										{String(coin.symbol ?? coin.type)}
+									<td
+										className="max-w-72 truncate px-3 py-2 font-mono"
+										title={String(coin['type'])}
+									>
+										{String(coin['symbol'] ?? coin['type'])}
 									</td>
 								</tr>
 							);

@@ -20,7 +20,7 @@ export const PVP_ACTION_OPTIONS = [
 ] as const satisfies ReadonlyArray<{
 	value: PvPAction;
 	label: string;
-	icon: React.ComponentType<{ className?: string }>;
+	icon: React.ComponentType<{ className?: string | undefined }>;
 }>;
 
 export const PVP_GAME_OPTIONS = [

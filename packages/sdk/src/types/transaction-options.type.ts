@@ -8,11 +8,11 @@ import type { CoinSide, Game, PvPCoinflipAction } from './game.type.js';
 import type { SuigarConfig } from './suigar-config.type.js';
 
 export type WithPartner<T> = T & {
-	partner?: string;
+	partner?: string | undefined;
 };
 
 export type WithThrowOnError<T> = T & {
-	throwOnError?: boolean;
+	throwOnError?: boolean | undefined;
 };
 
 export type WithConfig<T = {}> = T & {
@@ -34,23 +34,23 @@ export type WithCoinType<T = {}> = T & {
 /** Common sender and gas settings for every SDK-built transaction. */
 export type TransactionSenderOptions = {
 	owner: string;
-	gasBudget?: Parameters<Transaction['setGasBudgetIfNotSet']>[0];
+	gasBudget?: Parameters<Transaction['setGasBudgetIfNotSet']>[0] | undefined;
 };
 
 export type BaseTransactionOptions = WithConfig<
 	TransactionSenderOptions & {
-		metadata?: BetMetadataInput;
+		metadata?: BetMetadataInput | undefined;
 	}
 >;
 
 export type CoinTransactionOptions = WithCoinType<{
-	useGasCoin?: boolean;
+	useGasCoin?: boolean | undefined;
 }>;
 
 export type StakeTransactionOptions = {
 	stake: number | bigint;
-	cashStake?: number | bigint;
-	betCount?: number | bigint;
+	cashStake?: number | bigint | undefined;
+	betCount?: number | bigint | undefined;
 };
 
 export type SharedBetTransactionOptions = BaseTransactionOptions &
@@ -68,7 +68,7 @@ export type KenoTransactionOptions = SharedBetTransactionOptions & {
 
 export type LimboTransactionOptions = SharedBetTransactionOptions & {
 	targetMultiplier: number;
-	scale?: number;
+	scale?: number | undefined;
 };
 
 export type PlinkoTransactionOptions = SharedBetTransactionOptions & {
@@ -78,8 +78,8 @@ export type PlinkoTransactionOptions = SharedBetTransactionOptions & {
 export type RangeTransactionOptions = SharedBetTransactionOptions & {
 	leftPoint: number;
 	rightPoint: number;
-	outOfRange?: boolean;
-	scale?: number;
+	outOfRange?: boolean | undefined;
+	scale?: number | undefined;
 };
 
 export type SoccerTransactionOptions = SharedBetTransactionOptions & {
@@ -97,7 +97,7 @@ type SharedPvPCoinflipBetTransactionOptions = BaseTransactionOptions & CoinTrans
 export type CreatePvPCoinflipTransactionOptions = Pick<StakeTransactionOptions, 'stake'> &
 	SharedPvPCoinflipBetTransactionOptions & {
 		side: CoinSide;
-		isPrivate?: boolean;
+		isPrivate?: boolean | undefined;
 	};
 
 export type JoinPvPCoinflipTransactionOptions = SharedPvPCoinflipBetTransactionOptions & {

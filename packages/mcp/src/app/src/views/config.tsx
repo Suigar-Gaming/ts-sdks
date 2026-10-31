@@ -8,13 +8,13 @@ import type { DefinitionEntry } from '../lib/types.js';
 
 export function ConfigView({ payload }: { payload: unknown }): JSX.Element {
 	const result = asRecord(payload);
-	const config = asRecord(result.config);
-	const sdk = asRecord(config.sdk);
-	const supportedGames = Array.isArray(result.supportedGames)
-		? result.supportedGames.map((item) => asRecord(item))
+	const config = asRecord(result['config']);
+	const sdk = asRecord(config['sdk']);
+	const supportedGames = Array.isArray(result['supportedGames'])
+		? result['supportedGames'].map((item) => asRecord(item))
 		: [];
-	const supportedFeatures = Array.isArray(result.supportedFeatures)
-		? result.supportedFeatures.map((item) => asRecord(item))
+	const supportedFeatures = Array.isArray(result['supportedFeatures'])
+		? result['supportedFeatures'].map((item) => asRecord(item))
 		: [];
 
 	return (
@@ -22,8 +22,8 @@ export function ConfigView({ payload }: { payload: unknown }): JSX.Element {
 			<Panel title="Context">
 				<DefinitionList
 					entries={[
-						['Network', result.network],
-						['Provider URL', config.providerUrl],
+						['Network', result['network']],
+						['Provider URL', config['providerUrl']],
 					]}
 				/>
 			</Panel>
@@ -36,12 +36,12 @@ export function ConfigView({ payload }: { payload: unknown }): JSX.Element {
 						['Configuration', 'read_config'],
 						['Game metadata', 'read_game_metadata'],
 						...supportedGames.map((game): DefinitionEntry => [
-							String(game.label ?? game.id),
-							Array.isArray(game.tools) ? game.tools.join(', ') : null,
+							String(game['label'] ?? game['id']),
+							Array.isArray(game['tools']) ? game['tools'].join(', ') : null,
 						]),
 						...supportedFeatures.map((feature): DefinitionEntry => [
-							String(feature.label ?? feature.id),
-							Array.isArray(feature.tools) ? feature.tools.join(', ') : null,
+							String(feature['label'] ?? feature['id']),
+							Array.isArray(feature['tools']) ? feature['tools'].join(', ') : null,
 						]),
 					]}
 				/>

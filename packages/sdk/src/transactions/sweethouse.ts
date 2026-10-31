@@ -9,6 +9,7 @@ import {
 	depositPublicPoolAndMintStakedCoins,
 	redeemRequest,
 } from '../contracts/core/sweethouse.js';
+import { optionalOptions } from '../helpers/options.js';
 import type {
 	ClaimOwnSweetHouseRedeemRequestAfterDelayOptions,
 	DepositSweetHouseOptions,
@@ -18,27 +19,23 @@ import type {
 import { toBigInt } from '../utils/numeric.js';
 import { createBaseTransaction } from './shared.js';
 
-export function buildDepositSweetHouseTransaction({
-	config,
-	owner,
-	gasBudget,
-	coinType,
-	amount,
-	useGasCoin,
-}: WithConfig<DepositSweetHouseOptions>): Transaction {
-	const tx = createBaseTransaction({ owner, gasBudget });
+export function buildDepositSweetHouseTransaction(
+	options: WithConfig<DepositSweetHouseOptions>,
+): Transaction {
+	const { config, owner, coinType, amount, useGasCoin } = options;
+	const tx = createBaseTransaction(options);
 	const normalizedCoinType = normalizeStructTag(coinType);
 
 	const stakedCoins = tx.add(
 		depositPublicPoolAndMintStakedCoins({
-			package: config.packageIds.core,
+			...optionalOptions({ package: config.packageIds.core }),
 			typeArguments: [normalizedCoinType],
 			arguments: [
 				config.objectIds.sweetHouse,
 				coinWithBalance({
 					type: normalizedCoinType,
 					balance: toBigInt(amount),
-					useGasCoin,
+					...optionalOptions({ useGasCoin }),
 				}),
 			],
 		}),
@@ -49,25 +46,22 @@ export function buildDepositSweetHouseTransaction({
 	return tx;
 }
 
-export function buildRedeemSweetHouseRequestTransaction({
-	config,
-	owner,
-	gasBudget,
-	coinType,
-	amount,
-}: WithConfig<RedeemSweetHouseRequestOptions>): Transaction {
-	const tx = createBaseTransaction({ owner, gasBudget });
+export function buildRedeemSweetHouseRequestTransaction(
+	options: WithConfig<RedeemSweetHouseRequestOptions>,
+): Transaction {
+	const { config, coinType, amount } = options;
+	const tx = createBaseTransaction(options);
 	const normalizedCoinType = normalizeStructTag(coinType);
 
 	tx.add(
 		redeemRequest({
-			package: config.packageIds.core,
+			...optionalOptions({ package: config.packageIds.core }),
 			typeArguments: [normalizedCoinType],
 			arguments: [
 				config.objectIds.sweetHouse,
 				coinWithBalance({
 					type: StakedCoin.typeTag({
-						package: config.packageIds.core,
+						...optionalOptions({ package: config.packageIds.core }),
 						typeArguments: [normalizedCoinType],
 					}),
 					balance: toBigInt(amount),
@@ -80,18 +74,15 @@ export function buildRedeemSweetHouseRequestTransaction({
 	return tx;
 }
 
-export function buildClaimOwnSweetHouseRedeemRequestAfterDelayTransaction({
-	config,
-	owner,
-	gasBudget,
-	coinType,
-	requestId,
-}: WithConfig<ClaimOwnSweetHouseRedeemRequestAfterDelayOptions>): Transaction {
-	const tx = createBaseTransaction({ owner, gasBudget });
+export function buildClaimOwnSweetHouseRedeemRequestAfterDelayTransaction(
+	options: WithConfig<ClaimOwnSweetHouseRedeemRequestAfterDelayOptions>,
+): Transaction {
+	const { config, coinType, requestId } = options;
+	const tx = createBaseTransaction(options);
 
 	tx.add(
 		claimOwnRedeemRequestAfterDelay({
-			package: config.packageIds.core,
+			...optionalOptions({ package: config.packageIds.core }),
 			typeArguments: [normalizeStructTag(coinType)],
 			arguments: [config.objectIds.sweetHouse, requestId],
 		}),

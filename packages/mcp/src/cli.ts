@@ -22,13 +22,13 @@ import {
 	setDefaultNetwork,
 } from './wallet/index.js';
 
-type NetworkArgs = ArgumentsCamelCase<{ network?: SuigarNetwork }>;
+type NetworkArgs = ArgumentsCamelCase<{ network?: SuigarNetwork | undefined }>;
 type JsonArgs = ArgumentsCamelCase<{ json: boolean }>;
 type BridgeArgs = ArgumentsCamelCase<{
-	timeoutMs?: number;
-	maxBodyBytes?: number;
+	timeoutMs?: number | undefined;
+	maxBodyBytes?: number | undefined;
 	open: boolean;
-	webUrl?: string;
+	webUrl?: string | undefined;
 }>;
 
 const JSON_OPTION = {

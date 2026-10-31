@@ -26,38 +26,38 @@ export type ResolvedAppView = {
 
 export function resolveAppView(payload: unknown): ResolvedAppView {
 	const result = asRecord(payload);
-	if (result.sessionWallet) {
+	if (result['sessionWallet']) {
 		return {
 			coinBadge: null,
 			title: 'Session Wallet',
 			View: SessionWalletView,
 		};
 	}
-	const wallet = asRecord(result.wallet);
-	if (Array.isArray(wallet.balances) || Array.isArray(wallet.coins)) {
+	const wallet = asRecord(result['wallet']);
+	if (Array.isArray(wallet['balances']) || Array.isArray(wallet['coins'])) {
 		return { coinBadge: null, title: 'Wallet', View: WalletView };
 	}
-	if (result.referral && !result.summary) {
+	if (result['referral'] && !result['summary']) {
 		return { coinBadge: null, title: 'Referral Rewards', View: ReferralView };
 	}
 	const { coinBadge } = createInspectorViewModel({ payload, explicitErrors: [] });
-	if (Array.isArray(result.ownedNfts)) {
+	if (Array.isArray(result['ownedNfts'])) {
 		return { coinBadge, title: 'NFT Collection', View: NftView };
 	}
-	if (result.sweethouse && !result.summary) {
+	if (result['sweethouse'] && !result['summary']) {
 		return { coinBadge, title: 'SweetHouse Transaction', View: TransactionView };
 	}
-	if (result.nft && !result.summary) {
+	if (result['nft'] && !result['summary']) {
 		return { coinBadge, title: 'NFT Transaction', View: TransactionView };
 	}
-	if (result.game && !result.summary) {
+	if (result['game'] && !result['summary']) {
 		return { coinBadge, title: 'Game Metadata', View: GameMetadataView };
 	}
-	if (result.supportedGames && !result.summary) {
+	if (result['supportedGames'] && !result['summary']) {
 		return { coinBadge, title: 'Suigar Config', View: ConfigView };
 	}
-	const execution = asRecord(result.execution);
-	if (result.execution && (!result.summary || execution.wallet === 'session')) {
+	const execution = asRecord(result['execution']);
+	if (result['execution'] && (!result['summary'] || execution['wallet'] === 'session')) {
 		return {
 			coinBadge: null,
 			title: 'Transaction Status',

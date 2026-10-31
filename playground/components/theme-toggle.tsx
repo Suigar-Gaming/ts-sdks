@@ -11,7 +11,7 @@ function subscribe() {
 	return () => {};
 }
 
-export function ThemeToggle({ className }: { className?: string }) {
+export function ThemeToggle({ className }: { className?: string | undefined }) {
 	const { resolvedTheme, setTheme } = useTheme();
 	const mounted = React.useSyncExternalStore(
 		subscribe,

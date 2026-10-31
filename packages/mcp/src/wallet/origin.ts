@@ -10,7 +10,7 @@ export function resolveWebOrigin({
 	webUrl,
 }: {
 	network: SuigarNetwork;
-	webUrl?: string;
+	webUrl?: string | undefined;
 }): string {
 	return (
 		webUrl ??

@@ -49,7 +49,7 @@ export function getProviderUrl({
 	providerUrl,
 }: {
 	network: SuigarNetwork;
-	providerUrl?: string;
+	providerUrl?: string | undefined;
 }): string {
 	return providerUrl ?? DEFAULT_PROVIDER_URLS[network];
 }
@@ -93,7 +93,7 @@ export function resolveDefaultCoinType({
 	coinType,
 }: {
 	config: McpConfig;
-	coinType?: string;
+	coinType?: string | undefined;
 }): string {
 	return normalizeStructTag(coinType ?? config.sdk.coins.sui.coinType);
 }
@@ -153,7 +153,7 @@ function summarizeTransaction({
 	context = {},
 }: {
 	transaction: Transaction;
-	context?: TransactionSummaryContext;
+	context?: TransactionSummaryContext | undefined;
 }): TransactionSummary {
 	let data: ReturnType<Transaction['getData']>;
 	try {
@@ -276,7 +276,7 @@ export async function executeSessionTransaction({
 	client: SuigarClientBundle['client'];
 	signer: Signer;
 }): Promise<{
-	error?: string;
+	error?: string | undefined;
 	address: string;
 	digest: string;
 	status: 'success' | 'failed';

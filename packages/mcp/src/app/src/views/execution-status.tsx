@@ -6,25 +6,25 @@ import { asRecord } from '../lib/format.js';
 
 export function ExecutionStatusView({ payload }: { payload: unknown }) {
 	const result = asRecord(payload);
-	const execution = asRecord(result.execution);
+	const execution = asRecord(result['execution']);
 
 	return (
 		<section className="grid grid-cols-1 gap-3.5">
 			<Panel title="Transaction Status">
 				<DefinitionList
 					entries={[
-						['Network', result.network],
-						['Wallet', execution.wallet],
-						['Sender', execution.address],
-						['Status', execution.status],
-						['Transaction digest', execution.digest],
-						['Request ID', execution.requestId],
+						['Network', result['network']],
+						['Wallet', execution['wallet']],
+						['Sender', execution['address']],
+						['Status', execution['status']],
+						['Transaction digest', execution['digest']],
+						['Request ID', execution['requestId']],
 					]}
 				/>
 			</Panel>
 			<ListPanel
 				className="errors"
-				items={typeof execution.error === 'string' ? [execution.error] : []}
+				items={typeof execution['error'] === 'string' ? [execution['error']] : []}
 				title="Execution Error"
 			/>
 		</section>

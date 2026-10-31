@@ -3,6 +3,7 @@
 
 import type { Transaction } from '@mysten/sui/transactions';
 import { playV2 } from '../contracts/wheel/wheel.js';
+import { optionalOptions } from '../helpers/options.js';
 import type { WheelTransactionOptions, WithPartner } from '../types/index.js';
 import { toU8 } from '../utils/numeric.js';
 import { buildSharedStandardGameBetTransaction } from './shared.js';
@@ -22,7 +23,7 @@ export function buildWheelTransaction(options: WithPartner<WheelTransactionOptio
 			betCoin,
 		}) =>
 			playV2({
-				package: config.packageIds.wheel,
+				...optionalOptions({ package: config.packageIds.wheel }),
 				typeArguments: [coinType],
 				arguments: [
 					config.objectIds.sweetHouse,

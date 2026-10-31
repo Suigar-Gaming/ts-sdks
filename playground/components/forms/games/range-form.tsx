@@ -18,9 +18,9 @@ export function RangeForm({
 }: {
 	value: RangeFormValues;
 	onChange: (patch: Partial<RangeFormValues>) => void;
-	onStakeBlur?: () => void;
-	stakeDescription?: React.ReactNode;
-	rangeBoundsDescription?: React.ReactNode;
+	onStakeBlur?: (() => void) | undefined;
+	stakeDescription?: React.ReactNode | undefined;
+	rangeBoundsDescription?: React.ReactNode | undefined;
 }) {
 	const configuredScale = parseOptionalNumber(value.scale);
 	const effectiveScale =

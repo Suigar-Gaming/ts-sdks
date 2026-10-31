@@ -7,6 +7,7 @@ on:
     paths:
       - '.github/actions/setup-pnpm/action.yaml'
       - '.github/workflows/deploy-playground-pages.yaml'
+      - '.node-version'
       - 'package.json'
       - 'packages/sdk/**'
       - 'playground/**'
@@ -18,6 +19,7 @@ on:
     paths:
       - '.github/actions/setup-pnpm/action.yaml'
       - '.github/workflows/deploy-playground-pages.yaml'
+      - '.node-version'
       - 'package.json'
       - 'packages/sdk/**'
       - 'playground/**'

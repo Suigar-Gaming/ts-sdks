@@ -26,12 +26,12 @@ export function SoccerForm({
 }: {
 	value: SoccerFormValues;
 	onChange: (patch: Partial<SoccerFormValues>) => void;
-	onStakeBlur?: () => void;
-	configOptions?: Array<GameConfigOption>;
-	countryOptions?: Array<GameSelectionOption>;
-	isConfigLoading?: boolean;
-	configError?: string | null;
-	stakeDescription?: React.ReactNode;
+	onStakeBlur?: (() => void) | undefined;
+	configOptions?: Array<GameConfigOption> | undefined;
+	countryOptions?: Array<GameSelectionOption> | undefined;
+	isConfigLoading?: boolean | undefined;
+	configError?: string | null | undefined;
+	stakeDescription?: React.ReactNode | undefined;
 }) {
 	const selectedConfig = configOptions?.find((option) => option.id === value.configId) ?? null;
 	const playableConfigOptions = configOptions?.filter((option) => option.isPlayable) ?? [];

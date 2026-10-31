@@ -5,6 +5,23 @@ import { describe, expect, it } from 'vitest';
 import { readConfigTool } from '../../../src/tools/handlers/index.js';
 
 describe('read_config', () => {
+	it('omits undefined nested overrides while preserving configured zero values', async () => {
+		const defaults = await readConfigTool({});
+		const omitted = await readConfigTool({
+			config: {
+				packageIds: { coinflip: undefined },
+				objectIds: { sweetHouse: undefined },
+				coins: { sui: { decimals: undefined, coinType: undefined }, usdc: undefined },
+			},
+		});
+		expect(omitted.structuredContent).toEqual(defaults.structuredContent);
+
+		const configured = await readConfigTool({ config: { coins: { sui: { decimals: 0 } } } });
+		expect(configured.structuredContent).toMatchObject({
+			config: { sdk: { coins: { sui: { decimals: 0 } } } },
+		});
+	});
+
 	it('defaults to testnet and returns SDK-shaped config', async () => {
 		const result = await readConfigTool({});
 		const content = result.structuredContent as Awaited<

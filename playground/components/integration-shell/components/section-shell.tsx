@@ -20,7 +20,7 @@ export function SectionShell({
 	title: string;
 	description: string;
 	icon: React.ReactNode;
-	action?: React.ReactNode;
+	action?: React.ReactNode | undefined;
 	children: React.ReactNode;
 }) {
 	return (

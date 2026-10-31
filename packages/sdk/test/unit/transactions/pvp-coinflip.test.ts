@@ -6,7 +6,11 @@ import { fromHex, normalizeStructTag, normalizeSuiAddress } from '@mysten/sui/ut
 import { describe, expect, it, vi } from 'vitest';
 import { buildPvPCoinflipTransaction } from '../../../src/transactions/pvp-coinflip.js';
 import { createContractCallMock, encodeUtf8, getFirstMockArg, TEST_CONFIG } from '../../utils.js';
-import { createUnusedContractCallMock, loadTransactionModuleWithMock } from './utils.js';
+import {
+	createUnusedContractCallMock,
+	getMoveCall,
+	loadTransactionModuleWithMock,
+} from './utils.js';
 
 describe('pvp coinflip transaction builder', () => {
 	it('builds create and cancel transactions with configured package overrides', () => {
@@ -32,12 +36,12 @@ describe('pvp coinflip transaction builder', () => {
 
 		expect(createData.sender).toBe(normalizeSuiAddress('0x123'));
 		expect(cancelData.sender).toBe(normalizeSuiAddress('0x123'));
-		expect(createData.commands[1].$kind).toBe('MoveCall');
-		expect(cancelData.commands[0].$kind).toBe('MoveCall');
-		expect(createData.commands[1].MoveCall!.package).toBe(
+		expect(createData.commands[1]?.$kind).toBe('MoveCall');
+		expect(cancelData.commands[0]?.$kind).toBe('MoveCall');
+		expect(getMoveCall(createData, 1).package).toBe(
 			normalizeSuiAddress(TEST_CONFIG.packageIds.pvpCoinflip),
 		);
-		expect(cancelData.commands[0].MoveCall!.package).toBe(
+		expect(getMoveCall(cancelData, 0).package).toBe(
 			normalizeSuiAddress(TEST_CONFIG.packageIds.pvpCoinflip),
 		);
 	});

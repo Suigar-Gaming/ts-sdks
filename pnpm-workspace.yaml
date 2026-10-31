@@ -10,16 +10,15 @@ catalogs:
     'tailwind-merge': ^3.7.0
   mysten:
     '@mysten/bcs': ^2.1.3
-    '@mysten/codegen': ^0.12.20
-    '@mysten/sui': ^2.37.0
-  test:
-    'vitest': ^5.0.5
+    '@mysten/codegen': ^0.12.22
+    '@mysten/sui': ^2.38.0
   tooling:
     '@tailwindcss/postcss': ^4.3.3
     '@tailwindcss/vite': ^4.3.3
     'react-doctor': ^0.9.18
     'tailwindcss': ^4.3.3
-    'tsdown': ^0.23.1
+    'tsdown': ^0.23.3
+    'vitest': ^5.0.5
   typescript:
     '@types/node': ^24.19.2
     '@types/react': ^19.3.0
@@ -37,7 +36,6 @@ autoInstallPeers: false
 blockExoticSubdeps: true
 
 minimumReleaseAge: 2880
-
 minimumReleaseAgeExclude:
   - '@mysten/*'
 
@@ -47,6 +45,7 @@ update:
 
 peerDependencyRules:
   allowAny:
+    - '@opentelemetry/api'
     - typescript
   ignoreMissing:
     - eslint

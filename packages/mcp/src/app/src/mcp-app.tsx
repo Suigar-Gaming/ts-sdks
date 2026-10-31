@@ -127,14 +127,14 @@ export function SuigarInspectorApp(): JSX.Element | null {
 				}
 
 				const payload = getToolResultPayload(result);
-				const execution = asRecord(payload.execution);
+				const execution = asRecord(payload['execution']);
 				dispatch({
 					type: 'tool-result',
 					status:
-						typeof payload.mode === 'string'
-							? payload.mode
-							: typeof execution.status === 'string'
-								? execution.status
+						typeof payload['mode'] === 'string'
+							? payload['mode']
+							: typeof execution['status'] === 'string'
+								? execution['status']
 								: 'read',
 					payload,
 				});
@@ -167,8 +167,9 @@ export function SuigarInspectorApp(): JSX.Element | null {
 
 	const inspector = viewState.inspector ?? initialState;
 	const { coinBadge, title, View } = resolveAppView(inspector.payload);
-	const execution = asRecord(asRecord(inspector.payload).execution);
-	const approvalUrl = typeof execution.approvalUrl === 'string' ? execution.approvalUrl : null;
+	const execution = asRecord(asRecord(inspector.payload)['execution']);
+	const approvalUrl =
+		typeof execution['approvalUrl'] === 'string' ? execution['approvalUrl'] : null;
 	const viewError = error ?? viewState.error;
 	const safeAreaInsets = viewState.hostContext?.safeAreaInsets;
 	const safeAreaStyle = {

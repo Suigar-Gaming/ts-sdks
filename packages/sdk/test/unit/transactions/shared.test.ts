@@ -9,6 +9,30 @@ import { encodeUtf8, TEST_CONFIG } from '../../utils.js';
 import { createZeroCoinThunk } from './utils.js';
 
 describe('shared transaction helpers', () => {
+	it('accepts an explicit undefined partner and metadata without changing the wager', async () => {
+		const { buildSharedStandardGameBetTransaction } =
+			await import('../../../src/transactions/shared.js');
+		const tx = buildSharedStandardGameBetTransaction({
+			config: TEST_CONFIG,
+			owner: '0xabc',
+			coinType: '0x2::sui::SUI',
+			stake: 1000,
+			partner: undefined,
+			metadata: undefined,
+			betCount: undefined,
+			cashStake: undefined,
+			buildRewardCoin: (context) => {
+				expect(context.metadata).toEqual({ keys: [], values: [] });
+				expect(context.stake).toBe(1000n);
+				expect(context.cashStake).toBe(1000n);
+				expect(context.betCount).toBe(1n);
+				return createZeroCoinThunk(context.coinType);
+			},
+		});
+
+		expect(tx.getData().sender).toBe(normalizeSuiAddress('0xabc'));
+	});
+
 	it('creates a base transaction with normalized owner address and configured gas budget', async () => {
 		const tx = createBaseTransaction({
 			owner: '0xabc',

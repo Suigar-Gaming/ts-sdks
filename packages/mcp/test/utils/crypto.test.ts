@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest';
+import { webcrypto } from 'node:crypto';
+import { describe, expect, it, vi } from 'vitest';
 import {
 	equalBytes,
 	HEX_32_BYTE_PATTERN,
@@ -8,6 +9,19 @@ import {
 } from '../../src/utils/crypto.js';
 
 describe('crypto utilities', () => {
+	it('generates version 4 UUIDs when the native randomUUID API is unavailable', () => {
+		vi.stubGlobal('crypto', {
+			getRandomValues: webcrypto.getRandomValues.bind(webcrypto),
+		});
+		try {
+			expect(randomUuid()).toMatch(
+				/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u,
+			);
+		} finally {
+			vi.unstubAllGlobals();
+		}
+	});
+
 	it('generates cryptographically random hex values of the requested byte length', () => {
 		const value = randomHex(32);
 

@@ -15,6 +15,7 @@ import {
 } from '../contracts/pvp-coinflip/pvp_coinflip.js';
 import { resolvePriceInfoObjectId } from '../helpers/config.js';
 import { encodeBetMetadata } from '../helpers/metadata.js';
+import { optionalOptions } from '../helpers/options.js';
 import type {
 	PvPCoinflipAction,
 	PvPCoinflipTransactionOptions,
@@ -54,7 +55,7 @@ function buildPvPCoinflipJoinBetCoin(
 		return tx.coin({
 			type: options.coinType,
 			balance: BigInt(json.stake_per_player),
-			useGasCoin: options.useGasCoin,
+			...optionalOptions({ useGasCoin: options.useGasCoin }),
 		});
 	};
 }
@@ -74,14 +75,14 @@ export function buildPvPCoinflipTransaction(
 
 			tx.add(
 				createGame({
-					package: config.packageIds.pvpCoinflip,
+					...optionalOptions({ package: config.packageIds.pvpCoinflip }),
 					typeArguments: [normalizedCoinType],
 					arguments: [
 						config.objectIds.sweetHouse,
 						coinWithBalance({
 							type: normalizedCoinType,
 							balance: stake,
-							useGasCoin: options.useGasCoin,
+							...optionalOptions({ useGasCoin: options.useGasCoin }),
 						}),
 						options.side === 'tails',
 						Boolean(options.isPrivate),
@@ -102,7 +103,7 @@ export function buildPvPCoinflipTransaction(
 
 			tx.add(
 				joinGameV2({
-					package: config.packageIds.pvpCoinflip,
+					...optionalOptions({ package: config.packageIds.pvpCoinflip }),
 					typeArguments: [normalizedCoinType],
 					arguments: [
 						options.gameId,
@@ -123,7 +124,7 @@ export function buildPvPCoinflipTransaction(
 		case 'cancel': {
 			tx.add(
 				cancelGame({
-					package: config.packageIds.pvpCoinflip,
+					...optionalOptions({ package: config.packageIds.pvpCoinflip }),
 					typeArguments: [normalizedCoinType],
 					arguments: [options.gameId, config.objectIds.sweetHouse],
 				}),

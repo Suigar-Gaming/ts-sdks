@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import type { Transaction } from '@mysten/sui/transactions';
-import { afterEach, vi } from 'vitest';
+import { afterEach, assert, vi } from 'vitest';
 
 afterEach(() => {
 	vi.resetModules();
@@ -29,4 +29,11 @@ type ContractCallMock = (options: unknown) => (tx: Transaction) => unknown;
 
 export function createUnusedContractCallMock() {
 	return vi.fn<ContractCallMock>();
+}
+
+/** Checks command presence and kind before returning its Move call arguments. */
+export function getMoveCall(data: ReturnType<Transaction['getData']>, index: number) {
+	const command = data.commands[index];
+	assert(command?.$kind === 'MoveCall', `Expected MoveCall at command ${index}`);
+	return command.MoveCall;
 }

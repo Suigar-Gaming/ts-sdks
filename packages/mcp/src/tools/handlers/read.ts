@@ -10,6 +10,7 @@ import {
 	type ToolTextResult,
 } from '../../runtime/index.js';
 import { formatBaseUnitAmount } from '../../utils/index.js';
+import { optionalOptions } from '../../utils/options.js';
 import type { ListNftsInput, ReadGameMetadataInput } from '../schemas/index.js';
 import {
 	asTextResponse,
@@ -83,7 +84,7 @@ export async function listNftsTool(input: Partial<ListNftsInput> = {}): Promise<
 		const page = await client.core.listOwnedObjects({
 			owner,
 			type: nftType,
-			cursor,
+			...optionalOptions({ cursor }),
 			include: { content: true },
 		});
 		for (const object of page.objects) {

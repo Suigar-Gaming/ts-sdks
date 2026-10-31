@@ -15,18 +15,18 @@ function claimLabel(kind: unknown): unknown {
 
 export function ReferralView({ payload }: { payload: unknown }): JSX.Element {
 	const result = asRecord(payload);
-	const referral = asRecord(result.referral);
-	const plan = asRecord(result.plan);
+	const referral = asRecord(result['referral']);
+	const plan = asRecord(result['plan']);
 	const amount =
-		typeof referral.amountDisplay === 'string'
-			? `${referral.amountDisplay} (${String(referral.amount)} base units)`
-			: referral.amount;
-	const notes = Array.isArray(referral.notes)
-		? referral.notes.filter((note): note is string => typeof note === 'string')
-		: Array.isArray(plan.notes)
-			? plan.notes.filter((note): note is string => typeof note === 'string')
+		typeof referral['amountDisplay'] === 'string'
+			? `${referral['amountDisplay']} (${String(referral['amount'])} base units)`
+			: referral['amount'];
+	const notes = Array.isArray(referral['notes'])
+		? referral['notes'].filter((note): note is string => typeof note === 'string')
+		: Array.isArray(plan['notes'])
+			? plan['notes'].filter((note): note is string => typeof note === 'string')
 			: [];
-	const target = typeof plan.target === 'string' ? [plan.target] : [];
+	const target = typeof plan['target'] === 'string' ? [plan['target']] : [];
 
 	return (
 		<>
@@ -34,10 +34,10 @@ export function ReferralView({ payload }: { payload: unknown }): JSX.Element {
 				<Panel title="Referrer">
 					<DefinitionList
 						entries={[
-							['Network', result.network],
-							['Address', result.owner],
-							['Reward', claimLabel(referral.kind)],
-							['Coin type', referral.coinType],
+							['Network', result['network']],
+							['Address', result['owner']],
+							['Reward', claimLabel(referral['kind'])],
+							['Coin type', referral['coinType']],
 						]}
 					/>
 				</Panel>
@@ -45,7 +45,7 @@ export function ReferralView({ payload }: { payload: unknown }): JSX.Element {
 					<DefinitionList
 						entries={[
 							['Amount', amount],
-							['Package ID', referral.packageId],
+							['Package ID', referral['packageId']],
 						]}
 					/>
 				</Panel>

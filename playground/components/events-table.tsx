@@ -74,8 +74,8 @@ function CopyableValue({
 	onCopied,
 }: {
 	label: string;
-	value?: string;
-	explorerHref?: string;
+	value?: string | undefined;
+	explorerHref?: string | undefined;
 	onCopied: (label: string) => void;
 }) {
 	if (!value) {

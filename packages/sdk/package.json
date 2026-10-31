@@ -96,7 +96,7 @@
 		"@types/node": "catalog:typescript",
 		"tsdown": "catalog:tooling",
 		"typescript": "catalog:typescript",
-		"vitest": "catalog:test"
+		"vitest": "catalog:tooling"
 	},
 	"peerDependencies": {
 		"@mysten/bcs": "catalog:mysten",
