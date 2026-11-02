@@ -1,40 +1,33 @@
 # Suigar Playground
 
-Next.js example app for the Suigar SDK. It runs on Sui testnet and uses:
-
-- `@suigar/sdk`
-- `@suigar/sdk/games`
-- `@suigar/sdk/utils`
-- `@mysten/dapp-kit-core`
-- `@mysten/dapp-kit-react`
-- `@mysten/sui`
-- Suigar-inspired UI and theme tokens based on the frontend app
-
-Input parsers use `TypeError` for malformed stake, bet-count, and Keno-pick values, and `RangeError` for stake precision limits and bet counts below one. Transaction and resource failures remain generic errors.
+This Next.js app runs on Sui `testnet` and uses UI styles and theme tokens based on the Suigar frontend. It imports the client extension from `@suigar/sdk`, game option types from `@suigar/sdk/games`, and parsing helpers from `@suigar/sdk/utils`. Wallet integration uses `@mysten/dapp-kit-core`, `@mysten/dapp-kit-react`, and `@mysten/sui`.
 
 ## What it covers
 
-The example reflects the current package export split:
-
-- Runtime integration through `@suigar/sdk`
-- Game option types through `@suigar/sdk/games`
-- Parsing helpers through `@suigar/sdk/utils`
+### Pages
 
 - Standard game route: `/standard?game=coinflip`
 - PvP route: `/pvp?game=pvp-coinflip&action=create`
-- NFT route: `/nft`, which reads the configured NFT factory and marks each NFT spec as directly possessed or not possessed by the connected wallet
+- `/nft` reads the configured factory and shows which NFT specifications the connected wallet owns directly.
 - Referral route: `/referral`, which simulates and submits commission and level-up USD reward claims for the connected referrer wallet
-- Query-param game selection
+
+### Game controls
+
+The game routes read the selected game from the query string.
+
 - Shared supported-coin selector using `client.suigar.getConfig().coins`
 - Connected-wallet balance cards for every supported coin type
 - Per-game form components for standard and PvP Coinflip flows
 - Standard game forms backed by `client.suigar.getGameParameters({ game, coinType })` for live on-chain stake ranges, per-game parameter bounds, and Keno/Plinko/Soccer/Wheel config selection
-- A game-settings dialog in the controls card that shows the current typed `getGameParameters({ game, coinType })` result, available configs when present, lookup request, raw payload, and expandable detail views for both standard games and PvP Coinflip
-- PvP game selection scaffolded through a dedicated selector, with `pvp-coinflip` as the first option
-- Join and cancel lobby cards backed by `client.suigar.getPvPCoinflipGames()`, using each returned lobby's `coin_type` field for coin selection and display, with public join lobbies visible while disconnected, an optional private-lobby join toggle, connected-wallet filtering for cancel, compact multi-column cards, creator-side labels, privacy badges, and copyable game ids
+- Open settings at the top right of either controls card to inspect the typed `getGameParameters({ game, coinType })` result. The dialog shows the lookup request, raw payload, available configs, and expandable details for standard games and PvP Coinflip.
+- The PvP selector lists `pvp-coinflip` first.
+- Join and cancel cards use `client.suigar.getPvPCoinflipGames()` and each lobby’s `coin_type` for coin selection and display. Public lobbies are visible before you connect a wallet. A toggle lets you join private lobbies. The cancel list shows only the connected wallet’s lobbies. Cards use a compact multi-column layout and show the creator’s side, privacy status, and a copyable game ID.
+
+### Transactions and events
+
 - Live transaction-builder code preview
 - Copyable NFT lookup and referral read/claim code previews that mirror the calls used by their respective routes
-- A dedicated execute-transaction card that reads the connected wallet state directly from the new Mysten dApp Kit
+- The transaction execution card reads the connected wallet state from Mysten dApp Kit.
 - Decoding of `BetResultEvent`, `PvPCoinflipGameCreatedEvent`, `PvPCoinflipGameResolvedEvent`, and `PvPCoinflipGameCancelledEvent`
 - Oracle price formatting with `fromMoveFloat` and unified event decoding with `parseSuigarEvent` from `@suigar/sdk/utils`
 - Shared persistent event table across route and game changes
@@ -70,18 +63,19 @@ pnpm --dir playground run typecheck
 
 ## Notes
 
-- The app is fixed to `testnet`.
-- Connected balances are fetched from the active wallet for each SDK-supported coin type and refresh after transaction execution.
+Input parsers use `TypeError` for malformed stake, bet-count, and Keno-pick values, and `RangeError` for stake precision limits and bet counts below one. Transaction and resource failures remain generic errors.
+
+- After a transaction executes, the app refreshes the active wallet’s balance for each SDK-supported coin.
 - The NFT page uses `client.core.listOwnedObjects()` with the SDK-configured NFT type, decodes objects with the SDK's NFT BCS helpers, and does not include NFTs held in a Kiosk.
 - The referral page uses `client.suigar.view.referral` to simulate claimable amounts. A zero or unavailable amount disables its claim action; submitted claims are built through `client.suigar.tx.referral` and refresh afterward. Its copyable code preview includes both claimable-amount reads and unsigned claim builders.
 - Stake inputs use human values such as `1` or `2.5` and are converted to atomic on-chain units before transaction creation where the selected action requires a stake.
 - Standard game stake fields show the current on-chain min and max range for the selected coin, and the form clamps stake back into the allowed range when live parameters load or change.
 - Standard games expose optional bet count; leave it empty to use the SDK default of `1`.
 - Limbo clamps `targetMultiplier` to the on-chain `min_target_multiplier` and `max_target_multiplier` bounds. `getGameParameters({ game, coinType })` requires the selected coin type and returns those fields as JavaScript numbers.
-- Range also clamps the current inputs to the on-chain zone-size bounds for the active scale and surfaces the current RTP bounds in the field description.
+- Range clamps inputs to the on-chain zone-size limits for the active scale. The field description shows the current RTP bounds.
 - Keno, Plinko, Soccer, and Wheel switch to live config options when those on-chain parameters are available. The form only offers playable configs in the selector and automatically moves away from missing or disabled selections.
-- The settings dialog is available from the top-right of both the standard and PvP controls cards and is useful for inspecting the live parsed parameter object without leaving the playground.
+
 - Limbo uses the exported SDK default multiplier scale, so the form shows how `targetMultiplier` is converted with `Math.round(targetMultiplier * scale)`.
 - Range point inputs are human values, not pre-scaled integers. The form derives the allowed max from the exported SDK constants `RANGE_POINT_LIMIT / scale`, so the default SDK scale allows `0` to `100`.
 - For SDK pagination outside the current UI, import `DEFAULT_QUERY_LIMIT` from `@suigar/sdk/utils` instead of hard-coding `50`; it is the reusable default query page size, currently used by a no-argument `client.suigar.getPvPCoinflipGames()` call.
-- Full decoded event payloads are also logged to the browser console.
+- The browser console logs the full decoded event payloads.

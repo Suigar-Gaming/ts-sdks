@@ -1,6 +1,6 @@
 # `@suigar/sdk`
 
-TypeScript SDK for Suigar provably fair on-chain Sui casino game, SweetHouse, NFT, and referral transactions.
+Use this TypeScript SDK to build transactions for Suigar’s provably fair casino games on Sui, SweetHouse pools, NFTs, and referral claims.
 
 ## Documentation
 
@@ -31,7 +31,7 @@ This SDK targets Sui TypeScript SDK 2.0+ only. Follow the official [Sui 2.0 migr
 
 ## What This Package Exposes
 
-The optional extension fields `config`, `partner`, and `cacheTtl`, and SDK-owned optional transaction fields accept explicit `undefined`, even with `exactOptionalPropertyTypes` enabled. For example, `suigar({ partner: undefined })` and `createGameBet({ ...betOptions, betCount: undefined, metadata: undefined })` use the same defaults as omitting those options. Nested configuration override values still require valid configured values.
+You can pass `undefined` for the optional extension fields `config`, `partner`, and `cacheTtl`, and for optional SDK transaction fields, even with `exactOptionalPropertyTypes` enabled. For example, `suigar({ partner: undefined })` and `createGameBet({ ...betOptions, betCount: undefined, metadata: undefined })` use the defaults for omitted options. If you supply a nested configuration override, its value must be valid.
 
 The package ships three public entrypoints:
 
@@ -39,7 +39,7 @@ The package ships three public entrypoints:
 - `@suigar/sdk/games` for game-specific public types
 - `@suigar/sdk/utils` for public parser, constants, and numeric helpers
 
-The package root exposes the extension factory, client class, and core SDK types:
+Import the extension factory, client class, and core types from the package root.
 
 ```ts
 import {
@@ -51,7 +51,7 @@ import {
 } from '@suigar/sdk';
 ```
 
-It does not export the individual transaction builders from the package root. Those stay on the registered extension instance under `client.suigar.tx`.
+After registering the extension, access individual transaction builders through `client.suigar.tx`.
 
 Utility exports are available from the utils subpath:
 
@@ -109,7 +109,7 @@ Current game-type subpath exports:
 
 - `@suigar/sdk/games`: `GAMES`, `Game`, `StandardGame`, `PvPGame`, `CoinSide`, `PvPCoinflipAction`, `CreateGameBetOptions`, `CoinflipTransactionOptions`, `KenoTransactionOptions`, `LimboTransactionOptions`, `PlinkoTransactionOptions`, `RangeTransactionOptions`, `SoccerTransactionOptions`, `WheelTransactionOptions`, `CreatePvPCoinflipTransactionOptions`, `JoinPvPCoinflipTransactionOptions`, `CancelPvPCoinflipTransactionOptions`
 
-What you actually use at runtime is the registered extension instance:
+Call SDK methods on the registered extension.
 
 ```ts
 const client = new SuiGrpcClient({ baseUrl, network }).$extend(suigar());
@@ -155,7 +155,7 @@ The extension constructor throws `RangeError` when the connected client network 
 
 ### Partner Setup
 
-> **Important:** `partner` is the partner wallet address. Configure it once when you register the extension so the SDK can prepend that wallet address to supported bet metadata automatically.
+Set `partner` to the wallet address that should receive on-chain attribution. The SDK prepends this address to supported bet metadata.
 
 ```ts
 const client = new SuiGrpcClient({ baseUrl, network }).$extend(
@@ -165,7 +165,7 @@ const client = new SuiGrpcClient({ baseUrl, network }).$extend(
 client.suigar;
 ```
 
-Do not pass a partner slug, label, or display name here. Use the wallet address that should receive partner attribution on-chain.
+A slug, label, or display name is invalid here.
 
 You can rename the extension:
 
@@ -230,7 +230,7 @@ If `partner` is configured, the SDK automatically writes that partner wallet add
 
 ## Runtime Surface
 
-The registered extension instance exposes the main runtime surface:
+The registered extension provides these methods and properties.
 
 - `getConfig()`
 - `getGameParameters({ game, coinType, ...options })`
@@ -244,7 +244,7 @@ The registered extension instance exposes the main runtime surface:
 
 Returns the resolved SDK configuration for the connected network.
 
-This is intended mainly for debugging and inspection, for example to verify the NFT V1 package id, optional MVR package overrides, object ids, or supported coin metadata for the active client network.
+Use it to check the NFT V1 package ID, MVR package overrides, object IDs, and supported coin metadata when debugging.
 
 It includes:
 
@@ -293,11 +293,11 @@ const base64 = await client.suigar.serializeTransactionToBase64({
 
 Lists unresolved PvP Coinflip games from the configured PvP registry.
 
-This reads the registry dynamic fields for the active network and resolves each entry into parsed game state through a bulk `client.core.getObjects()` lookup. Registry membership is the unresolved-state signal: once a match is joined and resolved, the Move flow removes it from the registry and deletes the live `Game` object.
+The SDK reads the registry’s dynamic fields on the active network and fetches the games in bulk with `client.core.getObjects()`. When a match is joined and resolved, the Move contract removes the registry entry and deletes the live `Game` object.
 
-Use this when a product needs the current set of open PvP Coinflip matches for browsing or lobby views.
+Use the results to display open matches in a lobby.
 
-By default, per-object fetch or parse failures are skipped so one broken or already-deleted registry entry does not reject the full lookup. Pass `throwOnError: true` if you want the call to reject instead.
+By default, the lookup skips objects it cannot fetch or parse, including deleted games. Pass `throwOnError: true` to reject the lookup if any object fails.
 
 Each returned entry includes the parsed game fields plus a derived `coin_type` string from the underlying Move object type.
 
@@ -720,13 +720,13 @@ When the extension is configured with `partner`, decoded event `metadata` will c
 > **Tip:**
 >
 > - `waitForTransaction({ digest, include: { effects: true, events: true } })` is useful when you want the finalized transaction result before decoding
-> - These helpers decode the event payload itself, not a full transaction response
+> - Pass the individual event payload to the decoder.
 
 ### Parse SweetHouse Redeem Request Data
 
 SweetHouse emits `RedeemRequestCreatedEvent` when a redeem request is created. Decode the event payload and read `request_id` to obtain the request ID needed by `client.suigar.tx.sweetHouse.claimOwnRedeemRequestAfterDelay`:
 
-The signer must correspond to `accountAddress`, which is also the transaction owner; no additional transaction party is required.
+Only the transaction owner, `accountAddress`, needs to sign.
 
 ```ts
 const redeem = client.suigar.tx.sweetHouse.redeemRequest({
