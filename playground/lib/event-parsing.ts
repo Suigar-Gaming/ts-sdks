@@ -6,10 +6,12 @@ import { bigintToString } from '@/lib/suigar-app';
 import type { EventLogRow } from '@/lib/suigar-types';
 
 type EventWithBcsPayload = {
-	bcs?: string | Uint8Array;
-	contents?: {
-		value?: string | Uint8Array | Array<number>;
-	};
+	bcs?: string | Uint8Array | undefined;
+	contents?:
+		| {
+				value?: string | Uint8Array | Array<number> | undefined;
+		  }
+		| undefined;
 };
 
 const textDecoder = new TextDecoder();
@@ -118,29 +120,29 @@ function createEventRow(digest: string, event: SuiClientTypes.Event): EventLogRo
 		`game: ${suigarEvent.game}`,
 		...(eventType === 'BetResultEvent'
 			? [
-					`coin: ${String((payload.coin_type as { name?: string })?.name ?? 'unknown')}`,
-					`stake: ${bigintToString(payload.stake_amount)}`,
-					`outcome: ${bigintToString(payload.outcome_amount)}`,
-					`unsafe oracle price: ${formatOraclePrice(payload.unsafe_oracle_usd_coin_price)}`,
-					`adjusted oracle price: ${formatOraclePrice(payload.adjusted_oracle_usd_coin_price)}`,
+					`coin: ${String((payload['coin_type'] as { name?: string | undefined })?.name ?? 'unknown')}`,
+					`stake: ${bigintToString(payload['stake_amount'])}`,
+					`outcome: ${bigintToString(payload['outcome_amount'])}`,
+					`unsafe oracle price: ${formatOraclePrice(payload['unsafe_oracle_usd_coin_price'])}`,
+					`adjusted oracle price: ${formatOraclePrice(payload['adjusted_oracle_usd_coin_price'])}`,
 					gameDetails ? formatGameDetails(gameDetails) : '',
-					formatVecMap(payload.metadata),
+					formatVecMap(payload['metadata']),
 				]
 			: eventType === 'GameCreatedEvent'
 				? [
-						`creator side: ${payload.creator_is_tails ? 'tails' : 'heads'}`,
-						`stake: ${bigintToString(payload.stake_per_player)}`,
-						`private: ${String(payload.is_private)}`,
+						`creator side: ${payload['creator_is_tails'] ? 'tails' : 'heads'}`,
+						`stake: ${bigintToString(payload['stake_per_player'])}`,
+						`private: ${String(payload['is_private'])}`,
 					]
 				: eventType === 'GameResolvedEvent'
 					? [
-							`winner: ${String(payload.winner)}`,
-							`pot: ${bigintToString(payload.total_pot)}`,
-							`payout: ${bigintToString(payload.payout_amount)}`,
+							`winner: ${String(payload['winner'])}`,
+							`pot: ${bigintToString(payload['total_pot'])}`,
+							`payout: ${bigintToString(payload['payout_amount'])}`,
 						]
 					: [
-							`stake: ${bigintToString(payload.stake_per_player)}`,
-							`private: ${String(payload.is_private)}`,
+							`stake: ${bigintToString(payload['stake_per_player'])}`,
+							`private: ${String(payload['is_private'])}`,
 						]),
 	]
 		.filter(Boolean)
@@ -148,13 +150,13 @@ function createEventRow(digest: string, event: SuiClientTypes.Event): EventLogRo
 
 	console.log(`Suigar ${eventType}`, payload);
 	return createRow(digest, eventType, payload, details, {
-		actor: String(payload.player ?? payload.winner ?? payload.creator),
-		...(typeof payload.game_id === 'string' ? { gameId: payload.game_id } : {}),
+		actor: String(payload['player'] ?? payload['winner'] ?? payload['creator']),
+		...(typeof payload['game_id'] === 'string' ? { gameId: payload['game_id'] } : {}),
 	});
 }
 
 export function parseSuigarEvents(
-	client: { suigar: SuigarClient },
+	_client: { suigar: SuigarClient },
 	digest: string,
 	events: Array<SuiClientTypes.Event> | undefined,
 ) {

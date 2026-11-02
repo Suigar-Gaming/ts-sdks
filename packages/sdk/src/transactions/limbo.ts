@@ -3,6 +3,7 @@
 
 import type { Transaction } from '@mysten/sui/transactions';
 import { playV2 } from '../contracts/limbo/limbo.js';
+import { optionalOptions } from '../helpers/options.js';
 import type { LimboTransactionOptions, WithPartner } from '../types/index.js';
 import { DEFAULT_LIMBO_MULTIPLIER_SCALE } from '../utils/constants.js';
 import { buildSharedStandardGameBetTransaction } from './shared.js';
@@ -23,7 +24,7 @@ export function buildLimboTransaction(options: WithPartner<LimboTransactionOptio
 			betCoin,
 		}) =>
 			playV2({
-				package: config.packageIds.limbo,
+				...optionalOptions({ package: config.packageIds.limbo }),
 				typeArguments: [coinType],
 				arguments: [
 					config.objectIds.sweetHouse,

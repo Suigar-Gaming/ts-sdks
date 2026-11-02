@@ -33,6 +33,7 @@ import {
 	resolvePartnerAddress,
 	resolveSuigarConfig,
 } from './helpers/index.js';
+import { optionalOptions } from './helpers/options.js';
 import {
 	buildClaimOwnSweetHouseRedeemRequestAfterDelayTransaction,
 	buildClaimReferralCommissionTransaction,
@@ -73,9 +74,7 @@ import { DEFAULT_QUERY_LIMIT, parseCoinType } from './utils/index.js';
 
 export function suigar<const Name extends string = 'suigar'>({
 	name = 'suigar' as Name,
-	config,
-	partner,
-	cacheTtl,
+	...options
 }: SuigarExtensionOptions<Name> = {}): SuiClientRegistration<
 	ClientWithCoreApi,
 	Name,
@@ -85,11 +84,9 @@ export function suigar<const Name extends string = 'suigar'>({
 		name,
 		register: (client: ClientWithCoreApi): SuigarClient => {
 			return new SuigarClient({
+				...options,
 				client,
 				name: String(name),
-				config,
-				partner,
-				cacheTtl,
 			});
 		},
 	};
@@ -108,9 +105,7 @@ export class SuigarClient {
 	constructor({
 		client,
 		name,
-		config,
-		partner,
-		cacheTtl,
+		...options
 	}: Omit<SuigarExtensionOptions, 'name'> & {
 		client: ClientWithCoreApi;
 		name: string;
@@ -121,11 +116,11 @@ export class SuigarClient {
 		}
 
 		this.#client = client;
-		this.#partner = resolvePartnerAddress(partner);
+		this.#partner = resolvePartnerAddress(options.partner);
 		this.#cache = client.cache.scope(`@suigar/sdk:${name}`);
-		this.#cacheTtl = cacheTtl ?? DEFAULT_CACHE_TTL_MS;
+		this.#cacheTtl = options.cacheTtl ?? DEFAULT_CACHE_TTL_MS;
 
-		this.#config = resolveSuigarConfig({ network, config });
+		this.#config = resolveSuigarConfig({ ...options, network });
 	}
 
 	/**
@@ -190,9 +185,9 @@ export class SuigarClient {
 	}: GetGameParametersOptions<TGame>): Promise<GameParameters<TGame>> {
 		const { sweetHouse: sweetHouseObjectId } = this.#config.objectIds;
 		const gameDefinition = GAME_SETTINGS[game];
-		const gameSettingsKeyType = gameDefinition.settingsKey.typeTag({
-			package: this.#config.packageIds[gameDefinition.packageId],
-		});
+		const gameSettingsKeyType = gameDefinition.settingsKey.typeTag(
+			optionalOptions({ package: this.#config.packageIds[gameDefinition.packageId] }),
+		);
 		const coinType = normalizeStructTag(options.coinType);
 
 		const cacheKey: [string, ...Array<string>] = [
@@ -212,7 +207,7 @@ export class SuigarClient {
 					type: gameSettingsKeyType,
 					bcs: gameDefinition.settingsKey.serialize({ dummy_field: false }).toBytes(),
 				},
-				signal,
+				...optionalOptions({ signal }),
 			});
 
 			const { object } = await this.#client.core.getDynamicObjectField({
@@ -224,7 +219,7 @@ export class SuigarClient {
 					}).toBytes(),
 				},
 				include: { content: true },
-				signal,
+				...optionalOptions({ signal }),
 			});
 
 			if (!object?.content) {
@@ -249,9 +244,9 @@ export class SuigarClient {
 
 	async #getPvPCoinflipRegistryId(signal?: AbortSignal): Promise<string> {
 		const { sweetHouse: sweetHouseObjectId } = this.#config.objectIds;
-		const pvpCoinflipRegistryKeyType = PvpCoinflipRegistryKey.typeTag({
-			package: this.#config.packageIds.pvpCoinflip,
-		});
+		const pvpCoinflipRegistryKeyType = PvpCoinflipRegistryKey.typeTag(
+			optionalOptions({ package: this.#config.packageIds.pvpCoinflip }),
+		);
 
 		return this.#cache.read(
 			['getPvPCoinflipRegistryId', sweetHouseObjectId, pvpCoinflipRegistryKeyType],
@@ -262,7 +257,7 @@ export class SuigarClient {
 						type: pvpCoinflipRegistryKeyType,
 						bcs: PvpCoinflipRegistryKey.serialize({ dummy_field: false }).toBytes(),
 					},
-					signal,
+					...optionalOptions({ signal }),
 				});
 
 				return object.objectId;
@@ -302,7 +297,7 @@ export class SuigarClient {
 
 		const { objects } = await this.#client.core.getObjects({
 			objectIds: dynamicFields.map(({ childId }) => childId!),
-			signal: listOptions.signal,
+			...optionalOptions({ signal: listOptions.signal }),
 			include: {
 				content: true,
 			},

@@ -335,7 +335,7 @@ await dAppKit.signAndExecuteTransaction({ transaction: commissionTx });`;
 										onClick={() => void executeClaim(card.kind)}
 									>
 										<SendHorizontal />
-										{isExecuting === card.kind ? 'Claiming…' : 'Claim'}
+										{isExecuting === card.kind ? 'Claiming...' : 'Claim'}
 									</Button>
 								</CardContent>
 							</Card>

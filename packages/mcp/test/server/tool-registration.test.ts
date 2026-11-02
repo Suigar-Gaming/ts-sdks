@@ -104,7 +104,7 @@ describe('MCP tool registration', () => {
 				_registeredTools: Record<
 					string,
 					{
-						title?: string;
+						title?: string | undefined;
 						inputSchema?: unknown;
 						outputSchema?: unknown;
 						annotations?: unknown;
@@ -116,32 +116,32 @@ describe('MCP tool registration', () => {
 
 		expect(Object.keys(registeredTools).sort()).toEqual(registeredToolNames.sort());
 		expect([...appToolNames, ...nonAppToolNames].sort()).toEqual(registeredToolNames.sort());
-		expect(registeredTools.read_config).toMatchObject({
+		expect(registeredTools['read_config']).toMatchObject({
 			title: 'Read Suigar Config',
 			annotations: readOnlyToolAnnotations,
 		});
-		expect(registeredTools.read_config._meta).toMatchObject(appToolMeta);
-		expect(registeredTools.read_game_metadata).toMatchObject({
+		expect(registeredTools['read_config']?._meta).toMatchObject(appToolMeta);
+		expect(registeredTools['read_game_metadata']).toMatchObject({
 			title: 'Read Suigar Game Metadata',
 			annotations: readOnlyToolAnnotations,
 		});
-		expect(registeredTools.read_game_metadata._meta).toMatchObject(appToolMeta);
-		expect(registeredTools.list_nfts).toMatchObject({
+		expect(registeredTools['read_game_metadata']?._meta).toMatchObject(appToolMeta);
+		expect(registeredTools['list_nfts']).toMatchObject({
 			title: 'List Suigar NFTs',
 			annotations: readOnlyToolAnnotations,
 			_meta: appToolMeta,
 		});
-		expect(registeredTools.build_coinflip_transaction).toMatchObject({
+		expect(registeredTools['build_coinflip_transaction']).toMatchObject({
 			title: 'Build Coinflip Transaction',
 			annotations: transactionToolAnnotations,
 			_meta: appToolMeta,
 		});
-		expect(registeredTools.build_nft_v1_mint_transaction).toMatchObject({
+		expect(registeredTools['build_nft_v1_mint_transaction']).toMatchObject({
 			title: 'Build NFT V1 Mint Transaction',
 			annotations: transactionToolAnnotations,
 			_meta: appToolMeta,
 		});
-		expect(registeredTools.build_pvp_coinflip_create_transaction).toMatchObject({
+		expect(registeredTools['build_pvp_coinflip_create_transaction']).toMatchObject({
 			title: 'Build PvP Coinflip Create',
 			annotations: transactionToolAnnotations,
 			_meta: appToolMeta,

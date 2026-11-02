@@ -75,7 +75,7 @@ function buildStandardSharedOptions(
 	const rawBetCount = getBetCountInput(fields);
 
 	if (rawBetCount) {
-		baseOptions.betCount = parseBetCount(rawBetCount);
+		baseOptions['betCount'] = parseBetCount(rawBetCount);
 		codeLines.push(`betCount: ${rawBetCount}n,`);
 	}
 
@@ -142,56 +142,56 @@ export function buildStandardTransaction<K extends StandardGameId>(
 	switch (gameId) {
 		case 'coinflip': {
 			const typedForm = form as CoinflipFormValues;
-			baseOptions.side = typedForm.side;
+			baseOptions['side'] = typedForm.side;
 			codeLines.push(`side: '${typedForm.side}',`);
 			break;
 		}
 		case 'keno': {
 			const typedForm = form as KenoFormValues;
 			const picks = parseKenoPicks(typedForm.picks);
-			baseOptions.configId = Number(typedForm.configId);
-			baseOptions.picks = picks;
+			baseOptions['configId'] = Number(typedForm.configId);
+			baseOptions['picks'] = picks;
 			codeLines.push(`configId: ${Number(typedForm.configId)},`);
 			codeLines.push(`picks: [${picks.join(', ')}],`);
 			break;
 		}
 		case 'limbo': {
 			const typedForm = form as LimboFormValues;
-			baseOptions.targetMultiplier = Number(typedForm.targetMultiplier);
+			baseOptions['targetMultiplier'] = Number(typedForm.targetMultiplier);
 			codeLines.push(`targetMultiplier: ${Number(typedForm.targetMultiplier)},`);
 			const scale = parseOptionalNumber(typedForm.scale);
 			if (scale !== undefined) {
-				baseOptions.scale = scale;
+				baseOptions['scale'] = scale;
 				codeLines.push(`scale: ${scale},`);
 			}
 			break;
 		}
 		case 'plinko': {
 			const typedForm = form as PlinkoFormValues;
-			baseOptions.configId = Number(typedForm.configId);
+			baseOptions['configId'] = Number(typedForm.configId);
 			codeLines.push(`configId: ${Number(typedForm.configId)},`);
 			break;
 		}
 		case 'range': {
 			const typedForm = form as RangeFormValues;
-			baseOptions.leftPoint = Number(typedForm.leftPoint);
-			baseOptions.rightPoint = Number(typedForm.rightPoint);
-			baseOptions.outOfRange = typedForm.outOfRange;
+			baseOptions['leftPoint'] = Number(typedForm.leftPoint);
+			baseOptions['rightPoint'] = Number(typedForm.rightPoint);
+			baseOptions['outOfRange'] = typedForm.outOfRange;
 			codeLines.push(`leftPoint: ${Number(typedForm.leftPoint)},`);
 			codeLines.push(`rightPoint: ${Number(typedForm.rightPoint)},`);
 			codeLines.push(`outOfRange: ${typedForm.outOfRange},`);
 			const scale = parseOptionalNumber(typedForm.scale);
 			if (scale !== undefined) {
-				baseOptions.scale = scale;
+				baseOptions['scale'] = scale;
 				codeLines.push(`scale: ${scale},`);
 			}
 			break;
 		}
 		case 'soccer': {
 			const typedForm = form as SoccerFormValues;
-			baseOptions.configId = Number(typedForm.configId);
-			baseOptions.countryId = Number(typedForm.countryId);
-			baseOptions.shotZoneId = Number(typedForm.shotZoneId);
+			baseOptions['configId'] = Number(typedForm.configId);
+			baseOptions['countryId'] = Number(typedForm.countryId);
+			baseOptions['shotZoneId'] = Number(typedForm.shotZoneId);
 			codeLines.push(`configId: ${Number(typedForm.configId)},`);
 			codeLines.push(`countryId: ${Number(typedForm.countryId)},`);
 			codeLines.push(`shotZoneId: ${Number(typedForm.shotZoneId)},`);
@@ -199,7 +199,7 @@ export function buildStandardTransaction<K extends StandardGameId>(
 		}
 		case 'wheel': {
 			const typedForm = form as WheelFormValues;
-			baseOptions.configId = Number(typedForm.configId);
+			baseOptions['configId'] = Number(typedForm.configId);
 			codeLines.push(`configId: ${Number(typedForm.configId)},`);
 			break;
 		}
@@ -231,8 +231,8 @@ export function buildPvPTransaction<K extends PvPAction>(
 		case 'create': {
 			const typedForm = form as PvPCoinflipCreateFormValues;
 			({ baseOptions, codeLines } = buildSharedOptions(owner, coinType, coinDecimals, typedForm));
-			baseOptions.side = typedForm.side;
-			baseOptions.isPrivate = typedForm.isPrivate;
+			baseOptions['side'] = typedForm.side;
+			baseOptions['isPrivate'] = typedForm.isPrivate;
 			codeLines.push(`side: '${typedForm.side}',`);
 			codeLines.push(`isPrivate: ${typedForm.isPrivate},`);
 			break;

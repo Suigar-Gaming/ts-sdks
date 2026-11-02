@@ -21,7 +21,7 @@ vi.mock('qr', () => ({
 }));
 
 vi.mock('../../../src/runtime/index.js', () => ({
-	createSuigarClient: (input: { network?: 'mainnet' | 'testnet' }) => ({
+	createSuigarClient: (input: { network?: 'mainnet' | 'testnet' | undefined }) => ({
 		config: { network: input.network ?? 'testnet' },
 		client: {
 			core: {
@@ -239,7 +239,7 @@ describe('wallet tools', () => {
 					selectedSessionWalletId: string;
 					name: string;
 					balances: Array<{ balanceDisplay: string; symbol: string }>;
-					funding: { addressQrCodeDataUrl: string; fundingUrl?: string };
+					funding: { addressQrCodeDataUrl: string; fundingUrl?: string | undefined };
 				};
 			};
 			const fundingUrl = new URL(content.sessionWallet.funding.fundingUrl!);
@@ -319,7 +319,7 @@ describe('wallet tools', () => {
 
 			const result = await getSessionWalletTool({ network: 'testnet' });
 			const content = result.structuredContent as unknown as {
-				sessionWallet: { funding: { fundingUrl?: string; note: string } };
+				sessionWallet: { funding: { fundingUrl?: string | undefined; note: string } };
 			};
 
 			expect(content.sessionWallet.funding).not.toHaveProperty('fundingUrl');

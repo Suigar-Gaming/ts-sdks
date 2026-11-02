@@ -8,9 +8,9 @@ const mocks = vi.hoisted(() => ({
 		(input: {
 			network: 'mainnet' | 'testnet';
 			webOrigin: string;
-			timeoutMs?: number;
-			maxBodyBytes?: number;
-			open?: boolean;
+			timeoutMs?: number | undefined;
+			maxBodyBytes?: number | undefined;
+			open?: boolean | undefined;
 		}) => Promise<{
 			url: string;
 			done: Promise<{ address: string; walletType: string }>;
@@ -18,15 +18,15 @@ const mocks = vi.hoisted(() => ({
 	>(),
 	createLogoutBridge: vi.fn<
 		(input: {
-			network?: 'mainnet' | 'testnet';
+			network?: 'mainnet' | 'testnet' | undefined;
 			all: boolean;
 			webOrigin: string;
-			timeoutMs?: number;
-			maxBodyBytes?: number;
-			open?: boolean;
+			timeoutMs?: number | undefined;
+			maxBodyBytes?: number | undefined;
+			open?: boolean | undefined;
 		}) => Promise<{
 			url: string;
-			done: Promise<{ network?: string; all: boolean }>;
+			done: Promise<{ network?: string | undefined; all: boolean }>;
 			close: () => void;
 		}>
 	>(),
@@ -46,7 +46,13 @@ vi.mock('../src/wallet/index.js', () => ({
 	DEFAULT_TIMEOUT_MS: 5 * 60_000,
 	loadCredentials: mocks.loadCredentials,
 	BRIDGE_MAX_BODY_BYTES_ENV: 'SUIGAR_MCP_BRIDGE_MAX_BODY_BYTES',
-	resolveWebOrigin: ({ network, webUrl }: { network: 'mainnet' | 'testnet'; webUrl?: string }) =>
+	resolveWebOrigin: ({
+		network,
+		webUrl,
+	}: {
+		network: 'mainnet' | 'testnet';
+		webUrl?: string | undefined;
+	}) =>
 		webUrl ?? (network === 'mainnet' ? 'https://mcp.suigar.com' : 'https://mcp.testnet.suigar.com'),
 	setDefaultNetwork: vi.fn<() => void>(),
 	BRIDGE_WEB_URL_ENV: 'SUIGAR_MCP_BRIDGE_WEB_URL',

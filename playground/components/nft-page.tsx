@@ -1,6 +1,7 @@
 'use client';
 
 import { useCurrentAccount, useCurrentClient } from '@mysten/dapp-kit-react';
+import type { SuiClientTypes } from '@mysten/sui/client';
 import { Check, FileCode2 } from 'lucide-react';
 import Image from 'next/image';
 import * as React from 'react';
@@ -50,16 +51,17 @@ async function getOwnedNftsBySpec(
 	nftType: string,
 ): Promise<Map<string, OwnedNftDisplay>> {
 	const ownedNftsBySpec = new Map<string, OwnedNftDisplay>();
-	let cursor: string | null | undefined;
+	let cursor: string | null = null;
 
 	do {
-		const page = await client.core.listOwnedObjects({
-			owner,
-			type: nftType,
-			include: { content: true },
-			limit: 50,
-			cursor,
-		});
+		const page: SuiClientTypes.ListOwnedObjectsResponse<{ content: true }> =
+			await client.core.listOwnedObjects({
+				owner,
+				type: nftType,
+				include: { content: true },
+				limit: 50,
+				cursor,
+			});
 		for (const nft of page.objects) {
 			if (nft instanceof Error || !nft.content) {
 				continue;

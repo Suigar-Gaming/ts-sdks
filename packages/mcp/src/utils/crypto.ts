@@ -4,10 +4,6 @@
 import { fromHex } from '@mysten/sui/utils';
 import { bytesToHex, equalBytes as nobleEqualBytes, randomBytes } from '@noble/ciphers/utils.js';
 
-const UUID_BYTE_TO_HEX = Array.from({ length: 256 }, (_, byte) =>
-	byte.toString(16).padStart(2, '0'),
-);
-
 export const HEX_16_BYTE_PATTERN: RegExp = /^[0-9a-f]{32}$/iu;
 export const HEX_32_BYTE_PATTERN: RegExp = /^[0-9a-f]{64}$/iu;
 
@@ -47,7 +43,8 @@ export function randomUuid(): string {
 	}
 
 	const bytes = randomBytes(16);
-	bytes[6] = (bytes[6] & 0x0f) | 0x40;
-	bytes[8] = (bytes[8] & 0x3f) | 0x80;
-	return `${UUID_BYTE_TO_HEX[bytes[0]]}${UUID_BYTE_TO_HEX[bytes[1]]}${UUID_BYTE_TO_HEX[bytes[2]]}${UUID_BYTE_TO_HEX[bytes[3]]}-${UUID_BYTE_TO_HEX[bytes[4]]}${UUID_BYTE_TO_HEX[bytes[5]]}-${UUID_BYTE_TO_HEX[bytes[6]]}${UUID_BYTE_TO_HEX[bytes[7]]}-${UUID_BYTE_TO_HEX[bytes[8]]}${UUID_BYTE_TO_HEX[bytes[9]]}-${UUID_BYTE_TO_HEX[bytes[10]]}${UUID_BYTE_TO_HEX[bytes[11]]}${UUID_BYTE_TO_HEX[bytes[12]]}${UUID_BYTE_TO_HEX[bytes[13]]}${UUID_BYTE_TO_HEX[bytes[14]]}${UUID_BYTE_TO_HEX[bytes[15]]}`;
+	bytes[6] = (bytes[6]! & 0x0f) | 0x40;
+	bytes[8] = (bytes[8]! & 0x3f) | 0x80;
+	const hex = bytesToHex(bytes);
+	return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
 }

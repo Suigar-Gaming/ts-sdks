@@ -8,8 +8,8 @@ type Props = {
 	controls: React.ReactNode;
 	sidebar: React.ReactNode;
 	events: React.ReactNode;
-	dialog?: React.ReactNode;
-	floatingAction?: React.ReactNode;
+	dialog?: React.ReactNode | undefined;
+	floatingAction?: React.ReactNode | undefined;
 };
 
 export function IntegrationShellLayout({

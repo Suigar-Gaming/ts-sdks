@@ -3,6 +3,7 @@
 
 import type { Transaction } from '@mysten/sui/transactions';
 import { playV2 } from '../contracts/soccer/soccer.js';
+import { optionalOptions } from '../helpers/options.js';
 import type { SoccerTransactionOptions, WithPartner } from '../types/index.js';
 import { toU16, toU8 } from '../utils/numeric.js';
 import { buildSharedStandardGameBetTransaction } from './shared.js';
@@ -26,7 +27,7 @@ export function buildSoccerTransaction(
 			betCoin,
 		}) =>
 			playV2({
-				package: config.packageIds.soccer,
+				...optionalOptions({ package: config.packageIds.soccer }),
 				typeArguments: [coinType],
 				arguments: [
 					config.objectIds.sweetHouse,

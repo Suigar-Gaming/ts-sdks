@@ -11,9 +11,9 @@ type CacheEntry<Value> = {
 type CacheKey = Parameters<ClientCache['read']>[0];
 
 type ReadCacheOptions = {
-	ignoreCache?: boolean;
+	ignoreCache?: boolean | undefined;
 	ttlMs: number;
-	sync?: boolean;
+	sync?: boolean | undefined;
 };
 
 type ReadCacheParams<T> = {

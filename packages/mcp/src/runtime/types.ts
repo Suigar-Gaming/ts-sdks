@@ -28,10 +28,10 @@ export type BuilderMode = 'build' | 'dry-run' | 'read-only' | 'execute';
 export type ExecutionWallet = 'connected' | 'session';
 
 export type SuigarMcpConfigInput = {
-	network?: SuigarNetwork;
-	providerUrl?: string;
-	config?: SuigarConfigOverrides;
-	partner?: string;
+	network?: SuigarNetwork | undefined;
+	providerUrl?: string | undefined;
+	config?: SuigarConfigOverrides | undefined;
+	partner?: string | undefined;
 };
 
 export type McpConfig = {
@@ -42,23 +42,23 @@ export type McpConfig = {
 
 export type TransactionCommandSummary = {
 	kind: string;
-	target?: string;
-	typeArguments?: Array<string>;
+	target?: string | undefined;
+	typeArguments?: Array<string> | undefined;
 };
 
 export type TransactionSummaryDetails = {
-	game?: Game;
-	action?: PvPCoinflipAction;
-	coinType?: string;
-	stake?: string;
-	stakeDisplay?: string;
-	coinDecimals?: number;
-	gameInputs?: Record<string, JsonValue>;
+	game?: Game | undefined;
+	action?: PvPCoinflipAction | undefined;
+	coinType?: string | undefined;
+	stake?: string | undefined;
+	stakeDisplay?: string | undefined;
+	coinDecimals?: number | undefined;
+	gameInputs?: Record<string, JsonValue> | undefined;
 };
 
 export type TransactionSummaryContext = Omit<TransactionSummaryDetails, 'stake'> & {
-	stake?: TransactionSummaryDetails['stake'] | bigint | number;
-	gasBudget?: string | bigint | number;
+	stake?: TransactionSummaryDetails['stake'] | bigint | number | undefined;
+	gasBudget?: string | bigint | number | undefined;
 };
 
 export type TransactionSummaryFormattingContext = Pick<TransactionSummaryDetails, 'coinDecimals'>;
@@ -76,8 +76,8 @@ export type TransactionSummary = {
 
 export type DryRunEventSummary = {
 	type: string;
-	game?: Game;
-	event?: string;
+	game?: Game | undefined;
+	event?: string | undefined;
 	fields: Record<string, JsonValue>;
 };
 
@@ -103,7 +103,7 @@ export type ReadOnlyPlan = {
 	mode: 'read-only';
 	network: SuigarNetwork;
 	game: Game;
-	action?: PvPCoinflipAction;
+	action?: PvPCoinflipAction | undefined;
 	config: McpConfig;
 	plan: {
 		target: string | null;
@@ -118,10 +118,10 @@ export type BuildTransactionResult = {
 	network: SuigarNetwork;
 	config: McpConfig;
 	summary: TransactionSummary;
-	transactionBytesBase64?: string;
-	dryRun?: DryRunResult;
-	dryRunSummary?: DryRunSummary;
-	errors?: Array<string>;
+	transactionBytesBase64?: string | undefined;
+	dryRun?: DryRunResult | undefined;
+	dryRunSummary?: DryRunSummary | undefined;
+	errors?: Array<string> | undefined;
 };
 
 export type ReadConfigResult = {
@@ -236,15 +236,19 @@ export type WalletReadResult = {
 	config: McpConfig;
 	wallet: {
 		owner: string;
-		balances?: Array<SuiClientTypes.Balance & { balanceDisplay: string; symbol: string }>;
-		coins?: Array<
-			SuiClientTypes.Coin & {
-				balanceDisplay: string;
-				symbol: string;
-			}
-		>;
-		nextCursor?: string | null;
-		hasNextPage?: boolean;
+		balances?:
+			| Array<SuiClientTypes.Balance & { balanceDisplay: string; symbol: string }>
+			| undefined;
+		coins?:
+			| Array<
+					SuiClientTypes.Coin & {
+						balanceDisplay: string;
+						symbol: string;
+					}
+			  >
+			| undefined;
+		nextCursor?: string | null | undefined;
+		hasNextPage?: boolean | undefined;
 	};
 };
 
@@ -260,7 +264,7 @@ export type ExecutionRequestResult = {
 				address: string;
 				status: 'success' | 'failed';
 				digest: string;
-				error?: string;
+				error?: string | undefined;
 		  };
 };
 
@@ -270,8 +274,8 @@ export type ExecutionStatusResult = {
 	execution: {
 		requestId: string;
 		status: 'pending' | 'approved' | 'rejected' | 'failed' | 'expired';
-		digest?: string;
-		error?: string;
+		digest?: string | undefined;
+		error?: string | undefined;
 	};
 };
 
@@ -280,12 +284,12 @@ export type ConnectionResult = {
 	config: McpConfig;
 	connection: {
 		connected: boolean;
-		address?: string;
-		walletType?: string;
-		loginUrl?: string;
-		command?: string;
-		pid?: number;
-		note?: string;
+		address?: string | undefined;
+		walletType?: string | undefined;
+		loginUrl?: string | undefined;
+		command?: string | undefined;
+		pid?: number | undefined;
+		note?: string | undefined;
 		status: 'connected' | 'pending' | 'logged-out';
 	};
 };
@@ -315,5 +319,5 @@ export type ToolStructuredResult =
 export type ToolTextResult = {
 	content: [{ type: 'text'; text: string }];
 	structuredContent: ToolStructuredResult;
-	_meta?: Record<string, unknown>;
+	_meta?: Record<string, unknown> | undefined;
 };

@@ -37,7 +37,7 @@ export function formatBaseUnitAmount({
 	decimals = SUI_DECIMALS,
 }: {
 	value: string | number | bigint;
-	decimals?: number;
+	decimals?: number | undefined;
 }): string {
 	const raw = String(value);
 	const negative = raw.startsWith('-');
@@ -60,7 +60,7 @@ export function formatAmount({
 	decimals,
 }: {
 	value: unknown;
-	decimals?: number;
+	decimals?: number | undefined;
 }): FormattedAmount | null {
 	if (typeof value !== 'string' && typeof value !== 'number' && typeof value !== 'bigint') {
 		return null;
