@@ -1,16 +1,14 @@
 # Suigar TypeScript SDKs
 
-A collection of TypeScript SDKs and MCP tooling for interacting with the Suigar contracts.
+Use the TypeScript SDK and MCP server to interact with Suigar contracts on Sui.
 
 ## Documentation
 
-For SDK documentation, visit [suigar.com/docs/sdk](https://suigar.com/docs/sdk).
-
-For MCP documentation, visit [suigar.com/docs/mcp](https://suigar.com/docs/mcp).
+- [Suigar SDK documentation](https://suigar.com/docs/sdk)
+- [Suigar MCP documentation](https://suigar.com/docs/mcp)
+- [Sui TypeScript SDK documentation](https://sdk.mystenlabs.com/)
 
 See also the local [SDK](packages/sdk/README.md) and [MCP](packages/mcp/README.md) guides.
-
-For Sui TypeScript SDK documentation, visit [sdk.mystenlabs.com](https://sdk.mystenlabs.com/).
 
 ## Install the MCP server
 
@@ -35,9 +33,9 @@ To configure an MCP client manually, use:
 }
 ```
 
-## Agent Skills
+## Agent skills
 
-Suigar agent skills live in the separate `Suigar-Gaming/agent-skills` repository. The MCP-focused skill teaches agents how to install, configure, and operate `@suigar/mcp` for Suigar config reads, game metadata, NFT lookups, referral claim reads, SweetHouse transaction builders, unsigned transaction builders, and dry-runs.
+The `Suigar-Gaming/agent-skills` repository contains the Suigar agent skills. The MCP skill covers installation and configuration of `@suigar/mcp`. It explains how to read Suigar config, game metadata, NFTs, and claimable referral amounts, and how to build and simulate unsigned transactions, including SweetHouse transactions.
 
 Install all Suigar skills with:
 
@@ -56,13 +54,13 @@ npx skills add Suigar-Gaming/agent-skills --skill suigar-mcp --global --yes
 - `@suigar/sdk` in `packages/sdk`: ESM-only TypeScript SDK for Suigar provably fair on-chain Sui casino game, SweetHouse, NFT, and referral transactions.
 - `@suigar/mcp` in `packages/mcp`: MCP stdio server and MCP App for reading Suigar config, game metadata, NFTs, and referral claim amounts, plus building unsigned Suigar and SweetHouse transactions through the SDK.
 
-Public packages are published to both [npm](https://www.npmjs.com/search?q=%40suigar) and [JSR](https://jsr.io/@suigar).
+Both packages are available on [npm](https://www.npmjs.com/search?q=%40suigar) and [JSR](https://jsr.io/@suigar).
 
 ## Development
 
-Any of the following commands can be run at the root of the project.
+Run these commands from the repository root.
 
-When running a task that depends on generated or built artifacts, use `turbo` to ensure task dependencies are run first.
+Use `turbo` when a task needs generated files or build output. It runs the prerequisite tasks first.
 
 ### Setup
 
@@ -83,9 +81,7 @@ pnpm run build
 pnpm turbo run build
 ```
 
-### Unit Tests
-
-For unit tests:
+### Unit tests
 
 ```bash
 pnpm run test
@@ -93,7 +89,7 @@ pnpm run test
 pnpm turbo run test
 ```
 
-### Type Checking
+### Type checking
 
 Workspace packages inherit the strict checks in `tsconfig.shared.json`. This shared configuration disables `isolatedDeclarations` because the generated SDK bindings lack the required annotations and the MCP relies on Zod schema/handler inference. Both packages retain the other shared strict checks.
 
@@ -111,7 +107,7 @@ This repo uses Oxlint and Oxfmt for linting and formatting.
 pnpm run lint
 ```
 
-You can automatically fix many lint issues by running:
+To apply automatic fixes, run the following command.
 
 ```bash
 pnpm run lint:fix
