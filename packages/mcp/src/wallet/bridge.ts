@@ -22,9 +22,9 @@ export const BRIDGE_TIMEOUT_MS_ENV: string = 'SUIGAR_MCP_BRIDGE_TIMEOUT_MS';
 export const BRIDGE_MAX_BODY_BYTES_ENV: string = 'SUIGAR_MCP_BRIDGE_MAX_BODY_BYTES';
 
 export type BridgeOptions = {
-	timeoutMs?: number;
-	maxBodyBytes?: number;
-	open?: boolean;
+	timeoutMs?: number | undefined;
+	maxBodyBytes?: number | undefined;
+	open?: boolean | undefined;
 };
 
 export type LoginBridge = {
@@ -34,14 +34,14 @@ export type LoginBridge = {
 };
 export type LogoutBridge = {
 	url: string;
-	done: Promise<{ network?: SuigarNetwork; all: boolean }>;
+	done: Promise<{ network?: SuigarNetwork | undefined; all: boolean }>;
 	close: () => void;
 };
 export type ExecutionStatus = {
 	requestId: string;
 	status: 'pending' | 'approved' | 'rejected' | 'failed' | 'expired';
-	digest?: string;
-	error?: string;
+	digest?: string | undefined;
+	error?: string | undefined;
 };
 const EXECUTIONS: Map<string, ExecutionStatus> = new Map();
 
@@ -49,7 +49,11 @@ export function getExecutionStatus(requestId: string): ExecutionStatus | null {
 	return EXECUTIONS.get(requestId) ?? null;
 }
 
-function resolveBridgeOptions(options: BridgeOptions = {}): Required<BridgeOptions> {
+function resolveBridgeOptions(options: BridgeOptions = {}): {
+	timeoutMs: number;
+	maxBodyBytes: number;
+	open: boolean;
+} {
 	return {
 		timeoutMs: resolvePositiveInteger({
 			value: options.timeoutMs ?? process.env[BRIDGE_TIMEOUT_MS_ENV],
@@ -203,22 +207,22 @@ export async function createLoginBridge({
 			const payload = JSON.parse(
 				await readBody({ request, maxBodyBytes: options.maxBodyBytes }),
 			) as Record<string, unknown>;
-			if (typeof payload.state !== 'string' || !(await sameState(payload.state, state))) {
+			if (typeof payload['state'] !== 'string' || !(await sameState(payload['state'], state))) {
 				respond({ response, status: 403, body: { error: 'Invalid pairing state' } });
 				return;
 			}
 			if (
 				!preflight ||
-				typeof payload.address !== 'string' ||
-				(payload.walletType !== 'wallet' && payload.walletType !== 'zklogin')
+				typeof payload['address'] !== 'string' ||
+				(payload['walletType'] !== 'wallet' && payload['walletType'] !== 'zklogin')
 			) {
 				respond({ response, status: 400, body: { error: 'Invalid wallet callback' } });
 				return;
 			}
 			preflight = false;
 			const profile: WalletProfile = {
-				address: payload.address,
-				walletType: payload.walletType,
+				address: payload['address'],
+				walletType: payload['walletType'],
 				frontendOrigin: webOrigin,
 				connectedAt: new Date().toISOString(),
 			};
@@ -307,22 +311,25 @@ export async function createExecutionBridge({
 				await readBody({ request, maxBodyBytes: options.maxBodyBytes }),
 			) as Record<string, unknown>;
 			if (
-				typeof payload.state !== 'string' ||
-				!(await sameState(payload.state, state)) ||
-				payload.address !== profile.address
+				typeof payload['state'] !== 'string' ||
+				!(await sameState(payload['state'], state)) ||
+				payload['address'] !== profile.address
 			) {
 				respond({ response, status: 403, body: { error: 'Invalid approval callback' } });
 				return;
 			}
 			const status: ExecutionStatus =
-				payload.rejected === true
+				payload['rejected'] === true
 					? { requestId, status: 'rejected' }
-					: typeof payload.digest === 'string'
-						? { requestId, status: 'approved', digest: payload.digest }
+					: typeof payload['digest'] === 'string'
+						? { requestId, status: 'approved', digest: payload['digest'] }
 						: {
 								requestId,
 								status: 'failed',
-								error: typeof payload.error === 'string' ? payload.error : 'Wallet approval failed',
+								error:
+									typeof payload['error'] === 'string'
+										? payload['error']
+										: 'Wallet approval failed',
 							};
 			EXECUTIONS.set(requestId, status);
 			clearTimeout(expire);
@@ -346,7 +353,7 @@ export async function createLogoutBridge({
 	webOrigin,
 	...bridgeOptions
 }: {
-	network?: SuigarNetwork;
+	network?: SuigarNetwork | undefined;
 	all: boolean;
 	webOrigin: string;
 } & BridgeOptions): Promise<LogoutBridge> {
@@ -359,7 +366,7 @@ export async function createLogoutBridge({
 		resolve,
 		reject,
 	} = Promise.withResolvers<{
-		network?: SuigarNetwork;
+		network?: SuigarNetwork | undefined;
 		all: boolean;
 	}>();
 	const timeout = setTimeout(() => {
@@ -392,7 +399,7 @@ export async function createLogoutBridge({
 			const payload = JSON.parse(
 				await readBody({ request, maxBodyBytes: options.maxBodyBytes }),
 			) as Record<string, unknown>;
-			if (typeof payload.state !== 'string' || !(await sameState(payload.state, state))) {
+			if (typeof payload['state'] !== 'string' || !(await sameState(payload['state'], state))) {
 				respond({ response, status: 403, body: { error: 'Invalid logout callback' } });
 				return;
 			}

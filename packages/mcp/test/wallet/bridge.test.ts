@@ -6,7 +6,7 @@ import { request as httpRequest } from 'node:http';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const testHome = vi.hoisted(
-	() => `${process.env.TMPDIR ?? '/tmp'}/suigar-mcp-bridge-${process.pid}`,
+	() => `${process.env['TMPDIR'] ?? '/tmp'}/suigar-mcp-bridge-${process.pid}`,
 );
 const mocks = vi.hoisted(() => ({
 	open: vi.fn<() => Promise<void>>(() => Promise.resolve()),

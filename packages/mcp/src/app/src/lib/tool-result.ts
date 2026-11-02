@@ -11,8 +11,8 @@ export function getToolResultPayload(result: CallToolResult): AnyRecord {
 		return direct;
 	}
 
-	const wrapped = asRecord(asRecord(result).result);
-	const wrappedPayload = asRecord(wrapped.structuredContent);
+	const wrapped = asRecord(asRecord(result)['result']);
+	const wrappedPayload = asRecord(wrapped['structuredContent']);
 	if (Object.keys(wrappedPayload).length > 0) {
 		return wrappedPayload;
 	}

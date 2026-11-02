@@ -41,6 +41,8 @@ The example reflects the current package export split:
 
 ## Development
 
+The playground inherits the workspace's strict checks from `../tsconfig.shared.json`, including `exactOptionalPropertyTypes`, `noUncheckedIndexedAccess`, and `noPropertyAccessFromIndexSignature`. Its local configuration retains Next.js bundler resolution and disables declaration emission.
+
 From the repository root:
 
 ```bash

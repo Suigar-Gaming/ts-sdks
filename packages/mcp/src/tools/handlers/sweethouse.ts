@@ -207,11 +207,11 @@ function sweetHouseContext({
 	requestId,
 }: {
 	bundle: SuigarClientBundle;
-	coinType?: string;
+	coinType?: string | undefined;
 	action: SweetHouseAction;
-	amount?: bigint;
-	amountDisplay?: string;
-	requestId?: string;
+	amount?: bigint | undefined;
+	amountDisplay?: string | undefined;
+	requestId?: string | undefined;
 }): TransactionSummaryContext {
 	const coin = coinMetadataForAmount({ config: bundle.config, coinType });
 	return {

@@ -9,15 +9,15 @@ import type { BetCountLimitSummary, SharedFields, StandardSharedFields } from '@
 type SharedGameFieldsProps<T extends SharedFields> = {
 	value: T;
 	onChange: (patch: Partial<T>) => void;
-	onStakeBlur?: () => void;
-	description?: React.ReactNode;
+	onStakeBlur?: (() => void) | undefined;
+	description?: React.ReactNode | undefined;
 };
 
 type BetCountControl = {
 	value: string;
 	onChange: (value: string) => void;
-	betCountLimit?: BetCountLimitSummary;
-	isLoading?: boolean;
+	betCountLimit?: BetCountLimitSummary | undefined;
+	isLoading?: boolean | undefined;
 };
 
 const BetCountControlContext = React.createContext<BetCountControl | null>(null);
@@ -81,8 +81,8 @@ function BetCountField({
 }: {
 	value: string;
 	onChange: (value: string) => void;
-	betCountLimit?: BetCountLimitSummary;
-	isLoading?: boolean;
+	betCountLimit?: BetCountLimitSummary | undefined;
+	isLoading?: boolean | undefined;
 }) {
 	const isBetCountFixed = betCountLimit?.max === BigInt(1);
 
@@ -132,9 +132,9 @@ function StakeField({
 }: {
 	value: string;
 	onChange: (value: string) => void;
-	onBlur?: () => void;
-	description?: React.ReactNode;
-	className?: string;
+	onBlur?: (() => void) | undefined;
+	description?: React.ReactNode | undefined;
+	className?: string | undefined;
 }) {
 	return (
 		<Field className={className}>

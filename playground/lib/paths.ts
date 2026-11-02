@@ -11,7 +11,7 @@ function normalizeBasePath(value: string): string {
 	return trimmedValue.startsWith('/') ? trimmedValue : `/${trimmedValue}`;
 }
 
-export const basePath = normalizeBasePath(process.env.BASE_PATH ?? '');
+export const basePath = normalizeBasePath(process.env['BASE_PATH'] ?? '');
 
 export function withBasePath(assetPath: string): string {
 	if (ABSOLUTE_URL_PATTERN.test(assetPath) || assetPath.startsWith('data:')) {

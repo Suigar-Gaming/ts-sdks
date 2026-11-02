@@ -52,10 +52,10 @@ const links = [
 ] as const;
 
 type HeaderProps = {
-	selectedCoin?: SupportedCoinKey;
-	onSelectedCoinChange?: (coin: SupportedCoinKey) => void;
-	coinBalances?: Record<SupportedCoinKey, CoinBalanceState>;
-	balanceOwner?: string | null;
+	selectedCoin?: SupportedCoinKey | undefined;
+	onSelectedCoinChange?: ((coin: SupportedCoinKey) => void) | undefined;
+	coinBalances?: Record<SupportedCoinKey, CoinBalanceState> | undefined;
+	balanceOwner?: string | null | undefined;
 };
 
 export function AppHeader({

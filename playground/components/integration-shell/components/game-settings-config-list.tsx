@@ -16,7 +16,7 @@ export function GameSettingsConfigList({
 	coinKey,
 	configOptions,
 }: {
-	activeConfigId?: string | null;
+	activeConfigId?: string | null | undefined;
 	coinKey: SupportedCoinKey;
 	configOptions: Array<GameConfigOption>;
 }) {

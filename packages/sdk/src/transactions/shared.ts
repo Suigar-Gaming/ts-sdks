@@ -10,6 +10,7 @@ import {
 import { normalizeStructTag, normalizeSuiAddress } from '@mysten/sui/utils';
 import { resolvePriceInfoObjectId } from '../helpers/config.js';
 import { encodeBetMetadata } from '../helpers/metadata.js';
+import { optionalOptions } from '../helpers/options.js';
 import type {
 	BaseTransactionOptions,
 	EncodedBetMetadata,
@@ -23,7 +24,7 @@ import { DEFAULT_GAS_BUDGET_MIST } from '../utils/constants.js';
 import { toBigInt } from '../utils/numeric.js';
 
 type StrictStakeTransactionOptions = {
-	[K in keyof StakeTransactionOptions]-?: Exclude<StakeTransactionOptions[K], number>;
+	[K in keyof StakeTransactionOptions]-?: Exclude<StakeTransactionOptions[K], number | undefined>;
 };
 
 type SharedBetTransactionContext = WithCoinType<
@@ -51,26 +52,18 @@ export function createBaseTransaction({ owner, gasBudget }: TransactionSenderOpt
 	return tx;
 }
 
-export function buildSharedStandardGameBetTransaction({
-	config,
-	owner,
-	gasBudget,
-	coinType,
-	stake,
-	cashStake,
-	betCount,
-	metadata,
-	partner,
-	useGasCoin,
-	buildRewardCoin,
-}: StandardGameBetTransactionOptions): Transaction {
-	const tx = createBaseTransaction({ owner, gasBudget });
+export function buildSharedStandardGameBetTransaction(
+	options: StandardGameBetTransactionOptions,
+): Transaction {
+	const { config, owner, coinType, stake, cashStake, betCount, useGasCoin, buildRewardCoin } =
+		options;
+	const tx = createBaseTransaction(options);
 	const normalizedOwner = normalizeSuiAddress(owner);
 	const normalizedCoinType = normalizeStructTag(coinType);
 	const resolvedStake = toBigInt(stake);
 	const resolvedCashStake = toBigInt(cashStake ?? stake);
 	const resolvedBetCount = toBigInt(betCount ?? 1);
-	const encodedMetadata = encodeBetMetadata({ metadata, partner });
+	const encodedMetadata = encodeBetMetadata(options);
 	const priceInfoObjectId = resolvePriceInfoObjectId({
 		config,
 		coinType: normalizedCoinType,
@@ -89,7 +82,7 @@ export function buildSharedStandardGameBetTransaction({
 			betCoin: coinWithBalance({
 				type: normalizedCoinType,
 				balance: resolvedCashStake,
-				useGasCoin,
+				...optionalOptions({ useGasCoin }),
 			}),
 		}),
 	);

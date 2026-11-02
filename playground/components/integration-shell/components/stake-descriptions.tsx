@@ -16,7 +16,7 @@ export function StakeDescription({
 	isLoading: boolean;
 	error: string | null;
 	effectiveSelectedCoin: SupportedCoinKey;
-	activeConfigDisabled?: boolean;
+	activeConfigDisabled?: boolean | undefined;
 }) {
 	if (isLoading) {
 		return (

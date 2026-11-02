@@ -6,21 +6,21 @@ import { asRecord } from '../lib/format.js';
 
 export function SessionWalletView({ payload }: { payload: unknown }) {
 	const result = asRecord(payload);
-	const sessionWallet = asRecord(result.sessionWallet);
-	const funding = asRecord(sessionWallet.funding);
+	const sessionWallet = asRecord(result['sessionWallet']);
+	const funding = asRecord(sessionWallet['funding']);
 	const qrCode =
-		typeof funding.addressQrCodeDataUrl === 'string' ? funding.addressQrCodeDataUrl : null;
-	const balances = Array.isArray(sessionWallet.balances) ? sessionWallet.balances : [];
-	const fundingUrl = typeof funding.fundingUrl === 'string' ? funding.fundingUrl : null;
-	const setupUrl = typeof sessionWallet.setupUrl === 'string' ? sessionWallet.setupUrl : null;
+		typeof funding['addressQrCodeDataUrl'] === 'string' ? funding['addressQrCodeDataUrl'] : null;
+	const balances = Array.isArray(sessionWallet['balances']) ? sessionWallet['balances'] : [];
+	const fundingUrl = typeof funding['fundingUrl'] === 'string' ? funding['fundingUrl'] : null;
+	const setupUrl = typeof sessionWallet['setupUrl'] === 'string' ? sessionWallet['setupUrl'] : null;
 
 	if (setupUrl) {
 		return (
 			<section className="grid grid-cols-1 gap-3.5">
 				<Panel title="Set up your session wallet">
 					<p className="text-muted-foreground text-xs leading-5 font-semibold">
-						{typeof sessionWallet.note === 'string'
-							? sessionWallet.note
+						{typeof sessionWallet['note'] === 'string'
+							? sessionWallet['note']
 							: 'Create or recover the session wallet shared by mainnet and testnet.'}
 					</p>
 					<div className="grid justify-items-center">
@@ -37,9 +37,9 @@ export function SessionWalletView({ payload }: { payload: unknown }) {
 				<DefinitionList
 					entries={[
 						['Networks', 'Mainnet and testnet'],
-						['Balance network', result.network],
-						['Address', sessionWallet.address],
-						['Status', sessionWallet.status],
+						['Balance network', result['network']],
+						['Address', sessionWallet['address']],
+						['Status', sessionWallet['status']],
 					]}
 				/>
 			</Panel>
@@ -53,16 +53,19 @@ export function SessionWalletView({ payload }: { payload: unknown }) {
 						{balances.map((item) => {
 							const balance = asRecord(item);
 							return (
-								<div className="flex justify-between gap-3 text-xs" key={String(balance.coinType)}>
+								<div
+									className="flex justify-between gap-3 text-xs"
+									key={String(balance['coinType'])}
+								>
 									<dt
 										className="text-muted-foreground truncate font-mono"
-										title={String(balance.coinType)}
+										title={String(balance['coinType'])}
 									>
-										{String(balance.symbol ?? balance.coinType)}
+										{String(balance['symbol'] ?? balance['coinType'])}
 									</dt>
 									<dd className="shrink-0 font-mono font-bold">
-										{String(balance.balanceDisplay ?? balance.balance)}{' '}
-										{typeof balance.symbol === 'string' ? balance.symbol : ''}
+										{String(balance['balanceDisplay'] ?? balance['balance'])}{' '}
+										{typeof balance['symbol'] === 'string' ? balance['symbol'] : ''}
 									</dd>
 								</div>
 							);
@@ -81,8 +84,8 @@ export function SessionWalletView({ payload }: { payload: unknown }) {
 							width={192}
 						/>
 						<p className="text-muted-foreground text-center text-xs leading-5 font-semibold">
-							{typeof funding.note === 'string'
-								? funding.note
+							{typeof funding['note'] === 'string'
+								? funding['note']
 								: 'Scan this code in a Sui wallet to fund the session wallet.'}
 						</p>
 						{fundingUrl ? <ActionLink href={fundingUrl}>Fund from paired wallet</ActionLink> : null}

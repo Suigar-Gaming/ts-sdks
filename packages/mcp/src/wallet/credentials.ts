@@ -46,11 +46,11 @@ function isValidWalletProfile(value: unknown): value is WalletProfile {
 		return false;
 	}
 	return (
-		typeof value.address === 'string' &&
-		isValidSuiAddress(value.address) &&
-		(value.walletType === 'wallet' || value.walletType === 'zklogin') &&
-		typeof value.frontendOrigin === 'string' &&
-		typeof value.connectedAt === 'string'
+		typeof value['address'] === 'string' &&
+		isValidSuiAddress(value['address']) &&
+		(value['walletType'] === 'wallet' || value['walletType'] === 'zklogin') &&
+		typeof value['frontendOrigin'] === 'string' &&
+		typeof value['connectedAt'] === 'string'
 	);
 }
 
@@ -59,14 +59,14 @@ function isValidCredentials(value: unknown): value is Credentials {
 		return false;
 	}
 	if (
-		value.version !== 1 ||
-		!isValidSuigarNetwork(value.defaultNetwork) ||
-		!isRecord(value.profiles)
+		value['version'] !== 1 ||
+		!isValidSuigarNetwork(value['defaultNetwork']) ||
+		!isRecord(value['profiles'])
 	) {
 		return false;
 	}
 
-	return Object.entries(value.profiles).every(
+	return Object.entries(value['profiles']).every(
 		([network, profile]) => isValidSuigarNetwork(network) && isValidWalletProfile(profile),
 	);
 }
@@ -82,7 +82,7 @@ export function credentialsPath(): string {
 export function readPersistedDefaultNetwork(): SuigarNetwork {
 	try {
 		const value: unknown = JSON.parse(readFileSync(CREDENTIALS_FILE, 'utf8'));
-		const network = isRecord(value) ? value.defaultNetwork : undefined;
+		const network = isRecord(value) ? value['defaultNetwork'] : undefined;
 		return isValidSuigarNetwork(network) ? network : 'testnet';
 	} catch {
 		return 'testnet';

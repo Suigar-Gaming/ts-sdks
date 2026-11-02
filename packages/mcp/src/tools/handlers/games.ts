@@ -410,7 +410,7 @@ function getTarget({
 }: {
 	config: McpConfig;
 	game: Game;
-	action?: PvPCoinflipAction;
+	action?: PvPCoinflipAction | undefined;
 }): string {
 	const packageId = getSuigarPackageId({ config, pkg: game });
 	if (game === 'pvp-coinflip') {
@@ -429,7 +429,7 @@ function readOnlyPlan({
 }: {
 	input: TransactionToolInput;
 	game: Game;
-	action?: PvPCoinflipAction;
+	action?: PvPCoinflipAction | undefined;
 	requiredInputs: Array<string>;
 	notes: Array<string>;
 }): ReadOnlyPlan {
@@ -457,8 +457,10 @@ async function gameTransactionOptions({
 	input: BetTransactionToolInput;
 	bundle: SuigarClientBundle;
 }): Promise<
-	Required<Pick<BetTransactionToolInput, 'owner' | 'coinType'>> &
-		Pick<BetTransactionToolInput, 'metadata' | 'gasBudget' | 'useGasCoin'>
+	{ owner: string; coinType: string } & Pick<
+		BetTransactionToolInput,
+		'metadata' | 'gasBudget' | 'useGasCoin'
+	>
 > {
 	return {
 		owner: await resolveTransactionOwner({ input, bundle }),
@@ -513,10 +515,7 @@ async function cancelTransactionOptions({
 }: {
 	input: PvpCoinflipCancelInput;
 	bundle: SuigarClientBundle;
-}): Promise<
-	Required<Pick<TransactionToolInput, 'owner' | 'coinType'>> &
-		Pick<TransactionToolInput, 'gasBudget'>
-> {
+}): Promise<{ owner: string; coinType: string } & Pick<TransactionToolInput, 'gasBudget'>> {
 	return {
 		owner: await resolveTransactionOwner({ input, bundle }),
 		coinType: resolveDefaultCoinType({ config: bundle.config, coinType: input.coinType }),
@@ -572,10 +571,12 @@ async function stakeOptions({
 	input: StandardTransactionToolInput;
 	bundle: SuigarClientBundle;
 }): Promise<
-	Required<Pick<BetTransactionToolInput, 'owner' | 'coinType'>> &
-		Pick<BetTransactionToolInput, 'metadata' | 'gasBudget' | 'useGasCoin'> & {
-			betCount?: number | bigint;
-			cashStake?: bigint;
+	{ owner: string; coinType: string } & Pick<
+		BetTransactionToolInput,
+		'metadata' | 'gasBudget' | 'useGasCoin'
+	> & {
+			betCount?: number | bigint | undefined;
+			cashStake?: bigint | undefined;
 			stake: bigint;
 		}
 > {
@@ -607,11 +608,10 @@ export function assertSessionGameTransaction({
 		.getData()
 		.commands.flatMap((command) => (command.$kind === 'MoveCall' ? [command.MoveCall] : []));
 
-	if (moveCalls.length !== 1) {
+	const [suigarCall] = moveCalls;
+	if (moveCalls.length !== 1 || !suigarCall) {
 		throw new Error('Session execution only supports one verified Suigar game action.');
 	}
-
-	const [suigarCall] = moveCalls;
 
 	if (
 		suigarCall.package.toLowerCase() !== getSuigarPackageId({ config, pkg: game }).toLowerCase() ||
@@ -634,8 +634,7 @@ async function buildTransactionTool({
 }: {
 	input: TransactionToolInput;
 	createTransaction: (bundle: SuigarClientBundle) => Promise<Transaction>;
-} & Pick<Required<TransactionSummaryContext>, 'game'> &
-	Pick<
+} & { game: Game } & Pick<
 		TransactionSummaryContext,
 		'action' | 'stake' | 'stakeDisplay' | 'gameInputs'
 	>): Promise<ToolTextResult> {

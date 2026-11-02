@@ -44,7 +44,7 @@ export function resolveSuigarConfig({
 	config = {},
 }: {
 	network: SuigarNetwork;
-	config?: SuigarConfigOverrides;
+	config?: SuigarConfigOverrides | undefined;
 }): SuigarConfig {
 	const packageIds = PACKAGE_IDS[network];
 	const objectIds = OBJECT_IDS[network];
@@ -110,7 +110,7 @@ function resolveCoinMetadata({
 }: {
 	coin: SuigarCoin;
 	coinMetadata: SuigarCoinMetadata;
-	configCoinMetadata?: Partial<SuigarCoinMetadata>;
+	configCoinMetadata: Partial<SuigarCoinMetadata> | undefined;
 }): SuigarCoinMetadata {
 	const metadata = { ...coinMetadata, ...configCoinMetadata };
 	if (
