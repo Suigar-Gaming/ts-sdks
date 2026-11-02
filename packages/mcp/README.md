@@ -1,14 +1,6 @@
 # `@suigar/mcp`
 
-AI agent MCP server for Suigar provably fair on-chain Sui casino game, SweetHouse, NFT, and referral transactions.
-
-The server targets the MCP [`2026-07-28`](https://modelcontextprotocol.io/specification/2026-07-28) specification and registers tools/resources through the modern MCP server and MCP Apps APIs. The server and bundled App use MCP SDK 2 and ext-apps 2; existing MCP Apps 1.x hosts remain compatible. Known tools return `isError: true` for input-validation and handler failures; calls to unknown tools reject with a JSON-RPC invalid-params error (`-32602`). Handler failures include both text and structured error details.
-
-The stdio server supports MCP `2026-07-28` and older initialization-based clients. For programmatic use, call `startSuigarMcpServer()` to start stdio, or `createSuigarMcpServer()` to obtain an `McpServer` from `@modelcontextprotocol/server` v2.
-
-Tool configuration omits nested fields whose values are `undefined` before forwarding overrides to the SDK; concrete values, including zero, are preserved. Development uses the shared strict TypeScript checks, with `isolatedDeclarations` disabled to preserve Zod schema and handler inference.
-
-It provides:
+MCP server for agents working with Suigar’s provably fair casino games on Sui, SweetHouse pools, NFTs, and referral claims.
 
 - SDK-backed tools for reading Suigar config and live game metadata
 - Referral claimable-amount reads and unsigned claim builders
@@ -64,6 +56,12 @@ The package is also published on JSR for programmatic imports:
 pnpm add jsr:@suigar/mcp
 ```
 
+The server registers tools and resources through the MCP server and MCP Apps APIs. It targets MCP [`2026-07-28`](https://modelcontextprotocol.io/specification/2026-07-28). The server and bundled App use MCP SDK 2 and ext-apps 2 and support MCP Apps 1.x hosts.
+
+The stdio server supports MCP `2026-07-28` and older clients that use initialization. Call `startSuigarMcpServer()` to start stdio, or `createSuigarMcpServer()` to get an `McpServer` from `@modelcontextprotocol/server` v2.
+
+### Plugins
+
 The package also ships `plugin/` manifests for plugin-capable hosts:
 
 - `plugin/.codex-plugin/plugin.json` for Codex
@@ -97,7 +95,9 @@ Inside an interactive Claude Code session, use `/plugin marketplace add Suigar-G
 
 For Cursor, the repository includes both the plugin manifest and a root `.cursor-plugin/marketplace.json` for multi-plugin repository flows. During local development, you can also copy or symlink `packages/mcp/plugin` into Cursor's local plugin directory and reload Cursor. If you only need MCP tools, direct MCP configuration with `npx -y @suigar/mcp` is simpler and does not require the plugin wrapper.
 
-For local workspace development:
+### Local development
+
+The package uses the shared strict TypeScript checks with `isolatedDeclarations` disabled so Zod can infer schema and handler types. Run these commands from the repository root.
 
 ```bash
 pnpm turbo run build --filter=@suigar/mcp
@@ -139,7 +139,9 @@ This builds the local workspace dependencies, MCP server, and bundled MCP App. R
 - `build_pvp_coinflip_join_transaction`
 - `build_pvp_coinflip_cancel_transaction`
 
-All tools return `content` text plus `structuredContent`. App-capable hosts render purpose-built views from one bundled MCP App: config discovery, live game parameters, NFT catalog/ownership, referral rewards, SweetHouse plans, or transaction inspection.
+All tools return text in `content` alongside `structuredContent`. Known tools return `isError: true` for invalid inputs and handler failures. Handler errors include text and structured details. An unknown tool name raises a JSON-RPC invalid-params error (`-32602`).
+
+Hosts that support MCP Apps can display config, live game parameters, the NFT catalog and wallet holdings, referral rewards, SweetHouse plans, and transaction details in the bundled App.
 
 ### Wallet tools
 
@@ -154,9 +156,9 @@ All tools return `content` text plus `structuredContent`. App-capable hosts rend
   - Set `SUIGAR_MCP_SESSION_SETUP_TIMEOUT_MS` to control how long local setup pages remain available. The built-in default is `600000`.
   - It does not require a paired browser wallet, and its recovery phrase never passes through MCP.
   - The local setup page can also import a standard `suiprivkey...` export. It never passes through MCP or the session-wallet JSON file.
-  - The signing key is persisted in the operating-system keychain. Do not use a custom encrypted file: OS keychain protection is safer and avoids managing an application passphrase. For the smallest blast radius, create a dedicated, low-funded session wallet instead of importing a primary wallet.
+  - The operating-system keychain protects the signing key without a separate application passphrase. Avoid custom encrypted files. Use a dedicated wallet with a small balance to limit the funds the session can spend.
   - MCP keeps one active session wallet. Restarting MCP automatically uses that same keychain entry; importing or recovering another wallet requires explicit replacement confirmation. Keep the original recovery phrase/private-key backup to restore it later.
-  - `get_session_wallet` returns the public address, formatted balances, a funding QR code, and—when a wallet is paired on the selected network—a prefilled funding URL.
+  - `get_session_wallet` returns the public address, formatted balances, and a funding QR code. If a wallet is paired on the selected network, it also returns a prefilled funding URL.
   - `fund_session_wallet` requires a paired wallet and opens a prefilled mcp-website transfer form. The user chooses an owned coin and amount, then reviews and signs the transfer in their browser.
   - In an App-capable host, it displays a dedicated Session Wallet view with balances for the selected network, a funding QR code, and a paired-wallet funding link when available. If no wallet exists, the same view provides the local setup link.
   - Fund only the amount the user is willing to delegate to the local MCP process.
@@ -164,7 +166,7 @@ All tools return `content` text plus `structuredContent`. App-capable hosts rend
 - **Command-line wallet management**
   - Run `npx -y @suigar/mcp login --network testnet` (or `mainnet`), `status`, `logout`, or `clean`.
   - Login uses a short-lived, localhost-only browser pairing flow and stores non-secret network-specific metadata in `~/.suigar-mcp/credentials.json` with owner-only permissions.
-  - `status` inspects the current connection; `logout --all` disconnects every stored network and, with the default Suigar web origins, opens both the mainnet and testnet logout pages; and `clean` removes the local credential file without opening a browser.
+  - `status` shows the current connection. `logout --all` disconnects every stored network and opens both logout pages when using the default Suigar mainnet and testnet web origins. `clean` deletes the local credential file without opening a browser.
   - Set `SUIGAR_MCP_BRIDGE_WEB_URL` or pass `--web-url` to use a local or custom connection-page origin.
   - Set `SUIGAR_MCP_BRIDGE_TIMEOUT_MS` or pass `--timeout-ms` to control how long login, logout, and approval bridges wait before expiring. The default is `300000`.
   - Set `SUIGAR_MCP_BRIDGE_MAX_BODY_BYTES` or pass `--max-body-bytes` to control the maximum browser callback JSON body size. The default is `16384`.
@@ -205,7 +207,7 @@ For `build`, `dry-run`, and paired-wallet `execute`, provide `owner`, a raw Sui 
 
 `coinType` defaults to configured SUI. Transaction `stake`, `cashStake`, and SweetHouse `amount` inputs are currency amounts in the chosen coin, not base-unit integers. For example, `stake: 1` or `amount: 1` means `1` SUI or `1` USDC depending on the resolved coin type. The MCP server uses the configured coin `decimals` value to convert those amounts into base units before calling the SDK transaction builders.
 
-Optional shared transaction input is `gasBudget` in MIST. Bet-building workflows also accept `metadata`. Workflows that source native SUI coins, including native SUI bets and NFT V1 mint, accept `useGasCoin`. Metadata values must be JSON-compatible strings, numbers, or booleans; send large integers as strings. PvP Coinflip cancel does not create a bet coin or write metadata, so its tool does not accept `metadata` or `useGasCoin`.
+Set the optional `gasBudget` in MIST. Bet builders also accept `metadata`. Use JSON-compatible strings, numbers, or booleans for metadata values and send large integers as strings. Tools that source native SUI coins, including native SUI bets and NFT V1 mint, accept `useGasCoin`. PvP Coinflip cancel neither creates a bet coin nor writes metadata, so it accepts neither `metadata` nor `useGasCoin`.
 
 When `betCount` is provided for Keno, Limbo, Plinko, Range, Soccer, or Wheel, the MCP server reads the active on-chain parameters and rejects a value above that game's declared maximum. Coinflip does not declare a maximum bet count.
 
@@ -232,6 +234,8 @@ When `betCount` is provided for Keno, Limbo, Plinko, Range, Soccer, or Wheel, th
 ## Config
 
 `network` defaults to `testnet`. Only `mainnet` and `testnet` are supported.
+
+Before forwarding config overrides to the SDK, the server skips nested fields set to `undefined` and keeps concrete values, including zero.
 
 Optional `config` input follows the public SDK extension override shape:
 
@@ -263,6 +267,4 @@ Optional `config` input follows the public SDK extension override shape:
 
 Game, referral, and core calls use the `@suigar/*` MVR package names by default. Optional `packageIds` entries override those package names when needed; `nftV1` remains configured by network because it is not resolved from MVR.
 
-Partner attribution should be passed as top-level `partner`; the MCP server forwards it through `suigar({ partner })`.
-
-Transaction tools that accept `metadata` require JSON-compatible strings, numbers, or booleans. Send large integer metadata values as strings.
+Pass the partner wallet address as the top-level `partner` option. The server forwards it through `suigar({ partner })`.
