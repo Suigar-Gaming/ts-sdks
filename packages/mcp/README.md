@@ -6,6 +6,8 @@ The server targets the MCP [`2026-07-28`](https://modelcontextprotocol.io/specif
 
 The stdio server supports MCP `2026-07-28` and older initialization-based clients. For programmatic use, call `startSuigarMcpServer()` to start stdio, or `createSuigarMcpServer()` to obtain an `McpServer` from `@modelcontextprotocol/server` v2.
 
+Tool configuration omits nested fields whose values are `undefined` before forwarding overrides to the SDK; concrete values, including zero, are preserved. Development uses the shared strict TypeScript checks, with `isolatedDeclarations` disabled to preserve Zod schema and handler inference.
+
 It provides:
 
 - SDK-backed tools for reading Suigar config and live game metadata

@@ -9,7 +9,7 @@ import {
 	buildRedeemSweetHouseRequestTransaction,
 } from '../../../src/transactions/sweethouse.js';
 import { TEST_CONFIG } from '../../utils.js';
-import './utils.js';
+import { getMoveCall } from './utils.js';
 
 const SWEETHOUSE_CONFIG = {
 	...TEST_CONFIG,
@@ -33,16 +33,16 @@ describe('SweetHouse transaction builder', () => {
 			config: SWEETHOUSE_CONFIG,
 		});
 		const data = tx.getData();
-		const depositCall = data.commands[1].MoveCall!;
+		const depositCall = getMoveCall(data, 1);
 
 		expect(data.sender).toBe(normalizeSuiAddress('0x123'));
-		expect(data.commands[0].$kind).toBe('$Intent');
+		expect(data.commands[0]?.$kind).toBe('$Intent');
 		expect(depositCall.package).toBe(normalizeSuiAddress(SWEETHOUSE_CONFIG.packageIds.core));
 		expect(depositCall.module).toBe('sweethouse');
 		expect(depositCall.function).toBe('deposit_public_pool_and_mint_staked_coins');
 		expect(depositCall.typeArguments).toEqual([normalizeStructTag('0x2::sui::SUI')]);
 		expect(depositCall.arguments).toHaveLength(2);
-		expect(data.commands[2].TransferObjects).toBeDefined();
+		expect(data.commands[2]?.TransferObjects).toBeDefined();
 	});
 
 	it('builds a redeem request with the staked coin and Clock', () => {
@@ -53,9 +53,9 @@ describe('SweetHouse transaction builder', () => {
 			config: SWEETHOUSE_CONFIG,
 		});
 		const data = tx.getData();
-		const call = data.commands[1].MoveCall!;
+		const call = getMoveCall(data, 1);
 
-		expect(data.commands[0].$kind).toBe('$Intent');
+		expect(data.commands[0]?.$kind).toBe('$Intent');
 		expect(call.package).toBe(normalizeSuiAddress(SWEETHOUSE_CONFIG.packageIds.core));
 		expect(call.module).toBe('sweethouse');
 		expect(call.function).toBe('redeem_request');
@@ -70,7 +70,7 @@ describe('SweetHouse transaction builder', () => {
 			requestId: '0x444',
 			config: SWEETHOUSE_CONFIG,
 		});
-		const call = tx.getData().commands[0].MoveCall!;
+		const call = getMoveCall(tx.getData(), 0);
 
 		expect(call.package).toBe(normalizeSuiAddress(SWEETHOUSE_CONFIG.packageIds.core));
 		expect(call.module).toBe('sweethouse');

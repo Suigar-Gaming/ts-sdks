@@ -1,228 +1,41 @@
-# AGENTS.md
+# Workspace agent instructions
 
-This file provides guidance to AI agents working with code in this repository.
+These instructions apply throughout the repository. Scoped instructions add package-specific rules; read the relevant file before editing that package. Commands below run from the repository root.
 
-## Overview
+## Workspace and instruction map
 
-This repository contains the TypeScript SDK workspace for Suigar v2 on Sui. The current publishable packages are `@suigar/sdk` under `packages/sdk` and `@suigar/mcp` under `packages/mcp`. Both packages are ESM-only. The main public SDK integration surface is the `suigar()` client extension, which is used to build and serialize game transactions on top of `@mysten/sui`.
+This private pnpm workspace contains two ESM-only publishable packages and a local integration app:
 
-## Common Commands
+- [`packages/sdk/AGENTS.md`](packages/sdk/AGENTS.md): `@suigar/sdk`, public SDK APIs, transaction builders, generated Move bindings, configuration, and SDK tests.
+- [`packages/mcp/AGENTS.md`](packages/mcp/AGENTS.md): `@suigar/mcp`, stdio protocol, tools, wallet bridges, inspector App, and MCP tests.
+- [`playground/AGENTS.md`](playground/AGENTS.md): private `@suigar/sdk-playground` Next.js integration app.
 
-### Setup and Build
+Shared dependencies and catalogs live in `pnpm-workspace.yaml`; shared compiler options live in `tsconfig.shared.json`. Package source, scripts, and tests live under their own workspace directory. `dist/` contains generated build output. Do not copy package-specific instructions into this file.
+
+Each instruction directory has a relative `CLAUDE.md -> AGENTS.md` symlink. Update the corresponding `AGENTS.md` rather than creating a separate copy of its instructions.
+
+## Workspace commands
 
 ```bash
-# Initial setup
 pnpm install
-
-# Generate bindings and build the package
-pnpm --dir packages/sdk run build
-
-# Build without regenerating contract bindings
-pnpm --dir packages/sdk run build:ci
-
-# Build the MCP package and bundled MCP App
-pnpm turbo run build --filter=@suigar/mcp
-
-# Build and run the local stdio MCP server for manual client testing
-pnpm turbo run build --filter=@suigar/mcp
-node packages/mcp/dist/bin.mjs
-
-# Regenerate Move contract bindings only
-pnpm --dir packages/sdk run codegen
-```
-
-### Testing
-
-```bash
-# Run the full test suite
-pnpm --dir packages/sdk run test
-
-# Run type checking
-pnpm --dir packages/sdk run typecheck
-pnpm --dir packages/mcp run typecheck
-
-# Run a specific vitest file
-pnpm --dir packages/sdk exec vitest run test/unit/transactions/coinflip.test.ts
-
-# Run a specific test name
-pnpm --dir packages/sdk exec vitest run -t "builds a coinflip transaction with a configured package override"
-```
-
-### Linting and Formatting
-
-```bash
-# Check lint and formatting
 pnpm run lint
-
-# Auto-fix lint and formatting issues
 pnpm run lint:fix
-```
-
-### Package Management
-
-```bash
-# Create a changeset
 pnpm run changeset
-
-# Apply version updates from changesets
 pnpm run changeset:version
-
-# Publish release changes
 pnpm run release
 ```
 
-## Architecture
+Use each package's scoped instructions for build, code generation, tests, and typechecks.
 
-### Repository Structure
-
-- `packages/sdk/` - `@suigar/sdk` package root
-  - `src/` - SDK source code
-  - `client.ts` - `suigar()` extension registration and extension client implementation
-  - `transactions/` - transaction builders for standard and PvP games
-  - `contracts/` - generated Move bindings and BCS helpers
-  - `types/` - public option and config types
-  - `utils/` - public parser, constants, and numeric helpers exposed through `@suigar/sdk/utils`
-  - `helpers/` - internal config resolution, metadata encoding, and transaction support helpers
-  - `configs/` - network-scoped package ids, supported coin types, and price info object ids
-- `packages/sdk/test/unit/` - Vitest coverage for config resolution, cache helpers, and transaction builders
-- `packages/mcp/` - `@suigar/mcp` stdio MCP server and MCP App
-  - `src/server.ts` - MCP server, tool registration, and app resource registration
-  - `src/tools.ts` - SDK-backed tool handlers for config, metadata, and unsigned transaction building
-  - `src/app/` - Vite-built single-file MCP App UI
-  - `test/` - Vitest coverage for tools and app resource behavior
-- `packages/sdk/dist/` - generated build output
-- `tsconfig.shared.json` - shared TypeScript compiler options for workspace packages
-- `playground/` - workspace-local Next.js integration playground
-
-### Build System
-
-- Uses pnpm workspaces from the private `@suigar/ts-sdks` root package and `pnpm-workspace.yaml`
-- Uses `tsdown` to emit ESM-only outputs into `packages/sdk/dist/`
-- Uses `tsdown` for package outputs and Vite single-file builds for the MCP App under `packages/mcp/dist/`
-- Uses `sui-ts-codegen generate` to regenerate `packages/sdk/src/contracts/`
-- Generated contract bindings are runtime-critical and should stay aligned with the current Suigar packages
-
-### Key Patterns
-
-1. **Client extension first**: Prefer integrating through `suigar()` on an existing client such as `SuiGrpcClient` or any other `ClientWithCoreApi` implementation instead of bypassing the extension layer.
-2. **Public package exports**: The package exposes `@suigar/sdk`, `@suigar/sdk/games`, and `@suigar/sdk/utils`. The package root exports `suigar`, `SuigarClient`, `SUPPORTED_SUI_NETWORKS`, `SuigarNetwork`, and `SuigarCoin`. Game-related public types and constants such as `GAMES`, `Game`, `StandardGame`, `PvPGame`, `CoinSide`, and `PvPCoinflipAction` should prefer `@suigar/sdk/games`, and parser or helper utilities should prefer `@suigar/sdk/utils`. Reusable SDK constants such as `DEFAULT_GAS_BUDGET_MIST`, `DEFAULT_QUERY_LIMIT`, `RANGE_POINT_LIMIT`, `DEFAULT_RANGE_SCALE`, and `DEFAULT_LIMBO_MULTIPLIER_SCALE` are part of the intended `@suigar/sdk/utils` integration surface and should not be redefined in app code when the SDK export is suitable. `DEFAULT_QUERY_LIMIT` is `50`, the reusable default page size for SDK queries; `getPvPCoinflipGames()` currently uses it when called without options. Utility function behavior:
-   - `toBigInt()` accepts `bigint`, finite `number`, non-negative integer `string`, and `boolean` values. It throws `TypeError` for invalid input shapes and `RangeError` for negatives.
-   - `toU8()` accepts a finite integer `number` or plain integer `string` in the `0..255` range. It throws `TypeError` for non-numeric input and `RangeError` for non-integer or out-of-range values.
-   - `toU16()` accepts a finite integer `number` or plain integer `string` in the `0..65535` range. It uses the same `TypeError` and `RangeError` split as `toU8()`.
-   - `parseCoinType()` throws `TypeError` when the first generic coin type cannot be parsed from the Move type string.
-3. **Transaction builders by game family**: Standard games use `createGameBet`; PvP games use dedicated game properties such as `pvpCoinflip`, each with its own action builders. Unsupported game ids and unsupported configured coin types surface as `RangeError`s.
-4. **Generated contract wrappers**: `packages/sdk/src/transactions/` adapts app-facing options into generated Move calls from `packages/sdk/src/contracts/`.
-5. **Type safety**: All game flows are strongly typed through `CreateGameBetOptions`, action-specific PvP options, and normalized config helpers.
-6. **MCP uses public SDK APIs**: `@suigar/mcp` should build transactions through `client.suigar.tx`, inspect config through `client.suigar.getConfig()`, and avoid imports from private Suigar workspace packages.
-
-### Suigar Client Architecture
-
-The SDK is organized around a client extension plus typed transaction builders. Understanding that separation is important before changing behavior.
-
-#### Layered Design
-
-The integration has three practical layers:
-
-1. **Public SDK surface** - `suigar()` and `SuigarClient` exposed from the package root, with additional public subpaths for `games` and `utils`.
-2. **Client extension implementation** - `packages/sdk/src/client.ts` registers the extension on top of a `ClientWithCoreApi` and exposes serialization, BCS helpers, and transaction builders.
-3. **Transaction and contract layer** - `packages/sdk/src/transactions/` consumes network-resolved config, normalizes user input, and invokes generated Move wrappers from `packages/sdk/src/contracts/`.
-
-Key files:
-
-| Layer                       | File                                 |
-| --------------------------- | ------------------------------------ |
-| Public entrypoint           | `packages/sdk/src/index.ts`          |
-| Extension and client API    | `packages/sdk/src/client.ts`         |
-| Standard game builders      | `packages/sdk/src/transactions/*.ts` |
-| Generated contracts and BCS | `packages/sdk/src/contracts/**`      |
-| Public utility exports      | `packages/sdk/src/utils/*.ts`        |
-| Internal helper modules     | `packages/sdk/src/helpers/*.ts`      |
-
-#### Standard vs PvP Flows
-
-There are two transaction families and they must not be mixed:
-
-- **Standard games** use `client.suigar.tx.createGameBet({ game, ...options })` for `coinflip`, `keno`, `limbo`, `plinko`, `range`, `soccer`, and `wheel`.
-- **PvP games** use dedicated per-game transaction properties, such as `client.suigar.tx.pvpCoinflip`, and should keep PvP game rules separate from standard game flows.
-- **PvP Coinflip unresolved lobby lookups** use `client.suigar.getPvPCoinflipGames(options?)`:
-  - Calling it without options uses `DEFAULT_QUERY_LIMIT` (`50`); supply `limit: DEFAULT_QUERY_LIMIT` when also passing `cursor` or another query option.
-  - Bulk-load lobby objects with `client.core.getObjects()`.
-  - Skip per-object fetch or parse failures by default.
-  - Reject on per-object fetch or parse failures only when `throwOnError: true` is passed.
-  - Return each parsed game with a derived `coin_type` string from the Move object type.
-- **Specific PvP Coinflip game object lookups** should use the exported generated helper, `client.suigar.bcs.PvPCoinflipGame.get({ client, objectId })`, when a product needs one live game object outside the registry list.
-
-When making changes:
-
-- Read both the client entrypoint and the relevant transaction builder before changing behavior.
-- Keep standard and PvP option shapes separate.
-- Do not route PvP Coinflip through the standard game builder.
-
-#### Config Resolution
-
-Config is normalized in `packages/sdk/src/helpers/config.ts`. This layer is responsible for:
-
-- Resolving the network-scoped NFT V1 package id and optional MVR package overrides
-- Normalizing the configured supported coin types for the active network
-- Resolving price info object ids from the supported-coin mapping
-- Throwing explicit errors when a required coin mapping is missing
-- Providing the price info object id used by PvP Coinflip join
-
-Treat unsupported network resolution and unsupported configured coin types as `RangeError` cases when documenting or testing these flows.
-
-Invalid configuration or missing price-info object IDs throw `TypeError`. Operational failures retain `Error`. Keep generated error classes aligned with `@mysten/codegen`.
-
-#### Game Parameters
-
-`client.suigar.getGameParameters({ game, coinType, ...options })` requires a coin type. It reads the selected game's settings object from SweetHouse, then that coin's `Parameters<T>` object. It parses the result, decodes Move float fields into JavaScript numbers—including nested Keno, Plinko, and Wheel multipliers—and caches it for `cacheTtl`.
-
-This is a core invariant: standard game transactions must fail clearly when the required price info object configuration is not available for the chosen coin type.
-
-#### Referral
-
-- `client.suigar.tx.referral` uses `@suigar/referral` by default, or `packageIds.referral` when an override is configured.
-- Use `client.suigar.view.referral` for simulated claimable amounts.
-
-#### NFT V1
-
-- Use `packageIds.nftV1` and `objectIds.nftV1Factory` for lookups.
-- Use `client.suigar.tx.nftV1.mint({ owner, specId })` to mint.
-- Read the selected specification's SUI price from the configured factory when the transaction is built.
-
-#### Metadata and Amount Handling
-
-- Treat `stake` as the logical wager used in the Move call.
-- Use `cashStake` only when the withdrawn balance should differ from the logical stake.
-- Prefer `bigint` for all non-UI amount handling.
-- Pass plain application values to supported bet transaction `metadata` and let the SDK encode them into byte arrays.
-- Treat the extension-level `partner` option as a partner wallet address, not a label or slug.
-- When partner attribution is required, configure `suigar({ partner: '<wallet-address>' })` once during extension setup instead of passing partner data through transaction metadata.
-- Prefer importing public constants and numeric helpers from `@suigar/sdk/utils` instead of duplicating SDK defaults in downstream apps.
-
-### MCP Package Architecture
-
-`packages/mcp` exposes a local stdio MCP server plus a bundled MCP App resource. It should stay thin over `@suigar/sdk` and `@mysten/sui`.
-
-- Use ext-apps 2 with MCP SDK 2: `@modelcontextprotocol/server`, `@modelcontextprotocol/server/stdio`, and `@modelcontextprotocol/client`. Prefer shared types, errors, and transports exported by `@modelcontextprotocol/server`; reserve `@modelcontextprotocol/client` for client-specific APIs. The client package is a development dependency for tests and the bundled App build; core is supplied transitively by the SDK packages. Use the published ext-apps React types. Register tools with complete Standard JSON Schema schemas (such as Zod objects) and preserve schema/handler type inference.
-- Target MCP 2026-07-28 and use SDK 2 `serveStdio` for stdio version negotiation, retaining legacy initialization compatibility. Let the SDK validate request metadata and supply discovery, result discriminators, server identity, and cache hints. Keep tool listings deterministic and application state explicit in tool arguments. Test modern wire responses as well as legacy clients.
-- Unknown tool calls reject with a protocol invalid-params error; schema-validation failures return `isError: true`. Keep Suigar handler failures actionable with both text and structured error details.
-- Always return both text `content` and `structuredContent`.
-- Keep tool errors actionable and include the field/config/network detail needed for an agent to retry.
-- Keep SDK-style MCP config documentation aligned with `SuigarConfigOverrides`: both `coins.sui` and `coins.usdc` accept optional `coinType`, `decimals`, and `priceInfoObjectId` metadata.
-- Merge partial MCP App host-context updates with the existing context and apply host-provided safe-area insets to every inspector screen.
-- Wallet bridge and session setup state comparisons use `sameState()` from `packages/mcp/src/utils/crypto.ts`; keep hex decoding and strict 32-byte state validation in that shared helper.
-- The MCP App is an inspector UI only. It must not sign or execute transactions, and it should include restrictive `_meta.ui.csp` metadata.
-- Do not reintroduce explicit coin object sourcing or copied transaction builders unless the SDK adds a public API for that behavior.
-- If a new MCP behavior requires an SDK change, add the SDK change, tests, docs, and an `@suigar/sdk` changeset entry in the same task.
-
-### Testing Conventions
+## Shared testing conventions
 
 - Both packages use Vitest 5 in the Node.js environment. Run tests through the package scripts or from the package root so its Vitest config is loaded. For `-t` filters, match an individual test name or use `.*` between suite and test names.
-- Organize tests by the behavior they cover, following the existing directories rather than adding a single catch-all suite. SDK tests live under `packages/sdk/test/unit/`, grouped into `transactions/`, `helpers/`, and `utils/`, with client and public-export coverage alongside them. MCP tests live under `packages/mcp/test/`, grouped into `tools/handlers/`, `tools/schemas/`, `runtime/`, `server/`, `wallet/`, `app/`, and `utils/`, with CLI and package-export coverage alongside them.
 - Add regression coverage near the affected behavior. Check observable results, argument normalization, configuration overrides, and actionable failures where relevant. Transaction tests should cover the applicable game or action and its generated contract-call arguments; keep standard and PvP flows separate.
 - Reuse nearby test fixtures and helpers. Mock external services and generated contract boundaries where needed, while exercising the package's own behavior. Keep tests independent of live networks and real wallet credentials; wallet bridge tests may use local loopback servers and temporary storage.
 - Vitest clears mock call history before each test by default. Reset mock implementations, module state, environment variables, timers, and resources explicitly when a test changes them; clearing call history does not reset those. Keep `vi.mock`, `vi.unmock`, and `vi.hoisted` at module scope, and use `vi.doMock` for runtime mocking. Await asynchronous assertions.
-- Run tests and typechecks for each affected package. When changing SDK tests, also run `pnpm --dir packages/sdk exec tsc --noEmit -p test/tsconfig.json`, since the SDK's main typecheck excludes tests.
+- Run tests and typechecks for every affected package. Package-specific test typechecks and fixtures are documented in the scoped instructions.
+
+## Release and contribution workflow
 
 ### Changeset Conventions
 
@@ -230,18 +43,19 @@ This is a core invariant: standard game transactions must fail clearly when the 
 - **`minor`**: New public methods, new supported fields, or additive public type changes
 - **`major`**: Breaking API changes, changed behavior contracts, or removed support
 - Changeset notes must describe only package behavior for the packages listed in the changeset frontmatter. Do not mention root-only, workspace-only, playground-only, or tooling-only changes unless they directly affect that package's published behavior.
-- Do not edit changeset files inherited from `main` or previous work. When a branch needs a release note, update the changeset already committed on the current branch; create one only if the branch has none.
-- Keep one changeset per branch by default. Its frontmatter must list every publishable package with source changes anywhere on the branch, including earlier work; when another package is changed later, update the existing branch changeset to add that package and describe the combined package changes. Create another changeset only when multiple distinct release notes are explicitly intended.
+- Do not edit changeset files inherited from `main` or unrelated previous work. Reuse a changeset on the current branch only when its package scope and topic match the new change; otherwise create a separate changeset.
+- Split changesets by topic and by package when the changes differ. Dependency updates and type-safety changes require separate release notes. Use a package-specific changeset when the implementation or user-facing impact differs between libraries; list multiple packages together only when the same note accurately describes the same change for all of them.
+- Keep each changeset focused on one coherent release note, with the release level appropriate to each listed package. Across all branch changesets, cover every publishable package with source changes anywhere on the branch, including earlier work. Do not combine unrelated notes merely to keep one changeset per branch.
 
 ### Development Workflow
 
 1. Update or add code in the relevant package under `packages/*/src/`
-2. If the branch modifies source files under any publishable package, update the `.changeset/*.md` file already committed on that branch so it lists every publishable package changed anywhere on the branch; create one only when no branch changeset exists
-3. Reuse that committed branch changeset for later publishable-package source edits instead of creating a new changeset, unless the user explicitly wants multiple distinct release notes
+2. If the branch modifies source files under any publishable package, ensure its `.changeset/*.md` files collectively cover every publishable package changed anywhere on the branch
+3. Reuse an existing branch changeset for the same package scope and topic; create a separate changeset for a different topic or package-specific change, following the conventions above
 4. When SDK contract bindings or generated SDK sources change, regenerate them with `pnpm --dir packages/sdk run codegen`; otherwise run any generation required by each changed package
 5. Run tests for every changed package, for example `pnpm --dir packages/sdk run test` or `pnpm --dir packages/mcp run test`
 6. Run type checking for every changed package, for example `pnpm --dir packages/sdk run typecheck` or `pnpm --dir packages/mcp run typecheck`
-7. Add or update the current branch changeset when user-visible package behavior changes, keeping each note scoped to the package or packages listed in its frontmatter
+7. Add or update the matching branch changeset when user-visible package behavior changes, keeping each note scoped to one topic and the package or packages listed in its frontmatter
 
 Documentation is part of the deliverable:
 
@@ -286,16 +100,12 @@ Use these Suigar skills when the task is about building a product on top of this
 - `create-pvp-games` for PvP game flows
 - `find-skills` to discover installable external skills when users ask for capabilities or workflows that may already exist
 
-Claude Code compatibility:
-
-- `CLAUDE.md` is a symlink to `AGENTS.md`
-
 ## Pull Requests
 
 When creating a PR:
 
 - Summarize the SDK or transaction behavior change clearly
-- If the branch modifies source files under any publishable package, make sure the branch includes a `.changeset/*.md` file; update the changeset already committed on the branch, creating one only if none exists, unless multiple release notes are intentionally needed
+- If the branch modifies source files under any publishable package, make sure its `.changeset/*.md` files cover every changed publishable package, with separate notes for distinct topics and package-specific changes. Reuse a branch changeset only when its package scope and topic match
 - PRs that change publishable-package source files without a changeset are expected to fail merge checks and receive a PR comment
 - Mention whether generated bindings changed
 - Include tests run

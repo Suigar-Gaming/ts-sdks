@@ -8,6 +8,7 @@ on:
     paths:
       - '.github/actions/setup-pnpm/action.yaml'
       - '.github/workflows/turborepo.yaml'
+      - '.node-version'
       - '.oxlintrc.json'
       - '.oxfmtrc.json'
       - 'playground/**'
@@ -21,6 +22,7 @@ on:
     paths:
       - '.github/actions/setup-pnpm/action.yaml'
       - '.github/workflows/turborepo.yaml'
+      - '.node-version'
       - '.oxlintrc.json'
       - '.oxfmtrc.json'
       - 'playground/**'

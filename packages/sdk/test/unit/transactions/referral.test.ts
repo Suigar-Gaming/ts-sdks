@@ -8,7 +8,7 @@ import {
 	buildClaimReferralLevelUpUsdRewardsTransaction,
 } from '../../../src/transactions/referral.js';
 import { TEST_CONFIG } from '../../utils.js';
-import './utils.js';
+import { getMoveCall } from './utils.js';
 
 describe('referral transaction builder', () => {
 	it('builds referral commission and level-up claims with configured package overrides', () => {
@@ -22,10 +22,11 @@ describe('referral transaction builder', () => {
 			config: TEST_CONFIG,
 		});
 
-		const commissionCall = commissionTx.getData().commands[0].MoveCall!;
-		const levelUpCall = levelUpTx.getData().commands[0].MoveCall!;
+		const commissionData = commissionTx.getData();
+		const commissionCall = getMoveCall(commissionData, 0);
+		const levelUpCall = getMoveCall(levelUpTx.getData(), 0);
 
-		expect(commissionTx.getData().sender).toBe(normalizeSuiAddress('0x123'));
+		expect(commissionData.sender).toBe(normalizeSuiAddress('0x123'));
 		expect(commissionCall.package).toBe(normalizeSuiAddress(TEST_CONFIG.packageIds.referral));
 		expect(commissionCall.function).toBe('claim_commission_balance');
 		expect(commissionCall.typeArguments).toEqual([normalizeStructTag('0x2::sui::SUI')]);

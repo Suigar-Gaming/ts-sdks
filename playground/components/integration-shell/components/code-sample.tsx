@@ -13,8 +13,8 @@ function CodeSampleCard({
 	title = 'Transaction code',
 }: {
 	children: React.ReactNode;
-	description?: string;
-	title?: string;
+	description?: string | undefined;
+	title?: string | undefined;
 }) {
 	return (
 		<Card className="h-full">
@@ -39,9 +39,9 @@ export function CodeSample({
 	title,
 }: {
 	code: string;
-	copyTitle?: string;
-	description?: string;
-	title?: string;
+	copyTitle?: string | undefined;
+	description?: string | undefined;
+	title?: string | undefined;
 }) {
 	return (
 		<CodeSampleCard description={description} title={title}>

@@ -66,6 +66,8 @@ When running a task that depends on generated or built artifacts, use `turbo` to
 
 ### Setup
 
+Use the Node.js version specified in [`.node-version`](.node-version). GitHub Actions reads the same file through the shared pnpm setup action.
+
 ```bash
 pnpm install
 pnpm run build
@@ -92,6 +94,8 @@ pnpm turbo run test
 ```
 
 ### Type Checking
+
+Workspace packages inherit the strict checks in `tsconfig.shared.json`. This shared configuration disables `isolatedDeclarations` because the generated SDK bindings lack the required annotations and the MCP relies on Zod schema/handler inference. Both packages retain the other shared strict checks.
 
 ```bash
 pnpm run typecheck

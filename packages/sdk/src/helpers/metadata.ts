@@ -39,7 +39,7 @@ export function encodeBetMetadata({
 	metadata,
 	partner,
 }: WithPartner<{
-	metadata?: BetMetadataInput;
+	metadata?: BetMetadataInput | undefined;
 }> = {}): EncodedBetMetadata {
 	const keys: Array<string> = [];
 	const values: Array<Array<number>> = [];

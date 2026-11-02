@@ -18,7 +18,7 @@ export type StandardSharedFields = SharedFields & {
 export type StakeRangeSummary = {
 	min: string;
 	max: string;
-	kind?: 'range' | 'minimum';
+	kind?: 'range' | 'minimum' | undefined;
 };
 
 export type NumberRangeSummary = {
@@ -45,22 +45,28 @@ export type KenoBoundsSummary = {
 export type GameConfigOption = {
 	id: string;
 	label: string;
-	description?: string;
-	details?: Array<{
-		label: string;
-		value: string;
-	}>;
-	multiplierValues?: Array<{
-		id: string;
-		label?: string;
-		value: string;
-	}>;
-	keno?: {
-		boardSize: number;
-		drawCount: number;
-		minPicks: number;
-		maxPicks: number;
-	};
+	description?: string | undefined;
+	details?:
+		| Array<{
+				label: string;
+				value: string;
+		  }>
+		| undefined;
+	multiplierValues?:
+		| Array<{
+				id: string;
+				label?: string | undefined;
+				value: string;
+		  }>
+		| undefined;
+	keno?:
+		| {
+				boardSize: number;
+				drawCount: number;
+				minPicks: number;
+				maxPicks: number;
+		  }
+		| undefined;
 	isPlayable: boolean;
 	stakeRange: StakeRangeSummary;
 };
@@ -82,18 +88,18 @@ export type BetCountLimitSummary = {
 
 export type StandardGameParametersSummary = {
 	stakeRange: StakeRangeSummary;
-	betCountLimit?: BetCountLimitSummary;
-	configOptions?: Array<GameConfigOption>;
-	countryOptions?: Array<GameSelectionOption>;
-	topLevelDetails?: Array<GameSettingsDetail>;
-	targetMultiplierRange?: NumberRangeSummary;
-	rangeBounds?: RangeBoundsSummary;
-	kenoBounds?: KenoBoundsSummary;
+	betCountLimit?: BetCountLimitSummary | undefined;
+	configOptions?: Array<GameConfigOption> | undefined;
+	countryOptions?: Array<GameSelectionOption> | undefined;
+	topLevelDetails?: Array<GameSettingsDetail> | undefined;
+	targetMultiplierRange?: NumberRangeSummary | undefined;
+	rangeBounds?: RangeBoundsSummary | undefined;
+	kenoBounds?: KenoBoundsSummary | undefined;
 };
 
 export type PvPGameParametersSummary = {
 	stakeRange: StakeRangeSummary;
-	topLevelDetails?: Array<GameSettingsDetail>;
+	topLevelDetails?: Array<GameSettingsDetail> | undefined;
 };
 
 export type CoinflipFormValues = StandardSharedFields & {
@@ -167,8 +173,8 @@ export type EventLogRow = {
 	timestamp: string;
 	eventType: string;
 	digest: string;
-	gameId?: string;
-	actor?: string;
+	gameId?: string | undefined;
+	actor?: string | undefined;
 	details: string;
 	raw: unknown;
 };

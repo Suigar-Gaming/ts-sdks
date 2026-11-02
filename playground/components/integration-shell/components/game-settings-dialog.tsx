@@ -40,7 +40,7 @@ function SettingsSummaryCard({
 	title: string;
 	value: React.ReactNode;
 	description: React.ReactNode;
-	isLoading?: boolean;
+	isLoading?: boolean | undefined;
 }) {
 	return (
 		<Card className="bg-background/40 rounded-2xl shadow-none">
@@ -65,7 +65,7 @@ function SettingsStateCard({
 	className,
 }: {
 	children: React.ReactNode;
-	className?: string;
+	className?: string | undefined;
 }) {
 	return (
 		<Card className={className}>
@@ -89,7 +89,7 @@ function GameSettingsDialogHeader({
 	gameLabel: string;
 	isLoading: boolean;
 	onClose: () => void;
-	onRefresh?: () => void;
+	onRefresh?: (() => void) | undefined;
 }) {
 	return (
 		<DialogHeader className="border-border/70 bg-card/95 z-10 gap-4 border-b px-4 py-4 md:px-6 md:py-5">
@@ -184,7 +184,7 @@ function ConfigSummaryValue({
 	configOptions,
 	playableConfigCount,
 }: {
-	configOptions?: Array<GameConfigOption>;
+	configOptions?: Array<GameConfigOption> | undefined;
 	playableConfigCount: number;
 }) {
 	return configOptions?.length ? (
@@ -335,7 +335,7 @@ function GameSettingsOverview({
 	activeStakeRange: StakeRangeSummary | null;
 	coinKey: SupportedCoinKey;
 	coinLabel: string;
-	configOptions?: Array<GameConfigOption>;
+	configOptions?: Array<GameConfigOption> | undefined;
 	hasConfigOptions: boolean;
 	isStakeMinimum: boolean;
 	playableConfigCount: number;
@@ -403,7 +403,7 @@ function GameSettingsPanels({
 }: {
 	activeConfigOption: GameConfigOption | null;
 	coinKey: SupportedCoinKey;
-	configOptions?: Array<GameConfigOption>;
+	configOptions?: Array<GameConfigOption> | undefined;
 	error: string | null;
 	isLoading: boolean;
 	serializedGameSettings: string | null;
@@ -501,16 +501,16 @@ export function GameSettingsDialog({
 	activeStakeRange: StakeRangeSummary | null;
 	coinKey: SupportedCoinKey;
 	coinLabel: string;
-	configOptions?: Array<GameConfigOption>;
+	configOptions?: Array<GameConfigOption> | undefined;
 	error: string | null;
 	gameLabel: string;
 	isLoading: boolean;
 	isOpen: boolean;
 	onClose: () => void;
-	onRefresh?: () => void;
+	onRefresh?: (() => void) | undefined;
 	serializedGameSettings: string | null;
 	settingsCallPreview: string;
-	topLevelDetails?: Array<GameSettingsDetail>;
+	topLevelDetails?: Array<GameSettingsDetail> | undefined;
 }) {
 	const playableConfigCount = configOptions?.filter((option) => option.isPlayable).length ?? 0;
 	const activeConfigDetails = activeConfigOption?.details?.slice(0, 3) ?? [];

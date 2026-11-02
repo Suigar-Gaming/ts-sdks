@@ -238,11 +238,11 @@ type LobbyAction =
 	| { type: 'loaded'; games: Array<PvPCoinflipLobbyGame> }
 	| { type: 'error'; error: string };
 type StandardParametersAction =
-	| { type: 'loading'; preservePrevious?: boolean }
+	| { type: 'loading'; preservePrevious?: boolean | undefined }
 	| { type: 'loaded'; payload: unknown; summary: StandardGameParametersSummary }
 	| { type: 'error'; error: string };
 type PvPParametersAction =
-	| { type: 'loading'; preservePrevious?: boolean }
+	| { type: 'loading'; preservePrevious?: boolean | undefined }
 	| { type: 'loaded'; payload: unknown; summary: PvPGameParametersSummary }
 	| { type: 'error'; error: string }
 	| { type: 'reset' };

@@ -3,6 +3,7 @@
 
 import { createSuigarClient, type ToolTextResult } from '../../runtime/index.js';
 import { createQrCodeDataUrl, formatBaseUnitAmount, runSuigarCommand } from '../../utils/index.js';
+import { optionalOptions } from '../../utils/options.js';
 import {
 	createSessionWalletSetup,
 	getExecutionStatus,
@@ -91,8 +92,7 @@ export async function listWalletCoinsTool(input: ListWalletCoinsInput): Promise<
 
 	const result = await bundle.client.core.listCoins({
 		owner,
-		coinType: input.coinType,
-		cursor: input.cursor,
+		...optionalOptions({ coinType: input.coinType, cursor: input.cursor }),
 		limit: input.limit ?? 50,
 	});
 	const metadata = await resolveCoinDisplayMetadata({

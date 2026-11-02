@@ -12,8 +12,8 @@ export function CodeBlock({
 }: {
 	code: string;
 	copyDescription: string;
-	copyMode?: 'button' | 'icon' | 'none';
-	copyTitle?: string;
+	copyMode?: 'button' | 'icon' | 'none' | undefined;
+	copyTitle?: string | undefined;
 }) {
 	async function handleCopy() {
 		try {

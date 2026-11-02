@@ -11,7 +11,7 @@ export function CoinSelectLabel({
 }: {
 	coinKey: SupportedCoinKey;
 	amount: string;
-	hideTickerOnMobile?: boolean;
+	hideTickerOnMobile?: boolean | undefined;
 }) {
 	return (
 		<div className="flex min-w-0 items-center gap-2 whitespace-nowrap">

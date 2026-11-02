@@ -3,19 +3,26 @@
 		"composite": true,
 		"target": "es2022",
 		"module": "nodenext",
-		"moduleResolution": "nodenext",
+		"moduleDetection": "force",
+		"verbatimModuleSyntax": true,
 		"lib": ["DOM", "ESNext"],
 		"types": ["node"],
-		"declaration": true,
 		"declarationMap": true,
 		"sourceMap": true,
+		// TypeScript 7 enables strict mode by default; only additional checks are listed below.
+		// Disabled for both packages: generated SDK contracts lack explicit exported annotations,
+		// and MCP relies on Zod schema/handler inference. Imported files cannot be exempted via exclude.
+		"isolatedDeclarations": false,
+		"noUncheckedIndexedAccess": true,
+		"exactOptionalPropertyTypes": true,
+		"noImplicitOverride": true,
+		"noPropertyAccessFromIndexSignature": true,
 		"noImplicitReturns": true,
 		"noFallthroughCasesInSwitch": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"jsx": "react-jsx",
 		"skipLibCheck": true,
-		"forceConsistentCasingInFileNames": true,
 		"resolveJsonModule": true
 	}
 }

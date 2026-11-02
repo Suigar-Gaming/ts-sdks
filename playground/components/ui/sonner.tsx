@@ -31,7 +31,7 @@ function Toaster({ ...props }: ToasterProps) {
 
 	return (
 		<Sonner
-			theme={theme as ToasterProps['theme']}
+			theme={theme === 'dark' || theme === 'light' ? theme : 'system'}
 			position={isMobile ? 'top-center' : 'bottom-right'}
 			closeButton
 			className="toaster group"

@@ -8,7 +8,7 @@ export function createQrCodeDataUrl({
 	options = {},
 }: {
 	text: string;
-	options?: QrOpts;
+	options?: QrOpts | undefined;
 }): string {
 	return encodeQR(text, 'data-url', {
 		...options,

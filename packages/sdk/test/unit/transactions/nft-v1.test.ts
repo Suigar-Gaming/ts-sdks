@@ -6,7 +6,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { Factory as NftV1Factory } from '../../../src/contracts/nft-v1/nft.js';
 import { buildMintNftV1Transaction } from '../../../src/transactions/nft-v1.js';
 import { TEST_CONFIG } from '../../utils.js';
-import './utils.js';
+import { getMoveCall } from './utils.js';
 
 describe('NFT V1 transaction builder', () => {
 	it('builds an NFT V1 mint with the configured specification price', async () => {
@@ -41,9 +41,10 @@ describe('NFT V1 transaction builder', () => {
 			client,
 			config: nftConfig,
 		});
-		const call = tx.getData().commands[1].MoveCall!;
+		const data = tx.getData();
+		const call = getMoveCall(data, 1);
 
-		expect(tx.getData().sender).toBe(normalizeSuiAddress('0x123'));
+		expect(data.sender).toBe(normalizeSuiAddress('0x123'));
 		expect(call.package).toBe(normalizeSuiAddress(nftConfig.packageIds.nftV1));
 		expect(call.function).toBe('mint_to_sender');
 		expect(call.arguments).toHaveLength(4);
