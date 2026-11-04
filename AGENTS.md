@@ -110,7 +110,7 @@ When creating a PR:
 
 Use this format for PR descriptions:
 
-In Notes, check the boxes that apply and leave the others unchecked. Add details only when they help the reviewer, such as the impact of binding changes and the regeneration command, or compatibility issues, limitations, and follow-up work. The checkboxes are enough to report AI involvement and unchanged bindings; no extra paragraph is needed.
+Under Notes, check what applies. The boxes are enough for AI involvement and unchanged bindings. If bindings changed, explain the impact and give the regeneration command. Add other details only if they help with the review.
 
 ```markdown
 ## Summary
