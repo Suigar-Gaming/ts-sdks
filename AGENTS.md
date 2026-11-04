@@ -108,24 +108,24 @@ When creating a PR:
 - If the branch modifies source files under any publishable package, make sure its `.changeset/*.md` files cover every changed publishable package, with separate notes for distinct topics and package-specific changes. Reuse a branch changeset only when its package scope and topic match
 - PRs that change publishable-package source files without a changeset are expected to fail merge checks and receive a PR comment
 
-Use the following headings in every PR description:
+Use this format for PR descriptions:
 
 ```markdown
 ## Summary
 
-Describe the problem or purpose and the resulting behavior.
+Explain why the change is needed and what it does.
 
 ## Changes
 
-List the concrete changes, including public API, transaction, dependency, and changeset updates where relevant.
+Describe what changed. Mention updates to public APIs, transactions, dependencies, and changesets when they apply.
 
 ## Verification
 
-List the checks run and their results. Explicitly mention any checks that were not run and why.
+List the checks you ran and whether they passed. If you skipped a check, say why.
 
 ## Notes
 
-- AI involvement: State separately whether AI wrote or assisted with the code and the PR description. Describe its contribution accurately, including when no AI was used.
-- Generated contract bindings: State explicitly whether they changed. If they did, summarize the impact and mention the regeneration command used.
-- Include any relevant compatibility concerns, limitations, or follow-up work.
+- Say how AI helped with the code and, separately, with the PR description. If no AI was used, say so.
+- Say whether the generated contract bindings changed. If they did, explain the impact and give the command used to regenerate them.
+- Mention compatibility issues, limitations, or follow-up work, if any.
 ```
