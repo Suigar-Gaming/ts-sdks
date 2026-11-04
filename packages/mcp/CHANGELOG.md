@@ -1,5 +1,21 @@
 # @suigar/mcp
 
+## 1.0.0-beta.32
+
+### Patch Changes
+
+- [#183](https://github.com/Suigar-Gaming/ts-sdks/pull/183) [`5b4f2e3`](https://github.com/Suigar-Gaming/ts-sdks/commit/5b4f2e328a1d2234f0f37e170b25f8387a8c4042) - Clarify how MCP tools report errors and how the wallet CLI handles status, logout, and local credential cleanup.
+
+- [#181](https://github.com/Suigar-Gaming/ts-sdks/pull/181) [`4a70497`](https://github.com/Suigar-Gaming/ts-sdks/commit/4a7049763b4fe614193fb6235ca60d4adc372d99) - Correct MCP optional-field and indexed-access typing while retaining precise tool schemas, and omit undefined nested tool configuration overrides before forwarding them to the SDK. Preserve UUID v4 fallback generation with strict indexed access enabled.
+
+- [#184](https://github.com/Suigar-Gaming/ts-sdks/pull/184) [`3d254d1`](https://github.com/Suigar-Gaming/ts-sdks/commit/3d254d116ef8c26aac18f6ce2b50e3026290aff6) - Update the `@mysten/sui` dependency requirement to `^2.39.0`.
+
+- [#181](https://github.com/Suigar-Gaming/ts-sdks/pull/181) [`4a70497`](https://github.com/Suigar-Gaming/ts-sdks/commit/4a7049763b4fe614193fb6235ca60d4adc372d99) - Update `@modelcontextprotocol/server` to `^2.4.0`.
+
+- [#181](https://github.com/Suigar-Gaming/ts-sdks/pull/181) [`4a70497`](https://github.com/Suigar-Gaming/ts-sdks/commit/4a7049763b4fe614193fb6235ca60d4adc372d99) - Update the Sui dependency requirement to `^2.38.0`, including stricter validation of Ed25519 derivation paths and seeds.
+- Updated dependencies [[`3d254d1`](https://github.com/Suigar-Gaming/ts-sdks/commit/3d254d116ef8c26aac18f6ce2b50e3026290aff6), [`5b4f2e3`](https://github.com/Suigar-Gaming/ts-sdks/commit/5b4f2e328a1d2234f0f37e170b25f8387a8c4042), [`4a70497`](https://github.com/Suigar-Gaming/ts-sdks/commit/4a7049763b4fe614193fb6235ca60d4adc372d99), [`4a70497`](https://github.com/Suigar-Gaming/ts-sdks/commit/4a7049763b4fe614193fb6235ca60d4adc372d99)]:
+  - @suigar/sdk@2.0.0-beta.46
+
 ## 1.0.0-beta.31
 
 ### Patch Changes
