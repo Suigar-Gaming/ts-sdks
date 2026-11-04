@@ -110,6 +110,8 @@ When creating a PR:
 
 Use this format for PR descriptions:
 
+In Notes, check the boxes that apply and leave the others unchecked. Add details below the checklist when needed, including how AI helped, the impact of binding changes and the regeneration command, or any compatibility issues, limitations, and follow-up work.
+
 ```markdown
 ## Summary
 
@@ -125,7 +127,8 @@ List the checks you ran and whether they passed. If you skipped a check, say why
 
 ## Notes
 
-- Say how AI helped with the code and, separately, with the PR description. If no AI was used, say so.
-- Say whether the generated contract bindings changed. If they did, explain the impact and give the command used to regenerate them.
-- Mention compatibility issues, limitations, or follow-up work, if any.
+- [ ] AI helped write or review the code.
+- [ ] AI helped write or review the PR description.
+- [ ] Generated contract bindings changed.
+- [ ] Compatibility issues, limitations, or follow-up work need attention.
 ```
