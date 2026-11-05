@@ -1,5 +1,11 @@
 # @suigar/sdk
 
+## 2.0.0-beta.47
+
+### Patch Changes
+
+- [#185](https://github.com/Suigar-Gaming/ts-sdks/pull/185) [`77ca0c3`](https://github.com/Suigar-Gaming/ts-sdks/commit/77ca0c38aa93642ff512f3488d453a78df3d145a) - Rebuild the SDK with the updated tsdown bundler.
+
 ## 2.0.0-beta.46
 
 ### Minor Changes

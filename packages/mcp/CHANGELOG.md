@@ -1,5 +1,13 @@
 # @suigar/mcp
 
+## 1.0.0-beta.33
+
+### Patch Changes
+
+- [#185](https://github.com/Suigar-Gaming/ts-sdks/pull/185) [`77ca0c3`](https://github.com/Suigar-Gaming/ts-sdks/commit/77ca0c38aa93642ff512f3488d453a78df3d145a) - Refresh the MCP server and bundled inspector App build with updated tsdown and Tailwind CSS tooling.
+- Updated dependencies [[`77ca0c3`](https://github.com/Suigar-Gaming/ts-sdks/commit/77ca0c38aa93642ff512f3488d453a78df3d145a)]:
+  - @suigar/sdk@2.0.0-beta.47
+
 ## 1.0.0-beta.32
 
 ### Patch Changes
