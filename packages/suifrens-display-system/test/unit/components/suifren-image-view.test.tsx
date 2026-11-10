@@ -3,6 +3,7 @@
 
 // @vitest-environment happy-dom
 import { afterEach, expect, test, vi } from 'vitest';
+import { accessories } from '../../../src/accessories/index.js';
 import { AnimationStore } from '../../../src/animation/animation-store.js';
 import { SuiFrenImageInline } from '../../../src/image-inline/index.js';
 import { SuiFrenImage } from '../../../src/index.js';
@@ -57,4 +58,21 @@ test.each([
 			.getAnimationTargets()
 			.some(({ part }) => part === 'fin'),
 	).toBe(false);
+});
+
+test.each([
+	['inline', SuiFrenImageInline],
+	['assets', SuiFrenImage],
+] as const)('%s uses an explicit SVG instead of the catalogue cap', async (_name, Renderer) => {
+	const cap = accessories.find((item) => item.name === 'baseball cap');
+	expect.assert(cap);
+	const assetSrc = '/custom-cap.svg';
+	view = createTestRoot();
+	await view.render(
+		<Renderer
+			attributes={capy}
+			accessories={[{ ...cap, renderOptions: { ...cap.renderOptions, assetSrc } }]}
+		/>,
+	);
+	expect(view.container.querySelector('image')?.getAttribute('href')).toBe(assetSrc);
 });
