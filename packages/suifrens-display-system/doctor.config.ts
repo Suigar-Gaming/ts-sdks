@@ -5,7 +5,7 @@ import { defineConfig } from 'react-doctor/api';
 
 export default defineConfig({
 	blocking: 'warning',
-	rootDir: 'src',
+	ignore: { files: ['examples/**', 'test/**', 'scripts/**', '*.config.ts'] },
 	share: false,
 	noScore: true,
 });
