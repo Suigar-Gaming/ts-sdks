@@ -98,7 +98,7 @@
 		"clean": "rimraf dist",
 		"codegen": "node scripts/generate-accessory-assets.ts && pnpm exec oxfmt src/generated",
 		"test": "vitest run",
-		"typecheck": "tsc --noEmit",
+		"typecheck": "tsc",
 		"doctor": "react-doctor --yes",
 		"oxlint": "oxlint .",
 		"oxlint:fix": "oxlint . --fix",

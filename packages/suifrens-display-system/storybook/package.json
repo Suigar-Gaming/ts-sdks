@@ -10,7 +10,7 @@
 		"test:stories": "vitest run --project storybook",
 		"test:coverage": "vitest run --coverage",
 		"test:visual": "vitest run --project visual",
-		"typecheck": "tsc --noEmit"
+		"typecheck": "tsc"
 	},
 	"dependencies": {
 		"@suigar/suifrens-display-system": "workspace:*"

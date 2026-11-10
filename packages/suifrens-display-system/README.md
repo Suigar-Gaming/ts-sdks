@@ -105,5 +105,3 @@ After building, run Storybook or the Fastify rendering example:
 pnpm --filter @suigar/suifrens-storybook dev
 pnpm --filter @suigar/suifrens-fastify dev
 ```
-
-See [AGENTS.md](AGENTS.md) for source conventions, asset generation and contribution checks.

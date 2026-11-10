@@ -6,7 +6,7 @@
 	"scripts": {
 		"dev": "tsdown src/api/index.ts --watch --on-success \"node dist/index.mjs\"",
 		"test": "vitest run",
-		"typecheck": "tsc --noEmit"
+		"typecheck": "tsc"
 	},
 	"dependencies": {
 		"@fastify/compress": "^9.3.0",

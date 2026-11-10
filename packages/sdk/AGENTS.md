@@ -16,7 +16,7 @@ pnpm --dir packages/sdk run codegen
 # Validation
 pnpm --dir packages/sdk run test
 pnpm --dir packages/sdk run typecheck
-pnpm --dir packages/sdk exec tsc --noEmit -p test/tsconfig.json
+pnpm --dir packages/sdk exec tsc -p test/tsconfig.json
 pnpm --dir packages/sdk run lint
 # Focused tests
 pnpm --dir packages/sdk exec vitest run test/unit/transactions/coinflip.test.ts

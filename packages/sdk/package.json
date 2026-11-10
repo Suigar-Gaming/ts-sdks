@@ -82,7 +82,7 @@
 		"clean": "rimraf dist",
 		"codegen": "sui-ts-codegen generate && pnpm run lint:fix",
 		"test": "vitest run",
-		"typecheck": "tsc --noEmit",
+		"typecheck": "tsc",
 		"oxlint": "oxlint .",
 		"oxlint:fix": "oxlint . --fix",
 		"oxfmt": "oxfmt . --check",
