@@ -3,7 +3,7 @@
 
 import type { AccessoryMetadata } from '../types/accessory.type.js';
 
-function getAccessorySlotKey(accessory: AccessoryMetadata) {
+function getAccessorySlotKey(accessory: AccessoryMetadata): string {
 	if (accessory.type === 'feet') {
 		if (accessory.renderOptions.animationPart === 'leftLeg') {
 			return 'leftFeet';
@@ -16,7 +16,9 @@ function getAccessorySlotKey(accessory: AccessoryMetadata) {
 	return accessory.type;
 }
 
-export function getAccessoriesByType(accessories: Array<AccessoryMetadata>) {
+export function getAccessoriesByType(
+	accessories: Array<AccessoryMetadata>,
+): Record<string, AccessoryMetadata> {
 	return accessories.reduce<Record<string, AccessoryMetadata>>((accumulator, accessory) => {
 		accumulator[getAccessorySlotKey(accessory)] = accessory;
 		return accumulator;

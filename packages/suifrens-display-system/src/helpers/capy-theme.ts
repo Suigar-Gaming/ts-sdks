@@ -1,7 +1,7 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import type { CapySkin } from '../types/capy.type.js';
+import type { CapySkin, CapyTheme } from '../types/capy.type.js';
 import { assertUnreachable } from '../utils/assert-unreachable.js';
 
 export function getThemeFromSkin(
@@ -9,7 +9,7 @@ export function getThemeFromSkin(
 	mainColor: string,
 	secondaryColor: string,
 	incognito: boolean,
-) {
+): CapyTheme {
 	switch (skin) {
 		case 'basic':
 		case 'cheetah':

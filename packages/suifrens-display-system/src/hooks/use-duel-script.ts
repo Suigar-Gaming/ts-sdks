@@ -9,9 +9,10 @@ import type {
 	DuelSide,
 	DuelState,
 	UseDuelScriptOptions,
+	UseDuelScriptResult,
 } from '../types/battle.type.js';
 
-function resolveIterations(playback?: PlaybackOptions) {
+function resolveIterations(playback?: PlaybackOptions): number {
 	if (playback?.iterations === 'infinite' || playback?.loop === true) {
 		return Infinity;
 	}
@@ -24,7 +25,7 @@ function resolveIterations(playback?: PlaybackOptions) {
 	return 1;
 }
 
-function resolveSpeed(playback?: PlaybackOptions) {
+function resolveSpeed(playback?: PlaybackOptions): number {
 	return playback?.speed && playback.speed > 0 ? playback.speed : 1;
 }
 
@@ -40,14 +41,14 @@ function presetDurationMs(preset: string, playback?: PlaybackOptions): number | 
 	return (sequence.duration / resolveSpeed(playback)) * iterations;
 }
 
-function wait(ms: number, signal: AbortSignal) {
+function wait(ms: number, signal: AbortSignal): Promise<void> {
 	return new Promise<void>((resolve, reject) => {
 		if (signal.aborted) {
 			reject(new DOMException('Aborted', 'AbortError'));
 			return;
 		}
 
-		const onAbort = () => {
+		const onAbort = (): void => {
 			window.clearTimeout(timeoutId);
 			reject(new DOMException('Aborted', 'AbortError'));
 		};
@@ -76,7 +77,7 @@ export function useDuelScript<TExpression extends string = string>({
 	idlePreset = 'idle',
 	autoStart = true,
 	disabled = false,
-}: UseDuelScriptOptions<TExpression>) {
+}: UseDuelScriptOptions<TExpression>): UseDuelScriptResult<TExpression> {
 	const maxHealth = useMemo(
 		() => asSideMap(maxHealthProp, { left: 20, right: 20 }),
 		[maxHealthProp],

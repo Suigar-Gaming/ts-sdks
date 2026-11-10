@@ -1,7 +1,12 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import type { AnimationPart, AnimationRegistration, PartPose } from '../types/animation.type.js';
+import type {
+	AnimationPart,
+	AnimationRegistration,
+	AnimationTarget,
+	PartPose,
+} from '../types/animation.type.js';
 import {
 	IDENTITY_MATRIX,
 	matrixToString,
@@ -26,7 +31,7 @@ export function composePartTransform(
 	baseTransform: string | undefined,
 	poses: ReadonlyMap<AnimationPart, PartPose>,
 	pivotOverride?: { x: number; y: number },
-) {
+): string {
 	const baseMatrix = parseMatrix(baseTransform) ?? IDENTITY_MATRIX;
 	let composed = baseMatrix;
 	const pose = poses.get(part) ?? ZERO_POSE;
@@ -96,7 +101,7 @@ export class AnimationStore {
 		part: AnimationPart,
 		element: SVGGraphicsElement,
 		pivotOverride?: { x: number; y: number },
-	) {
+	): () => void {
 		let partRegistrations = this.elementRegistrations.get(element);
 		if (!partRegistrations) {
 			partRegistrations = new Map();
@@ -132,7 +137,7 @@ export class AnimationStore {
 		};
 	}
 
-	register(part: AnimationPart, registration: AnimationRegistration) {
+	register(part: AnimationPart, registration: AnimationRegistration): () => void {
 		const existing = this.registrations.get(part);
 		if (existing) {
 			existing.add(registration);
@@ -153,7 +158,7 @@ export class AnimationStore {
 		};
 	}
 
-	setPose(part: AnimationPart, pose: PartPose | undefined) {
+	setPose(part: AnimationPart, pose: PartPose | undefined): void {
 		if (!pose || (pose.rotate === undefined && !pose.translate && !pose.scale)) {
 			this.poses.delete(part);
 		} else {
@@ -162,14 +167,14 @@ export class AnimationStore {
 		this.notifyWithDependents(part);
 	}
 
-	setPoses(poses: Map<AnimationPart, PartPose>) {
+	setPoses(poses: Map<AnimationPart, PartPose>): void {
 		this.poses = new Map(poses);
 		for (const part of this.registrations.keys()) {
 			this.notify(part);
 		}
 	}
 
-	clear() {
+	clear(): void {
 		if (!this.poses.size) {
 			return;
 		}
@@ -183,7 +188,7 @@ export class AnimationStore {
 		return Array.from(this.registrations.keys());
 	}
 
-	getAnimationTargets() {
+	getAnimationTargets(): Array<AnimationTarget> {
 		return Array.from(this.registrations.entries()).flatMap(([part, registrations]) =>
 			Array.from(registrations, (registration) => ({
 				part,
@@ -194,7 +199,7 @@ export class AnimationStore {
 		);
 	}
 
-	getAnimationTargetsForParts(parts: ReadonlySet<AnimationPart>) {
+	getAnimationTargetsForParts(parts: ReadonlySet<AnimationPart>): Array<AnimationTarget> {
 		return this.getAnimationTargets().filter(({ part }) => {
 			let current: AnimationPart | undefined = part;
 			while (current) {
@@ -207,11 +212,11 @@ export class AnimationStore {
 		});
 	}
 
-	refresh(part: AnimationPart) {
+	refresh(part: AnimationPart): void {
 		this.notify(part);
 	}
 
-	private notify(part: AnimationPart) {
+	private notify(part: AnimationPart): void {
 		const pose = this.poses.get(part) ?? ZERO_POSE;
 		const registrations = this.registrations.get(part);
 		if (!registrations) {
@@ -222,7 +227,7 @@ export class AnimationStore {
 		}
 	}
 
-	private setTransform(registration: AnimationRegistration, value: string) {
+	private setTransform(registration: AnimationRegistration, value: string): void {
 		if (registration.lastTransform === value) {
 			return;
 		}
@@ -230,7 +235,7 @@ export class AnimationStore {
 		registration.setTransform(value);
 	}
 
-	private notifyWithDependents(part: AnimationPart) {
+	private notifyWithDependents(part: AnimationPart): void {
 		for (const registeredPart of this.registrations.keys()) {
 			if (registeredPart === part || this.isDependentOn(registeredPart, part)) {
 				this.notify(registeredPart);
@@ -238,7 +243,7 @@ export class AnimationStore {
 		}
 	}
 
-	private isDependentOn(part: AnimationPart, ancestor: AnimationPart) {
+	private isDependentOn(part: AnimationPart, ancestor: AnimationPart): boolean {
 		let current = getPartDefinition(part).parent;
 		while (current) {
 			if (current === ancestor) {
@@ -249,7 +254,11 @@ export class AnimationStore {
 		return false;
 	}
 
-	private compose(part: AnimationPart, registration: AnimationRegistration, pose: PartPose) {
+	private compose(
+		part: AnimationPart,
+		registration: AnimationRegistration,
+		pose: PartPose,
+	): string {
 		const poses = new Map(this.poses);
 		poses.set(part, pose);
 		return composePartTransform(

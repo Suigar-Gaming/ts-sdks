@@ -38,7 +38,7 @@ function resolveFallbackPart(
 	return TYPE_FALLBACK[type];
 }
 
-function resolveAssetSrc(accessory: AccessoryMetadata) {
+function resolveAssetSrc(accessory: AccessoryMetadata): string | undefined {
 	return (
 		accessory.renderOptions.assetSrc ??
 		(accessory.category === 'crowns' ? getVipCrownAssetSrc(accessory.name) : undefined)

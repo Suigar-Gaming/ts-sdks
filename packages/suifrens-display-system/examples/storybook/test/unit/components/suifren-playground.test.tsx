@@ -14,10 +14,7 @@ const actor = vi.hoisted(() => ({
 		facing: 'right',
 		locomotion: 'idle',
 		position: { x: 100, y: 200 },
-		animationPreset: 'idle',
-		animationPlayback: {},
-		animationTrigger: 0,
-		animationHoldOnComplete: false,
+		animation: { preset: 'idle', trigger: 0 },
 	},
 	poseRef: { current: { position: { x: 100, y: 200 }, facing: 'right', elevation: 0 } },
 	controls: {

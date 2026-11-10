@@ -24,12 +24,14 @@ const VIP_CROWN_ASSET_BY_NAME: Record<string, string> = {
 	legend: new URL('../accessories/artwork/crowns/legend.svg', import.meta.url).href,
 };
 
-export function getVipCrownAssetSrc(name: string) {
+export function getVipCrownAssetSrc(name: string): string | undefined {
 	return VIP_CROWN_ASSET_BY_NAME[name];
 }
 
 const VIP_CROWN_ASSET_SOURCES = new Set(Object.values(VIP_CROWN_ASSET_BY_NAME));
 
-export function getVipCrownAssetViewport(assetSrc: string) {
+export function getVipCrownAssetViewport(
+	assetSrc: string,
+): typeof VIP_CROWN_IMAGE_VIEWPORT | undefined {
 	return VIP_CROWN_ASSET_SOURCES.has(assetSrc) ? VIP_CROWN_IMAGE_VIEWPORT : undefined;
 }

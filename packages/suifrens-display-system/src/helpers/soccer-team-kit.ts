@@ -320,7 +320,7 @@ export function resolveSoccerTeamKit(country?: unknown, side?: unknown): SoccerT
 	return kit;
 }
 
-export function isLightHex(value: string) {
+export function isLightHex(value: string): boolean {
 	const hex = value.startsWith('#') ? value : `#${value}`;
 	if (!HEX_COLOR_PATTERN.test(hex)) {
 		return false;
@@ -331,6 +331,6 @@ export function isLightHex(value: string) {
 	return red * 0.2126 + green * 0.7152 + blue * 0.0722 >= 196;
 }
 
-export function contrastColor(value: string) {
+export function contrastColor(value: string): '#ffffff' | typeof DARK_STROKE {
 	return isLightHex(value) ? DARK_STROKE : '#ffffff';
 }

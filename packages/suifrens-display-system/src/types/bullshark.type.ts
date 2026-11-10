@@ -53,3 +53,13 @@ export type BullsharkAttributes = {
 	expression: BullsharkExpression;
 	finStyle: BullsharkFinStyle;
 };
+
+export type BullsharkTheme = {
+	head: string;
+	body: string;
+	legs: string;
+	hands: string;
+	fin: string;
+	tail: string;
+	patterns: string;
+};

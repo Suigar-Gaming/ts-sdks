@@ -91,3 +91,10 @@ export type AnimationConfig =
 	| (AnimationBaseConfig & {
 			preset: string;
 	  });
+
+export type AnimationTarget = {
+	part: AnimationPart;
+	element: SVGGraphicsElement | undefined;
+	baseTransform: string | undefined;
+	pivotOverride: { x: number; y: number } | undefined;
+};

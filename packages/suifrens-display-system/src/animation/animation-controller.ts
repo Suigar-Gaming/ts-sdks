@@ -19,7 +19,7 @@ type SequenceSource = {
 
 const DEFAULT_TRANSITION_MS = 140;
 
-function playbackSignature(playback?: PlaybackOptions) {
+function playbackSignature(playback?: PlaybackOptions): string {
 	let iterations: number;
 	if (playback?.iterations === 'infinite' || playback?.loop === true) {
 		iterations = Infinity;
@@ -36,9 +36,9 @@ function playbackSignature(playback?: PlaybackOptions) {
 	return `${iterations}|${alternate ? 1 : 0}|${speed}`;
 }
 
-const nowMs = () => (typeof performance === 'undefined' ? Date.now() : performance.now());
+const nowMs = (): number => (typeof performance === 'undefined' ? Date.now() : performance.now());
 
-function blendScaleAxis(start: number, end: number, eased: number) {
+function blendScaleAxis(start: number, end: number, eased: number): number {
 	if (start * end < 0) {
 		return eased < 0.5 ? start : end;
 	}
@@ -111,7 +111,7 @@ export class AnimationController {
 		this.store = store;
 	}
 
-	applyConfig(config: AnimationConfig | null) {
+	applyConfig(config: AnimationConfig | null): void {
 		if (!config) {
 			this.sequenceSource = null;
 			this.playbackSignature = null;
@@ -223,7 +223,7 @@ export class AnimationController {
 		}
 	}
 
-	stop() {
+	stop(): void {
 		this.player.stop();
 		this.currentPlayState = 'idle';
 		this.store.clear();
@@ -232,11 +232,11 @@ export class AnimationController {
 		this.completionSettled = true;
 	}
 
-	needsAnimationFrame() {
+	needsAnimationFrame(): boolean {
 		return this.currentPlayState === 'running' && this.player.isPlaying();
 	}
 
-	update(deltaMs: number) {
+	update(deltaMs: number): boolean {
 		if (this.player.update(deltaMs)) {
 			this.syncCurrentPoses();
 		}
@@ -265,7 +265,7 @@ export class AnimationController {
 		return 'running';
 	}
 
-	private settleCompletedPlayback() {
+	private settleCompletedPlayback(): void {
 		if (this.completionSettled) {
 			return;
 		}
@@ -279,7 +279,7 @@ export class AnimationController {
 		this.completionSettled = true;
 	}
 
-	private syncCurrentPoses() {
+	private syncCurrentPoses(): void {
 		const poses = this.player.getCurrentPoses();
 		const nextPoses = new Map<AnimationPart, PartPose>();
 		const parts = new Set<AnimationPart>(poses.keys());

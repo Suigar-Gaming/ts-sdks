@@ -3,13 +3,7 @@
 
 import type { CSSProperties, ReactNode } from 'react';
 import type { AccessoryMetadata } from './accessory.type.js';
-import type {
-	AnimationConfig,
-	AnimationDirection,
-	AnimationSequence,
-	PlaybackOptions,
-	PlayState,
-} from './animation.type.js';
+import type { AnimationConfig } from './animation.type.js';
 import type { BullsharkAttributes } from './bullshark.type.js';
 import type { CapyAttributes, CapyImageProps } from './capy.type.js';
 
@@ -33,15 +27,6 @@ export type SuiFrenImageProps = {
 	className?: string;
 	style?: CSSProperties;
 	animation?: AnimationConfig | null;
-	animationPreset?: string;
-	animationSequence?: AnimationSequence;
-	animationPlayback?: PlaybackOptions;
-	animationPlayState?: PlayState;
-	animationDirection?: AnimationDirection;
-	animationTrigger?: string | number;
-	animationStartAt?: 'start' | 'end';
-	animationAutoPlay?: boolean;
-	animationHoldOnComplete?: boolean;
 };
 
 export type SuiFrenAttributes = CapyAttributes | BullsharkAttributes;

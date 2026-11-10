@@ -103,9 +103,3 @@ jobs:
 
       - name: Validate display examples
         run: pnpm turbo run build test typecheck --filter='./packages/suifrens-display-system/examples/*'
-
-      - name: Exercise isolated display packages
-        working-directory: packages/suifrens-display-system
-        run: |
-          bash scripts/check-distribution.sh 18.2.0
-          bash scripts/check-distribution.sh 19

@@ -6,11 +6,9 @@ import { existsSync, readFileSync } from 'node:fs';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { test } from 'vitest';
-import {
-	EXTERNAL_SVG_FRAGMENT_PATTERN,
-	EXTERNAL_SVG_URL_PATTERN,
-} from './consumer/svg-patterns.js';
 
+const EXTERNAL_SVG_URL_PATTERN: RegExp = /file:.*\.svg/;
+const EXTERNAL_SVG_FRAGMENT_PATTERN: RegExp = /(?:href|xlink:href)="(file:[^"#]+\.svg)#([^"]+)"/gi;
 const CLIP_PATH_PATTERN: RegExp = /clipPath|clip-path/;
 const PATH_ELEMENT_PATTERN: RegExp = /<path\b/g;
 

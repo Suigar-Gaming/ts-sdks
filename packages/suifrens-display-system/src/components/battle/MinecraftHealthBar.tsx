@@ -23,11 +23,11 @@ const HEART_SHAPE = [
 const HEART_WIDTH = HEART_SHAPE[0].length;
 const HEART_HEIGHT = HEART_SHAPE.length;
 
-function isFilled(x: number, y: number) {
+function isFilled(x: number, y: number): boolean {
 	return HEART_SHAPE[y]?.[x] === '#';
 }
 
-function buildHeartPixels() {
+function buildHeartPixels(): { outlinePixels: Array<Pixel>; fillPixels: Array<Pixel> } {
 	const shapePixels: Array<Pixel> = [];
 	for (let y = 0; y < HEART_HEIGHT; y += 1) {
 		for (let x = 0; x < HEART_WIDTH; x += 1) {

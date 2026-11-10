@@ -167,10 +167,7 @@ function SuiFrenStage({ state, poseRef, title, note, live = true }: StageProps) 
 							attributes={{ ...baseAttributes, expression: state.expression }}
 							shadow
 							style={{ width: '100%', height: '100%' }}
-							animationPreset={state.animationPreset}
-							animationPlayback={state.animationPlayback}
-							animationTrigger={state.animationTrigger}
-							animationHoldOnComplete={state.animationHoldOnComplete}
+							animation={state.animation}
 						/>
 					</div>
 				</div>

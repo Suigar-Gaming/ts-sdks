@@ -5,7 +5,6 @@ import { type ReactNode, useMemo } from 'react';
 import { AnimationProvider } from '../animation/AnimationContext.js';
 import { shouldRenderMicrophoneArmInForeground } from '../helpers/foreground-layering.js';
 import type { AccessoryRenderer } from '../types/accessory.type.js';
-import type { AnimationConfig } from '../types/animation.type.js';
 import type { SuiFrenImageProps } from '../types/suifren.type.js';
 import { getAccessoriesByType } from '../utils/accessories.js';
 import { assertUnreachable } from '../utils/assert-unreachable.js';
@@ -25,76 +24,15 @@ export function SuiFrenImageView({
 	logo,
 	className,
 	style,
-	animation: animationProp,
-	animationPreset,
-	animationSequence,
-	animationPlayback,
-	animationPlayState,
-	animationDirection,
-	animationTrigger,
-	animationStartAt,
-	animationAutoPlay,
-	animationHoldOnComplete,
+	animation = null,
 }: SuiFrenImageProps & { accessoryRenderer: AccessoryRenderer }) {
 	const accessoriesByType = useMemo(
 		() => (accessories ? getAccessoriesByType(accessories) : undefined),
 		[accessories],
 	);
 
-	const resolvedAnimation = useMemo<AnimationConfig | null>(() => {
-		if (animationProp !== undefined) {
-			return animationProp ?? null;
-		}
-
-		const sourceSequence = animationSequence;
-		const sourcePreset = animationPreset;
-
-		if (!sourceSequence && !sourcePreset) {
-			return null;
-		}
-
-		const base: AnimationConfig = sourceSequence
-			? { sequence: sourceSequence }
-			: { preset: sourcePreset! };
-
-		if (animationPlayback) {
-			base.playback = animationPlayback;
-		}
-		if (animationPlayState) {
-			base.playState = animationPlayState;
-		}
-		if (animationDirection) {
-			base.direction = animationDirection;
-		}
-		if (animationTrigger !== undefined) {
-			base.trigger = animationTrigger;
-		}
-		if (animationStartAt) {
-			base.startAt = animationStartAt;
-		}
-		if (animationAutoPlay !== undefined) {
-			base.autoPlay = animationAutoPlay;
-		}
-		if (animationHoldOnComplete !== undefined) {
-			base.holdOnComplete = animationHoldOnComplete;
-		}
-
-		return base;
-	}, [
-		animationProp,
-		animationSequence,
-		animationPreset,
-		animationPlayback,
-		animationPlayState,
-		animationDirection,
-		animationTrigger,
-		animationStartAt,
-		animationAutoPlay,
-		animationHoldOnComplete,
-	]);
-
 	const renderMicrophoneArmInForeground = shouldRenderMicrophoneArmInForeground(
-		resolvedAnimation,
+		animation,
 		accessoriesByType,
 	);
 
@@ -147,10 +85,10 @@ export function SuiFrenImageView({
 			style={style}
 		>
 			{shadow ? <ellipse opacity={0.3} cx="1400.4" cy="2615.2" rx="472.8" ry="130.6" /> : null}
-			{resolvedAnimation ? (
+			{animation ? (
 				<AnimationProvider
 					key={'finStyle' in attributes ? 'bullshark' : 'capy'}
-					animation={resolvedAnimation}
+					animation={animation}
 				>
 					{renderedContent}
 				</AnimationProvider>

@@ -91,3 +91,15 @@ export type WildRightEarProps = {
 	outerEarProps?: SVGProps<SVGPathElement>;
 	innerEarProps?: SVGProps<SVGPathElement>;
 };
+
+export type CapyTheme = {
+	head: string;
+	body: string;
+	legs: string;
+	arms: string;
+	outerEars: string;
+	innerEars: string;
+	patterns: string;
+	nose: string;
+	appendages: string;
+};

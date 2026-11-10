@@ -28,15 +28,15 @@ const DEFERRED_PRESET_NAMES = new Set([
 const deferredPresetCache = new Map<string, AnimationSequence | null>();
 const deferredPresetPromiseCache = new Map<string, Promise<AnimationSequence | null>>();
 
-export function resolvePresetSequenceSync(name: string) {
+export function resolvePresetSequenceSync(name: string): AnimationSequence | undefined {
 	return getCorePresetSequence(name);
 }
 
-export function isDeferredPreset(name: string) {
+export function isDeferredPreset(name: string): boolean {
 	return DEFERRED_PRESET_NAMES.has(name);
 }
 
-export function loadDeferredPresetSequence(name: string) {
+export function loadDeferredPresetSequence(name: string): Promise<AnimationSequence | null> {
 	const cached = deferredPresetCache.get(name);
 	if (cached !== undefined) {
 		return Promise.resolve(cached);

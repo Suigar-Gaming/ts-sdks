@@ -8,13 +8,13 @@ const MAX_CACHE_ENTRIES = 128;
 
 const symbolSourceCache = new Map<string, string | null>();
 
-function decodeBase64Utf8(value: string) {
+function decodeBase64Utf8(value: string): string {
 	const decoded = atob(value);
 	const bytes = Uint8Array.from(decoded, (character) => character.charCodeAt(0));
 	return new TextDecoder().decode(bytes);
 }
 
-function decodeSvgDataUrl(assetSrc: string) {
+function decodeSvgDataUrl(assetSrc: string): string | null {
 	const commaIndex = assetSrc.indexOf(',');
 	if (commaIndex < 0) {
 		return null;

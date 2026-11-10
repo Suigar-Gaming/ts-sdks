@@ -25,7 +25,7 @@ const GENERATED_HEADER = '// Copyright (c) Suigar\n// SPDX-License-Identifier: A
 const OUTPUT_DIR = 'src/generated/accessory-assets';
 const MANIFEST_PATH = 'src/generated/accessory-asset-manifest.ts';
 
-function minifySvg(markup: string) {
+function minifySvg(markup: string): string {
 	let svg = markup
 		.replace(WHITESPACE_PATTERN, ' ')
 		.replace(BETWEEN_TAGS_WHITESPACE_PATTERN, '><')
@@ -40,7 +40,7 @@ function minifySvg(markup: string) {
 	return svg;
 }
 
-function formatSvgNumber(value: number) {
+function formatSvgNumber(value: number): string {
 	if (!Number.isFinite(value)) {
 		return String(value);
 	}
@@ -54,18 +54,18 @@ function formatSvgNumber(value: number) {
 		.replace(FRACTION_PREFIX_PATTERN, '.');
 }
 
-function extractSvgContent(markup: string) {
+function extractSvgContent(markup: string): string {
 	return markup.replace(SVG_WRAPPER_PATTERN, '');
 }
 
-function scopeSvgReferences(markup: string, prefix: string) {
+function scopeSvgReferences(markup: string, prefix: string): string {
 	return markup
 		.replace(SVG_ID_PATTERN, `id="${prefix}-$1"`)
 		.replace(SVG_URL_REFERENCE_PATTERN, `url(#${prefix}-$1)`)
 		.replace(SVG_HREF_REFERENCE_PATTERN, `$1="#${prefix}-$2"`);
 }
 
-function extractGroupByRole(markup: string, role: string) {
+function extractGroupByRole(markup: string, role: string): string | undefined {
 	const idMatch = markup.matchAll(SVG_ID_PATTERN).find((match) => match[1]?.includes(role));
 	if (!idMatch) {
 		return undefined;
@@ -107,7 +107,11 @@ const kitImports: Array<string> = [];
 const inlineEntries: Array<string> = [];
 const kitEntries: Array<string> = [];
 
-async function readLayers(source: string, imports: Array<string>, entries: Array<string>) {
+async function readLayers(
+	source: string,
+	imports: Array<string>,
+	entries: Array<string>,
+): Promise<Record<string, string>> {
 	const layers: Record<string, string> = {};
 	const fields: Array<string> = [];
 	const singleFile = source.endsWith('.svg');

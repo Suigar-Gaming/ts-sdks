@@ -29,6 +29,15 @@ The root exports `SuiFrenImage`, `CapyImage` and `BullsharkImage`. Import all pu
 
 Move former root imports to the matching subpath before installing the beta. Use `/types` for all type-only imports. Replace `SuiFrenType` with `SuiFrenSpecies` from `@suigar/suifrens-display-system/types` and use the lowercase values `'capy'` and `'bullshark'`.
 
+Configure both `SuiFrenImage` and `SuiFrenImageInline` through the single `animation` prop. Move `animationPreset` to `animation.preset` or `animationSequence` to `animation.sequence`. Move the remaining options into the same object as `playback`, `playState`, `direction`, `trigger`, `startAt`, `autoPlay` and `holdOnComplete`. Omit `animation` or pass `null` for a static image.
+
+```tsx
+<SuiFrenImage
+	attributes={attributes}
+	animation={{ preset: 'walk', playback: { iterations: 'infinite' } }}
+/>
+```
+
 | 1.x subpath     | npm replacement                                  |
 | --------------- | ------------------------------------------------ |
 | `/image-assets` | Root `SuiFrenImage` for external SVG accessories |

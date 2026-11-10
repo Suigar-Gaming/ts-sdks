@@ -33,13 +33,11 @@ test.each([
 ] as const)('species changes rebuild animation registrations for %s', async (_name, Renderer) => {
 	view = createTestRoot();
 	const register = vi.spyOn(AnimationStore.prototype, 'registerElement');
-	await view.render(
-		<Renderer attributes={capy} animationPreset="idle" animationAutoPlay={false} />,
-	);
+	await view.render(<Renderer attributes={capy} animation={{ preset: 'idle', autoPlay: false }} />);
 	const capyStore = register.mock.contexts[0] as AnimationStore;
 	register.mockClear();
 	await view.render(
-		<Renderer attributes={bullshark} animationPreset="idle" animationAutoPlay={false} />,
+		<Renderer attributes={bullshark} animation={{ preset: 'idle', autoPlay: false }} />,
 	);
 	expect(register.mock.calls.length).toBeGreaterThan(0);
 	expect(register.mock.contexts[0]).not.toBe(capyStore);
@@ -52,9 +50,7 @@ test.each([
 		expect(element?.getAttribute('data-suifren-animation-part')).toBe('fin');
 	}
 	register.mockClear();
-	await view.render(
-		<Renderer attributes={capy} animationPreset="idle" animationAutoPlay={false} />,
-	);
+	await view.render(<Renderer attributes={capy} animation={{ preset: 'idle', autoPlay: false }} />);
 	expect(register.mock.calls.length).toBeGreaterThan(0);
 	expect(
 		(register.mock.contexts[0] as AnimationStore)

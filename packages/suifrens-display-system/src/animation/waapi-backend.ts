@@ -4,6 +4,7 @@
 import type {
 	AnimationConfig,
 	AnimationSequence,
+	AnimationTarget,
 	PlaybackOptions,
 } from '../types/animation.type.js';
 import { matrixToAnimationTransform, parseMatrix } from '../utils/matrix.js';
@@ -12,7 +13,7 @@ import { interpolateSequencePoses, normalizePlayback } from './sequence-player.j
 
 type BackendPreference = 'auto' | 'waapi' | 'fallback';
 
-type WaapiTarget = ReturnType<AnimationStore['getAnimationTargets']>[number] & {
+type WaapiTarget = AnimationTarget & {
 	element: SVGGraphicsElement;
 };
 
@@ -37,7 +38,7 @@ function resolveBackendPreference(): BackendPreference {
 	return globalThis.__SUIFREN_ANIMATION_BACKEND__ ?? 'auto';
 }
 
-function supportsSvgWaapi() {
+function supportsSvgWaapi(): boolean {
 	return (
 		typeof SVGElement !== 'undefined' &&
 		typeof Element !== 'undefined' &&
@@ -52,12 +53,12 @@ function getTargets(store: AnimationStore, sequence: AnimationSequence): Array<W
 		.filter((target): target is WaapiTarget => Boolean(target.element));
 }
 
-function playbackDuration(sequence: AnimationSequence, playback?: PlaybackOptions) {
+function playbackDuration(sequence: AnimationSequence, playback?: PlaybackOptions): number {
 	const normalized = normalizePlayback(playback);
 	return sequence.duration / normalized.speed;
 }
 
-function playbackIterations(playback?: PlaybackOptions) {
+function playbackIterations(playback?: PlaybackOptions): number {
 	return normalizePlayback(playback).iterations;
 }
 
@@ -72,7 +73,7 @@ function playbackDirection(
 	return alternate ? 'alternate' : 'normal';
 }
 
-function buildOffsets(sequence: AnimationSequence) {
+function buildOffsets(sequence: AnimationSequence): Array<number> {
 	const offsets = new Set<number>([0, sequence.duration]);
 	for (let time = SAMPLE_INTERVAL_MS; time < sequence.duration; time += SAMPLE_INTERVAL_MS) {
 		offsets.add(Math.min(sequence.duration, time));
@@ -113,7 +114,7 @@ function getTargetKeyframes(
 	target: WaapiTarget,
 	sequence: AnimationSequence,
 	offsets: Array<number>,
-) {
+): Array<Keyframe> {
 	let cache = sequenceKeyframeCache.get(sequence);
 	if (!cache) {
 		cache = new Map();
@@ -130,7 +131,7 @@ function getTargetKeyframes(
 	return keyframes;
 }
 
-function setBaseTransforms(targets: Array<WaapiTarget>) {
+function setBaseTransforms(targets: Array<WaapiTarget>): void {
 	for (const target of targets) {
 		if (target.baseTransform) {
 			target.element.setAttribute('transform', target.baseTransform);

@@ -33,7 +33,7 @@ type AnimationProviderProps = {
 
 const AnimationContext = createContext<AnimationContextValue | null>(null);
 
-function useResolvedAnimationConfig(animation: AnimationConfig | null) {
+function useResolvedAnimationConfig(animation: AnimationConfig | null): AnimationConfig | null {
 	const presetName = animation && 'preset' in animation ? animation.preset : undefined;
 	const immediateSequence = presetName ? resolvePresetSequenceSync(presetName) : undefined;
 	const [deferred, setDeferred] = useState<{
@@ -119,7 +119,7 @@ export function AnimationProvider({ animation = null, children }: AnimationProvi
 		let isIntersecting = true;
 
 		if (waapi.handled) {
-			const syncPlayback = () => {
+			const syncPlayback = (): void => {
 				if (document.visibilityState !== 'hidden' && isIntersecting && !media.matches) {
 					waapi.play();
 				} else {
@@ -166,7 +166,7 @@ export function AnimationProvider({ animation = null, children }: AnimationProvi
 		let raf = 0;
 		let last = performance.now();
 
-		const tick = (time: number) => {
+		const tick = (time: number): void => {
 			raf = 0;
 			const delta = time - last;
 			last = time;
@@ -175,7 +175,7 @@ export function AnimationProvider({ animation = null, children }: AnimationProvi
 			}
 		};
 
-		const schedule = () => {
+		const schedule = (): void => {
 			if (
 				document.visibilityState === 'hidden' ||
 				!isIntersecting ||
@@ -189,7 +189,7 @@ export function AnimationProvider({ animation = null, children }: AnimationProvi
 			raf = requestAnimationFrame(tick);
 		};
 
-		const onPlaybackAvailabilityChange = () => {
+		const onPlaybackAvailabilityChange = (): void => {
 			if (document.visibilityState === 'hidden' || media.matches) {
 				cancelAnimationFrame(raf);
 				raf = 0;
@@ -238,11 +238,11 @@ export function AnimationProvider({ animation = null, children }: AnimationProvi
 	);
 }
 
-export function useAnimationStore() {
+export function useAnimationStore(): AnimationStore | null {
 	return useContext(AnimationContext)?.store ?? null;
 }
 
-export function useAnimationController() {
+export function useAnimationController(): AnimationController | null {
 	const context = useContext(AnimationContext);
 	return context?.controller ?? null;
 }

@@ -13,7 +13,7 @@ export function useAnimatedPartTransform(
 	part: AnimationPart,
 	baseTransform: string,
 	options?: Options,
-) {
+): string {
 	const store = useAnimationStore();
 	const [transform, setTransform] = useState(baseTransform);
 	const baseRef = useRef(baseTransform);

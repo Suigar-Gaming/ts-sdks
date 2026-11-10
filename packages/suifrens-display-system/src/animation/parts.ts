@@ -14,7 +14,7 @@ type PartDefinition = {
 
 const PRECISION = 6;
 
-function normalizeTransform(transform: string) {
+function normalizeTransform(transform: string): string {
 	return transform.replace(WHITESPACE_PATTERN, '').toLowerCase();
 }
 
@@ -91,7 +91,7 @@ export function matchPartByTransform(transform: string | null): AnimationPart | 
 	return TRANSFORM_LOOKUP.get(normalized) ?? null;
 }
 
-export function formatNumber(value: number) {
+export function formatNumber(value: number): string {
 	const fixed = value.toFixed(PRECISION);
 	return fixed.replace(TRAILING_DECIMAL_ZEROS_PATTERN, '');
 }

@@ -13,7 +13,7 @@ import { getEasing } from '../utils/easing.js';
 
 const EPSILON = 0.0001;
 
-function interpolateScaleAxis(start: number, end: number, eased: number) {
+function interpolateScaleAxis(start: number, end: number, eased: number): number {
 	if (start * end < 0) {
 		return eased < 0.5 ? start : end;
 	}
@@ -109,7 +109,10 @@ export function interpolatePose(track: AnimationTrack, time: number): PartPose |
 	return pose;
 }
 
-export function interpolateSequencePoses(sequence: AnimationSequence, time: number) {
+export function interpolateSequencePoses(
+	sequence: AnimationSequence,
+	time: number,
+): Map<AnimationPart, PartPose> {
 	const poses = new Map<AnimationPart, PartPose>();
 	const effectiveTime = Math.min(Math.max(time, 0), sequence.duration);
 
@@ -136,7 +139,7 @@ export class SequencePlayer {
 		sequence: AnimationSequence,
 		playback?: PlaybackOptions,
 		options?: { direction?: 1 | -1; startAt?: 'start' | 'end' },
-	) {
+	): void {
 		this.sequence = sequence;
 		this.playback = normalizePlayback(playback);
 		this.direction = options?.direction ?? 1;
@@ -150,18 +153,18 @@ export class SequencePlayer {
 		this.recalculate();
 	}
 
-	play() {
+	play(): void {
 		if (!this.sequence) {
 			return;
 		}
 		this.playing = true;
 	}
 
-	pause() {
+	pause(): void {
 		this.playing = false;
 	}
 
-	stop(resetTime = true) {
+	stop(resetTime = true): void {
 		this.playing = false;
 		if (resetTime && this.sequence) {
 			this.time = this.direction === -1 ? this.sequence.duration : 0;
@@ -171,15 +174,15 @@ export class SequencePlayer {
 		this.currentPoses.clear();
 	}
 
-	isPlaying() {
+	isPlaying(): boolean {
 		return this.playing;
 	}
 
-	hasSequence() {
+	hasSequence(): boolean {
 		return Boolean(this.sequence);
 	}
 
-	setPlayback(playback?: PlaybackOptions) {
+	setPlayback(playback?: PlaybackOptions): void {
 		this.playback = normalizePlayback(playback);
 		this.completedIterations = 0;
 		this.recalculate();
@@ -189,7 +192,7 @@ export class SequencePlayer {
 		direction: 1 | -1,
 		resetTime = false,
 		position: 'start' | 'end' = direction === -1 ? 'end' : 'start',
-	) {
+	): void {
 		if (!this.sequence) {
 			return;
 		}
@@ -201,7 +204,7 @@ export class SequencePlayer {
 		}
 	}
 
-	restart(position: 'start' | 'end' = this.direction === -1 ? 'end' : 'start') {
+	restart(position: 'start' | 'end' = this.direction === -1 ? 'end' : 'start'): void {
 		if (!this.sequence) {
 			return;
 		}
@@ -211,15 +214,15 @@ export class SequencePlayer {
 		this.recalculate();
 	}
 
-	getDuration() {
+	getDuration(): number {
 		return this.sequence?.duration ?? 0;
 	}
 
-	getTime() {
+	getTime(): number {
 		return this.time;
 	}
 
-	setTime(time: number) {
+	setTime(time: number): void {
 		if (!this.sequence) {
 			return;
 		}
@@ -227,11 +230,11 @@ export class SequencePlayer {
 		this.recalculate();
 	}
 
-	hasActivePose() {
+	hasActivePose(): boolean {
 		return this.currentPoses.size > 0;
 	}
 
-	update(deltaMs: number) {
+	update(deltaMs: number): boolean {
 		if (!this.sequence || !this.playing) {
 			return false;
 		}
@@ -261,11 +264,11 @@ export class SequencePlayer {
 		return true;
 	}
 
-	getCurrentPoses() {
+	getCurrentPoses(): Map<AnimationPart, PartPose> {
 		return this.currentPoses;
 	}
 
-	private handleIterationEnd() {
+	private handleIterationEnd(): void {
 		this.completedIterations += 1;
 
 		if (this.completedIterations >= this.playback.iterations) {
@@ -284,7 +287,7 @@ export class SequencePlayer {
 		}
 	}
 
-	private recalculate() {
+	private recalculate(): void {
 		if (!this.sequence) {
 			return;
 		}

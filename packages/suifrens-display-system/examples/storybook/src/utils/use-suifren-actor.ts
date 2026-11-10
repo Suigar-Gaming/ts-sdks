@@ -3,7 +3,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { getPresetSequence } from '@suigar/suifrens-display-system/animation';
-import type { PlaybackOptions } from '@suigar/suifrens-display-system/types';
+import type { AnimationConfig, PlaybackOptions } from '@suigar/suifrens-display-system/types';
 
 export type LocomotionState = 'idle' | 'walk' | 'run' | 'jump' | 'crouch' | 'crouchWalk';
 export type FacingDirection = 'left' | 'right';
@@ -45,15 +45,14 @@ export type SuiFrenActorOptions<TExpression extends string = string> = {
 	onPose?: (pose: SuiFrenActorPose) => void;
 };
 
+type PresetAnimation = Extract<AnimationConfig, { preset: string }>;
+
 export type SuiFrenActorSnapshot<TExpression extends string = string> = {
 	position: { x: number; y: number };
 	elevation: number;
 	facing: FacingDirection;
 	locomotion: LocomotionState;
-	animationPreset: string;
-	animationPlayback?: PlaybackOptions;
-	animationHoldOnComplete?: boolean;
-	animationTrigger: number;
+	animation: PresetAnimation & { trigger: number };
 	expression: TExpression;
 	baseExpression: TExpression;
 };
@@ -125,34 +124,34 @@ function getPresetDuration(preset: string): number | null {
 	return sequence?.duration ?? null;
 }
 
-function deriveAnimation(locomotion: LocomotionState, speedMultiplier: number) {
+function deriveAnimation(locomotion: LocomotionState, speedMultiplier: number): PresetAnimation {
 	switch (locomotion) {
 		case 'walk':
-			return { preset: 'walk', playback: { iterations: 'infinite' as const } };
+			return { preset: 'walk', playback: { iterations: 'infinite' } };
 		case 'run':
 			return {
 				preset: 'run',
-				playback: { iterations: 'infinite' as const, speed: Math.max(1, speedMultiplier) },
+				playback: { iterations: 'infinite', speed: Math.max(1, speedMultiplier) },
 			};
 		case 'jump':
-			return { preset: 'jump', playback: { iterations: 1 as const } };
+			return { preset: 'jump', playback: { iterations: 1 } };
 		case 'crouchWalk':
 			return {
 				preset: 'crouchWalk',
 				playback: {
-					iterations: 'infinite' as const,
+					iterations: 'infinite',
 					speed: Math.max(0.5, Math.min(1, speedMultiplier)),
 				},
 			};
 		case 'crouch':
 			return {
 				preset: 'crouch',
-				playback: { iterations: 'infinite' as const },
+				playback: { iterations: 'infinite' },
 				holdOnComplete: true,
 			};
 		case 'idle':
 		default:
-			return { preset: 'idle', playback: { iterations: 'infinite' as const } };
+			return { preset: 'idle', playback: { iterations: 'infinite' } };
 	}
 }
 
@@ -236,10 +235,7 @@ export function useSuiFrenActor<TExpression extends string = string>(
 			elevation: 0,
 			facing: 'right',
 			locomotion: 'idle',
-			animationPreset: baseAnimation.preset,
-			animationPlayback: baseAnimation.playback,
-			animationHoldOnComplete: baseAnimation.holdOnComplete,
-			animationTrigger: 0,
+			animation: { ...baseAnimation, trigger: 0 },
 			expression: config.defaultExpression,
 			baseExpression: config.defaultExpression,
 		};
@@ -391,9 +387,9 @@ export function useSuiFrenActor<TExpression extends string = string>(
 				}
 			}
 
-			let animationTrigger = current.animationTrigger;
+			let trigger = current.animation.trigger;
 			if (locomotion === 'jump' || (locomotion === 'idle' && previousLocomotion === 'jump')) {
-				animationTrigger += 1;
+				trigger += 1;
 			}
 
 			const animation = deriveAnimation(locomotion, movementMultiplier);
@@ -437,27 +433,26 @@ export function useSuiFrenActor<TExpression extends string = string>(
 			};
 			onPoseRef.current?.(poseRef.current);
 
+			const lastSynced = syncedStateRef.current;
+			const previous = lastSynced.animation;
+			const animationChanged =
+				previous.preset !== animation.preset ||
+				previous.holdOnComplete !== animation.holdOnComplete ||
+				previous.trigger !== trigger ||
+				!playbackEquals(previous.playback, animation.playback);
+
 			const nextState: SuiFrenActorSnapshot<TExpression> = {
 				position: { x: nextX, y: nextY },
 				elevation,
 				facing,
 				locomotion,
-				animationPreset: animation.preset,
-				animationPlayback: animation.playback,
-				animationHoldOnComplete: animation.holdOnComplete,
-				animationTrigger,
+				animation: animationChanged ? { ...animation, trigger } : previous,
 				expression,
 				baseExpression: baseExpressionRef.current,
 			};
 
 			stateRef.current = nextState;
 
-			const lastSynced = syncedStateRef.current;
-			const animationChanged =
-				lastSynced.animationPreset !== nextState.animationPreset ||
-				lastSynced.animationHoldOnComplete !== nextState.animationHoldOnComplete ||
-				lastSynced.animationTrigger !== nextState.animationTrigger ||
-				!playbackEquals(lastSynced.animationPlayback, nextState.animationPlayback);
 			const locomotionChanged = lastSynced.locomotion !== nextState.locomotion;
 			const expressionChanged = lastSynced.expression !== nextState.expression;
 			const baseExpressionChanged = lastSynced.baseExpression !== nextState.baseExpression;
@@ -550,10 +545,7 @@ export function useSuiFrenActor<TExpression extends string = string>(
 				elevation: 0,
 				facing: 'right',
 				locomotion: 'idle',
-				animationPreset: animation.preset,
-				animationPlayback: animation.playback,
-				animationHoldOnComplete: animation.holdOnComplete,
-				animationTrigger: stateRef.current.animationTrigger + 1,
+				animation: { ...animation, trigger: stateRef.current.animation.trigger + 1 },
 				expression,
 				baseExpression: expression,
 			};

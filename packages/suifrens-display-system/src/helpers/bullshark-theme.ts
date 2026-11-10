@@ -1,10 +1,14 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import type { BullsharkSkin } from '../types/bullshark.type.js';
+import type { BullsharkSkin, BullsharkTheme } from '../types/bullshark.type.js';
 import { assertUnreachable } from '../utils/assert-unreachable.js';
 
-export function getThemeFromSkin(skin: BullsharkSkin, mainColor: string, secondaryColor: string) {
+export function getThemeFromSkin(
+	skin: BullsharkSkin,
+	mainColor: string,
+	secondaryColor: string,
+): BullsharkTheme {
 	switch (skin) {
 		case 'basic':
 		case 'cheetah':

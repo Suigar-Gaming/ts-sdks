@@ -8,7 +8,7 @@ import { resolveEmbeddedSvgSymbolSource } from '../../utils/svg-symbol-data-url.
 const DEFAULT_ORIGIN = 1500;
 const SCALE_EPSILON = 0.0001;
 
-function buildPlacementTransform(placement?: AccessoryPlacement) {
+function buildPlacementTransform(placement?: AccessoryPlacement): string | undefined {
 	if (!placement) {
 		return undefined;
 	}

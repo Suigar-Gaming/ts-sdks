@@ -122,3 +122,10 @@ export type UseDuelScriptOptions<TExpression extends string = string> = {
 	autoStart?: boolean;
 	disabled?: boolean;
 };
+
+export type UseDuelScriptResult<TExpression extends string> = {
+	state: DuelState<TExpression>;
+	restart: () => void;
+	stop: () => void;
+	reset: () => void;
+};

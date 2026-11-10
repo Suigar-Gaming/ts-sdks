@@ -15,12 +15,12 @@ const TEMPLATE_VARIABLE_PATTERN: RegExp = /\{\{(\w+)\}\}/g;
 const PATTERN_SLOT_PATTERN: RegExp = /<g data-pattern-slot="(\w+)">\s*<\/g>/g;
 const UNSAFE_ID_CHARACTER_PATTERN: RegExp = /[^\w-]/g;
 
-function applyValues(source: string, values: Record<string, string | number>) {
+function applyValues(source: string, values: Record<string, string | number>): string {
 	// Only validated colors, codes, numbers and internal SVG transforms are substituted.
 	return source.replace(TEMPLATE_VARIABLE_PATTERN, (_, key: string) => String(values[key]));
 }
 
-function renderSoccerArtwork(source: string, options: AccessoryRenderOptions, id: string) {
+function renderSoccerArtwork(source: string, options: AccessoryRenderOptions, id: string): string {
 	const kit = resolveSoccerTeamKit(options.teamKit ?? options.country, options.side);
 	const code = kit.code === 'GLOBAL' ? 'GLO' : kit.code;
 	const patterns = artwork['patterns/' + kit.pattern];

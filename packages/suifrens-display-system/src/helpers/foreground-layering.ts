@@ -7,7 +7,7 @@ import type { AnimationConfig } from '../types/animation.type.js';
 export function shouldRenderMicrophoneArmInForeground(
 	animation: AnimationConfig | null,
 	accessoriesByType?: Record<string, AccessoryMetadata>,
-) {
+): boolean {
 	const objectAccessory = accessoriesByType?.['object'];
 	if (
 		objectAccessory?.renderOptions.foreground === true &&
