@@ -49,8 +49,7 @@ export type AccessoryMetadata = {
 };
 
 export type BodyAccessoryProps = {
-	lor?: 'left' | 'right';
-	body?: boolean;
+	layer?: 'body' | 'left' | 'right';
 };
 
 export type AccessoryRendererProps = BodyAccessoryProps & {

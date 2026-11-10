@@ -42,15 +42,10 @@ function renderSoccerArtwork(source: string, kit: SoccerTeamKit, id: string): st
 	});
 }
 
-function selectLayer(body?: boolean, side?: 'left' | 'right'): string {
-	return body ? 'body' : (side ?? 'default');
-}
-
 export function KitArtwork({
 	accessory,
 	species,
-	body,
-	lor,
+	layer,
 	fallbackPart,
 }: AccessoryRendererProps & { fallbackPart?: AnimationPart | undefined }) {
 	const id = useId().replace(
@@ -61,7 +56,7 @@ export function KitArtwork({
 	if (!layers || !isKitAccessory(accessory.name)) {
 		return null;
 	}
-	let source = layers[selectLayer(body, lor)] ?? layers['default'];
+	let source = layers[layer ?? 'default'] ?? layers['default'];
 	if (source === undefined) {
 		return null;
 	}

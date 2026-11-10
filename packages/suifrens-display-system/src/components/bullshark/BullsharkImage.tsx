@@ -89,21 +89,21 @@ export function BullsharkImage({
 
 	return (
 		<>
-			<AccessorySlot accessory={layers.wings} species="bullshark" lor="left" />
+			<AccessorySlot accessory={layers.wings} species="bullshark" layer="left" />
 			<RightArm fill={colorTheme.hands} />
 			{!incognito && <RightArmPattern skin={skin} fill={colorTheme.patterns} />}
-			<AccessorySlot accessory={accessoriesByType['torso']} species="bullshark" lor="left" />
-			<AccessorySlot accessory={accessoriesByType['body']} species="bullshark" lor="left" />
+			<AccessorySlot accessory={accessoriesByType['torso']} species="bullshark" layer="left" />
+			<AccessorySlot accessory={accessoriesByType['body']} species="bullshark" layer="left" />
 			<Tail fill={colorTheme.tail} />
 			{!incognito && <TailPattern skin={skin} fill={colorTheme.patterns} />}
 			<RightLeg fill={colorTheme.legs} />
 			{!incognito && <RightLegPattern skin={skin} fill={colorTheme.patterns} />}
 			{fin}
-			<AccessorySlot accessory={layers.wings} species="bullshark" lor="right" />
+			<AccessorySlot accessory={layers.wings} species="bullshark" layer="right" />
 			<Body fill={colorTheme.body} />
 			{!incognito && <BodyPattern skin={skin} fill={colorTheme.patterns} />}
-			<AccessorySlot accessory={accessoriesByType['legs']} species="bullshark" body />
-			<AccessorySlot accessory={accessoriesByType['torso']} species="bullshark" body />
+			<AccessorySlot accessory={accessoriesByType['legs']} species="bullshark" layer="body" />
+			<AccessorySlot accessory={accessoriesByType['torso']} species="bullshark" layer="body" />
 			<LeftLeg fill={colorTheme.legs} />
 			{!incognito && <LeftLegPattern skin={skin} fill={colorTheme.patterns} />}
 			<AccessorySlot accessory={layers.back} species="bullshark" />
@@ -111,13 +111,13 @@ export function BullsharkImage({
 			<AccessorySlot accessory={accessoriesByType['leftFeet']} species="bullshark" />
 			<AccessorySlot accessory={layers.feet} species="bullshark" />
 			<AccessorySlot accessory={accessoriesByType['legs']} species="bullshark" />
-			<AccessorySlot accessory={accessoriesByType['body']} species="bullshark" body />
+			<AccessorySlot accessory={accessoriesByType['body']} species="bullshark" layer="body" />
 			{!renderMicrophoneArmInForeground && (
 				<AccessorySlot accessory={accessoriesByType['object']} species="bullshark" />
 			)}
 			{!renderMicrophoneArmInForeground && leftArm}
-			<AccessorySlot accessory={accessoriesByType['torso']} species="bullshark" lor="right" />
-			<AccessorySlot accessory={accessoriesByType['body']} species="bullshark" lor="right" />
+			<AccessorySlot accessory={accessoriesByType['torso']} species="bullshark" layer="right" />
+			<AccessorySlot accessory={accessoriesByType['body']} species="bullshark" layer="right" />
 			{head}
 			{renderMicrophoneArmInForeground && (
 				<>

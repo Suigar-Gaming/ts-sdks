@@ -118,13 +118,13 @@ export function CapyImage({
 
 	return (
 		<>
-			<AccessorySlot accessory={layers.wings} species="capy" lor="left" />
+			<AccessorySlot accessory={layers.wings} species="capy" layer="left" />
 
 			<RightArm fill={colorTheme.arms} handProps={{ fill: colorTheme.appendages }} />
 			{!incognito && <RightArmPattern skin={skin} fill={colorTheme.patterns} />}
-			<AccessorySlot accessory={layers.wings} species="capy" lor="right" />
-			<AccessorySlot accessory={accessoriesByType['torso']} species="capy" lor="left" />
-			<AccessorySlot accessory={accessoriesByType['body']} species="capy" lor="left" />
+			<AccessorySlot accessory={layers.wings} species="capy" layer="right" />
+			<AccessorySlot accessory={accessoriesByType['torso']} species="capy" layer="left" />
+			<AccessorySlot accessory={accessoriesByType['body']} species="capy" layer="left" />
 
 			<RightLeg fill={colorTheme.legs} footProps={{ fill: colorTheme.appendages }} />
 			{!incognito && <RightLegPattern skin={skin} fill={colorTheme.patterns} />}
@@ -132,8 +132,8 @@ export function CapyImage({
 			<Body fill={colorTheme.body} />
 			{!incognito && skin && <BodyPattern skin={skin} fill={colorTheme.patterns} />}
 			<AccessorySlot accessory={layers.back} species="capy" />
-			<AccessorySlot accessory={accessoriesByType['legs']} species="capy" body />
-			<AccessorySlot accessory={accessoriesByType['torso']} species="capy" body />
+			<AccessorySlot accessory={accessoriesByType['legs']} species="capy" layer="body" />
+			<AccessorySlot accessory={accessoriesByType['torso']} species="capy" layer="body" />
 
 			<LeftLeg fill={colorTheme.legs} footProps={{ fill: colorTheme.appendages }} />
 			{!incognito && <LeftLegPattern skin={skin} fill={colorTheme.patterns} />}
@@ -142,16 +142,16 @@ export function CapyImage({
 			<AccessorySlot accessory={accessoriesByType['leftFeet']} species="capy" />
 			<AccessorySlot accessory={layers.feet} species="capy" />
 			<AccessorySlot accessory={accessoriesByType['legs']} species="capy" />
-			<AccessorySlot accessory={accessoriesByType['body']} species="capy" body />
+			<AccessorySlot accessory={accessoriesByType['body']} species="capy" layer="body" />
 			{!renderMicrophoneArmInForeground && (
 				<AccessorySlot accessory={accessoriesByType['object']} species="capy" />
 			)}
 
 			{!renderMicrophoneArmInForeground && !thumbsUp && leftArm}
 
-			<AccessorySlot accessory={accessoriesByType['torso']} species="capy" lor="right" />
+			<AccessorySlot accessory={accessoriesByType['torso']} species="capy" layer="right" />
 
-			<AccessorySlot accessory={accessoriesByType['body']} species="capy" lor="right" />
+			<AccessorySlot accessory={accessoriesByType['body']} species="capy" layer="right" />
 
 			{head}
 

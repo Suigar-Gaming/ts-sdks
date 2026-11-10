@@ -6,61 +6,12 @@ import {
 	ACCESSORY_ASSET_MANIFEST,
 	SPLIT_LIMB_ASSET_NAMES,
 } from '../../generated/accessory-asset-manifest.js';
+import { resolveAccessoryAnimationPart } from '../../helpers/accessory-animation-part.js';
 import { getVipCrownAssetSrc, getVipCrownAssetViewport } from '../../helpers/crown-assets.js';
 import { isKitAccessory } from '../../helpers/kit-accessory.js';
-import type {
-	AccessoryAssetVariant,
-	AccessoryRendererProps,
-	BodyAccessoryProps,
-} from '../../types/accessory.type.js';
-import type { AnimationPart } from '../../types/animation.type.js';
+import type { AccessoryAssetVariant, AccessoryRendererProps } from '../../types/accessory.type.js';
 import { KitArtwork } from './KitArtwork.js';
 import { SvgAccessory } from './SvgAccessory.js';
-
-const TYPE_FALLBACK: Partial<Record<string, AnimationPart>> = {
-	head: 'head',
-	eyes: 'head',
-	body: 'body',
-	torso: 'body',
-	back: 'body',
-	object: 'leftArm',
-	legs: 'body',
-	feet: 'rightLeg',
-};
-
-const NAME_SPECIFIC_FALLBACK: Partial<Record<string, AnimationPart>> = {
-	wings: 'body',
-	'superhero cape': 'body',
-};
-
-function resolveFallbackPart(
-	props: Pick<AccessoryRendererProps, 'accessory' | 'body' | 'lor'>,
-): AnimationPart | undefined {
-	const { name, type } = props.accessory;
-	const nameSpecificPart = NAME_SPECIFIC_FALLBACK[name];
-	if (nameSpecificPart) {
-		return nameSpecificPart;
-	}
-
-	if ((type === 'body' || type === 'torso') && props.lor === 'left') {
-		return 'rightArm';
-	}
-	if ((type === 'body' || type === 'torso') && props.lor === 'right') {
-		return 'leftArm';
-	}
-	if (props.body) {
-		return 'body';
-	}
-
-	return TYPE_FALLBACK[type];
-}
-
-function resolveVariant(props: BodyAccessoryProps): AccessoryAssetVariant {
-	if (props.body) {
-		return 'body';
-	}
-	return props.lor ?? 'default';
-}
 
 function resolveAssetSrc(
 	props: AccessoryRendererProps,
@@ -74,17 +25,12 @@ function resolveAssetSrc(
 
 	const assetSrc =
 		ACCESSORY_ASSET_MANIFEST[props.accessory.name as keyof typeof ACCESSORY_ASSET_MANIFEST];
-	return assetSrc ? { assetSrc, symbolId: resolveVariant(props) } : undefined;
+	return assetSrc ? { assetSrc, symbolId: props.layer ?? 'default' } : undefined;
 }
 
 export function AssetAccessory(props: AccessoryRendererProps) {
 	if (isKitAccessory(props.accessory.name)) {
-		return (
-			<KitArtwork
-				{...props}
-				fallbackPart={props.accessory.renderOptions.animationPart ?? resolveFallbackPart(props)}
-			/>
-		);
+		return <KitArtwork {...props} fallbackPart={resolveAccessoryAnimationPart(props)} />;
 	}
 
 	const asset = resolveAssetSrc(props);
@@ -95,7 +41,7 @@ export function AssetAccessory(props: AccessoryRendererProps) {
 	if (
 		asset.symbolId &&
 		SPLIT_LIMB_ASSET_NAMES.has(props.accessory.name) &&
-		(props.accessory.type === 'feet' || (props.accessory.type === 'legs' && !props.body))
+		(props.accessory.type === 'feet' || (props.accessory.type === 'legs' && props.layer !== 'body'))
 	) {
 		return (
 			<>
@@ -119,7 +65,7 @@ export function AssetAccessory(props: AccessoryRendererProps) {
 		);
 	}
 
-	const fallbackPart = props.accessory.renderOptions.animationPart ?? resolveFallbackPart(props);
+	const fallbackPart = resolveAccessoryAnimationPart(props);
 
 	return (
 		<AnimatedAccessory fallbackPart={fallbackPart}>
