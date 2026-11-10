@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react';
-import type { AccessoryMetadata } from './accessory.type.js';
+import type { AccessoryMetadata, SuiFrenSpecies } from './accessory.type.js';
 import type {
 	AnimationConfig,
 	AnimationDirection,
@@ -41,9 +41,6 @@ export type SuiFrenImageProps = {
 	animationHoldOnComplete?: boolean;
 };
 
-export enum SuiFrenType {
-	BULLSHARK = 'BULLSHARK',
-	CAPY = 'CAPY',
-}
+export type SuiFrenType = SuiFrenSpecies;
 
 export type SuiFrenAttributes = CapyAttributes | BullsharkAttributes;

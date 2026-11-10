@@ -1,7 +1,7 @@
 import type { SuiClientTypes } from '@mysten/sui/client';
 import { SuiGrpcClient } from '@mysten/sui/grpc';
 import { accessories } from '@suigar/suifrens-display-system/accessories';
-import type { AccessoryMetadata } from '@suigar/suifrens-display-system/types';
+import type { AccessoryMetadata, SuiFrenType } from '@suigar/suifrens-display-system/types';
 import { parseSuiFrenAttributes } from '../../utils/attributeUtils.js';
 import { extractBaseFrenType } from '../../utils/objectTypeUtils.js';
 import { ACCESSORIES_KEY_TYPE, BULLSHARK_TYPE, CAPY_TYPE, NETWORK } from '../lib/config.js';
@@ -58,19 +58,12 @@ export async function getSuiFrenAccessories(suiFrenId: string) {
 	return equipped;
 }
 
-/**
- * Helper function to map a SuiFren object type in the format of SuiFren<Type> to a SuiFrenType enum
- * member
- *
- * @example
- * 	getSuiFrenTypeFromObjectType('SuiFren<Capy>') -> 'CAPY'
- */
-export function getSuiFrenTypeFromObjectType(suiFrenObjectType: string) {
+export function getSuiFrenTypeFromObjectType(suiFrenObjectType: string): SuiFrenType | undefined {
 	const frenObjectType = extractBaseFrenType(suiFrenObjectType);
 	if (frenObjectType === CAPY_TYPE) {
-		return 'CAPY';
+		return 'capy';
 	} else if (frenObjectType === BULLSHARK_TYPE) {
-		return 'BULLSHARK';
+		return 'bullshark';
 	}
 	return undefined;
 }

@@ -3,13 +3,14 @@ import type {
 	BullsharkAttributes,
 	CapyAttributes,
 	SuiFrenAttributes,
+	SuiFrenType,
 } from '@suigar/suifrens-display-system/types';
 
 export function parseSuiFrenAttributes(
-	suiFrenType: 'CAPY' | 'BULLSHARK',
+	suiFrenType: SuiFrenType,
 	[skin, mainColor, secondaryColor, expression, ...otherAttributes]: Array<string>,
 ): SuiFrenAttributes {
-	if (suiFrenType === 'CAPY') {
+	if (suiFrenType === 'capy') {
 		return {
 			skin,
 			mainColor,
