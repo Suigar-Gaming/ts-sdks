@@ -1591,9 +1591,9 @@ export const Ring: Story = {
 				</div>
 
 				<div className="relative overflow-hidden rounded-[28px] border-4 border-slate-800 bg-linear-to-br from-amber-50 via-amber-100 to-amber-200 inset-shadow-sm">
-					<div className="absolute inset-3 rounded-[24px] border border-slate-400/60" />
+					<div className="absolute inset-3 rounded-3xl border border-slate-400/60" />
 					<div className="absolute inset-6 rounded-[20px] border border-slate-400/45" />
-					<div className="absolute inset-9 rounded-[16px] border border-slate-400/30" />
+					<div className="absolute inset-9 rounded-2xl border border-slate-400/30" />
 					<div className="relative mx-auto w-full max-w-[860px] px-6 py-8">
 						<div ref={ringRef} className="relative w-full" style={{ height: ringSize }}>
 							{fighters.map((fighter) => {
