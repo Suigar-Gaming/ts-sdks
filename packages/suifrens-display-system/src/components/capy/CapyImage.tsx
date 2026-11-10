@@ -37,29 +37,24 @@ function CapyHead({
 	const runnerHeadband = headAccessory?.name === 'runner headband';
 	const showEars = !headAccessory || headAccessory.renderOptions.showEars;
 
+	const rightEar = showEars && (
+		<RightEar
+			earShape={earShape}
+			outerEarProps={{ fill: colorTheme.outerEars }}
+			innerEarProps={{ fill: colorTheme.innerEars }}
+			fill={colorTheme.outerEars}
+		/>
+	);
+
 	return (
 		<>
-			{showEars && !runnerHeadband && (
-				<RightEar
-					earShape={earShape}
-					outerEarProps={{ fill: colorTheme.outerEars }}
-					innerEarProps={{ fill: colorTheme.innerEars }}
-					fill={colorTheme.outerEars}
-				/>
-			)}
+			{!runnerHeadband && rightEar}
 
 			<Head fill={colorTheme.head} />
 			<HeadPattern skin={skin} fill={colorTheme.patterns} noseProps={{ fill: colorTheme.nose }} />
 			{!incognito && <Nostrils />}
 
-			{runnerHeadband && showEars && (
-				<RightEar
-					earShape={earShape}
-					outerEarProps={{ fill: colorTheme.outerEars }}
-					innerEarProps={{ fill: colorTheme.innerEars }}
-					fill={colorTheme.outerEars}
-				/>
-			)}
+			{runnerHeadband && rightEar}
 
 			{showEars && (
 				<LeftEar

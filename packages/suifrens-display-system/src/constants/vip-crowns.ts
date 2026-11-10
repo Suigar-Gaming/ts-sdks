@@ -1,17 +1,8 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import type {
-	AccessoryMetadata,
-	AccessoryPlacement,
-	SuiFrenSpecies,
-} from '../types/accessory.type.js';
+import type { AccessoryMetadata, AccessoryPlacement } from '../types/accessory.type.js';
 import type { VipCrownAccessoryName } from '../types/vip-crown.type.js';
-
-type VipCrownPlacementMap = Record<
-	VipCrownAccessoryName,
-	Partial<Record<SuiFrenSpecies, AccessoryPlacement>>
->;
 
 export const VIP_CROWN_ACCESSORY_NAMES = [
 	'bronze-1',
@@ -34,7 +25,7 @@ export const VIP_CROWN_ACCESSORY_NAMES = [
 	'legend',
 ] as const;
 
-const DEFAULT_CAPY_PLACEMENT: AccessoryPlacement = {
+const DEFAULT_PLACEMENT: AccessoryPlacement = {
 	x: 0,
 	y: 0,
 	scale: 1,
@@ -42,28 +33,6 @@ const DEFAULT_CAPY_PLACEMENT: AccessoryPlacement = {
 	originX: 1500,
 	originY: 1500,
 };
-
-const DEFAULT_BULLSHARK_PLACEMENT: AccessoryPlacement = {
-	x: 0,
-	y: 0,
-	scale: 1,
-	rotation: 0,
-	originX: 1500,
-	originY: 1500,
-};
-
-// Tweak crown placement here. The SVGs are already exported in the full
-// 3000x3000 SuiFren canvas, so these values are small nudge controls.
-const VIP_CROWN_PLACEMENT_BY_NAME: VipCrownPlacementMap = VIP_CROWN_ACCESSORY_NAMES.reduce(
-	(accumulator, name) => {
-		accumulator[name] = {
-			capy: { ...DEFAULT_CAPY_PLACEMENT },
-			bullshark: { ...DEFAULT_BULLSHARK_PLACEMENT },
-		};
-		return accumulator;
-	},
-	{} as VipCrownPlacementMap,
-);
 
 function createVipCrownAccessory(name: VipCrownAccessoryName): AccessoryMetadata {
 	return {
@@ -72,7 +41,7 @@ function createVipCrownAccessory(name: VipCrownAccessoryName): AccessoryMetadata
 		renderOptions: {
 			showEars: true,
 			showFin: true,
-			placement: VIP_CROWN_PLACEMENT_BY_NAME[name],
+			placement: { capy: { ...DEFAULT_PLACEMENT }, bullshark: { ...DEFAULT_PLACEMENT } },
 			animationPart: 'head',
 		},
 		name,
@@ -83,6 +52,4 @@ function createVipCrownAccessory(name: VipCrownAccessoryName): AccessoryMetadata
 	};
 }
 
-export const vipCrownAccessories = VIP_CROWN_ACCESSORY_NAMES.map((name) =>
-	createVipCrownAccessory(name),
-);
+export const vipCrownAccessories = VIP_CROWN_ACCESSORY_NAMES.map(createVipCrownAccessory);

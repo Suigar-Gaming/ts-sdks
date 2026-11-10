@@ -4,7 +4,6 @@
 import { useId } from 'react';
 import { SVG_WRAPPER_PATTERN } from '../../constants/svg-patterns.js';
 import { ARTWORK } from '../../generated/kit-artwork.js';
-import { isKitAccessory } from '../../helpers/kit-accessory.js';
 import { resolveRunnerKit, RUNNER_ACCESSORY_NAMES } from '../../helpers/runner-kit.js';
 import { contrastColor, resolveSoccerTeamKit } from '../../helpers/soccer-team-kit.js';
 import type { AccessoryRendererProps } from '../../types/accessory.type.js';
@@ -53,7 +52,7 @@ export function KitArtwork({
 		(c) => '-' + c.charCodeAt(0).toString(16) + '-',
 	);
 	const layers = ARTWORK[accessory.name];
-	if (!layers || !isKitAccessory(accessory.name)) {
+	if (!layers) {
 		return null;
 	}
 	let source = layers[layer ?? 'default'] ?? layers['default'];

@@ -44,22 +44,16 @@ export function AssetAccessory(props: AccessoryRendererProps) {
 	) {
 		return (
 			<>
-				<AnimatedAccessory fallbackPart="rightLeg">
-					<SvgAccessory
-						assetSrc={asset.assetSrc}
-						symbolId="rightLeg"
-						species={props.species}
-						placement={props.accessory.renderOptions.placement}
-					/>
-				</AnimatedAccessory>
-				<AnimatedAccessory fallbackPart="leftLeg">
-					<SvgAccessory
-						assetSrc={asset.assetSrc}
-						symbolId="leftLeg"
-						species={props.species}
-						placement={props.accessory.renderOptions.placement}
-					/>
-				</AnimatedAccessory>
+				{(['rightLeg', 'leftLeg'] as const).map((part) => (
+					<AnimatedAccessory key={part} fallbackPart={part}>
+						<SvgAccessory
+							assetSrc={asset.assetSrc}
+							symbolId={part}
+							species={props.species}
+							placement={props.accessory.renderOptions.placement}
+						/>
+					</AnimatedAccessory>
+				))}
 			</>
 		);
 	}
