@@ -1,5 +1,3 @@
-import type { BodyAccessoryProps } from './accessory.type.js';
-
 export type SoccerTeamCountryCode =
 	| 'GLOBAL'
 	| 'AR'
@@ -71,9 +69,4 @@ export type SoccerTeamKit = {
 	secondary: string;
 	accent: string;
 	pattern: SoccerTeamPattern;
-};
-
-export type SoccerTeamAccessoryProps = BodyAccessoryProps & {
-	country?: string | SoccerTeamKit;
-	side?: SoccerTeamSide;
 };

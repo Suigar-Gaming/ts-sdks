@@ -2,9 +2,10 @@
 import { readFileSync } from 'node:fs';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { afterEach, expect, test, vi } from 'vitest';
+import { accessories } from '../src/accessories/index.js';
 import { AnimationStore, composePartTransform } from '../src/animation/AnimationStore.js';
 import { parseMatrix } from '../src/animation/matrix.js';
-import { GothBoots } from '../src/components/accessories/feet/GothBoots.js';
+import { InlineAccessory } from '../src/components/accessories/index.js';
 import { SuiFrenImage } from '../src/image-inline/index.js';
 import { SuiFrenImage as SuiFrenImageAssets } from '../src/image/index.js';
 import type { SuiFrenAttributes } from '../src/types/suifren.type.js';
@@ -82,12 +83,22 @@ test('the fin rotates around its attachment point while inheriting head movement
 
 test('individual goth boots contain only the requested geometry, without clipping', () => {
 	const both = document.createElement('div');
-	both.innerHTML = renderToStaticMarkup(<GothBoots />);
+	both.innerHTML = renderToStaticMarkup(
+		<InlineAccessory
+			species="capy"
+			accessory={accessories.find((item) => item.name === 'goth boots')!}
+		/>,
+	);
 	const paths = [...both.querySelectorAll('path')];
 	expect(paths).toHaveLength(10);
 	for (const side of ['left', 'right'] as const) {
 		const container = document.createElement('div');
-		container.innerHTML = renderToStaticMarkup(<GothBoots side={side} />);
+		container.innerHTML = renderToStaticMarkup(
+			<InlineAccessory
+				species="capy"
+				accessory={accessories.find((item) => item.name === side + ' goth boot')!}
+			/>,
+		);
 		expect(container.querySelector('clipPath')).toBeNull();
 		expect(container.querySelectorAll(`[data-boot-side="${side}"] path`)).toHaveLength(5);
 		const expected = paths.slice(side === 'right' ? 0 : 5, side === 'right' ? 5 : 10);

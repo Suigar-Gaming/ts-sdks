@@ -16,5 +16,6 @@ export default defineConfig({
 	minify: true,
 	dts: true,
 	fixedExtension: true,
+	loader: { '.svg': 'text' },
 	inputOptions: { experimental: { resolveNewUrlToAsset: true } },
 });

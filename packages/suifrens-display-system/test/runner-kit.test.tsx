@@ -1,13 +1,12 @@
 // @vitest-environment happy-dom
 import { act } from 'react';
 import { afterEach, expect, test, vi } from 'vitest';
-import { AnimatedAccessory } from '../src/animation/AnimatedAccessory.js';
 import { AnimationStore } from '../src/animation/AnimationStore.js';
 import { AccessoryRendererProvider } from '../src/components/accessories/AccessorySlot.js';
+import { KitArtwork } from '../src/components/accessories/KitArtwork.js';
 import {
 	buildRunnerAccessories,
 	resolveRunnerKit,
-	RunnerAccessory,
 } from '../src/components/accessories/runnerKit.js';
 import { CapyImage } from '../src/components/capy/CapyImage.js';
 import { createTestRoot } from './helpers/react-dom.js';
@@ -44,9 +43,7 @@ test.each(['runner shorts', 'runner shoes'])(
 		const accessory = buildRunnerAccessories().find((item) => item.name === name)!;
 		await view.render(
 			<svg>
-				<AnimatedAccessory fallbackPart="body">
-					<RunnerAccessory accessory={accessory} species="bullshark" />
-				</AnimatedAccessory>
+				<KitArtwork accessory={accessory} species="bullshark" />
 			</svg>,
 		);
 		const front = view.container.querySelector('[id$="frontleg"]')!;
@@ -73,11 +70,7 @@ test('shoe details keep local, distinct clip targets for every racer and limb', 
 	await view.render(
 		<svg>
 			{['capy', 'bullshark'].map((species) => (
-				<RunnerAccessory
-					key={species}
-					accessory={accessory}
-					species={species as 'capy' | 'bullshark'}
-				/>
+				<KitArtwork key={species} accessory={accessory} species={species as 'capy' | 'bullshark'} />
 			))}
 		</svg>,
 	);
@@ -100,7 +93,7 @@ test.each(['full', 'head'] as const)(
 		const headband = buildRunnerAccessories().find((item) => item.name === 'runner headband')!;
 		await view.render(
 			<svg>
-				<AccessoryRendererProvider renderer={RunnerAccessory}>
+				<AccessoryRendererProvider renderer={KitArtwork}>
 					<CapyImage
 						detail={detail}
 						attributes={{
@@ -138,3 +131,25 @@ test.each(['full', 'head'] as const)(
 		expect(farEar.compareDocumentPosition(band) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
 	},
 );
+
+test('changing shoe color registers the replacement SVG legs for animation', async () => {
+	view = createTestRoot();
+	context.store = new AnimationStore();
+	const shoes = (color: string) =>
+		buildRunnerAccessories({ color }).find((item) => item.name === 'runner shoes')!;
+	for (const color of ['#123456', '#654321']) {
+		await view.render(
+			<svg>
+				<KitArtwork accessory={shoes(color)} species="capy" fallbackPart="rightLeg" />
+			</svg>,
+		);
+		const front = view.container.querySelector('#runner-shoes-frontleg')!;
+		expect(front.querySelector(`[stroke="${color}"]`)).not.toBeNull();
+		expect(
+			context.store
+				.getAnimationTargets()
+				.filter((target) => target.part === 'leftLeg')
+				.map((target) => target.element),
+		).toEqual([front]);
+	}
+});

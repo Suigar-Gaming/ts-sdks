@@ -1,25 +1,7 @@
-import { mkdir, rm, writeFile } from 'node:fs/promises';
+import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { renderToStaticMarkup } from 'react-dom/server';
-import { ACCESSORY_RENDERERS } from '../src/components/accessories/inlineRegistry.js';
-import type { AccessoryMetadata, AccessoryRendererProps } from '../src/types/accessory.type.js';
-
 const OUTPUT_DIR = 'src/generated/accessory-assets';
 const MANIFEST_PATH = 'src/generated/accessoryAssetManifest.ts';
-
-const VARIANTS = [
-	{ key: 'default', props: {} },
-	{ key: 'body', props: { body: true } },
-	{ key: 'left', props: { lor: 'left' as const } },
-	{ key: 'right', props: { lor: 'right' as const } },
-];
-
-function slugify(value: string) {
-	return value
-		.toLowerCase()
-		.replace(/[^a-z0-9]+/g, '-')
-		.replace(/^-|-$/g, '');
-}
 
 function minifySvg(markup: string) {
 	let svg = markup
@@ -89,19 +71,6 @@ function extractGroupByRole(markup: string, role: string) {
 	return undefined;
 }
 
-function makeAccessory(name: string): AccessoryMetadata {
-	return {
-		name,
-		type: 'generated',
-		category: 'generated',
-		renderOptions: {},
-		price: 0,
-		quantity: null,
-		description: '',
-		collection: '',
-	};
-}
-
 await rm(OUTPUT_DIR, { recursive: true, force: true });
 await mkdir(OUTPUT_DIR, { recursive: true });
 await mkdir('src/generated', { recursive: true });
@@ -109,15 +78,44 @@ await mkdir('src/generated', { recursive: true });
 const manifestEntries: Array<string> = [];
 const splitLimbAssetNames: Array<string> = [];
 
-for (const [name, renderer] of Object.entries(ACCESSORY_RENDERERS).sort(([left], [right]) =>
-	left.localeCompare(right),
-)) {
+// Inline imports stay separate so external-SVG consumers only bundle kit templates.
+const sourceDir = 'src/assets/accessories';
+const inlineImports: Array<string> = [];
+const kitImports: Array<string> = [];
+const inlineEntries: Array<string> = [];
+const kitEntries: Array<string> = [];
+
+async function readLayers(source: string, imports: Array<string>, entries: Array<string>) {
+	const layers: Record<string, string> = {};
+	const fields: Array<string> = [];
+	for (const file of (await readdir(join(sourceDir, source))).sort()) {
+		const relativePath = source + '/' + file;
+		const layer = file.replace(/\.svg$/, '');
+		const id = 'layer' + imports.length;
+		imports.push(`import ${id} from '../assets/accessories/${relativePath}';`);
+		fields.push(`${JSON.stringify(layer)}: ${id}`);
+		layers[layer] = await readFile(join(sourceDir, relativePath), 'utf8');
+	}
+	entries.push(`${JSON.stringify(source.replaceAll('-', ' '))}: { ${fields.join(', ')} }`);
+	return layers;
+}
+
+for (const dir of (await readdir(sourceDir)).sort()) {
+	if (dir === 'crowns') continue;
+	if (dir === 'patterns') {
+		for (const pattern of (await readdir(join(sourceDir, dir))).sort()) {
+			await readLayers('patterns/' + pattern, kitImports, kitEntries);
+		}
+		continue;
+	}
+	const name = dir.replaceAll('-', ' ');
+	if (dir.startsWith('runner-') || dir.startsWith('soccer-team-')) {
+		await readLayers(dir, kitImports, kitEntries);
+		continue;
+	}
+	const layers = await readLayers(dir, inlineImports, inlineEntries);
 	const symbols: Array<string> = [];
-	const baseProps: AccessoryRendererProps = {
-		accessory: makeAccessory(name),
-		species: 'capy',
-	};
-	const baseContent = extractSvgContent(minifySvg(renderToStaticMarkup(renderer(baseProps))));
+	const baseContent = extractSvgContent(minifySvg(layers['default']));
 	const bodyGroup = extractGroupByRole(baseContent, 'body');
 	const rightLegGroup = extractGroupByRole(baseContent, 'backleg');
 	const leftLegGroup = extractGroupByRole(baseContent, 'frontleg');
@@ -140,24 +138,19 @@ for (const [name, renderer] of Object.entries(ACCESSORY_RENDERERS).sort(([left],
 			symbols.push(
 				`<symbol id="${part}" viewBox="0 0 3000 3000">${scopeSvgReferences(
 					group,
-					`${slugify(name)}-${part}`,
+					`${dir}-${part}`,
 				)}</symbol>`,
 			);
 		}
 	} else {
-		for (const variant of VARIANTS) {
-			const props: AccessoryRendererProps = {
-				accessory: makeAccessory(name),
-				species: 'capy',
-				...variant.props,
-			};
-			const svg = minifySvg(renderToStaticMarkup(renderer(props)));
-			const content = scopeSvgReferences(extractSvgContent(svg), `${slugify(name)}-${variant.key}`);
-			symbols.push(`<symbol id="${variant.key}" viewBox="0 0 3000 3000">${content}</symbol>`);
+		for (const key of ['default', 'body', 'left', 'right']) {
+			const svg = minifySvg(layers[key] ?? layers['default']);
+			const content = scopeSvgReferences(extractSvgContent(svg), `${dir}-${key}`);
+			symbols.push(`<symbol id="${key}" viewBox="0 0 3000 3000">${content}</symbol>`);
 		}
 	}
 
-	const filename = `${slugify(name)}.svg`;
+	const filename = `${dir}.svg`;
 	await writeFile(
 		join(OUTPUT_DIR, filename),
 		`<svg xmlns="http://www.w3.org/2000/svg">${symbols.join('')}</svg>`,
@@ -177,3 +170,13 @@ export const ACCESSORY_ASSET_MANIFEST = {
 `;
 
 await writeFile(MANIFEST_PATH, manifest);
+
+for (const [file, imports, entries] of [
+	['inlineArtwork', inlineImports, inlineEntries],
+	['kitArtwork', kitImports, kitEntries],
+] as const) {
+	await writeFile(
+		`src/generated/${file}.ts`,
+		`${imports.join('\n')}\nexport const artwork: Readonly<Record<string, Readonly<Record<string,string>>>> = {\n${entries.join(',\n')}\n};\n`,
+	);
+}

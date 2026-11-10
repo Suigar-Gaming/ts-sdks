@@ -74,7 +74,7 @@
 		"oxfmt": "oxfmt . --check",
 		"oxfmt:fix": "oxfmt .",
 		"lint:fix": "pnpm run oxlint:fix && pnpm run oxfmt:fix",
-		"codegen": "tsdown --no-config scripts/generate-accessory-assets.ts --no-dts --out-dir node_modules/.cache/suifrens-codegen && node node_modules/.cache/suifrens-codegen/generate-accessory-assets.mjs && oxfmt src/generated/accessoryAssetManifest.ts"
+		"codegen": "node scripts/generate-accessory-assets.ts && oxfmt src/generated/*.ts"
 	},
 	"devDependencies": {
 		"@types/node": "catalog:typescript",

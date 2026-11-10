@@ -1,0 +1,43 @@
+import type { AccessoryMetadata } from '../../types/accessory.type.js';
+import type { RunnerKitOptions } from '../../types/runner-kit.type.js';
+
+export const RUNNER_ACCESSORY_NAMES = new Set([
+	'runner singlet',
+	'runner shorts',
+	'runner headband',
+	'runner shoes',
+]);
+export function resolveRunnerKit(value: unknown): Required<RunnerKitOptions> {
+	const options = value && typeof value === 'object' ? (value as RunnerKitOptions) : {};
+	return {
+		color:
+			typeof options.color === 'string' && /^#[0-9a-f]{6}$/i.test(options.color)
+				? options.color
+				: '#ef8fae',
+		number:
+			Number.isInteger(options.number) && options.number! >= 1 && options.number! <= 99
+				? options.number!
+				: 1,
+		mirrorBib: options.mirrorBib === true,
+	};
+}
+export function buildRunnerAccessories(options: RunnerKitOptions = {}): Array<AccessoryMetadata> {
+	const runnerKit = resolveRunnerKit(options);
+	return [...RUNNER_ACCESSORY_NAMES].map((name) => ({
+		name,
+		type:
+			name === 'runner singlet'
+				? 'torso'
+				: name === 'runner shorts'
+					? 'legs'
+					: name === 'runner headband'
+						? 'head'
+						: 'feet',
+		category: 'runner',
+		collection: 'runner',
+		description: 'Athletics kit with native animated limb registration.',
+		price: 0,
+		quantity: null,
+		renderOptions: { runnerKit, showEars: true, showFin: true },
+	}));
+}

@@ -10,15 +10,8 @@ import type {
 } from '../../types/accessory.type.js';
 import type { AnimationPart } from '../../types/animation.type.js';
 import { getVipCrownAssetSrc, getVipCrownAssetViewport } from './crownAssets.js';
-import { SoccerTeamSwimTrunks } from './legs/SoccerTeamSwimTrunks.js';
-import { RUNNER_ACCESSORY_NAMES, RunnerAccessory } from './runnerKit.js';
-import {
-	resolveSoccerCountryCode,
-	resolveSoccerTeamSide,
-	SOCCER_TEAM_ACCESSORY_NAMES,
-} from './soccerTeamKit.js';
+import { isKitAccessory, KitArtwork } from './KitArtwork.js';
 import { SvgAccessory } from './SvgAccessory.js';
-import { SoccerTeamShirt } from './torso/SoccerTeamShirt.js';
 
 const TYPE_FALLBACK: Partial<Record<string, AnimationPart>> = {
 	head: 'head',
@@ -81,28 +74,13 @@ function resolveAssetSrc(
 }
 
 export function AssetAccessory(props: AccessoryRendererProps) {
-	if (RUNNER_ACCESSORY_NAMES.has(props.accessory.name)) {
+	if (isKitAccessory(props.accessory.name)) {
 		return (
-			<AnimatedAccessory fallbackPart={resolveFallbackPart(props)}>
-				<RunnerAccessory {...props} />
-			</AnimatedAccessory>
+			<KitArtwork
+				{...props}
+				fallbackPart={props.accessory.renderOptions.animationPart ?? resolveFallbackPart(props)}
+			/>
 		);
-	}
-
-	if (SOCCER_TEAM_ACCESSORY_NAMES.has(props.accessory.name)) {
-		const fallbackPart = props.accessory.renderOptions.animationPart ?? resolveFallbackPart(props);
-		const country =
-			props.accessory.renderOptions.teamKit ??
-			resolveSoccerCountryCode(props.accessory.renderOptions.country);
-		const side = resolveSoccerTeamSide(props.accessory.renderOptions.side);
-		const renderedAccessory =
-			props.accessory.name === 'soccer team shirt' ? (
-				<SoccerTeamShirt lor={props.lor} body={props.body} country={country} side={side} />
-			) : (
-				<SoccerTeamSwimTrunks body={props.body} country={country} side={side} />
-			);
-
-		return <AnimatedAccessory fallbackPart={fallbackPart}>{renderedAccessory}</AnimatedAccessory>;
 	}
 
 	const asset = resolveAssetSrc(props);
