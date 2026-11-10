@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { type PointerEvent, type RefObject, useEffect, useRef, useState } from 'react';
-import { SuiFrenImage } from '@suigar/suifrens-display-system/image-inline';
+import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
 import type { BullsharkExpression } from '@suigar/suifrens-display-system/types';
 import {
 	type SuiFrenActorPose,
@@ -21,14 +21,14 @@ const baseAttributes = {
 } as const;
 
 const meta = {
-	title: 'SuiFrenImage/Playable Sandbox',
-	component: SuiFrenImage,
+	title: 'SuiFrenImageInline/Playable Sandbox',
+	component: SuiFrenImageInline,
 	tags: ['autodocs'],
-} satisfies Meta<typeof SuiFrenImage>;
+} satisfies Meta<typeof SuiFrenImageInline>;
 
 export default meta;
 
-type Story = StoryObj<typeof SuiFrenImage>;
+type Story = StoryObj<typeof SuiFrenImageInline>;
 
 type DirectionKey = 'up' | 'down' | 'left' | 'right';
 
@@ -160,7 +160,7 @@ function SuiFrenStage({ state, poseRef, title, note, live = true }: StageProps) 
 								{state.expression}
 							</div>
 						) : null}
-						<SuiFrenImage
+						<SuiFrenImageInline
 							attributes={{ ...baseAttributes, expression: state.expression }}
 							shadow
 							style={{ width: '100%', height: '100%' }}

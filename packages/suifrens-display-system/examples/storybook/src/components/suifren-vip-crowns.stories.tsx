@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { SuiFrenImage } from '@suigar/suifrens-display-system';
 import { vipCrownAccessories } from '@suigar/suifrens-display-system/accessories';
-import { SuiFrenImage as SuiFrenImageAssets } from '@suigar/suifrens-display-system/image';
-import { SuiFrenImage } from '@suigar/suifrens-display-system/image-inline';
+import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
 
 const LOOP = { iterations: 'infinite' as const };
 
@@ -74,14 +74,14 @@ const MOTION_VARIANTS = [
 ] as const;
 
 const meta = {
-	title: 'SuiFrenImage/VIP Crowns',
-	component: SuiFrenImage,
+	title: 'SuiFrenImageInline/VIP Crowns',
+	component: SuiFrenImageInline,
 	tags: ['autodocs'],
-} satisfies Meta<typeof SuiFrenImage>;
+} satisfies Meta<typeof SuiFrenImageInline>;
 
 export default meta;
 
-type Story = StoryObj<typeof SuiFrenImage>;
+type Story = StoryObj<typeof SuiFrenImageInline>;
 
 export const ClippingCheck: Story = {
 	render: () => (
@@ -95,7 +95,7 @@ export const ClippingCheck: Story = {
 			{vipCrownAccessories.map((accessory) => (
 				<section key={accessory.name}>
 					<h2>{accessory.name}</h2>
-					{[SuiFrenImage, SuiFrenImageAssets].map((Renderer, index) => (
+					{[SuiFrenImageInline, SuiFrenImage].map((Renderer, index) => (
 						<div key={index} style={{ display: 'flex', gap: 12, alignItems: 'end' }}>
 							{[STATIC_VARIANTS[0], STATIC_VARIANTS[2]].map((variant) => (
 								<div key={variant.label}>
@@ -170,7 +170,7 @@ export const Gallery: Story = {
 								className="rounded-2xl border border-slate-200/80 bg-slate-50 p-4"
 							>
 								<div className="mx-auto h-44 w-44">
-									<SuiFrenImage
+									<SuiFrenImageInline
 										attributes={variant.attributes}
 										accessories={[accessory]}
 										shadow
@@ -215,7 +215,7 @@ export const MotionCheck: Story = {
 								className="rounded-2xl border border-slate-200/80 bg-slate-50 p-4"
 							>
 								<div className="mx-auto h-52 w-52">
-									<SuiFrenImage
+									<SuiFrenImageInline
 										attributes={variant.attributes}
 										accessories={[accessory]}
 										shadow

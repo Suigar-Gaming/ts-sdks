@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { SuiFrenImage } from '../../image-inline/index.js';
+import { SuiFrenImageInline } from '../../image-inline/index.js';
 import type { SuiFrenBattleSpriteProps } from '../../types/battle.type.js';
 import { MinecraftHealthBar } from './MinecraftHealthBar.js';
 
@@ -114,7 +114,7 @@ export function SuiFrenBattleSprite({
 				}}
 			>
 				<div style={{ width: '100%', height: '100%', ...resolvedImageStyle }}>
-					<SuiFrenImage
+					<SuiFrenImageInline
 						attributes={attributes}
 						shadow={shadow}
 						style={{ width: '100%', height: '100%' }}

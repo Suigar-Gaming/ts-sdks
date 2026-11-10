@@ -4,8 +4,8 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { expect, test } from 'vitest';
 import { vipCrownAccessories } from '../src/constants/vip-crowns.js';
 import { getVipCrownAssetSrc, getVipCrownAssetViewport } from '../src/helpers/crown-assets.js';
-import { SuiFrenImage } from '../src/image-inline/index.js';
-import { SuiFrenImage as SuiFrenImageAssets } from '../src/image/index.js';
+import { SuiFrenImageInline } from '../src/image-inline/index.js';
+import { SuiFrenImage } from '../src/index.js';
 
 const common = {
 	mainColor: '6FBBEE',
@@ -27,8 +27,8 @@ test.each(vipCrownAccessories)('$name artwork has room for its tips and ornament
 });
 
 test.each([
-	['inline', SuiFrenImage],
-	['assets', SuiFrenImageAssets],
+	['inline', SuiFrenImageInline],
+	['assets', SuiFrenImage],
 ] as const)(
 	'%s preserves avatar framing and crown scale while letting unframed crowns overflow',
 	(_name, Renderer) => {
@@ -59,7 +59,7 @@ test.each([
 	},
 );
 
-test.each([SuiFrenImage, SuiFrenImageAssets])(
+test.each([SuiFrenImageInline, SuiFrenImage])(
 	'uncrowned portraits retain their framing',
 	(Renderer) => {
 		const container = document.createElement('div');
@@ -73,7 +73,7 @@ test('custom asset URLs do not inherit the built-in crown viewport', () => {
 	expect(getVipCrownAssetViewport('https://example.com/custom-crown.svg')).toBeUndefined();
 });
 
-test.each([SuiFrenImage, SuiFrenImageAssets])(
+test.each([SuiFrenImageInline, SuiFrenImage])(
 	'adding a crown preserves the native body, head and facial coordinate systems',
 	(Renderer) => {
 		for (const attributes of species) {

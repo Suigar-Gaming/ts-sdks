@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { SuiFrenBattleSprite, useDuelScript } from '@suigar/suifrens-display-system';
 import { getPresetSequence } from '@suigar/suifrens-display-system/animation';
+import { SuiFrenBattleSprite, useDuelScript } from '@suigar/suifrens-display-system/battle';
 import type {
 	AnimationConfig,
 	BullsharkAttributes,

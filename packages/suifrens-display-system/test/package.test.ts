@@ -17,7 +17,8 @@ test('all published entry points and declaration files resolve', async () => {
 });
 
 test('built inline and asset renderers preserve custom kits for both species and sides', async () => {
-	const { accessories, resolveSoccerTeamKit } = await import(manifest.name + '/accessories');
+	const { accessories } = await import(manifest.name + '/accessories');
+	const { resolveSoccerTeamKit } = await import(manifest.name + '/kits');
 	const kit = {
 		code: 'CLUB',
 		primary: '#123456',
@@ -25,8 +26,11 @@ test('built inline and asset renderers preserve custom kits for both species and
 		accent: '#ABCDEF',
 		pattern: 'vertical',
 	};
-	for (const entry of ['/image-inline', '/image']) {
-		const { SuiFrenImage } = await import(manifest.name + entry);
+	for (const [entry, name] of [
+		['/image-inline', 'SuiFrenImageInline'],
+		['', 'SuiFrenImage'],
+	] as const) {
+		const { [name]: SuiFrenImage } = await import(manifest.name + entry);
 		for (const species of ['capy', 'bullshark']) {
 			for (const side of ['home', 'away']) {
 				const gear = accessories
@@ -74,7 +78,7 @@ test('historical root species renderers remain exported', async () => {
 
 test('built goth boot assets contain only the selected boot without clipping', async () => {
 	const { accessories } = await import(manifest.name + '/accessories');
-	const { SuiFrenImage } = await import(manifest.name + '/image');
+	const { SuiFrenImage } = await import(manifest.name);
 	for (const side of ['left', 'right']) {
 		const svg = renderToStaticMarkup(
 			createElement(SuiFrenImage, {
@@ -103,9 +107,12 @@ test('built goth boot assets contain only the selected boot without clipping', a
 });
 
 test('built runner kits preserve configurable bibs and native limbs in every renderer and species', async () => {
-	const { buildRunnerAccessories } = await import(manifest.name + '/accessories');
-	for (const entry of ['/image-inline', '/image']) {
-		const { SuiFrenImage } = await import(manifest.name + entry);
+	const { buildRunnerAccessories } = await import(manifest.name + '/kits');
+	for (const [entry, name] of [
+		['/image-inline', 'SuiFrenImageInline'],
+		['', 'SuiFrenImage'],
+	] as const) {
+		const { [name]: SuiFrenImage } = await import(manifest.name + entry);
 		for (const species of ['capy', 'bullshark']) {
 			const svg = renderToStaticMarkup(
 				createElement(SuiFrenImage, {

@@ -35,9 +35,16 @@ export type {
 	BullsharkAttributes,
 	BullsharkExpression,
 	BullsharkFinStyle,
+	BullsharkImageProps,
 	BullsharkSkin,
 } from './bullshark.type.js';
-export type { CapyAttributes, CapyEarShape, CapyExpression, CapySkin } from './capy.type.js';
+export type {
+	CapyAttributes,
+	CapyEarShape,
+	CapyExpression,
+	CapyImageProps,
+	CapySkin,
+} from './capy.type.js';
 export type { ExpressionMood } from './expression.type.js';
 export type {
 	SuiFrenAttributes,
@@ -46,3 +53,5 @@ export type {
 	SuiFrenType,
 } from './suifren.type.js';
 export type { VipCrownAccessoryName } from './vip-crown.type.js';
+export type { RunnerKitOptions } from './runner-kit.type.js';
+export type { SoccerTeamCountryCode, SoccerTeamKit, SoccerTeamSide } from './soccer-kit.type.js';

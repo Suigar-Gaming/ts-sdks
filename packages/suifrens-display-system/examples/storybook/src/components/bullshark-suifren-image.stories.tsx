@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { ComponentProps } from 'react';
-import { SuiFrenImage } from '@suigar/suifrens-display-system/image-inline';
+import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
 import type {
 	BullsharkAttributes,
 	BullsharkExpression,
@@ -31,17 +31,17 @@ const allPossibleExpressions: Array<BullsharkExpression> = [
 ];
 
 const meta = {
-	title: 'SuiFrenImage/Bullshark',
-	component: SuiFrenImage,
+	title: 'SuiFrenImageInline/Bullshark',
+	component: SuiFrenImageInline,
 	tags: ['autodocs'],
-} satisfies Meta<typeof SuiFrenImage>;
+} satisfies Meta<typeof SuiFrenImageInline>;
 
 export default meta;
 
-type Story = StoryObj<typeof SuiFrenImage>;
+type Story = StoryObj<typeof SuiFrenImageInline>;
 
 type StoryPropsWithAllExpressions = Omit<
-	ComponentProps<typeof SuiFrenImage>,
+	ComponentProps<typeof SuiFrenImageInline>,
 	'suiFrenType' | 'attributes'
 > & {
 	attributes: Omit<BullsharkAttributes, 'expression'>;
@@ -53,7 +53,7 @@ export const Basic: StoryWithAllExpressions = {
 		<div className="flex flex-wrap gap-2">
 			{allPossibleExpressions.map((expression) => (
 				<div className="h-60 w-60 shrink-0" key={expression}>
-					<SuiFrenImage
+					<SuiFrenImageInline
 						attributes={{
 							...attributes,
 							expression,

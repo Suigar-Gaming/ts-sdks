@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { accessories } from '@suigar/suifrens-display-system/accessories';
-import { SuiFrenImage } from '@suigar/suifrens-display-system/image-inline';
+import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
 import { PRESET_CATALOG } from '../animation/preset-catalog.js';
 
 const bullsharkAttributes = {
@@ -26,14 +26,14 @@ function getPreviewAccessories(presetName: string) {
 }
 
 const meta = {
-	title: 'SuiFrenImage/Animations',
-	component: SuiFrenImage,
+	title: 'SuiFrenImageInline/Animations',
+	component: SuiFrenImageInline,
 	tags: ['autodocs'],
-} satisfies Meta<typeof SuiFrenImage>;
+} satisfies Meta<typeof SuiFrenImageInline>;
 
 export default meta;
 
-type Story = StoryObj<typeof SuiFrenImage>;
+type Story = StoryObj<typeof SuiFrenImageInline>;
 
 export const Presets: Story = {
 	render: () => (
@@ -54,7 +54,7 @@ export const Presets: Story = {
 								<div className="mt-4 grid grid-cols-2 gap-3">
 									<div className="flex flex-col items-center gap-2">
 										<div className="h-44 w-44">
-											<SuiFrenImage
+											<SuiFrenImageInline
 												attributes={bullsharkAttributes}
 												accessories={getPreviewAccessories(preset.name)}
 												shadow
@@ -66,7 +66,7 @@ export const Presets: Story = {
 									</div>
 									<div className="flex flex-col items-center gap-2">
 										<div className="h-44 w-44">
-											<SuiFrenImage
+											<SuiFrenImageInline
 												attributes={capyAttributes}
 												accessories={getPreviewAccessories(preset.name)}
 												shadow

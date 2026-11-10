@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { accessories } from '@suigar/suifrens-display-system/accessories';
-import { SuiFrenImage } from '@suigar/suifrens-display-system/image-inline';
+import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
 
 const bullsharkAttributes = {
 	mainColor: '6FBBEE',
@@ -19,14 +19,14 @@ const capyAttributes = {
 } as const;
 
 const meta = {
-	title: 'SuiFrenImage/Accessories',
-	component: SuiFrenImage,
+	title: 'SuiFrenImageInline/Accessories',
+	component: SuiFrenImageInline,
 	tags: ['autodocs'],
-} satisfies Meta<typeof SuiFrenImage>;
+} satisfies Meta<typeof SuiFrenImageInline>;
 
 export default meta;
 
-type Story = StoryObj<typeof SuiFrenImage>;
+type Story = StoryObj<typeof SuiFrenImageInline>;
 
 export const AllAccessories: Story = {
 	render: () => (
@@ -43,7 +43,7 @@ export const AllAccessories: Story = {
 					<div className="mt-4 grid grid-cols-2 gap-3">
 						<div className="flex flex-col items-center gap-2">
 							<div className="h-44 w-44">
-								<SuiFrenImage
+								<SuiFrenImageInline
 									attributes={bullsharkAttributes}
 									accessories={[accessory]}
 									shadow
@@ -54,7 +54,7 @@ export const AllAccessories: Story = {
 						</div>
 						<div className="flex flex-col items-center gap-2">
 							<div className="h-44 w-44">
-								<SuiFrenImage
+								<SuiFrenImageInline
 									attributes={capyAttributes}
 									accessories={[accessory]}
 									shadow

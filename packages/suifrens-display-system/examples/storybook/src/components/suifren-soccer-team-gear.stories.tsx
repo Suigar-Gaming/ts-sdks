@@ -1,11 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import {
-	accessories,
-	SOCCER_TEAM_KITS,
-	type SoccerTeamCountryCode,
-} from '@suigar/suifrens-display-system/accessories';
-import { SuiFrenImage as SuiFrenImageAssets } from '@suigar/suifrens-display-system/image';
-import { SuiFrenImage } from '@suigar/suifrens-display-system/image-inline';
+import { SuiFrenImage } from '@suigar/suifrens-display-system';
+import { accessories } from '@suigar/suifrens-display-system/accessories';
+import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
+import { SOCCER_TEAM_KITS } from '@suigar/suifrens-display-system/kits';
+import type { SoccerTeamCountryCode } from '@suigar/suifrens-display-system/types';
 
 const capyAttributes = {
 	mainColor: '6FBBEE',
@@ -48,14 +46,14 @@ function buildTeamGear(country: SoccerTeamCountryCode, side: 'home' | 'away' = '
 }
 
 const meta = {
-	title: 'SuiFrenImage/Soccer Team Gear',
-	component: SuiFrenImage,
+	title: 'SuiFrenImageInline/Soccer Team Gear',
+	component: SuiFrenImageInline,
 	tags: ['autodocs'],
-} satisfies Meta<typeof SuiFrenImage>;
+} satisfies Meta<typeof SuiFrenImageInline>;
 
 export default meta;
 
-type Story = StoryObj<typeof SuiFrenImage>;
+type Story = StoryObj<typeof SuiFrenImageInline>;
 
 export const AllCountries: Story = {
 	render: () => (
@@ -67,7 +65,7 @@ export const AllCountries: Story = {
 						<span className="text-[10px] font-bold text-slate-500 uppercase">Inline</span>
 					</div>
 					<div className="h-36">
-						<SuiFrenImage
+						<SuiFrenImageInline
 							attributes={capyAttributes}
 							accessories={buildTeamGear(country)}
 							shadow
@@ -99,7 +97,7 @@ export const InlineAndAssetRenderers: Story = {
 						<h2 className="mb-2 text-sm font-black text-slate-900">{country}</h2>
 						<div className="grid grid-cols-2 gap-3">
 							<div className="h-56">
-								<SuiFrenImage
+								<SuiFrenImageInline
 									attributes={capyAttributes}
 									accessories={buildTeamGear(country)}
 									shadow
@@ -107,7 +105,7 @@ export const InlineAndAssetRenderers: Story = {
 								/>
 							</div>
 							<div className="h-56">
-								<SuiFrenImageAssets
+								<SuiFrenImage
 									attributes={bullsharkAttributes}
 									accessories={buildTeamGear(country, 'away')}
 									shadow

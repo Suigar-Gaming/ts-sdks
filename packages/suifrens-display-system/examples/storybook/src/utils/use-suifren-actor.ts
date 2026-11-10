@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { getPresetSequence, type PlaybackOptions } from '@suigar/suifrens-display-system/animation';
+import { getPresetSequence } from '@suigar/suifrens-display-system/animation';
+import type { PlaybackOptions } from '@suigar/suifrens-display-system/types';
 
 export type LocomotionState = 'idle' | 'walk' | 'run' | 'jump' | 'crouch' | 'crouchWalk';
 export type FacingDirection = 'left' | 'right';

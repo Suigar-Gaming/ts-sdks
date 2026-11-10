@@ -27,7 +27,9 @@ const actor = vi.hoisted(() => ({
 	},
 }));
 vi.mock('../src/utils/use-suifren-actor.js', () => ({ useSuiFrenActor: () => actor }));
-vi.mock('@suigar/suifrens-display-system/image-inline', () => ({ SuiFrenImage: () => <svg /> }));
+vi.mock('@suigar/suifrens-display-system/image-inline', () => ({
+	SuiFrenImageInline: () => <svg />,
+}));
 const Playground = ControlPadPlayground.render as ComponentType;
 let view: ReturnType<typeof createTestRoot>;
 beforeEach(() => {

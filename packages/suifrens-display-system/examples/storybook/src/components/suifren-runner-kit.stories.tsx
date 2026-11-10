@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { buildRunnerAccessories } from '@suigar/suifrens-display-system/accessories';
-import { SuiFrenImage } from '@suigar/suifrens-display-system/image-inline';
+import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
+import { buildRunnerAccessories } from '@suigar/suifrens-display-system/kits';
 const meta = {
 	title: 'SuiFrens/Runner kit',
-	component: SuiFrenImage,
+	component: SuiFrenImageInline,
 	parameters: { layout: 'centered' },
-} satisfies Meta<typeof SuiFrenImage>;
+} satisfies Meta<typeof SuiFrenImageInline>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 export const Capy: Story = {

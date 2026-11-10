@@ -4,37 +4,39 @@ React components for rendering capys and bullsharks with inline or cacheable ext
 
 ### Recommended imports
 
-For the smallest consumer bundles, prefer subpath imports for runtime values instead of the root entry:
+Import each feature from its public entry point:
 
 ```ts
-import {
-	POSITIVE_CAPY_EXPRESSIONS,
-	NEGATIVE_BULLSHARK_EXPRESSIONS,
-} from '@suigar/suifrens-display-system';
+import { SuiFrenImage } from '@suigar/suifrens-display-system';
 import { accessories } from '@suigar/suifrens-display-system/accessories';
 import { earGeneToEarShape } from '@suigar/suifrens-display-system/attributes';
 import { colors } from '@suigar/suifrens-display-system/colors';
-import { SuiFrenImage } from '@suigar/suifrens-display-system/image';
+import {
+	POSITIVE_CAPY_EXPRESSIONS,
+	NEGATIVE_BULLSHARK_EXPRESSIONS,
+} from '@suigar/suifrens-display-system/expressions';
 ```
 
-The `/image` entry uses cacheable external SVG assets for accessories. If you need fully self-contained SVG markup (for example, for server-side SVG export), use the compatibility entry:
+The root renderer uses cacheable external SVG assets for accessories. If you need fully self-contained SVG markup (for example, for server-side SVG export), use the inline renderer:
 
 ```ts
-import { SuiFrenImage } from '@suigar/suifrens-display-system/image-inline';
+import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
 ```
 
-The root package entry still works, but it intentionally exposes the full public API and is heavier for bundlers to analyze.
+The root exports `SuiFrenImage`, `CapyImage` and `BullsharkImage`. Import all public types, including their props, from `/types`.
 
 ### Migrating from the 1.x GitHub archive
 
-The npm beta has eight public entry points: the package root, `/image`, `/image-inline`, `/accessories`, `/animation`, `/attributes`, `/colors` and `/types`. Update the following imports before installing the beta.
+Move former root imports to the matching subpath before installing the beta. Use `/types` for all type-only imports.
 
-| 1.x subpath     | npm replacement                                                         |
-| --------------- | ----------------------------------------------------------------------- |
-| `/image-assets` | `/image` for the external SVG renderer and its props                    |
-| `/vip-crowns`   | `/accessories` for crown values and types                               |
-| `/battle`       | Package root for battle components and hooks, `/types` for battle types |
-| `/expressions`  | Package root for expression lists, `/types` for `ExpressionMood`        |
+| 1.x subpath     | npm replacement                                  |
+| --------------- | ------------------------------------------------ |
+| `/image-assets` | Root `SuiFrenImage` for external SVG accessories |
+| `/vip-crowns`   | `/accessories` for crown values                  |
+| `/battle`       | `/battle` for battle components and hooks        |
+| `/expressions`  | `/expressions` for expression lists              |
+
+Use `/accessories` for the catalogue and slot lookup, `/kits` for runner and football outfit helpers, `/animation` for animation APIs, `/colors` for the palette and `/attributes` for gene mappings.
 
 ### Editing accessory artwork
 
@@ -44,11 +46,11 @@ Run `pnpm run codegen` from the package directory after editing artwork to regen
 
 ### Athletics outfits
 
-`buildRunnerAccessories({ color: '#ec7da6', number: 3 })` from the root or `/accessories` export supplies a native singlet, shorts, headband and running shoes for capys and bullsharks. Colors accept six-digit hex values and bibs accept integers 1–99; invalid inputs use safe defaults. Set `mirrorBib: true` when the consumer mirrors the whole character so the printed number stays readable. Shoes and shorts register each leg separately; ears and fins remain visible. Inline and asset rendering preserve the same configurable SVG geometry.
+`buildRunnerAccessories({ color: '#ec7da6', number: 3 })` from the `/kits` export supplies a native singlet, shorts, headband and running shoes for capys and bullsharks. Colors accept six-digit hex values and bibs accept integers 1–99; invalid inputs use safe defaults. Set `mirrorBib: true` when the consumer mirrors the whole character so the printed number stays readable. Shoes and shorts register each leg separately; ears and fins remain visible. Inline and asset rendering preserve the same configurable SVG geometry.
 
 ### Capy thumbs-up gesture
 
-Pass `capyGesture="thumbs_up"` to `SuiFrenImage` (inline or asset entry) to raise the capy's near arm with an upright thumb. The native head/body, palette and canvas stay unchanged. Head-only portraits and bullsharks ignore this option; a held object takes precedence so its original grip is preserved. Direct `CapyImage` consumers use `gesture="thumbs_up"`.
+Pass `capyGesture="thumbs_up"` to `SuiFrenImage` or `SuiFrenImageInline` to raise the capy's near arm with an upright thumb. The native head/body, palette and canvas stay unchanged. Head-only portraits and bullsharks ignore this option; a held object takes precedence so its original grip is preserved. Direct `CapyImage` consumers use `gesture="thumbs_up"`.
 
 ### Registry distribution
 

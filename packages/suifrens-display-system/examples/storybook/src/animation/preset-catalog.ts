@@ -1,4 +1,4 @@
-import type { AnimationConfig } from '@suigar/suifrens-display-system/animation';
+import type { AnimationConfig } from '@suigar/suifrens-display-system/types';
 
 export type PresetCatalogEntry = {
 	label: string;

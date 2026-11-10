@@ -2,9 +2,20 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
+import * as root from '@suigar/suifrens-display-system';
+import { SuiFrenImage as Assets } from '@suigar/suifrens-display-system';
 import { accessories } from '@suigar/suifrens-display-system/accessories';
-import { SuiFrenImage as Assets } from '@suigar/suifrens-display-system/image';
-import { SuiFrenImage as Inline } from '@suigar/suifrens-display-system/image-inline';
+import * as catalogue from '@suigar/suifrens-display-system/accessories';
+import * as battle from '@suigar/suifrens-display-system/battle';
+import * as expressions from '@suigar/suifrens-display-system/expressions';
+import { SuiFrenImageInline as Inline } from '@suigar/suifrens-display-system/image-inline';
+import * as kits from '@suigar/suifrens-display-system/kits';
+
+assert.deepEqual(Object.keys(root).sort(), ['BullsharkImage', 'CapyImage', 'SuiFrenImage']);
+assert.equal(typeof battle.useDuelScript, 'function');
+assert.ok(expressions.ALL_CAPY_EXPRESSIONS.length);
+assert.equal(typeof kits.buildRunnerAccessories, 'function');
+assert.ok(!('buildRunnerAccessories' in catalogue));
 
 for (const kind of ['capy', 'bullshark']) {
 	const props = {

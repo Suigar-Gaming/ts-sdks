@@ -3,7 +3,7 @@ import type { FastifyPluginAsync } from 'fastify';
 import { renderToStaticMarkup } from 'react-dom/server';
 import Type from 'typebox';
 import { accessories as suiFrensAccessories } from '@suigar/suifrens-display-system/accessories';
-import { SuiFrenImage } from '@suigar/suifrens-display-system/image-inline';
+import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
 import { SuiLogo } from '../../components/logos/SuiLogo.js';
 
 export const accessories: FastifyPluginAsync = async (fastify) => {
@@ -30,7 +30,7 @@ export const accessories: FastifyPluginAsync = async (fastify) => {
 			}
 
 			const renderedSvg = renderToStaticMarkup(
-				<SuiFrenImage
+				<SuiFrenImageInline
 					attributes={{
 						mainColor: 'FFFFFF',
 						secondaryColor: 'FFFFFF',

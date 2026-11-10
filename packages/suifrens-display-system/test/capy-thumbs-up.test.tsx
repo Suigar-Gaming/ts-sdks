@@ -2,8 +2,8 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, test } from 'vitest';
 import { getPartDefinition } from '../src/animation/parts.js';
 import { accessories } from '../src/constants/accessories.js';
-import { SuiFrenImage } from '../src/image-inline/index.js';
-import { SuiFrenImage as SuiFrenImageAssets } from '../src/image/index.js';
+import { SuiFrenImageInline } from '../src/image-inline/index.js';
+import { SuiFrenImage } from '../src/index.js';
 import { parseMatrix } from '../src/utils/matrix.js';
 
 const capy = {
@@ -16,8 +16,8 @@ const capy = {
 const restingArm = '1002.9,1719.3';
 
 describe.each([
-	['inline', SuiFrenImage],
-	['asset', SuiFrenImageAssets],
+	['inline', SuiFrenImageInline],
+	['asset', SuiFrenImage],
 ] as const)('%s capy thumbs up', (_name, Image) => {
 	test('uses one foreground posed hand and leaves the resting pose unchanged by default', () => {
 		const resting = renderToStaticMarkup(<Image attributes={capy} />);

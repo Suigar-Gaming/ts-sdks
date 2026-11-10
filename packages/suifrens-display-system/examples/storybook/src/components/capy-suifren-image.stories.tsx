@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { type ComponentProps, useEffect, useState } from 'react';
-import { SuiFrenImage } from '@suigar/suifrens-display-system/image-inline';
+import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
 import type { CapyAttributes, CapyExpression } from '@suigar/suifrens-display-system/types';
 import { SuiLogo } from './logos/SuiLogo.js';
 
@@ -28,17 +28,17 @@ const allPossibleExpressions: Array<CapyExpression> = [
 ];
 
 const meta = {
-	title: 'SuiFrenImage/Capy',
-	component: SuiFrenImage,
+	title: 'SuiFrenImageInline/Capy',
+	component: SuiFrenImageInline,
 	tags: ['autodocs'],
-} satisfies Meta<typeof SuiFrenImage>;
+} satisfies Meta<typeof SuiFrenImageInline>;
 
 export default meta;
 
-type Story = StoryObj<typeof SuiFrenImage>;
+type Story = StoryObj<typeof SuiFrenImageInline>;
 
 type StoryPropsWithAllExpressions = Omit<
-	ComponentProps<typeof SuiFrenImage>,
+	ComponentProps<typeof SuiFrenImageInline>,
 	'suiFrenType' | 'attributes'
 > & {
 	attributes: Omit<CapyAttributes, 'expression'>;
@@ -50,7 +50,7 @@ export const Basic: StoryWithAllExpressions = {
 		<div className="flex flex-wrap gap-2">
 			{allPossibleExpressions.map((expression) => (
 				<div className="h-60 w-60 shrink-0" key={expression}>
-					<SuiFrenImage
+					<SuiFrenImageInline
 						attributes={{
 							...attributes,
 							expression,
@@ -86,7 +86,7 @@ export const CapyTransition: StoryWithAllExpressions = {
 		return (
 			<div className="flex flex-wrap gap-2">
 				<div className="h-60 w-60 shrink-0">
-					<SuiFrenImage
+					<SuiFrenImageInline
 						attributes={{
 							...attributes,
 							expression,

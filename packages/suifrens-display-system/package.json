@@ -23,11 +23,6 @@
 			"import": "./dist/index.mjs",
 			"default": "./dist/index.mjs"
 		},
-		"./image": {
-			"types": "./dist/image.d.mts",
-			"import": "./dist/image.mjs",
-			"default": "./dist/image.mjs"
-		},
 		"./image-inline": {
 			"types": "./dist/image-inline.d.mts",
 			"import": "./dist/image-inline.mjs",
@@ -57,6 +52,21 @@
 			"types": "./dist/types.d.mts",
 			"import": "./dist/types.mjs",
 			"default": "./dist/types.mjs"
+		},
+		"./battle": {
+			"types": "./dist/battle.d.mts",
+			"import": "./dist/battle.mjs",
+			"default": "./dist/battle.mjs"
+		},
+		"./expressions": {
+			"types": "./dist/expressions.d.mts",
+			"import": "./dist/expressions.mjs",
+			"default": "./dist/expressions.mjs"
+		},
+		"./kits": {
+			"types": "./dist/kits.d.mts",
+			"import": "./dist/kits.mjs",
+			"default": "./dist/kits.mjs"
 		}
 	},
 	"publishConfig": {

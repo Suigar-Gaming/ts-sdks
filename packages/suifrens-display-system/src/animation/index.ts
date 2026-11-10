@@ -8,7 +8,6 @@ export { useAnimatedPartTransform } from '../hooks/use-animated-part-transform.j
 export { getPresetSequence } from './presets.js';
 
 export type { AnimationPart } from '../types/animation.type.js';
-
 export type {
 	AnimationConfig,
 	AnimationDirection,
