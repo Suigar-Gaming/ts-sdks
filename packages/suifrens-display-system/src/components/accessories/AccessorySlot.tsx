@@ -17,7 +17,11 @@ export function AccessoryRendererProvider({
 	);
 }
 
-export function AccessorySlot(props: AccessoryRendererProps) {
+type AccessorySlotProps = Omit<AccessoryRendererProps, 'accessory'> & {
+	accessory: AccessoryRendererProps['accessory'] | undefined;
+};
+
+export function AccessorySlot({ accessory, ...props }: AccessorySlotProps) {
 	const renderer = useContext(AccessoryRendererContext);
-	return renderer ? renderer(props) : null;
+	return renderer && accessory ? renderer({ ...props, accessory }) : null;
 }
