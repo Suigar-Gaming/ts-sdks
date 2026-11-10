@@ -49,7 +49,8 @@
 	"files": [
 		"dist",
 		"CHANGELOG.md",
-		"README.md"
+		"README.md",
+		"skills"
 	],
 	"type": "module",
 	"sideEffects": false,

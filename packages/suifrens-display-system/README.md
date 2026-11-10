@@ -2,6 +2,12 @@
 
 React components for rendering and animating Suifrens capys and bullsharks, with accessories, gestures and configurable outfits.
 
+## Agent skills
+
+The npm package includes a lightweight agent skill at `skills/suifrens-display-system/SKILL.md`. It routes matching tasks to full instructions in [Suigar-Gaming/agent-skills](https://github.com/Suigar-Gaming/agent-skills) on `main`. Linked references are fetched only when needed.
+
+You can also install the full skills with `npx skills add Suigar-Gaming/agent-skills`.
+
 ## Documentation
 
 See the [migration guide](MIGRATION.md) when upgrading from the 1.x GitHub archive, and the [changelog](CHANGELOG.md) for released changes. Storybook includes controls and examples for both species; see [Development](#development) to run it locally.

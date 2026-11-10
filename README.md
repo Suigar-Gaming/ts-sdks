@@ -35,6 +35,8 @@ To configure an MCP client manually, use:
 
 ## Agent skills
 
+Each public npm package includes one lightweight facade under `skills/`: `suigar-sdk`, `suigar-mcp`, or `suifrens-display-system`. Compatible package managers and agents can discover these entries. They fetch only the relevant full skills and references from the `main` branch of the skills repository; no install hook or network access is needed to pack them. The existing full-skill installation remains available below.
+
 Suigar agent skills live in `Suigar-Gaming/agent-skills`. The MCP skill explains how to install and configure `@suigar/mcp`, read Suigar config, game metadata, NFTs and claimable referral amounts, and build and simulate unsigned transactions, including SweetHouse transactions.
 
 Install all Suigar skills with:

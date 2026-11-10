@@ -13,6 +13,12 @@ Transactions are unsigned by default. With `mode: "execute"`, the paired Suigar 
 
 Malformed recovery phrases raise `TypeError`. Unsupported private-key schemes and oversized bridge requests raise `RangeError`. Wallet bridges and session setup validate 32-byte hexadecimal state tokens, then compare the decoded bytes with timing-safe equality. Setup pages display the error message. Operational failures, such as expired sessions or unavailable keychain storage, remain generic errors.
 
+## Agent skills
+
+The npm package includes a lightweight agent skill at `skills/suigar-mcp/SKILL.md`. It routes matching tasks to full instructions in [Suigar-Gaming/agent-skills](https://github.com/Suigar-Gaming/agent-skills) on `main`. Linked references are fetched only when needed.
+
+You can also install the full skills with `npx skills add Suigar-Gaming/agent-skills`.
+
 ## Install
 
 Requires Node.js `^24.0.0 || ^26.0.0`.

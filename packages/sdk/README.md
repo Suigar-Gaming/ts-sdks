@@ -2,6 +2,12 @@
 
 Use this TypeScript SDK to build transactions for Suigar's provably fair casino games on Sui, SweetHouse pools, NFTs, and referral claims.
 
+## Agent skills
+
+The npm package includes a lightweight agent skill at `skills/suigar-sdk/SKILL.md`. It routes matching tasks to full instructions in [Suigar-Gaming/agent-skills](https://github.com/Suigar-Gaming/agent-skills) on `main`. Linked references are fetched only when needed.
+
+You can also install the full skills with `npx skills add Suigar-Gaming/agent-skills`.
+
 ## Documentation
 
 See the full SDK documentation at [suigar.com/docs/sdk](https://suigar.com/docs/sdk).
