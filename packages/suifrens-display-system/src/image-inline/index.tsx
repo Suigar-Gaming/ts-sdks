@@ -5,5 +5,3 @@ import type { SuiFrenImageProps } from '../types/suifren.type.js';
 export function SuiFrenImageInline(props: SuiFrenImageProps) {
 	return <SuiFrenImageView {...props} accessoryRenderer={InlineAccessory} />;
 }
-
-export type { SuiFrenImageProps, SuiFrenRenderSize } from '../types/suifren.type.js';

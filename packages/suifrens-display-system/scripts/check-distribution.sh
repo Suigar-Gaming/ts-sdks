@@ -26,5 +26,6 @@ major=${1%%.*}
 npm install --ignore-scripts --no-audit --no-fund ./*.tgz "react@$1" "react-dom@$1" "@types/react@$major" "@types/react-dom@$major" typescript@5.9.3 "happy-dom@$happy_dom_version"
 node --experimental-strip-types entries.mts
 ./node_modules/.bin/tsc --strict --noEmit --module nodenext --target es2022 entries.mts
+node exports.mjs
 node consumer.mjs
 node refs.mjs
