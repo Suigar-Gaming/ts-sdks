@@ -22,6 +22,20 @@ describe.each([
 	['inline', SuiFrenImageInline],
 	['asset', SuiFrenImage],
 ] as const)('%s capy gestures', (_name, Image) => {
+	test('draws point on the foreground arm only when free', () => {
+		const markup = renderToStaticMarkup(<Image attributes={capy} gesture="point" />);
+		expect(markup.indexOf('data-suifren-gesture="point"')).toBeGreaterThan(
+			markup.indexOf('data-suifren-animation-part="head"'),
+		);
+		const props = {
+			attributes: capy,
+			accessories: [accessories.find((item) => item.name === 'microphone')!],
+		};
+		expect(renderToStaticMarkup(<Image {...props} gesture="point" />)).toBe(
+			renderToStaticMarkup(<Image {...props} />),
+		);
+	});
+
 	test('points the thumb below the palm in the thumbs-down pose', () => {
 		const markup = renderToStaticMarkup(<Image attributes={capy} gesture="thumbs_down" />);
 		const transform = markup.match(
@@ -73,7 +87,7 @@ describe.each([
 		expect(gesture).not.toContain('<clipPath');
 		expect(gesture.match(/stroke="#000"/g)).toHaveLength(1);
 	});
-	test.each(['thumbs_up', 'thumbs_down'] as const)(
+	test.each(['thumbs_up', 'thumbs_down', 'point'] as const)(
 		'does not change a head portrait with %s',
 		(gesture) => {
 			expect(
@@ -81,7 +95,7 @@ describe.each([
 			).toBe(renderToStaticMarkup(<Image attributes={capy} detail="head" />));
 		},
 	);
-	test.each(['thumbs_up', 'thumbs_down'] as const)(
+	test.each(['thumbs_up', 'thumbs_down', 'point'] as const)(
 		'preserves the grip when holding an object with %s',
 		(gesture) => {
 			const object = accessories.find((accessory) => accessory.name === 'microphone')!;
@@ -90,5 +104,21 @@ describe.each([
 				renderToStaticMarkup(<Image {...props} />),
 			);
 		},
+	);
+});
+
+test('point preserves the native shoulder-to-wrist distance', () => {
+	const markup = renderToStaticMarkup(<SuiFrenImageInline attributes={capy} gesture="point" />);
+	const transform = markup.match(/data-suifren-gesture="[^"]+"[^>]*><g transform="([^"]+)"/);
+	const matrix = parseMatrix(transform?.[1])!;
+	const point = (x: number, y: number) => ({
+		x: matrix[0] * x + matrix[2] * y + matrix[4],
+		y: matrix[1] * x + matrix[3] * y + matrix[5],
+	});
+	const shoulder = getPartDefinition('leftArm').pivot;
+	const wrist = point(36.2, 109.35);
+	expect(Math.hypot(wrist.x - shoulder.x, wrist.y - shoulder.y)).toBeCloseTo(
+		2.9166107177734375 * Math.hypot(36.2 - 76.45, 109.35 - 13.65),
+		2,
 	);
 });

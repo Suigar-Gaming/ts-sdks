@@ -21,6 +21,20 @@ describe.each([
 	['inline', SuiFrenImageInline],
 	['asset', SuiFrenImage],
 ] as const)('%s bullshark gestures', (_name, Image) => {
+	test('draws point on the foreground arm only when free', () => {
+		const markup = renderToStaticMarkup(<Image attributes={shark} gesture="point" />);
+		expect(markup.indexOf('data-suifren-gesture="point"')).toBeGreaterThan(
+			markup.indexOf('data-suifren-animation-part="head"'),
+		);
+		const props = {
+			attributes: shark,
+			accessories: [accessories.find((item) => item.name === 'microphone')!],
+		};
+		expect(renderToStaticMarkup(<Image {...props} gesture="point" />)).toBe(
+			renderToStaticMarkup(<Image {...props} />),
+		);
+	});
+
 	test('points the thumb below the palm in the thumbs-down pose', () => {
 		const markup = renderToStaticMarkup(<Image attributes={shark} gesture="thumbs_down" />);
 		const transform = markup.match(
@@ -46,7 +60,7 @@ describe.each([
 		);
 	});
 
-	test.each(['thumbs_up', 'thumbs_down'] as const)(
+	test.each(['thumbs_up', 'thumbs_down', 'point'] as const)(
 		'leaves head portraits unchanged with %s',
 		(gesture) => {
 			expect(

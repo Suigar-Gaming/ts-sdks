@@ -162,7 +162,7 @@ Use `gesture` for a static pose on either image renderer or directly on `CapyIma
 <SuiFrenImage attributes={attributes} gesture="thumbs_up" renderSize={240} />
 ```
 
-Available values are `thumbs_up`, `thumbs_down`, `wave` and `point`. Import `SuiFrenGesture` from `/types`.
+Available values are `thumbs_up`, `thumbs_down` and `point`. Import `SuiFrenGesture` from `/types`.
 
 Full-body capys and bullsharks pose their near arm when the hand is free. A held object keeps its native grip and takes precedence over the gesture. Head portraits are unchanged.
 

@@ -226,3 +226,5 @@ export const ThumbsDown: Story = {
 	...WithShadow,
 	args: { ...WithShadow.args, gesture: 'thumbs_down' },
 };
+
+export const Point: Story = { ...WithShadow, args: { ...WithShadow.args, gesture: 'point' } };
