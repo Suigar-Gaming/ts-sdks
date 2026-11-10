@@ -25,8 +25,7 @@ const DEFERRED_PRESET_NAMES = new Set([
 	'floss',
 ]);
 
-const DEFERRED_PRESET_CACHE = new Map<string, AnimationSequence | null>();
-const DEFERRED_PRESET_PROMISE_CACHE = new Map<string, Promise<AnimationSequence | null>>();
+let cataloguePromise: Promise<Record<string, AnimationSequence>> | undefined;
 
 export function resolvePresetSequenceSync(name: string): AnimationSequence | undefined {
 	return getCorePresetSequence(name);
@@ -36,29 +35,16 @@ export function isDeferredPreset(name: string): boolean {
 	return DEFERRED_PRESET_NAMES.has(name);
 }
 
-export function loadDeferredPresetSequence(name: string): Promise<AnimationSequence | null> {
-	const cached = DEFERRED_PRESET_CACHE.get(name);
-	if (cached !== undefined) {
-		return Promise.resolve(cached);
+export async function loadDeferredPresetSequence(name: string): Promise<AnimationSequence | null> {
+	if (!isDeferredPreset(name)) {
+		return null;
 	}
-
-	const inFlight = DEFERRED_PRESET_PROMISE_CACHE.get(name);
-	if (inFlight) {
-		return inFlight;
-	}
-
-	const promise = import('./battle-royale-presets.js')
-		.then(({ BATTLE_ROYALE_PRESETS }) => {
-			const sequence = BATTLE_ROYALE_PRESETS[name] ?? null;
-			DEFERRED_PRESET_CACHE.set(name, sequence);
-			DEFERRED_PRESET_PROMISE_CACHE.delete(name);
-			return sequence;
-		})
-		.catch((error) => {
-			DEFERRED_PRESET_PROMISE_CACHE.delete(name);
+	cataloguePromise ??= import('./battle-royale-presets.js')
+		.then(({ BATTLE_ROYALE_PRESETS }) => BATTLE_ROYALE_PRESETS)
+		.catch((error: unknown) => {
+			cataloguePromise = undefined;
 			throw error;
 		});
-
-	DEFERRED_PRESET_PROMISE_CACHE.set(name, promise);
-	return promise;
+	const catalogue = await cataloguePromise;
+	return catalogue[name] ?? null;
 }
