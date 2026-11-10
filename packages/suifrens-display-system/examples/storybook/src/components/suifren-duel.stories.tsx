@@ -65,8 +65,8 @@ type FighterState = FighterSeed & {
 	nextShiftAt: number;
 	wanderPreset: WanderPreset;
 	facing: 'left' | 'right';
-	animationOverride?: AnimationConfig | null;
-	expressionOverride?: SuiFrenExpression;
+	animationOverride?: AnimationConfig | null | undefined;
+	expressionOverride?: SuiFrenExpression | undefined;
 };
 type ActiveFight = {
 	id: number;
@@ -1114,13 +1114,15 @@ export const Ring: Story = {
 					activeIds.add(rightId);
 				};
 				if (!ringWinnerRef.current && availableSlots.length) {
-					outer: for (let i = 0; i < next.length; i += 1) {
-						const first = next[i];
+					outer: for (const [i, first] of next.entries()) {
 						if (first.status !== 'roam' || activeIds.has(first.id)) {
 							continue;
 						}
 						for (let j = i + 1; j < next.length; j += 1) {
 							const second = next[j];
+							if (!second) {
+								continue;
+							}
 							if (second.status !== 'roam' || activeIds.has(second.id)) {
 								continue;
 							}
@@ -1150,10 +1152,12 @@ export const Ring: Story = {
 						let bestA = 0;
 						let bestB = 1;
 						let bestDistanceSq = Number.POSITIVE_INFINITY;
-						for (let i = 0; i < candidates.length; i += 1) {
-							const first = candidates[i];
+						for (const [i, first] of candidates.entries()) {
 							for (let j = i + 1; j < candidates.length; j += 1) {
 								const second = candidates[j];
+								if (!second) {
+									continue;
+								}
 								const dx = first.position.x - second.position.x;
 								const dy = first.position.y - second.position.y;
 								const distanceSq = dx * dx + dy * dy;
@@ -1187,13 +1191,15 @@ export const Ring: Story = {
 
 				if (!ringWinnerRef.current && !availableSlots.length) {
 					const avoidVelocities = new Map<string, { x: number; y: number }>();
-					for (let i = 0; i < next.length; i += 1) {
-						const first = next[i];
+					for (const [i, first] of next.entries()) {
 						if (first.status !== 'roam' || activeIds.has(first.id)) {
 							continue;
 						}
 						for (let j = i + 1; j < next.length; j += 1) {
 							const second = next[j];
+							if (!second) {
+								continue;
+							}
 							if (second.status !== 'roam' || activeIds.has(second.id)) {
 								continue;
 							}
@@ -1316,8 +1322,8 @@ export const Ring: Story = {
 
 			if (!remainingFights.length && !ringWinnerRef.current) {
 				const alive = next.filter((fighter) => fighter.status !== 'dead');
-				if (alive.length === 1) {
-					const winner = alive[0];
+				const [winner] = alive;
+				if (winner && alive.length === 1) {
 					ringWinnerRef.current = winner.id;
 					setRingWinnerId(winner.id);
 					const celebratePlayback = { iterations: FINAL_VICTORY_LOOPS };

@@ -68,7 +68,7 @@ export type SuiFrenActorControls<TExpression extends string = string> = {
 };
 
 type DerivedConfig<TExpression extends string> = {
-	bounds?: { width: number; height: number; padding?: number };
+	bounds: SuiFrenActorOptions<TExpression>['bounds'];
 	moveSpeed: number;
 	runMultiplier: number;
 	crouchMultiplier: number;

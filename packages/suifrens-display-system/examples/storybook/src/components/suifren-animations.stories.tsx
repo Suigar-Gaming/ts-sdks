@@ -25,7 +25,7 @@ const capyAttributes = {
 const microphoneAccessory = accessories.find((accessory) => accessory.name === 'microphone');
 
 function getPreviewAccessories(presetName: string) {
-	return presetName === 'talkMicrophone' && microphoneAccessory ? [microphoneAccessory] : undefined;
+	return presetName === 'talkMicrophone' && microphoneAccessory ? [microphoneAccessory] : [];
 }
 
 const meta = {
