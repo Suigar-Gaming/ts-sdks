@@ -53,8 +53,9 @@ npx skills add Suigar-Gaming/agent-skills --skill suigar-mcp --global --yes
 
 - `@suigar/sdk` in `packages/sdk`: ESM-only TypeScript SDK for Suigar provably fair on-chain Sui casino game, SweetHouse, NFT, and referral transactions.
 - `@suigar/mcp` in `packages/mcp`: MCP stdio server and MCP App for reading Suigar config, game metadata, NFTs, and referral claim amounts, plus building unsigned Suigar and SweetHouse transactions through the SDK.
+- [`@suigar/suifrens-display-system`](packages/suifrens-display-system/README.md) in `packages/suifrens-display-system`: React components for rendering Suifrens. Its beta targets npm.
 
-Both packages are available on [npm](https://www.npmjs.com/search?q=%40suigar) and [JSR](https://jsr.io/@suigar).
+The SDK and MCP packages are available on [npm](https://www.npmjs.com/search?q=%40suigar) and [JSR](https://jsr.io/@suigar).
 
 ## Development
 
@@ -121,7 +122,3 @@ pnpm run oxfmt
 pnpm run oxlint:fix
 pnpm run oxfmt:fix
 ```
-
-## Suifrens Display System
-
-The [display package](packages/suifrens-display-system/README.md) builds with `pnpm --filter @suigar/suifrens-display-system build`. Its private [Storybook](packages/suifrens-display-system/examples/storybook) and [Fastify server](packages/suifrens-display-system/examples/fastify) consume its public exports. After building the library, run either example with `pnpm --filter @suigar/suifrens-storybook dev` or `pnpm --filter @suigar/suifrens-fastify dev`. Changesets manages the display package’s npm beta releases.

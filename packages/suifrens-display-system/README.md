@@ -52,6 +52,10 @@ Run `pnpm run codegen` from the package directory after editing artwork to regen
 
 Pass `capyGesture="thumbs_up"` to `SuiFrenImage` or `SuiFrenImageInline` to raise the capy's near arm with an upright thumb. The native head/body, palette and canvas stay unchanged. Head-only portraits and bullsharks ignore this option; a held object takes precedence so its original grip is preserved. Direct `CapyImage` consumers use `gesture="thumbs_up"`.
 
+### Running the examples
+
+Build the library once with `pnpm --filter @suigar/suifrens-display-system build`. Then run `pnpm --filter @suigar/suifrens-storybook dev` for Storybook or `pnpm --filter @suigar/suifrens-fastify dev` for the HTTP server.
+
 ### Registry distribution
 
 During the beta, install with `pnpm add @suigar/suifrens-display-system@beta` after publication. Suigar continues to consume the historical GitHub archive throughout beta.

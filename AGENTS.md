@@ -132,7 +132,3 @@ List the checks you ran and whether they passed. If you skipped a check, say why
 - [ ] Generated contract bindings changed.
 - [ ] Compatibility issues, limitations, or follow-up work need attention.
 ```
-
-## Suifrens Display System
-
-The [display package](packages/suifrens-display-system/README.md) builds with `pnpm --filter @suigar/suifrens-display-system build`. Its private [Storybook](packages/suifrens-display-system/examples/storybook) and [Fastify server](packages/suifrens-display-system/examples/fastify) consume its public exports. After building the library, run either example with `pnpm --filter @suigar/suifrens-storybook dev` or `pnpm --filter @suigar/suifrens-fastify dev`. Changesets manages the display package’s npm beta releases.
