@@ -6,6 +6,7 @@ import { act } from 'react';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { AnimationController } from '../../../src/animation/animation-controller.js';
 import { AnimationProvider } from '../../../src/animation/AnimationContext.js';
+import { startWaapiAnimation } from '../../../src/animation/waapi-backend.js';
 import type { AnimationSequence } from '../../../src/types/animation.type.js';
 import { createTestRoot } from '../../helpers/react-dom.js';
 
@@ -19,7 +20,7 @@ vi.mock('../../../src/animation/preset-resolver.js', () => ({
 	loadDeferredPresetSequence: resolver.load,
 }));
 vi.mock('../../../src/animation/waapi-backend.js', () => ({
-	startWaapiAnimation: () => ({ handled: false }),
+	startWaapiAnimation: vi.fn<typeof startWaapiAnimation>(() => ({ handled: false })),
 }));
 
 let view: ReturnType<typeof createTestRoot>;
@@ -29,6 +30,7 @@ beforeEach(() => {
 });
 afterEach(async () => {
 	await view.unmount();
+	vi.unstubAllGlobals();
 });
 
 function pendingSequence() {
@@ -142,3 +144,67 @@ test('a failed current deferred load leaves animation disabled', async () => {
 	});
 	expect(applied.mock.lastCall?.[0]).toBeNull();
 });
+
+test.each(['waapi', 'javascript'])(
+	'%s respects visibility from mount through resume',
+	async (engine) => {
+		const disconnect = vi.fn<() => void>();
+		let intersect!: (entries: Array<{ isIntersecting: boolean }>) => void;
+		vi.stubGlobal(
+			'IntersectionObserver',
+			class {
+				constructor(callback: typeof intersect) {
+					intersect = callback;
+				}
+				observe() {}
+				disconnect = disconnect;
+			},
+		);
+		vi.spyOn(SVGElement.prototype, 'getBoundingClientRect').mockReturnValue(
+			new DOMRect(0, window.innerHeight + 200, 10, 10),
+		);
+		const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+		vi.spyOn(window, 'matchMedia').mockReturnValue(media);
+		const reduced = vi.spyOn(media, 'matches', 'get').mockReturnValue(false);
+		const visibility = vi.spyOn(document, 'visibilityState', 'get').mockReturnValue('visible');
+		const play = vi.fn<() => void>();
+		const pause = vi.fn<() => void>();
+		const cleanup = vi.fn<() => void>();
+		if (engine === 'waapi') {
+			vi.mocked(startWaapiAnimation).mockReturnValueOnce({ handled: true, play, pause, cleanup });
+		}
+		const frame = vi.spyOn(window, 'requestAnimationFrame').mockReturnValue(0);
+		const cancel = vi.spyOn(window, 'cancelAnimationFrame').mockImplementation(() => {});
+		vi.spyOn(AnimationController.prototype, 'needsAnimationFrame').mockReturnValue(true);
+		const update = vi.spyOn(AnimationController.prototype, 'update').mockReturnValue(false);
+		const clock = vi.spyOn(performance, 'now').mockReturnValue(100);
+		await view.render(
+			<svg>
+				<AnimationProvider animation={{ preset: 'walk' }}>{null}</AnimationProvider>
+			</svg>,
+		);
+		const start = engine === 'waapi' ? play : frame;
+		expect(start).not.toHaveBeenCalled();
+		visibility.mockReturnValue('hidden');
+		intersect([{ isIntersecting: true }]);
+		expect(start).not.toHaveBeenCalled();
+		visibility.mockReturnValue('visible');
+		document.dispatchEvent(new Event('visibilitychange'));
+		expect(start).toHaveBeenCalledTimes(1);
+		reduced.mockReturnValue(true);
+		media.dispatchEvent(new Event('change'));
+		const stalled = engine === 'waapi' ? pause : cancel;
+		expect(stalled).toHaveBeenCalled();
+		clock.mockReturnValue(10000);
+		reduced.mockReturnValue(false);
+		media.dispatchEvent(new Event('change'));
+		expect(start).toHaveBeenCalledTimes(2);
+		frame.mock.lastCall?.[0](10016);
+		expect(update.mock.calls).toEqual(engine === 'javascript' ? [[16]] : []);
+		await view.render(null);
+		expect(disconnect).toHaveBeenCalledOnce();
+		document.dispatchEvent(new Event('visibilitychange'));
+		media.dispatchEvent(new Event('change'));
+		expect(start).toHaveBeenCalledTimes(2);
+	},
+);

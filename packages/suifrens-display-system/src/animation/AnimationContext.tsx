@@ -14,6 +14,7 @@ import type { AnimationConfig } from '../types/animation.type.js';
 import { AnimationController } from './animation-controller.js';
 import { AnimationStore } from './animation-store.js';
 import { matchPartByTransform } from './parts.js';
+import { observePlaybackVisibility } from './playback-visibility.js';
 import {
 	isDeferredPreset,
 	loadDeferredPresetSequence,
@@ -115,45 +116,10 @@ export function AnimationProvider({ animation = null, children }: AnimationProvi
 		controller.stop();
 		const waapi = startWaapiAnimation(store, resolvedAnimation);
 		const root = rootRef.current;
-		const media = window.matchMedia('(prefers-reduced-motion: reduce)');
-		let isIntersecting = true;
-
 		if (waapi.handled) {
-			const syncPlayback = (): void => {
-				if (document.visibilityState !== 'hidden' && isIntersecting && !media.matches) {
-					waapi.play();
-				} else {
-					waapi.pause();
-				}
-			};
-			const observer =
-				root && typeof IntersectionObserver !== 'undefined'
-					? new IntersectionObserver(
-							([entry]) => {
-								isIntersecting = entry?.isIntersecting ?? true;
-								syncPlayback();
-							},
-							{ rootMargin: '100px' },
-						)
-					: null;
-
-			if (root && observer) {
-				const rect = root.getBoundingClientRect();
-				isIntersecting =
-					rect.bottom >= -100 &&
-					rect.right >= -100 &&
-					rect.top <= window.innerHeight + 100 &&
-					rect.left <= window.innerWidth + 100;
-				observer.observe(root);
-			}
-			document.addEventListener('visibilitychange', syncPlayback);
-			media.addEventListener?.('change', syncPlayback);
-			syncPlayback();
-
+			const disconnect = observePlaybackVisibility(root, waapi.play, waapi.pause);
 			return () => {
-				observer?.disconnect();
-				document.removeEventListener('visibilitychange', syncPlayback);
-				media.removeEventListener?.('change', syncPlayback);
+				disconnect();
 				waapi.cleanup();
 			};
 		}
@@ -163,11 +129,11 @@ export function AnimationProvider({ animation = null, children }: AnimationProvi
 			return;
 		}
 
-		let raf = 0;
+		let raf: number | null = null;
 		let last = performance.now();
 
 		const tick = (time: number): void => {
-			raf = 0;
+			raf = null;
 			const delta = time - last;
 			last = time;
 			if (controller.update(delta)) {
@@ -175,57 +141,22 @@ export function AnimationProvider({ animation = null, children }: AnimationProvi
 			}
 		};
 
-		const schedule = (): void => {
-			if (
-				document.visibilityState === 'hidden' ||
-				!isIntersecting ||
-				media.matches ||
-				raf !== 0 ||
-				!controller.needsAnimationFrame()
-			) {
-				return;
+		const play = (): void => {
+			if (raf === null && controller.needsAnimationFrame()) {
+				last = performance.now();
+				raf = requestAnimationFrame(tick);
 			}
-			last = performance.now();
-			raf = requestAnimationFrame(tick);
 		};
-
-		const onPlaybackAvailabilityChange = (): void => {
-			if (document.visibilityState === 'hidden' || media.matches) {
+		const pause = (): void => {
+			if (raf !== null) {
 				cancelAnimationFrame(raf);
-				raf = 0;
-			} else {
-				schedule();
+				raf = null;
 			}
 		};
-
-		const observer =
-			root && typeof IntersectionObserver !== 'undefined'
-				? new IntersectionObserver(
-						([entry]) => {
-							isIntersecting = entry?.isIntersecting ?? true;
-							if (isIntersecting) {
-								schedule();
-							} else {
-								cancelAnimationFrame(raf);
-								raf = 0;
-							}
-						},
-						{ rootMargin: '100px' },
-					)
-				: null;
-		if (root && observer) {
-			observer.observe(root);
-		}
-
-		document.addEventListener('visibilitychange', onPlaybackAvailabilityChange);
-		media.addEventListener?.('change', onPlaybackAvailabilityChange);
-		schedule();
-
+		const disconnect = observePlaybackVisibility(root, play, pause);
 		return () => {
-			observer?.disconnect();
-			document.removeEventListener('visibilitychange', onPlaybackAvailabilityChange);
-			media.removeEventListener?.('change', onPlaybackAvailabilityChange);
-			cancelAnimationFrame(raf);
+			disconnect();
+			pause();
 		};
 	}, [controller, resolvedAnimation, store]);
 
