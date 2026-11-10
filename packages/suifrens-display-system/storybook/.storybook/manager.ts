@@ -21,7 +21,7 @@ addons.setConfig({
 		},
 		...defaultConfig,
 		{
-			display: { sidebar: true },
+			display: { sidebar: true, toolbar: false, mdx: false },
 			tags: /^\d+\.\d+\.\d+$/,
 			badge: ({ tag }) => {
 				const version = `v${tag}`;

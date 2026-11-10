@@ -8,7 +8,15 @@ const releases = ['1.0.0', '1.0.3', '1.1.0'];
 
 test('filters from the effective introduction version, including after re-adding a tag', () => {
 	const tags = ['1.0.0', '!1.0.0', '1.0.3', '!1.0.3', '1.0.3', 'beta', '!beta'];
-	expect(withReleaseFilters(tags, releases)).toEqual([...tags, 'v1.0.3', 'v1.1.0']);
+	expect(withReleaseFilters(tags, releases)).toEqual(['beta', '!beta', '1.0.3', '1.1.0']);
+});
+
+test('lists each available release once, in order of introduction', () => {
+	expect(withReleaseFilters(['autodocs', '1.0.0', '1.0.0'], releases)).toEqual([
+		'autodocs',
+		...releases,
+	]);
+	expect(withReleaseFilters(['1.0.0', '!1.0.0'], releases)).toEqual([]);
 });
 
 test.each(['beta', 'unreleased'])(
