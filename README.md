@@ -1,6 +1,6 @@
 # Suigar TypeScript SDKs
 
-Use the TypeScript SDK and MCP server to interact with Suigar contracts on Sui.
+Build Suigar transactions on Sui with the TypeScript SDK or MCP server, and render Suifrens with the React display library.
 
 ## Documentation
 
@@ -8,7 +8,7 @@ Use the TypeScript SDK and MCP server to interact with Suigar contracts on Sui.
 - [Suigar MCP documentation](https://suigar.com/docs/mcp)
 - [Sui TypeScript SDK documentation](https://sdk.mystenlabs.com/)
 
-See also the local [SDK](packages/sdk/README.md) and [MCP](packages/mcp/README.md) guides.
+Package guides: [SDK](packages/sdk/README.md), [MCP](packages/mcp/README.md) and [Suifrens](packages/suifrens-display-system/README.md).
 
 ## Install the MCP server
 
@@ -35,7 +35,7 @@ To configure an MCP client manually, use:
 
 ## Agent skills
 
-Each public npm package includes one lightweight facade under `skills/`: `suigar-sdk`, `suigar-mcp`, or `suifrens-display-system`. Compatible package managers and agents can discover these entries. They fetch only the relevant full skills and references from the `main` branch of the skills repository; no install hook or network access is needed to pack them. The existing full-skill installation remains available below.
+Each public npm package includes an entry under `skills/`: `suigar-sdk`, `suigar-mcp`, or `suifrens-display-system`. Compatible agents discover these entries and fetch the full instructions and references they need from `main` in the skills repository. Agent skills are not versioned with the packages. Packing the entries needs no install hook or network access.
 
 Suigar agent skills live in `Suigar-Gaming/agent-skills`. The MCP skill explains how to install and configure `@suigar/mcp`, read Suigar config, game metadata, NFTs and claimable referral amounts, and build and simulate unsigned transactions, including SweetHouse transactions.
 
@@ -94,7 +94,7 @@ pnpm turbo run test
 
 ### Type checking
 
-Workspace packages inherit the strict checks in `tsconfig.shared.json`. It disables `isolatedDeclarations` because generated SDK bindings lack the required annotations and MCP relies on Zod to infer schema and handler types. Both packages keep the other shared strict checks.
+Workspace packages inherit the strict checks in `tsconfig.shared.json`. It disables `isolatedDeclarations` because generated SDK bindings lack the required annotations and MCP relies on Zod to infer schema and handler types. SDK and MCP keep the other shared strict checks.
 
 ```bash
 pnpm run typecheck

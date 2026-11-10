@@ -2,9 +2,9 @@
 
 Applies to `playground/` and its descendants, in addition to the [workspace instructions](../AGENTS.md). Commands below run from the repository root.
 
-## Purpose and commands
+## Development
 
-`@suigar/sdk-playground` is a private Next.js app that demonstrates the public SDK. Its `tsconfig.json` inherits `tsconfig.shared.json` and keeps the Next.js settings for bundler resolution, DOM libraries and no emission. Keep the shared strict checks enabled. Optional app props can accept explicit `undefined` when passed between components. Keep the stricter types required by external APIs. See its [README](README.md) for the current pages and wallet flows.
+`@suigar/sdk-playground` is a private Next.js app that demonstrates the public SDK. Its `tsconfig.json` inherits `tsconfig.shared.json` and keeps the Next.js settings for bundler resolution, DOM libraries and no emission. Keep the shared strict checks enabled. Optional app props can accept explicit `undefined` when passed between components. Preserve the types required by external APIs. See its [README](README.md) for the current pages and wallet flows.
 
 ```bash
 pnpm --dir playground run dev

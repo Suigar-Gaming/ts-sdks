@@ -6,8 +6,8 @@ MCP server for agents working with Suigar's provably fair casino games on Sui, S
 - Referral claimable-amount reads and unsigned claim builders
 - Unsigned transaction builders for standard Suigar games, PvP Coinflip, and SweetHouse
 - `build`, `dry-run`, and `read-only` modes
-- A compact MCP App UI resource for compatible hosts
-- Text and structured-content fallbacks for normal MCP clients
+- An MCP App inspector for compatible hosts
+- Text and structured results for other MCP clients
 
 Transactions are unsigned by default. With `mode: "execute"`, the paired Suigar browser wallet asks the user to approve the transaction. Selecting `executionWallet: "session"` signs and submits with the local session-wallet key stored in the operating-system keychain. Session execution returns the final transaction digest without an approval URL. Balance reads combine all result pages and format amounts using configured or on-chain coin metadata.
 
@@ -15,9 +15,9 @@ Malformed recovery phrases raise `TypeError`. Unsupported private-key schemes an
 
 ## Agent skills
 
-The npm package includes a lightweight agent skill at `skills/suigar-mcp/SKILL.md`. It routes matching tasks to full instructions in [Suigar-Gaming/agent-skills](https://github.com/Suigar-Gaming/agent-skills) on `main`. Linked references are fetched only when needed.
+The package includes [an agent skill](skills/suigar-mcp/SKILL.md) that loads full instructions from `main` in [Suigar-Gaming/agent-skills](https://github.com/Suigar-Gaming/agent-skills). It fetches references as needed.
 
-You can also install the full skills with `npx skills add Suigar-Gaming/agent-skills`.
+Install the full skills with `npx skills add Suigar-Gaming/agent-skills`.
 
 ## Install
 
@@ -62,7 +62,7 @@ pnpm add jsr:@suigar/mcp
 
 The server registers tools and resources through the MCP server and MCP Apps APIs. It targets MCP [`2026-07-28`](https://modelcontextprotocol.io/specification/2026-07-28). The server and bundled App use MCP SDK 2 and ext-apps 2 and support MCP Apps 1.x hosts.
 
-The stdio server supports MCP `2026-07-28` and older clients that use initialization. Call `startSuigarMcpServer()` to start stdio, or `createSuigarMcpServer()` to get an `McpServer` from `@modelcontextprotocol/server` v2.
+Older clients that use initialization are also supported. Call `startSuigarMcpServer()` to start stdio, or `createSuigarMcpServer()` to get an `McpServer` from `@modelcontextprotocol/server` v2.
 
 ### Plugins
 
@@ -175,7 +175,7 @@ Hosts that support MCP Apps can display config, live game parameters, the NFT ca
   - Set `SUIGAR_MCP_BRIDGE_TIMEOUT_MS` or pass `--timeout-ms` to control how long login, logout, and approval bridges wait before expiring. The default is `300000`.
   - Set `SUIGAR_MCP_BRIDGE_MAX_BODY_BYTES` or pass `--max-body-bytes` to control the maximum browser callback JSON body size. The default is `16384`.
   - Bridge URLs open automatically by default. Pass `--no-open` for CLI login or logout when you only want the URL or URLs printed.
-  - Your MCP client discovers the available tools automatically through the MCP protocol.
+  - The MCP client discovers tools through the protocol.
 
 ### Read tools
 
@@ -219,17 +219,17 @@ When `betCount` is provided for Keno, Limbo, Plinko, Range, Soccer, or Wheel, th
 
 | Workflow | Required inputs | Optional inputs | Notes |
 | --- | --- | --- | --- |
-| Coinflip | `side` | — | — |
-| Keno | `configId`, `picks` | — | `picks` is an array of board positions. |
-| Limbo | `targetMultiplier` | — | — |
-| Plinko, Wheel | `configId` | — | — |
-| Soccer | `configId`, `countryId`, `shotZoneId` | — | — |
-| Range | `leftPoint`, `rightPoint` | `outOfRange` | — |
-| PvP Coinflip Create | `creatorSide` | `isPrivate` | — |
-| PvP Coinflip Join | `gameId` | — | Reads the game's stake when building the transaction. |
-| PvP Coinflip Cancel | `gameId` | — | Does not accept `metadata` or `useGasCoin`. |
+| Coinflip | `side` | None |  |
+| Keno | `configId`, `picks` | None | `picks` is an array of board positions. |
+| Limbo | `targetMultiplier` | None |  |
+| Plinko, Wheel | `configId` | None |  |
+| Soccer | `configId`, `countryId`, `shotZoneId` | None |  |
+| Range | `leftPoint`, `rightPoint` | `outOfRange` |  |
+| PvP Coinflip Create | `creatorSide` | `isPrivate` |  |
+| PvP Coinflip Join | `gameId` | None | Reads the game's stake when building the transaction. |
+| PvP Coinflip Cancel | `gameId` | None | Does not accept `metadata` or `useGasCoin`. |
 | Referral Commission Claim | `owner` | `coinType` | `coinType` defaults to configured SUI. |
-| Referral Level-up USD Rewards Claim | `owner` | — | Uses configured USDC. |
+| Referral Level-up USD Rewards Claim | `owner` | None | Uses configured USDC. |
 | NFT V1 Mint | `owner`, `specId` | `useGasCoin` | Resolves the specification's SUI price from the configured NFT factory when built. |
 | SweetHouse Deposit | `owner`, `amount` | `coinType`, `useGasCoin` | Deposits into the public pool and returns staked coins to `owner`. |
 | SweetHouse Redeem Request | `owner`, `amount` | `coinType` | Spends staked coins from `owner` and creates a redeem request. |

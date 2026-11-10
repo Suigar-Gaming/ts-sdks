@@ -1,20 +1,10 @@
 # Suifrens agent instructions
 
-Applies to `packages/suifrens-display-system/` and its descendants, in addition to the [workspace instructions](../../AGENTS.md). Commands below run from the repository root. Source paths below are repository-relative.
+Read the [workspace instructions](../../AGENTS.md) too. These rules apply to `packages/suifrens-display-system/`. Run commands from the repository root.
 
-## Package structure and commands
+## Build and checks
 
-`@suigar/suifrens-display-system` is an ESM-only React library for rendering and animating capys and bullsharks. `tsdown` writes the built public entry points, declarations and SVG assets to `packages/suifrens-display-system/dist/`.
-
-- `src/components/`: species renderers and shared visual components.
-- `src/image-inline/`: inline SVG renderer.
-- `src/accessories/`: accessory definitions and artwork.
-- `src/animation/`, `src/battle/`, `src/expressions/` and `src/kits/`: animation and appearance APIs.
-- `src/types/`: shared types grouped by domain, with public exports in `src/types/index.ts`.
-- `scripts/`: accessory asset generation.
-- `test/`: unit and distribution tests.
-- `storybook/`: private Storybook workspace, controls and interaction tests.
-- `examples/fastify/`: private rendering server example.
+`@suigar/suifrens-display-system` is an ESM-only React library. `tsdown` builds public entry points, declarations and SVG assets into `dist/`.
 
 ```bash
 # Regenerate accessory assets and build
@@ -23,37 +13,41 @@ pnpm --dir packages/suifrens-display-system run build
 pnpm --dir packages/suifrens-display-system run build:ci
 # Regenerate accessory assets only
 pnpm --dir packages/suifrens-display-system run codegen
-# Validation, after building the package
+# Run after building: distribution tests import dist/
 pnpm --dir packages/suifrens-display-system run test
 pnpm --dir packages/suifrens-display-system run typecheck
 pnpm --dir packages/suifrens-display-system run lint
-# Validate Storybook and the examples, including their package dependency
+# Check Storybook and examples with their package dependency
 pnpm turbo run build test typecheck --filter='./packages/suifrens-display-system/examples/*' --filter='./packages/suifrens-display-system/storybook'
-# Focused tests
+# Focused test
 pnpm --dir packages/suifrens-display-system exec vitest run test/unit/components/capy/gestures.test.tsx
 ```
 
-## Public API and rendering compatibility
+Documentation-only edits need formatting and diff checks.
 
-- Preserve the documented root and subpath exports. Keep the historical `CapyImage` and `BullsharkImage` root exports available.
-- Check changes against both species, React 18.2 and 19 refs, and inline and external SVG rendering. Compatibility includes public props, types, animation behavior and emitted asset URLs.
-- Edit authored sources and regenerate accessory assets through the package scripts. Do not hand-edit `dist/` or copy compiled files into consumers.
-- Storybook and the Fastify example use public package exports. Keep them working as consumers of the built package.
+## Source and compatibility
 
-## Source conventions
-
-- Use kebab-case filenames for non-component modules and PascalCase for React components.
-- Group shared types by domain in `src/types/*.type.ts` and expose public types through `src/types/index.ts`. Keep private types used by only one component directly below its imports.
+- Preserve public root and subpath exports, including `CapyImage` and `BullsharkImage` at the root.
+- Check both species, React 18.2 and 19 refs, and inline and external SVG rendering. Cover public props, types, animations and asset URLs.
+- Edit authored sources and regenerate assets with the package scripts. Do not hand-edit `dist/` or copy compiled files into consumers.
+- Keep Storybook and the Fastify example using built public exports.
+- Use PascalCase for React component filenames and kebab-case for other modules.
+- Put shared types in `src/types/*.type.ts` and public exports in `src/types/index.ts`. Keep types used by one component below its imports.
+- Keep character patterns and gestures in `src/components/shared/`; species shapes and pattern selection belong in `src/components/capy/` and `src/components/bullshark/`.
+- Edit accessory artwork in `src/accessories/artwork/`. Single-layer assets use one SVG; layered assets use a folder with `default.svg` and optional `body.svg`, `left.svg` and `right.svg`. Crowns have their own viewport; kits use SVG templates. Regenerate `src/generated/` with `codegen` after artwork changes.
 
 ## Tests and visual review
 
-- Keep regression tests near the affected behavior under `test/unit/`. Use `test/distribution/` to check compiled exports, declarations and emitted assets.
-- Build before running the full package test suite: distribution tests import the compiled package. The package typecheck checks source, scripts and tests.
-- Follow the workspace testing conventions and run the package checks above for implementation changes. Validate Storybook and the examples with the CI command above. Documentation-only edits need formatting and diff checks.
-- For visual changes, show the owner renders both enlarged and at the size consumers will display them.
+Keep behavior tests in `test/unit/` and compiled export, declaration and asset checks in `test/distribution/`. The package typecheck covers source, scripts and tests. Run the checks above for implementation changes, including Storybook and examples.
 
-## Review and release
+Show visual changes enlarged and at the size consumers will display them.
 
-Follow the workspace rules for changesets, documentation and PRs. Add an `@suigar/suifrens-display-system` changeset for consumer-visible changes, with each note covering one topic. Use the workspace Changesets workflow to version the package.
+Storybook controls must affect the preview. Use `satisfies Meta<typeof Component>` and `StoryObj<typeof meta>` for component props, custom argument types for species previews, and `satisfies Meta` without a component for fixed demos. Hide Controls for fixed demos and catalogue docs.
+
+For browser tests, install Chromium with `pnpm --filter @suigar/suifrens-storybook exec playwright install --only-shell chromium`. Run interactions and accessibility checks from the testing widget, or `pnpm --filter @suigar/suifrens-storybook test:coverage` for the full suite, including portrait screenshots. Coverage is in `storybook/coverage/index.html`.
+
+## Release
+
+Follow the workspace changeset and PR rules. Consumer-visible changes need an `@suigar/suifrens-display-system` changeset, with one topic per note. Version through the workspace Changesets workflow.
 
 Before committing, pushing or opening a PR, present the package contents, check results and relevant renders for explicit owner approval of the current revision and scope.

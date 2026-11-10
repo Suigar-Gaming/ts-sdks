@@ -11,15 +11,14 @@ This Next.js app runs on Sui `testnet` and uses UI styles and theme tokens based
 
 ## Game controls
 
-Each game route reads its selection from the query string and provides:
+Game routes read the selection from the query string. They have:
 
 - Shared supported-coin selector using `client.suigar.getConfig().coins`
 - Connected-wallet balance cards for every supported coin type
 - Per-game form components for standard and PvP Coinflip flows
 - Standard game forms that use `client.suigar.getGameParameters({ game, coinType })` for live on-chain stake ranges, game-specific bounds and Keno/Plinko/Soccer/Wheel config selection
 - Open settings at the top right of either controls card to inspect the typed result of `getGameParameters({ game, coinType })`. The dialog shows the lookup request, raw payload, available configs, and expandable details for standard games and PvP Coinflip.
-- The PvP selector lists `pvp-coinflip` first.
-- Join and cancel cards use `client.suigar.getPvPCoinflipGames()` and each lobby's `coin_type` for coin selection and display. Public lobbies are visible before you connect a wallet. A toggle lets you join private lobbies. The cancel list shows only the connected wallet's lobbies. Cards use a compact multi-column layout and show the creator's side, privacy status, and a copyable game ID.
+- The PvP selector lists `pvp-coinflip` first. Join and cancel cards use `client.suigar.getPvPCoinflipGames()` and each lobby's `coin_type` for coin selection and display. Public lobbies are visible before you connect a wallet. A toggle lets you join private lobbies. The cancel list shows only the connected wallet's lobbies. Cards use a compact multi-column layout and show the creator's side, privacy status, and a copyable game ID.
 
 ## Transactions and events
 
@@ -51,7 +50,7 @@ Build the app:
 pnpm turbo run build --filter='./playground'
 ```
 
-Useful local checks:
+Local checks:
 
 ```bash
 pnpm --dir playground run lint

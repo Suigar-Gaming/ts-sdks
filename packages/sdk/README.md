@@ -4,9 +4,9 @@ Use this TypeScript SDK to build transactions for Suigar's provably fair casino 
 
 ## Agent skills
 
-The npm package includes a lightweight agent skill at `skills/suigar-sdk/SKILL.md`. It routes matching tasks to full instructions in [Suigar-Gaming/agent-skills](https://github.com/Suigar-Gaming/agent-skills) on `main`. Linked references are fetched only when needed.
+The package includes [an agent skill](skills/suigar-sdk/SKILL.md) that loads full instructions from `main` in [Suigar-Gaming/agent-skills](https://github.com/Suigar-Gaming/agent-skills). It fetches references as needed.
 
-You can also install the full skills with `npx skills add Suigar-Gaming/agent-skills`.
+Install the full skills with `npx skills add Suigar-Gaming/agent-skills`.
 
 ## Documentation
 
@@ -20,20 +20,20 @@ For Sui client, transaction and network APIs, see the [Sui TypeScript SDK docs](
 npm install --save @suigar/sdk @mysten/sui @mysten/bcs
 ```
 
-The SDK is also published on JSR:
+Also available on JSR:
 
 ```bash
 pnpm add jsr:@suigar/sdk
 ```
 
-Runtime requirements:
+Requirements:
 
 - Node.js `^24.0.0 || ^26.0.0`
 - ESM project configuration (`"type": "module"`)
 - `@mysten/sui@2`
 - `@mysten/bcs@2`
 
-This SDK targets Sui TypeScript SDK 2.0+ only. Follow the official [Sui 2.0 migration guide](https://sdk.mystenlabs.com/sui/migrations/sui-2.0) if your app still uses the pre-2.0 client API.
+Requires Sui TypeScript SDK 2.0+. Follow the official [Sui 2.0 migration guide](https://sdk.mystenlabs.com/sui/migrations/sui-2.0) if your app still uses the pre-2.0 client API.
 
 ## Public exports
 
@@ -111,11 +111,7 @@ import type {
 } from '@suigar/sdk/games';
 ```
 
-The game subpath exports:
-
-- `@suigar/sdk/games`: `GAMES`, `Game`, `StandardGame`, `PvPGame`, `CoinSide`, `PvPCoinflipAction`, `CreateGameBetOptions`, `CoinflipTransactionOptions`, `KenoTransactionOptions`, `LimboTransactionOptions`, `PlinkoTransactionOptions`, `RangeTransactionOptions`, `SoccerTransactionOptions`, `WheelTransactionOptions`, `CreatePvPCoinflipTransactionOptions`, `JoinPvPCoinflipTransactionOptions`, `CancelPvPCoinflipTransactionOptions`
-
-Call SDK methods on the registered extension.
+The `@suigar/sdk/games` subpath exports `GAMES`, `Game`, `StandardGame`, `PvPGame`, `CoinSide`, `PvPCoinflipAction`, `CreateGameBetOptions`, `CoinflipTransactionOptions`, `KenoTransactionOptions`, `LimboTransactionOptions`, `PlinkoTransactionOptions`, `RangeTransactionOptions`, `SoccerTransactionOptions`, `WheelTransactionOptions`, `CreatePvPCoinflipTransactionOptions`, `JoinPvPCoinflipTransactionOptions`, `CancelPvPCoinflipTransactionOptions`.
 
 ```ts
 const client = new SuiGrpcClient({ baseUrl, network }).$extend(suigar());
@@ -236,7 +232,7 @@ When `partner` is configured, the SDK writes that wallet address into supported 
 
 ## Client API
 
-The registered extension has these methods and properties:
+The extension exposes:
 
 - `getConfig()`
 - `getGameParameters({ game, coinType, ...options })`

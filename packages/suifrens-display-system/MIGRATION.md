@@ -1,6 +1,6 @@
 # Migrating from the 1.x GitHub archive
 
-When moving from the 1.x GitHub release archive to npm, update the features your application uses as described below. See the [README](README.md) for current usage and local development commands.
+Update the imports and props your application uses. See the [README](README.md) for installation and current usage.
 
 ## Installation and module format
 
@@ -75,13 +75,13 @@ import type { SuiFrenSpecies } from '@suigar/suifrens-display-system/types';
 const species: SuiFrenSpecies = 'capy';
 ```
 
-Both species now share `SuiFrenSkin` and `SuiFrenExpression`. Replace species-specific skin and expression type imports with these types from `/types`. Species-specific attributes such as the capy's `earShape` and the bullshark's `finStyle` remain on their respective attribute types.
+Import the shared `SuiFrenSkin` and `SuiFrenExpression` types from `/types` in place of species-specific types. Keep `earShape` on capy attributes and `finStyle` on bullshark attributes.
 
 Use `SUIFREN_SKINS` from `/attributes` for skin values. Import `ALL_EXPRESSIONS`, `POSITIVE_EXPRESSIONS` and `NEGATIVE_EXPRESSIONS` from `/expressions` for expression lists.
 
-## One animation configuration prop
+## Animation configuration
 
-Both `SuiFrenImage` and `SuiFrenImageInline` now take their animation settings in one `animation` prop. Move the former top-level options into that object:
+Move top-level animation options into the `animation` prop on both image renderers:
 
 | Previous prop             | New location               |
 | ------------------------- | -------------------------- |
@@ -230,10 +230,10 @@ import { buildRunnerAccessories } from '@suigar/suifrens-display-system/kits';
 const accessories = buildRunnerAccessories({ color: '#ec7da6', number: 3 });
 ```
 
-## Verify your application
-
-After updating imports and props, run your application's typecheck and build. Check both species in each renderer you use: static images, animation playback, custom accessories and exported SVGs. For duel scripts, also check damage timing and victory iteration counts.
-
 ## VIP crown names
 
-Update stored crown names and catalogue lookups to use numeric tiers: for example, `bronze-i` becomes `bronze-1` and `platinium-ii` becomes `platinum-2`. Bronze, silver, gold, platinum and diamond have tiers 1–3. Master has tiers 1–2. The final crown is `legend`.
+Update stored crown names and catalogue lookups to use numeric tiers: for example, `bronze-i` becomes `bronze-1` and `platinium-ii` becomes `platinum-2`. Bronze, silver, gold, platinum and diamond have tiers 1 to 3. Master has tiers 1 to 2. The final crown is `legend`.
+
+## Check your application
+
+Run your application's typecheck and build. Check both species in each renderer you use: static images, animation playback, custom accessories and exported SVGs. For duels, check damage timing and victory iteration counts.

@@ -21,7 +21,7 @@ Read it completely before configuring or using the Suigar MCP server. Its links 
 https://raw.githubusercontent.com/Suigar-Gaming/agent-skills/main/skills/suigar-mcp/references/<file>.md
 ```
 
-Follow links to other skills when needed, resolving them relative to the fetched document URL. Always use `main` for skills and references.
+Suigar agent skills are not versioned with the packages. Always use `main` for skills and references. Resolve links to other skills relative to the fetched document URL.
 
 To browse the skill: https://github.com/Suigar-Gaming/agent-skills/tree/main/skills/suigar-mcp
 

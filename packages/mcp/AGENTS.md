@@ -24,14 +24,14 @@ pnpm --dir packages/mcp run typecheck
 pnpm --dir packages/mcp run lint
 ```
 
-## Architecture and protocol invariants
+## Architecture and protocol
 
 `packages/mcp` exposes a local stdio MCP server plus a bundled MCP App resource. Keep SDK and chain behavior in `@suigar/sdk` and `@mysten/sui`.
 
 - Use ext-apps 2 with MCP SDK 2: `@modelcontextprotocol/server`, `@modelcontextprotocol/server/stdio`, and `@modelcontextprotocol/client`. Prefer shared types, errors, and transports exported by `@modelcontextprotocol/server`; reserve `@modelcontextprotocol/client` for client-specific APIs. The client package is a development dependency for tests and the bundled App build; the SDK packages supply core transitively. Use the published ext-apps React types. Register tools with complete Standard JSON Schema schemas (such as Zod objects) and preserve schema/handler type inference.
 - Target MCP 2026-07-28 and use SDK 2 `serveStdio` for stdio version negotiation, and keep compatibility with legacy initialization. Let the SDK validate request metadata and supply discovery, result discriminators, server identity, and cache hints. Keep tool listings deterministic. Pass application state explicitly in tool arguments. Test modern wire responses as well as legacy clients.
 - Unknown tool calls reject with a protocol invalid-params error; schema validation failures return `isError: true`. For Suigar handler failures, return text and structured error details that explain how to recover.
-- Always return both text `content` and `structuredContent`.
+- Return both text `content` and `structuredContent`.
 - Include the field, config or network details an agent needs to retry after a tool error.
 - Document MCP config to match `SuigarConfigOverrides`: both `coins.sui` and `coins.usdc` accept optional `coinType`, `decimals`, and `priceInfoObjectId` metadata.
 - Merge partial MCP App host-context updates with the existing context and apply host-provided safe-area insets to every inspector screen.

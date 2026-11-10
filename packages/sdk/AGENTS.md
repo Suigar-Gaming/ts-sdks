@@ -25,7 +25,7 @@ pnpm --dir packages/sdk exec vitest run -t "builds a coinflip transaction with a
 
 ## Public API and implementation patterns
 
-1. Prefer integrating through `suigar()` on an existing client such as `SuiGrpcClient` or any other `ClientWithCoreApi` implementation instead of bypassing the extension layer.
+1. Integrate through `suigar()` on an existing `SuiGrpcClient` or another `ClientWithCoreApi` implementation.
 2. The package exposes `@suigar/sdk`, `@suigar/sdk/games`, and `@suigar/sdk/utils`. The package root exports `suigar`, `SuigarClient`, `SUPPORTED_SUI_NETWORKS`, `SuigarNetwork`, and `SuigarCoin`. For game-related public types and constants such as `GAMES`, `Game`, `StandardGame`, `PvPGame`, `CoinSide`, and `PvPCoinflipAction`, prefer `@suigar/sdk/games`. Prefer importing parser and helper utilities from `@suigar/sdk/utils`. Reusable SDK constants such as `DEFAULT_GAS_BUDGET_MIST`, `DEFAULT_QUERY_LIMIT`, `RANGE_POINT_LIMIT`, `DEFAULT_RANGE_SCALE`, and `DEFAULT_LIMBO_MULTIPLIER_SCALE` are available from `@suigar/sdk/utils`. Reuse them in app code when they fit. `DEFAULT_QUERY_LIMIT` is `50`, the reusable default page size for SDK queries; `getPvPCoinflipGames()` currently uses it when called without options. Utility function behavior:
    - `toBigInt()` accepts `bigint`, finite `number`, non-negative integer `string`, and `boolean` values. It throws `TypeError` for invalid input shapes and `RangeError` for negatives.
    - `toU8()` accepts a finite integer `number` or plain integer `string` in the `0..255` range. It throws `TypeError` for non-numeric input and `RangeError` for non-integer or out-of-range values.
@@ -37,7 +37,7 @@ pnpm --dir packages/sdk exec vitest run -t "builds a coinflip transaction with a
 
 ## Client architecture
 
-The client extension exposes the API; typed transaction builders prepare the Move calls. Read both before changing behavior.
+Read the client extension and affected transaction builder before changing behavior.
 
 ### Layers
 
@@ -45,7 +45,7 @@ The client extension exposes the API; typed transaction builders prepare the Mov
 2. Client extension: `packages/sdk/src/client.ts` registers the extension on top of a `ClientWithCoreApi` and exposes serialization, BCS helpers, and transaction builders.
 3. Transactions and contracts: `packages/sdk/src/transactions/` consumes network-resolved config, normalizes user input, and invokes generated Move wrappers from `packages/sdk/src/contracts/`.
 
-Key files:
+Source files:
 
 | Layer                       | File                                 |
 | --------------------------- | ------------------------------------ |
@@ -70,11 +70,7 @@ Keep the two transaction families separate:
   - Return each parsed game with a derived `coin_type` string from the Move object type.
 - For one specific PvP Coinflip game object, use the exported generated helper, `client.suigar.bcs.PvPCoinflipGame.get({ client, objectId })`, when a product needs one live game object outside the registry list.
 
-When making changes:
-
-- Read both the client entrypoint and the relevant transaction builder before changing behavior.
-- Keep standard and PvP option shapes separate.
-- Do not route PvP Coinflip through the standard game builder.
+Keep standard and PvP option shapes separate. Do not route PvP Coinflip through the standard game builder.
 
 ### Config resolution
 
