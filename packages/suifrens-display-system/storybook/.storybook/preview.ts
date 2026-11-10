@@ -39,7 +39,12 @@ const preview: Preview = {
 		a11y: { test: 'error' },
 		docs: { container: ThemeDocsContainer },
 		options: {
-			storySort: { order: ['Suifrens', ['Onboarding', 'Characters', 'Accessories', 'Kits', '*']] },
+			storySort: {
+				order: [
+					'Suifrens',
+					['Onboarding', 'Characters', 'Accessories', 'Kits', '*', 'Playground', ['Sandbox']],
+				],
+			},
 		},
 		controls: {
 			matchers: {

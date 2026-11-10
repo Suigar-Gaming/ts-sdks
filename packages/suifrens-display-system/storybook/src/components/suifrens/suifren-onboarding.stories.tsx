@@ -87,7 +87,7 @@ function Onboarding() {
 				) : (
 					<a
 						className="story-button"
-						href="./?path=/story/suifrens-playground-playable-sandbox--control-pad-playground"
+						href="./?path=/story/suifrens-playground-sandbox--control-pad-playground"
 						target="_top"
 					>
 						Try the playground <span aria-hidden="true">→</span>

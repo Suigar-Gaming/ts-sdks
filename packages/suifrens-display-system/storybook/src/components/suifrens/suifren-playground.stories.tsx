@@ -28,7 +28,7 @@ const baseAttributes = {
 } as const;
 
 const meta = {
-	title: 'Suifrens/Playground/Playable Sandbox',
+	title: 'Suifrens/Playground/Sandbox',
 	component: SuiFrenImageInline,
 	tags: ['1.0.2'],
 } satisfies Meta<typeof SuiFrenImageInline>;
