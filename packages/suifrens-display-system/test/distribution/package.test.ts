@@ -4,7 +4,7 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { test } from 'vitest';
 
-const root = new URL('../', import.meta.url);
+const root = new URL('../../', import.meta.url);
 const manifest = JSON.parse(readFileSync(new URL('package.json', root), 'utf8'));
 
 test('all published entry points and declaration files resolve', async () => {

@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 
 import { describe, expect, it } from 'vitest';
-import { resolveEmbeddedSvgSymbolSource } from '../src/utils/svg-symbol-data-url.js';
+import { resolveEmbeddedSvgSymbolSource } from '../../../src/utils/svg-symbol-data-url.js';
 
 const SPRITE_MARKUP = [
 	'<svg xmlns="http://www.w3.org/2000/svg">',

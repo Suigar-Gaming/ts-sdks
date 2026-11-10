@@ -2,10 +2,13 @@
 import { readFileSync } from 'node:fs';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { expect, test } from 'vitest';
-import { vipCrownAccessories } from '../src/constants/vip-crowns.js';
-import { getVipCrownAssetSrc, getVipCrownAssetViewport } from '../src/helpers/crown-assets.js';
-import { SuiFrenImageInline } from '../src/image-inline/index.js';
-import { SuiFrenImage } from '../src/index.js';
+import { vipCrownAccessories } from '../../../src/constants/vip-crowns.js';
+import {
+	getVipCrownAssetSrc,
+	getVipCrownAssetViewport,
+} from '../../../src/helpers/crown-assets.js';
+import { SuiFrenImageInline } from '../../../src/image-inline/index.js';
+import { SuiFrenImage } from '../../../src/index.js';
 
 const common = {
 	mainColor: '6FBBEE',
@@ -44,7 +47,9 @@ test.each([
 				expect(svg.getAttribute('width')).toBe('64');
 				const image = svg.querySelector('image')!;
 				const asset = getVipCrownAssetSrc(accessory.name);
-				if (!asset) throw new Error(`Missing crown: ${accessory.name}`);
+				if (!asset) {
+					throw new Error(`Missing crown: ${accessory.name}`);
+				}
 				const viewport = getVipCrownAssetViewport(asset)!;
 				const scaleX = Number(image.getAttribute('width')) / 3209;
 				const scaleY = Number(image.getAttribute('height')) / 3609;

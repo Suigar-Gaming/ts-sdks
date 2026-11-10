@@ -1,11 +1,11 @@
 // @vitest-environment happy-dom
 import { act, useEffect } from 'react';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { SuiFrenBattleSprite } from '../src/components/battle/SuiFrenBattleSprite.js';
-import { createTestRoot } from './helpers/react-dom.js';
+import { SuiFrenBattleSprite } from '../../../../src/components/battle/SuiFrenBattleSprite.js';
+import { createTestRoot } from '../../../helpers/react-dom.js';
 
 const image = vi.hoisted(() => ({ mounted: vi.fn<() => void>(), unmounted: vi.fn<() => void>() }));
-vi.mock('../src/image-inline/index.js', () => ({
+vi.mock('../../../../src/image-inline/index.js', () => ({
 	SuiFrenImageInline: function Image() {
 		useEffect(() => {
 			image.mounted();

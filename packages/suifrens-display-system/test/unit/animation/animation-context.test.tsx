@@ -1,21 +1,21 @@
 // @vitest-environment happy-dom
 import { act } from 'react';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { AnimationController } from '../src/animation/animation-controller.js';
-import { AnimationProvider } from '../src/animation/AnimationContext.js';
-import type { AnimationSequence } from '../src/types/animation.type.js';
-import { createTestRoot } from './helpers/react-dom.js';
+import { AnimationController } from '../../../src/animation/animation-controller.js';
+import { AnimationProvider } from '../../../src/animation/AnimationContext.js';
+import type { AnimationSequence } from '../../../src/types/animation.type.js';
+import { createTestRoot } from '../../helpers/react-dom.js';
 
 const resolver = vi.hoisted(() => ({
 	load: vi.fn<(name: string) => Promise<AnimationSequence | null>>(),
 	walk: { name: 'walk', duration: 100, tracks: [] },
 }));
-vi.mock('../src/animation/preset-resolver.js', () => ({
+vi.mock('../../../src/animation/preset-resolver.js', () => ({
 	isDeferredPreset: (name: string) => ['run', 'hit', 'death'].includes(name),
 	resolvePresetSequenceSync: (name: string) => (name === 'walk' ? resolver.walk : undefined),
 	loadDeferredPresetSequence: resolver.load,
 }));
-vi.mock('../src/animation/waapi-backend.js', () => ({
+vi.mock('../../../src/animation/waapi-backend.js', () => ({
 	startWaapiAnimation: () => ({ handled: false }),
 }));
 

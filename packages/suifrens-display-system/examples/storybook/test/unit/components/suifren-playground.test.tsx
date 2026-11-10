@@ -1,8 +1,8 @@
 // @vitest-environment happy-dom
 import type { ComponentType } from 'react';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { ControlPadPlayground } from '../src/components/suifren-playground.stories.js';
-import { createTestRoot } from './helpers/react-dom.js';
+import { ControlPadPlayground } from '../../../src/components/suifren-playground.stories.js';
+import { createTestRoot } from '../../helpers/react-dom.js';
 
 const actor = vi.hoisted(() => ({
 	state: {
@@ -26,7 +26,7 @@ const actor = vi.hoisted(() => ({
 		reset: vi.fn<() => void>(),
 	},
 }));
-vi.mock('../src/utils/use-suifren-actor.js', () => ({ useSuiFrenActor: () => actor }));
+vi.mock('../../../src/utils/use-suifren-actor.js', () => ({ useSuiFrenActor: () => actor }));
 vi.mock('@suigar/suifrens-display-system/image-inline', () => ({
 	SuiFrenImageInline: () => <svg />,
 }));

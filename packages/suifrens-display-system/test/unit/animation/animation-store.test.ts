@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest';
-import { composePartTransform } from '../src/animation/animation-store.js';
-import type { AnimationPart, PartPose } from '../src/types/animation.type.js';
-import { parseMatrix } from '../src/utils/matrix.js';
+import { composePartTransform } from '../../../src/animation/animation-store.js';
+import type { AnimationPart, PartPose } from '../../../src/types/animation.type.js';
+import { parseMatrix } from '../../../src/utils/matrix.js';
 
 // Native capy and bullshark arms share these shoulder seams and mirrored bases.
 test.each([
@@ -18,4 +18,20 @@ test.each([
 		expect(a * local.x + c * local.y + e).toBeCloseTo(shoulder.x, 3);
 		expect(b * local.x + d * local.y + f).toBeCloseTo(shoulder.y, 3);
 	}
+});
+
+test('the fin rotates around its attachment point while inheriting head movement', () => {
+	const result = parseMatrix(
+		composePartTransform(
+			'fin',
+			undefined,
+			new Map([
+				['fin', { rotate: 90 }],
+				['head', { translate: { x: 3, y: 4 } }],
+			]),
+		),
+	)!;
+	// A rotation leaves its pivot fixed; head translation uses four SVG units per pose unit.
+	expect(result[0] * 1008 + result[2] * 1486 + result[4]).toBeCloseTo(1020);
+	expect(result[1] * 1008 + result[3] * 1486 + result[5]).toBeCloseTo(1502);
 });

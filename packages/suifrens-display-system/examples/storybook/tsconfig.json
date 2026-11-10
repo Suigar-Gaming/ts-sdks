@@ -20,5 +20,5 @@
 		"noEmit": true,
 		"types": ["node", "vite/client"]
 	},
-	"include": ["src", "tests", ".storybook", "vitest.config.ts"]
+	"include": ["src", "test", ".storybook", "vitest.config.ts"]
 }
