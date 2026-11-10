@@ -1,10 +1,17 @@
 import type { SuiClientTypes } from '@mysten/sui/client';
 import { SuiGrpcClient } from '@mysten/sui/grpc';
 import { accessories } from '@suigar/suifrens-display-system/accessories';
-import type { AccessoryMetadata, SuiFrenType } from '@suigar/suifrens-display-system/types';
+import type { AccessoryMetadata, SuiFrenSpecies } from '@suigar/suifrens-display-system/types';
 import { parseSuiFrenAttributes } from '../../utils/attribute-utils.js';
-import { extractBaseFrenType } from '../../utils/object-type-utils.js';
-import { ACCESSORIES_KEY_TYPE, BULLSHARK_TYPE, CAPY_TYPE, NETWORK } from '../lib/config.js';
+import {
+	ACCESSORIES_KEY_TYPE,
+	ACCESSORY_TYPE,
+	BULLSHARK_TYPE,
+	CAPY_TYPE,
+	NETWORK,
+	SUIFREN_TYPE,
+} from '../lib/config.js';
+import { Accessory, SuiFren } from '../lib/suifren-bcs.js';
 
 export const suiClient = new SuiGrpcClient({
 	network: NETWORK,
@@ -14,20 +21,16 @@ export const suiClient = new SuiGrpcClient({
 export async function getSuiFrenAttributesAndAccessories(suiFrenId: string) {
 	const { object } = await suiClient.getObject({
 		objectId: suiFrenId,
-		include: { json: true },
+		include: { content: true },
 	});
-	const suiFrenType = getSuiFrenTypeFromObjectType(object.type);
-	const attributes = object.json?.attributes;
-	if (
-		!suiFrenType ||
-		!Array.isArray(attributes) ||
-		!attributes.every((v) => typeof v === 'string')
-	) {
+	const species = getSuiFrenSpeciesFromObjectType(object.type);
+	if (!species) {
 		throw new Error(`Failed to parse object data returned for SuiFren ${suiFrenId}`);
 	}
+	const { attributes } = SuiFren.parse(object.content);
 	return {
 		equippedAccessories: await getSuiFrenAccessories(suiFrenId),
-		attributes: parseSuiFrenAttributes(suiFrenType, attributes),
+		attributes: parseSuiFrenAttributes(species, attributes),
 	};
 }
 
@@ -46,9 +49,13 @@ export async function getSuiFrenAccessories(suiFrenId: string) {
 			const { object } = await suiClient.getDynamicObjectField({
 				parentId: suiFrenId,
 				name: field.name,
-				include: { json: true },
+				include: { content: true },
 			});
-			const accessory = accessories.find((item) => item.name === object.json?.name);
+			if (object.type !== ACCESSORY_TYPE) {
+				continue;
+			}
+			const { name } = Accessory.parse(object.content);
+			const accessory = accessories.find((item) => item.name === name);
 			if (accessory) {
 				equipped.push(accessory);
 			}
@@ -58,11 +65,12 @@ export async function getSuiFrenAccessories(suiFrenId: string) {
 	return equipped;
 }
 
-export function getSuiFrenTypeFromObjectType(suiFrenObjectType: string): SuiFrenType | undefined {
-	const frenObjectType = extractBaseFrenType(suiFrenObjectType);
-	if (frenObjectType === CAPY_TYPE) {
+export function getSuiFrenSpeciesFromObjectType(
+	suiFrenObjectType: string,
+): SuiFrenSpecies | undefined {
+	if (suiFrenObjectType === `${SUIFREN_TYPE}<${CAPY_TYPE}>`) {
 		return 'capy';
-	} else if (frenObjectType === BULLSHARK_TYPE) {
+	} else if (suiFrenObjectType === `${SUIFREN_TYPE}<${BULLSHARK_TYPE}>`) {
 		return 'bullshark';
 	}
 	return undefined;

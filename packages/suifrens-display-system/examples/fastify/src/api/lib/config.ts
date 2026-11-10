@@ -36,3 +36,6 @@ const config = {
 export const CAPY_TYPE = `${config[NETWORK].packageId}::capy::Capy`;
 export const BULLSHARK_TYPE = `${config[NETWORK].packageIdV2}::bullshark::Bullshark`;
 export const ACCESSORIES_KEY_TYPE = `${config[NETWORK].accessoriesPackageId}::accessories::AccessoryKey`;
+
+export const SUIFREN_TYPE = `${config[NETWORK].packageId}::suifrens::SuiFren`;
+export const ACCESSORY_TYPE = `${config[NETWORK].accessoriesPackageId}::accessories::Accessory`;
