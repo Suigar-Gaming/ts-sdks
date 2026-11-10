@@ -25,7 +25,7 @@ const DEFERRED_PRESET_NAMES = new Set([
 	'floss',
 ]);
 
-let cataloguePromise: Promise<Record<string, AnimationSequence>> | undefined;
+let battleRoyalePresetsPromise: Promise<Record<string, AnimationSequence>> | undefined;
 
 export function resolvePresetSequenceSync(name: string): AnimationSequence | undefined {
 	return getCorePresetSequence(name);
@@ -39,12 +39,12 @@ export async function loadDeferredPresetSequence(name: string): Promise<Animatio
 	if (!isDeferredPreset(name)) {
 		return null;
 	}
-	cataloguePromise ??= import('./battle-royale-presets.js')
+	battleRoyalePresetsPromise ??= import('./battle-royale-presets.js')
 		.then(({ BATTLE_ROYALE_PRESETS }) => BATTLE_ROYALE_PRESETS)
 		.catch((error: unknown) => {
-			cataloguePromise = undefined;
+			battleRoyalePresetsPromise = undefined;
 			throw error;
 		});
-	const catalogue = await cataloguePromise;
+	const catalogue = await battleRoyalePresetsPromise;
 	return catalogue[name] ?? null;
 }
