@@ -50,21 +50,6 @@ function formatSvgNumber(value: number) {
 		.replace(/^0\./, '.');
 }
 
-function importName(accessoryName: string) {
-	const parts = accessoryName
-		.replace(/[^a-zA-Z0-9]+/g, ' ')
-		.trim()
-		.split(/\s+/);
-	const name = parts
-		.map((part, index) =>
-			index === 0
-				? part.charAt(0).toLowerCase() + part.slice(1)
-				: part.charAt(0).toUpperCase() + part.slice(1),
-		)
-		.join('');
-	return /^[0-9]/.test(name) ? `asset${name}` : name;
-}
-
 function extractSvgContent(markup: string) {
 	return markup.replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '');
 }
@@ -121,7 +106,6 @@ await rm(OUTPUT_DIR, { recursive: true, force: true });
 await mkdir(OUTPUT_DIR, { recursive: true });
 await mkdir('src/generated', { recursive: true });
 
-const imports: Array<string> = [];
 const manifestEntries: Array<string> = [];
 const splitLimbAssetNames: Array<string> = [];
 
@@ -174,19 +158,16 @@ for (const [name, renderer] of Object.entries(ACCESSORY_RENDERERS).sort(([left],
 	}
 
 	const filename = `${slugify(name)}.svg`;
-	const importId = importName(name);
 	await writeFile(
 		join(OUTPUT_DIR, filename),
 		`<svg xmlns="http://www.w3.org/2000/svg">${symbols.join('')}</svg>`,
 	);
-	imports.push(`import ${importId} from "./accessory-assets/${filename}";`);
-	manifestEntries.push(`${JSON.stringify(name)}: new URL(${importId}, import.meta.url).href`);
+	manifestEntries.push(
+		`${JSON.stringify(name)}: new URL("./accessory-assets/${filename}", import.meta.url).href`,
+	);
 }
 
-const manifest = `${imports.join('\n')}
-
-
-export const SPLIT_LIMB_ASSET_NAMES = new Set<string>(${JSON.stringify(
+const manifest = `export const SPLIT_LIMB_ASSET_NAMES = new Set<string>(${JSON.stringify(
 	splitLimbAssetNames,
 )} as const);
 
