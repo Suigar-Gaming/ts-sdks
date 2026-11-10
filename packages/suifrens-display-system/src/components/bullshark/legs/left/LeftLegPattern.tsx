@@ -10,7 +10,7 @@ type LeftLegPatternProps = {
 	skin: BullsharkSkin;
 } & SVGProps<SVGGElement>;
 
-const leftLegPatternComponents: Record<BullsharkSkin, ComponentType | null> = {
+const LEFT_LEG_PATTERN_COMPONENTS: Record<BullsharkSkin, ComponentType | null> = {
 	basic: null,
 	cheetah: null,
 	fox: null,
@@ -22,7 +22,7 @@ const leftLegPatternComponents: Record<BullsharkSkin, ComponentType | null> = {
 };
 
 export function LeftLegPattern({ skin, ...svgProps }: LeftLegPatternProps) {
-	const LeftLegPatternContent = leftLegPatternComponents[skin];
+	const LeftLegPatternContent = LEFT_LEG_PATTERN_COMPONENTS[skin];
 	const baseTransform = 'matrix( 2.9166107177734375, 0, 0, 2.9166107177734375, 1042.6,1961.9) ';
 	const transform = useAnimatedPartTransform('leftLeg', baseTransform);
 

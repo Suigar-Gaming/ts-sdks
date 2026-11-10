@@ -17,7 +17,7 @@ type BodyPatternProps = {
 	skin: CapySkin;
 } & SVGProps<SVGGElement>;
 
-const bodyPatternComponents: Record<CapySkin, ComponentType> = {
+const BODY_PATTERN_COMPONENTS: Record<CapySkin, ComponentType> = {
 	basic: BasicBodyPattern,
 	cheetah: CheetahBodyPattern,
 	fox: FoxBodyPattern,
@@ -29,7 +29,7 @@ const bodyPatternComponents: Record<CapySkin, ComponentType> = {
 };
 
 export function BodyPattern({ skin, ...svgProps }: BodyPatternProps) {
-	const BodyPatternContent = bodyPatternComponents[skin];
+	const BodyPatternContent = BODY_PATTERN_COMPONENTS[skin];
 	const baseTransform = 'matrix(2.9166107177734375, 0, 0, 2.9166107177734375, 956.5,1516.1)';
 	const transform = useAnimatedPartTransform('body', baseTransform);
 	return (

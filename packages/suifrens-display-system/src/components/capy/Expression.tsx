@@ -29,7 +29,7 @@ type ExpressionProps = {
 	expression: CapyExpression;
 };
 
-export const expressionComponents: Record<CapyExpression, ComponentType> = {
+export const EXPRESSION_COMPONENTS: Record<CapyExpression, ComponentType> = {
 	angry: AngryExpression,
 	annoyed: AnnoyedExpression,
 	bigSmile: BigSmileExpression,
@@ -53,7 +53,7 @@ export const expressionComponents: Record<CapyExpression, ComponentType> = {
 };
 
 export function Expression({ expression }: ExpressionProps) {
-	const ExpressionComponent = expressionComponents[expression];
+	const ExpressionComponent = EXPRESSION_COMPONENTS[expression];
 	return (
 		<AnimatedAccessory fallbackPart="head">
 			<g>

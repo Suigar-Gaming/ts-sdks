@@ -11,7 +11,7 @@ type RightLegPatternProps = {
 	skin: CapySkin;
 } & SVGProps<SVGGElement>;
 
-const rightLegPatternComponents: Record<CapySkin, ComponentType | null> = {
+const RIGHT_LEG_PATTERN_COMPONENTS: Record<CapySkin, ComponentType | null> = {
 	basic: null,
 	cheetah: null,
 	fox: null,
@@ -23,7 +23,7 @@ const rightLegPatternComponents: Record<CapySkin, ComponentType | null> = {
 };
 
 export function RightLegPattern({ skin, ...svgProps }: RightLegPatternProps) {
-	const RightLegPatternContent = rightLegPatternComponents[skin];
+	const RightLegPatternContent = RIGHT_LEG_PATTERN_COMPONENTS[skin];
 	const baseTransform = 'matrix(2.9166107177734375, 0, 0, 2.9166107177734375, 1463.45,1961.9)';
 	const transform = useAnimatedPartTransform('rightLeg', baseTransform);
 	return (

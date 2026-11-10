@@ -54,7 +54,7 @@ import layer49 from '../accessories/artwork/soccer-team-shirt/left.svg';
 import layer50 from '../accessories/artwork/soccer-team-shirt/right.svg';
 import layer51 from '../accessories/artwork/soccer-team-swim-trunks/body.svg';
 import layer52 from '../accessories/artwork/soccer-team-swim-trunks/default.svg';
-export const artwork: Readonly<Record<string, Readonly<Record<string, string>>>> = {
+export const ARTWORK: Readonly<Record<string, Readonly<Record<string, string>>>> = {
 	'patterns/canton': { leg: layer0, patch: layer1, shirt: layer2, waist: layer3 },
 	'patterns/chevron': { leg: layer4, patch: layer5, shirt: layer6, waist: layer7 },
 	'patterns/cross': { leg: layer8, patch: layer9, shirt: layer10, waist: layer11 },

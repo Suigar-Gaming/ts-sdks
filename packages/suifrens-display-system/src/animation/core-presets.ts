@@ -14,7 +14,7 @@ type SequenceWithHold = {
 
 const WALK_DURATION = 1200;
 
-const walkSequence: AnimationSequence = {
+const WALK_SEQUENCE: AnimationSequence = {
 	name: 'walk',
 	duration: WALK_DURATION,
 	tracks: [
@@ -183,7 +183,7 @@ const walkSequence: AnimationSequence = {
 
 const GOALKEEPER_CRAB_DURATION = 980;
 
-const goalkeeperCrabSequence: AnimationSequence = {
+const GOALKEEPER_CRAB_SEQUENCE: AnimationSequence = {
 	name: 'goalkeeperCrab',
 	duration: GOALKEEPER_CRAB_DURATION,
 	tracks: [
@@ -352,7 +352,7 @@ const goalkeeperCrabSequence: AnimationSequence = {
 
 const CELEBRATE_DURATION = 900;
 
-const celebrateSequence: AnimationSequence = {
+const CELEBRATE_SEQUENCE: AnimationSequence = {
 	name: 'celebrate',
 	duration: CELEBRATE_DURATION,
 	tracks: [
@@ -577,7 +577,7 @@ const celebrateSequence: AnimationSequence = {
 
 const JACKPOT_DURATION = 1300;
 
-const jackpotSequence: AnimationSequence = {
+const JACKPOT_SEQUENCE: AnimationSequence = {
 	name: 'jackpot',
 	duration: JACKPOT_DURATION,
 	tracks: [
@@ -767,7 +767,7 @@ const jackpotSequence: AnimationSequence = {
 
 const SLOT_PULL_DURATION = 900;
 
-const slotPullSequence: AnimationSequence = {
+const SLOT_PULL_SEQUENCE: AnimationSequence = {
 	name: 'slotPull',
 	duration: SLOT_PULL_DURATION,
 	tracks: [
@@ -896,7 +896,7 @@ const slotPullSequence: AnimationSequence = {
 
 const SUSPENSE_DURATION = 1100;
 
-const suspenseSequence: AnimationSequence = {
+const SUSPENSE_SEQUENCE: AnimationSequence = {
 	name: 'suspense',
 	duration: SUSPENSE_DURATION,
 	tracks: [
@@ -1045,7 +1045,7 @@ const suspenseSequence: AnimationSequence = {
 
 const JUMP_DURATION = 900;
 
-const jumpSequence: AnimationSequence = {
+const JUMP_SEQUENCE: AnimationSequence = {
 	name: 'jump',
 	duration: JUMP_DURATION,
 	tracks: [
@@ -1220,7 +1220,7 @@ const jumpSequence: AnimationSequence = {
 
 const SIT_DURATION = 1100;
 
-const sitSequence: AnimationSequence = {
+const SIT_SEQUENCE: AnimationSequence = {
 	name: 'sit',
 	duration: SIT_DURATION,
 	tracks: [
@@ -1355,7 +1355,7 @@ const sitSequence: AnimationSequence = {
 
 const STAND_DURATION = 1000;
 
-const standSequence: AnimationSequence = {
+const STAND_SEQUENCE: AnimationSequence = {
 	name: 'standUp',
 	duration: STAND_DURATION,
 	tracks: [
@@ -1480,7 +1480,7 @@ const standSequence: AnimationSequence = {
 
 const IDLE_DURATION = 1000;
 
-const idleSequence: AnimationSequence = {
+const IDLE_SEQUENCE: AnimationSequence = {
 	name: 'idle',
 	duration: IDLE_DURATION,
 	tracks: [
@@ -1585,7 +1585,7 @@ const idleSequence: AnimationSequence = {
 
 const TALK_MICROPHONE_DURATION = 1280;
 
-const talkMicrophoneSequence: AnimationSequence = {
+const TALK_MICROPHONE_SEQUENCE: AnimationSequence = {
 	name: 'talkMicrophone',
 	duration: TALK_MICROPHONE_DURATION,
 	tracks: [
@@ -1758,27 +1758,27 @@ function combineSequences(name: string, items: Array<SequenceWithHold>): Animati
 	};
 }
 
-const showcaseSequence = combineSequences('walkJumpSit', [
-	{ sequence: walkSequence },
-	{ sequence: jumpSequence, hold: 120 },
-	{ sequence: sitSequence, hold: 200 },
-	{ sequence: standSequence },
-	{ sequence: idleSequence, hold: 0 },
+const SHOWCASE_SEQUENCE = combineSequences('walkJumpSit', [
+	{ sequence: WALK_SEQUENCE },
+	{ sequence: JUMP_SEQUENCE, hold: 120 },
+	{ sequence: SIT_SEQUENCE, hold: 200 },
+	{ sequence: STAND_SEQUENCE },
+	{ sequence: IDLE_SEQUENCE, hold: 0 },
 ]);
 
 export const CORE_PRESET_SEQUENCES: Record<string, AnimationSequence> = {
-	walk: walkSequence,
-	goalkeeperCrab: goalkeeperCrabSequence,
-	celebrate: celebrateSequence,
-	jackpot: jackpotSequence,
-	slotPull: slotPullSequence,
-	suspense: suspenseSequence,
-	jump: jumpSequence,
-	sit: sitSequence,
-	stand: standSequence,
-	idle: idleSequence,
-	talkMicrophone: talkMicrophoneSequence,
-	walkJumpSit: showcaseSequence,
+	walk: WALK_SEQUENCE,
+	goalkeeperCrab: GOALKEEPER_CRAB_SEQUENCE,
+	celebrate: CELEBRATE_SEQUENCE,
+	jackpot: JACKPOT_SEQUENCE,
+	slotPull: SLOT_PULL_SEQUENCE,
+	suspense: SUSPENSE_SEQUENCE,
+	jump: JUMP_SEQUENCE,
+	sit: SIT_SEQUENCE,
+	stand: STAND_SEQUENCE,
+	idle: IDLE_SEQUENCE,
+	talkMicrophone: TALK_MICROPHONE_SEQUENCE,
+	walkJumpSit: SHOWCASE_SEQUENCE,
 };
 
 export function getCorePresetSequence(name: string): AnimationSequence | undefined {

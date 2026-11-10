@@ -11,7 +11,7 @@ type FinPatternProps = {
 	skin: BullsharkSkin;
 } & SVGProps<SVGGElement>;
 
-const finPatternComponents: Record<BullsharkSkin, ComponentType | null> = {
+const FIN_PATTERN_COMPONENTS: Record<BullsharkSkin, ComponentType | null> = {
 	basic: null,
 	cheetah: null,
 	fox: null,
@@ -23,7 +23,7 @@ const finPatternComponents: Record<BullsharkSkin, ComponentType | null> = {
 };
 
 export function FinPattern({ skin, ...svgProps }: FinPatternProps) {
-	const FinPatternContent = finPatternComponents[skin];
+	const FinPatternContent = FIN_PATTERN_COMPONENTS[skin];
 	const baseTransform = 'matrix( 2.9166107177734375, 0, 0, 2.9166107177734375, 1181.8,460.1) ';
 	const transform = useAnimatedPartTransform('fin', baseTransform);
 	return (

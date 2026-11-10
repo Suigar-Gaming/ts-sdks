@@ -108,17 +108,17 @@ function buildTargetKeyframes(
 	}));
 }
 
-const sequenceKeyframeCache = new WeakMap<AnimationSequence, Map<string, Array<Keyframe>>>();
+const SEQUENCE_KEYFRAME_CACHE = new WeakMap<AnimationSequence, Map<string, Array<Keyframe>>>();
 
 function getTargetKeyframes(
 	target: WaapiTarget,
 	sequence: AnimationSequence,
 	offsets: Array<number>,
 ): Array<Keyframe> {
-	let cache = sequenceKeyframeCache.get(sequence);
+	let cache = SEQUENCE_KEYFRAME_CACHE.get(sequence);
 	if (!cache) {
 		cache = new Map();
-		sequenceKeyframeCache.set(sequence, cache);
+		SEQUENCE_KEYFRAME_CACHE.set(sequence, cache);
 	}
 	const pivot = target.pivotOverride;
 	const key = `${target.part}|${target.baseTransform ?? ''}|${pivot?.x ?? ''}|${pivot?.y ?? ''}`;

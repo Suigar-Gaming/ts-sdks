@@ -6,7 +6,7 @@ const SVG_DATA_URL_PREFIX = 'data:image/svg+xml';
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
 const MAX_CACHE_ENTRIES = 128;
 
-const symbolSourceCache = new Map<string, string | null>();
+const SYMBOL_SOURCE_CACHE = new Map<string, string | null>();
 
 function decodeBase64Utf8(value: string): string {
 	const decoded = atob(value);
@@ -28,14 +28,14 @@ function decodeSvgDataUrl(assetSrc: string): string | null {
 }
 
 function rememberSymbolSource(cacheKey: string, source: string | null): string | null {
-	if (symbolSourceCache.size >= MAX_CACHE_ENTRIES) {
-		const oldestKey = symbolSourceCache.keys().next().value;
+	if (SYMBOL_SOURCE_CACHE.size >= MAX_CACHE_ENTRIES) {
+		const oldestKey = SYMBOL_SOURCE_CACHE.keys().next().value;
 		if (oldestKey !== undefined) {
-			symbolSourceCache.delete(oldestKey);
+			SYMBOL_SOURCE_CACHE.delete(oldestKey);
 		}
 	}
 
-	symbolSourceCache.set(cacheKey, source);
+	SYMBOL_SOURCE_CACHE.set(cacheKey, source);
 	return source;
 }
 
@@ -53,8 +53,8 @@ export function resolveEmbeddedSvgSymbolSource(
 	}
 
 	const cacheKey = `${assetSrc}#${symbolId}`;
-	if (symbolSourceCache.has(cacheKey)) {
-		return symbolSourceCache.get(cacheKey);
+	if (SYMBOL_SOURCE_CACHE.has(cacheKey)) {
+		return SYMBOL_SOURCE_CACHE.get(cacheKey);
 	}
 
 	if (typeof DOMParser === 'undefined' || typeof XMLSerializer === 'undefined') {

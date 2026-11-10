@@ -90,7 +90,7 @@ import layer85 from '../accessories/artwork/wizard-robe/default.svg';
 import layer86 from '../accessories/artwork/wizard-robe/left.svg';
 import layer87 from '../accessories/artwork/wizard-robe/right.svg';
 import layer88 from '../accessories/artwork/xr-goggles.svg';
-export const artwork: Readonly<Record<string, Readonly<Record<string, string>>>> = {
+export const ARTWORK: Readonly<Record<string, Readonly<Record<string, string>>>> = {
 	'8 bit glasses': { default: layer0 },
 	apron: { body: layer1, default: layer2 },
 	'baseball cap': { default: layer3 },

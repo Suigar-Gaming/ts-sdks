@@ -11,7 +11,7 @@ type TailPatternProps = {
 	skin: BullsharkSkin;
 } & SVGProps<SVGGElement>;
 
-const tailPatternComponents: Record<BullsharkSkin, ComponentType | null> = {
+const TAIL_PATTERN_COMPONENTS: Record<BullsharkSkin, ComponentType | null> = {
 	basic: null,
 	cheetah: null,
 	fox: null,
@@ -23,7 +23,7 @@ const tailPatternComponents: Record<BullsharkSkin, ComponentType | null> = {
 };
 
 export function TailPattern({ skin, ...svgProps }: TailPatternProps) {
-	const TailPatternContent = tailPatternComponents[skin];
+	const TailPatternContent = TAIL_PATTERN_COMPONENTS[skin];
 	const baseTransform = 'matrix( 2.9166107177734375, 0, 0, 2.9166107177734375, 468.15,1761.65) ';
 	const transform = useAnimatedPartTransform('tail', baseTransform);
 	return (

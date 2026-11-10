@@ -5,7 +5,7 @@ import type { AnimationSequence } from '../types/animation.type.js';
 
 const RUN_DURATION = 900;
 
-const runSequence: AnimationSequence = {
+const RUN_SEQUENCE: AnimationSequence = {
 	name: 'run',
 	duration: RUN_DURATION,
 	tracks: [
@@ -174,7 +174,7 @@ const runSequence: AnimationSequence = {
 
 const SPRINT_DURATION = 700;
 
-const sprintSequence: AnimationSequence = {
+const SPRINT_SEQUENCE: AnimationSequence = {
 	name: 'sprint',
 	duration: SPRINT_DURATION,
 	tracks: [
@@ -343,7 +343,7 @@ const sprintSequence: AnimationSequence = {
 
 const CROUCH_DURATION = 1000;
 
-const crouchSequence: AnimationSequence = {
+const CROUCH_SEQUENCE: AnimationSequence = {
 	name: 'crouch',
 	duration: CROUCH_DURATION,
 	tracks: [
@@ -512,7 +512,7 @@ const crouchSequence: AnimationSequence = {
 
 const CROUCH_WALK_DURATION = 1200;
 
-const crouchWalkSequence: AnimationSequence = {
+const CROUCH_WALK_SEQUENCE: AnimationSequence = {
 	name: 'crouchWalk',
 	duration: CROUCH_WALK_DURATION,
 	tracks: [
@@ -681,7 +681,7 @@ const crouchWalkSequence: AnimationSequence = {
 
 const SLIDE_DURATION = 650;
 
-const slideSequence: AnimationSequence = {
+const SLIDE_SEQUENCE: AnimationSequence = {
 	name: 'slide',
 	duration: SLIDE_DURATION,
 	tracks: [
@@ -870,7 +870,7 @@ const slideSequence: AnimationSequence = {
 
 const OURAH_DURATION = 900;
 
-const ourahSequence: AnimationSequence = {
+const OURAH_SEQUENCE: AnimationSequence = {
 	name: 'ourah',
 	duration: OURAH_DURATION,
 	tracks: [
@@ -1019,7 +1019,7 @@ const ourahSequence: AnimationSequence = {
 
 const SHOWING_DURATION = 950;
 
-const showingSequence: AnimationSequence = {
+const SHOWING_SEQUENCE: AnimationSequence = {
 	name: 'showing',
 	duration: SHOWING_DURATION,
 	tracks: [
@@ -1168,7 +1168,7 @@ const showingSequence: AnimationSequence = {
 
 const VICTORY_DURATION = 900;
 
-const victorySequence: AnimationSequence = {
+const VICTORY_SEQUENCE: AnimationSequence = {
 	name: 'victory',
 	duration: VICTORY_DURATION,
 	tracks: [
@@ -1357,7 +1357,7 @@ const victorySequence: AnimationSequence = {
 
 const FLOSS_DURATION = 1200;
 
-const flossSequence: AnimationSequence = {
+const FLOSS_SEQUENCE: AnimationSequence = {
 	name: 'floss',
 	duration: FLOSS_DURATION,
 	tracks: [
@@ -1606,7 +1606,7 @@ const flossSequence: AnimationSequence = {
 
 const PUNCH_DURATION = 420;
 
-const punchSequence: AnimationSequence = {
+const PUNCH_SEQUENCE: AnimationSequence = {
 	name: 'punch',
 	duration: PUNCH_DURATION,
 	tracks: [
@@ -1795,7 +1795,7 @@ const punchSequence: AnimationSequence = {
 
 const KICK_DURATION = 560;
 
-const kickSequence: AnimationSequence = {
+const KICK_SEQUENCE: AnimationSequence = {
 	name: 'kick',
 	duration: KICK_DURATION,
 	tracks: [
@@ -1994,7 +1994,7 @@ const kickSequence: AnimationSequence = {
 
 const MELEE_DURATION = 520;
 
-const meleeSequence: AnimationSequence = {
+const MELEE_SEQUENCE: AnimationSequence = {
 	name: 'melee',
 	duration: MELEE_DURATION,
 	tracks: [
@@ -2143,7 +2143,7 @@ const meleeSequence: AnimationSequence = {
 
 const HIT_DURATION = 320;
 
-const hitSequence: AnimationSequence = {
+const HIT_SEQUENCE: AnimationSequence = {
 	name: 'hit',
 	duration: HIT_DURATION,
 	tracks: [
@@ -2252,7 +2252,7 @@ const hitSequence: AnimationSequence = {
 
 const KNOCKDOWN_DURATION = 980;
 
-const knockdownSequence: AnimationSequence = {
+const KNOCKDOWN_SEQUENCE: AnimationSequence = {
 	name: 'knockdown',
 	duration: KNOCKDOWN_DURATION,
 	tracks: [
@@ -2431,7 +2431,7 @@ const knockdownSequence: AnimationSequence = {
 
 const REVIVE_DURATION = 1200;
 
-const reviveSequence: AnimationSequence = {
+const REVIVE_SEQUENCE: AnimationSequence = {
 	name: 'revive',
 	duration: REVIVE_DURATION,
 	tracks: [
@@ -2605,7 +2605,7 @@ const reviveSequence: AnimationSequence = {
 
 const DEATH_DURATION = 1150;
 
-const deathSequence: AnimationSequence = {
+const DEATH_SEQUENCE: AnimationSequence = {
 	name: 'death',
 	duration: DEATH_DURATION,
 	tracks: [
@@ -2812,7 +2812,7 @@ const deathSequence: AnimationSequence = {
 	],
 };
 
-const death2Sequence: AnimationSequence = {
+const DEATH2_SEQUENCE: AnimationSequence = {
 	name: 'death2',
 	duration: DEATH_DURATION,
 	tracks: [
@@ -3019,7 +3019,7 @@ const death2Sequence: AnimationSequence = {
 	],
 };
 
-const death3Sequence: AnimationSequence = {
+const DEATH3_SEQUENCE: AnimationSequence = {
 	name: 'death3',
 	duration: DEATH_DURATION,
 	tracks: [
@@ -3227,22 +3227,22 @@ const death3Sequence: AnimationSequence = {
 };
 
 export const BATTLE_ROYALE_PRESETS: Record<string, AnimationSequence> = {
-	run: runSequence,
-	sprint: sprintSequence,
-	crouch: crouchSequence,
-	crouchWalk: crouchWalkSequence,
-	slide: slideSequence,
-	ourah: ourahSequence,
-	showing: showingSequence,
-	victory: victorySequence,
-	floss: flossSequence,
-	punch: punchSequence,
-	kick: kickSequence,
-	melee: meleeSequence,
-	hit: hitSequence,
-	knockdown: knockdownSequence,
-	revive: reviveSequence,
-	death: deathSequence,
-	death2: death2Sequence,
-	death3: death3Sequence,
+	run: RUN_SEQUENCE,
+	sprint: SPRINT_SEQUENCE,
+	crouch: CROUCH_SEQUENCE,
+	crouchWalk: CROUCH_WALK_SEQUENCE,
+	slide: SLIDE_SEQUENCE,
+	ourah: OURAH_SEQUENCE,
+	showing: SHOWING_SEQUENCE,
+	victory: VICTORY_SEQUENCE,
+	floss: FLOSS_SEQUENCE,
+	punch: PUNCH_SEQUENCE,
+	kick: KICK_SEQUENCE,
+	melee: MELEE_SEQUENCE,
+	hit: HIT_SEQUENCE,
+	knockdown: KNOCKDOWN_SEQUENCE,
+	revive: REVIVE_SEQUENCE,
+	death: DEATH_SEQUENCE,
+	death2: DEATH2_SEQUENCE,
+	death3: DEATH3_SEQUENCE,
 };

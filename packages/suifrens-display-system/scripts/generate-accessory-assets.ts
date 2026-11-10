@@ -97,15 +97,15 @@ await rm(OUTPUT_DIR, { recursive: true, force: true });
 await mkdir(OUTPUT_DIR, { recursive: true });
 await mkdir('src/generated', { recursive: true });
 
-const manifestEntries: Array<string> = [];
-const splitLimbAssetNames: Array<string> = [];
+const MANIFEST_ENTRIES: Array<string> = [];
+const SPLIT_LIMB_ASSET_NAMES: Array<string> = [];
 
 // Inline imports stay separate so external-SVG consumers only bundle kit templates.
-const sourceDir = 'src/accessories/artwork';
-const inlineImports: Array<string> = [];
-const kitImports: Array<string> = [];
-const inlineEntries: Array<string> = [];
-const kitEntries: Array<string> = [];
+const SOURCE_DIR = 'src/accessories/artwork';
+const INLINE_IMPORTS: Array<string> = [];
+const KIT_IMPORTS: Array<string> = [];
+const INLINE_ENTRIES: Array<string> = [];
+const KIT_ENTRIES: Array<string> = [];
 
 async function readLayers(
 	source: string,
@@ -115,14 +115,14 @@ async function readLayers(
 	const layers: Record<string, string> = {};
 	const fields: Array<string> = [];
 	const singleFile = source.endsWith('.svg');
-	const files = singleFile ? [source] : (await readdir(join(sourceDir, source))).sort();
+	const files = singleFile ? [source] : (await readdir(join(SOURCE_DIR, source))).sort();
 	for (const file of files) {
 		const relativePath = singleFile ? file : source + '/' + file;
 		const layer = singleFile ? 'default' : file.replace(SVG_EXTENSION_PATTERN, '');
 		const id = 'layer' + imports.length;
 		imports.push(`import ${id} from '../accessories/artwork/${relativePath}';`);
 		fields.push(`${JSON.stringify(layer)}: ${id}`);
-		layers[layer] = await readFile(join(sourceDir, relativePath), 'utf8');
+		layers[layer] = await readFile(join(SOURCE_DIR, relativePath), 'utf8');
 	}
 	entries.push(
 		`${JSON.stringify(source.replace(SVG_EXTENSION_PATTERN, '').replaceAll('-', ' '))}: { ${fields.join(', ')} }`,
@@ -130,23 +130,23 @@ async function readLayers(
 	return layers;
 }
 
-for (const source of (await readdir(sourceDir)).sort()) {
+for (const source of (await readdir(SOURCE_DIR)).sort()) {
 	const dir = source.replace(SVG_EXTENSION_PATTERN, '');
 	if (dir === 'crowns') {
 		continue;
 	}
 	if (dir === 'patterns') {
-		for (const pattern of (await readdir(join(sourceDir, dir))).sort()) {
-			await readLayers('patterns/' + pattern, kitImports, kitEntries);
+		for (const pattern of (await readdir(join(SOURCE_DIR, dir))).sort()) {
+			await readLayers('patterns/' + pattern, KIT_IMPORTS, KIT_ENTRIES);
 		}
 		continue;
 	}
 	const name = dir.replaceAll('-', ' ');
 	if (dir.startsWith('runner-') || dir.startsWith('soccer-team-')) {
-		await readLayers(source, kitImports, kitEntries);
+		await readLayers(source, KIT_IMPORTS, KIT_ENTRIES);
 		continue;
 	}
-	const layers = await readLayers(source, inlineImports, inlineEntries);
+	const layers = await readLayers(source, INLINE_IMPORTS, INLINE_ENTRIES);
 	const symbols: Array<string> = [];
 	const baseLayer = layers['default'];
 	if (!baseLayer) {
@@ -160,7 +160,7 @@ for (const source of (await readdir(sourceDir)).sort()) {
 	const canSplitFeet = !bodyGroup && rightLegGroup && leftLegGroup;
 
 	if (canSplitLegs || canSplitFeet) {
-		splitLimbAssetNames.push(name);
+		SPLIT_LIMB_ASSET_NAMES.push(name);
 		const parts = canSplitLegs
 			? ([
 					['body', bodyGroup],
@@ -192,28 +192,28 @@ for (const source of (await readdir(sourceDir)).sort()) {
 		join(OUTPUT_DIR, filename),
 		`<svg xmlns="http://www.w3.org/2000/svg">${symbols.join('')}</svg>`,
 	);
-	manifestEntries.push(
+	MANIFEST_ENTRIES.push(
 		`${JSON.stringify(name)}: new URL("./accessory-assets/${filename}", import.meta.url).href`,
 	);
 }
 
-const manifest = `export const SPLIT_LIMB_ASSET_NAMES = new Set<string>(${JSON.stringify(
-	splitLimbAssetNames,
+const MANIFEST = `export const SPLIT_LIMB_ASSET_NAMES = new Set<string>(${JSON.stringify(
+	SPLIT_LIMB_ASSET_NAMES,
 )} as const);
 
 export const ACCESSORY_ASSET_MANIFEST = {
-  ${manifestEntries.join(',\n  ')}
+  ${MANIFEST_ENTRIES.join(',\n  ')}
 } as const satisfies Record<string, string>;
 `;
 
-await writeFile(MANIFEST_PATH, GENERATED_HEADER + manifest);
+await writeFile(MANIFEST_PATH, GENERATED_HEADER + MANIFEST);
 
 for (const [file, imports, entries] of [
-	['inline-artwork', inlineImports, inlineEntries],
-	['kit-artwork', kitImports, kitEntries],
+	['inline-artwork', INLINE_IMPORTS, INLINE_ENTRIES],
+	['kit-artwork', KIT_IMPORTS, KIT_ENTRIES],
 ] as const) {
 	await writeFile(
 		`src/generated/${file}.ts`,
-		`${GENERATED_HEADER}${imports.join('\n')}\nexport const artwork: Readonly<Record<string, Readonly<Record<string,string>>>> = {\n${entries.join(',\n')}\n};\n`,
+		`${GENERATED_HEADER}${imports.join('\n')}\nexport const ARTWORK: Readonly<Record<string, Readonly<Record<string,string>>>> = {\n${entries.join(',\n')}\n};\n`,
 	);
 }

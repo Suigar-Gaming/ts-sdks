@@ -3,7 +3,7 @@
 
 import { useId } from 'react';
 import { SVG_WRAPPER_PATTERN } from '../../constants/svg-patterns.js';
-import { artwork } from '../../generated/kit-artwork.js';
+import { ARTWORK } from '../../generated/kit-artwork.js';
 import { isKitAccessory } from '../../helpers/kit-accessory.js';
 import { resolveRunnerKit, RUNNER_ACCESSORY_NAMES } from '../../helpers/runner-kit.js';
 import { contrastColor, resolveSoccerTeamKit } from '../../helpers/soccer-team-kit.js';
@@ -23,7 +23,7 @@ function applyValues(source: string, values: Record<string, string | number>): s
 function renderSoccerArtwork(source: string, options: AccessoryRenderOptions, id: string): string {
 	const kit = resolveSoccerTeamKit(options.teamKit ?? options.country, options.side);
 	const code = kit.code === 'GLOBAL' ? 'GLO' : kit.code;
-	const patterns = artwork['patterns/' + kit.pattern];
+	const patterns = ARTWORK['patterns/' + kit.pattern];
 	source = source.replace(PATTERN_SLOT_PATTERN, (_, slot: string) => {
 		const pattern = patterns?.[slot];
 		if (!pattern) {
@@ -53,7 +53,7 @@ export function KitArtwork({
 		UNSAFE_ID_CHARACTER_PATTERN,
 		(c) => '-' + c.charCodeAt(0).toString(16) + '-',
 	);
-	const layers = artwork[accessory.name];
+	const layers = ARTWORK[accessory.name];
 	if (!layers || !isKitAccessory(accessory.name)) {
 		return null;
 	}

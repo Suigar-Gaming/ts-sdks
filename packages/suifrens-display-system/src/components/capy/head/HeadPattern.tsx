@@ -18,7 +18,7 @@ type HeadPatternProps = {
 	noseProps: SVGProps<SVGPathElement>;
 } & SVGProps<SVGGElement>;
 
-const headPatternComponents: Record<CapySkin, ComponentType> = {
+const HEAD_PATTERN_COMPONENTS: Record<CapySkin, ComponentType> = {
 	basic: BasicHeadPattern,
 	cheetah: CheetahHeadPattern,
 	fox: FoxHeadPattern,
@@ -30,7 +30,7 @@ const headPatternComponents: Record<CapySkin, ComponentType> = {
 };
 
 export function HeadPattern({ skin, noseProps, ...headPatternProps }: HeadPatternProps) {
-	const HeadPatternContent = headPatternComponents[skin];
+	const HeadPatternContent = HEAD_PATTERN_COMPONENTS[skin];
 	const baseTransform = 'matrix(2.9166107177734375, 0, 0, 2.9166107177734375, 848.15,585.65)';
 	const transform = useAnimatedPartTransform('head', baseTransform);
 	return (

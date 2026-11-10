@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { AnimatedAccessory } from '../../animation/AnimatedAccessory.js';
-import { artwork } from '../../generated/inline-artwork.js';
+import { ARTWORK } from '../../generated/inline-artwork.js';
 import { getVipCrownAssetSrc, getVipCrownAssetViewport } from '../../helpers/crown-assets.js';
 import { isKitAccessory } from '../../helpers/kit-accessory.js';
 import type { AccessoryMetadata, AccessoryRendererProps } from '../../types/accessory.type.js';
@@ -47,7 +47,7 @@ function resolveAssetSrc(accessory: AccessoryMetadata): string | undefined {
 
 export function InlineAccessory(props: AccessoryRendererProps) {
 	const name = props.accessory.name;
-	const layers = Object.hasOwn(artwork, name) ? artwork[name] : undefined;
+	const layers = Object.hasOwn(ARTWORK, name) ? ARTWORK[name] : undefined;
 	const source = layers?.[props.body ? 'body' : (props.lor ?? 'default')] ?? layers?.['default'];
 	const assetSrc = resolveAssetSrc(props.accessory);
 	const fallbackPart =
