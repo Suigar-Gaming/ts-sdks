@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { SuiFrenImage as SuiFrenImageAssets } from '@suigar/suifrens-display-system/image-assets';
+import { vipCrownAccessories } from '@suigar/suifrens-display-system/accessories';
+import { SuiFrenImage as SuiFrenImageAssets } from '@suigar/suifrens-display-system/image';
 import { SuiFrenImage } from '@suigar/suifrens-display-system/image-inline';
-import { vipCrownAccessories } from '@suigar/suifrens-display-system/vip-crowns';
 
 const LOOP = { iterations: 'infinite' as const };
 

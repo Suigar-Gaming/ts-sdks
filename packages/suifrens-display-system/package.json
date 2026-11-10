@@ -33,11 +33,6 @@
 			"import": "./dist/image-inline.mjs",
 			"default": "./dist/image-inline.mjs"
 		},
-		"./image-assets": {
-			"types": "./dist/image-assets.d.mts",
-			"import": "./dist/image-assets.mjs",
-			"default": "./dist/image-assets.mjs"
-		},
 		"./accessories": {
 			"types": "./dist/accessories.d.mts",
 			"import": "./dist/accessories.mjs",
@@ -53,25 +48,10 @@
 			"import": "./dist/attributes.mjs",
 			"default": "./dist/attributes.mjs"
 		},
-		"./expressions": {
-			"types": "./dist/expressions.d.mts",
-			"import": "./dist/expressions.mjs",
-			"default": "./dist/expressions.mjs"
-		},
-		"./vip-crowns": {
-			"types": "./dist/vip-crowns.d.mts",
-			"import": "./dist/vip-crowns.mjs",
-			"default": "./dist/vip-crowns.mjs"
-		},
 		"./animation": {
 			"types": "./dist/animation.d.mts",
 			"import": "./dist/animation.mjs",
 			"default": "./dist/animation.mjs"
-		},
-		"./battle": {
-			"types": "./dist/battle.d.mts",
-			"import": "./dist/battle.mjs",
-			"default": "./dist/battle.mjs"
 		},
 		"./types": {
 			"types": "./dist/types.d.mts",

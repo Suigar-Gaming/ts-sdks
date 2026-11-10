@@ -7,13 +7,13 @@ React components for rendering capys and bullsharks with inline or cacheable ext
 For the smallest consumer bundles, prefer subpath imports for runtime values instead of the root entry:
 
 ```ts
-import { accessories } from '@suigar/suifrens-display-system/accessories';
-import { earGeneToEarShape } from '@suigar/suifrens-display-system/attributes';
-import { colors } from '@suigar/suifrens-display-system/colors';
 import {
 	POSITIVE_CAPY_EXPRESSIONS,
 	NEGATIVE_BULLSHARK_EXPRESSIONS,
-} from '@suigar/suifrens-display-system/expressions';
+} from '@suigar/suifrens-display-system';
+import { accessories } from '@suigar/suifrens-display-system/accessories';
+import { earGeneToEarShape } from '@suigar/suifrens-display-system/attributes';
+import { colors } from '@suigar/suifrens-display-system/colors';
 import { SuiFrenImage } from '@suigar/suifrens-display-system/image';
 ```
 
@@ -24,6 +24,17 @@ import { SuiFrenImage } from '@suigar/suifrens-display-system/image-inline';
 ```
 
 The root package entry still works, but it intentionally exposes the full public API and is heavier for bundlers to analyze.
+
+### Migrating from the 1.x GitHub archive
+
+The npm beta has eight public entry points: the package root, `/image`, `/image-inline`, `/accessories`, `/animation`, `/attributes`, `/colors` and `/types`. Update the following imports before installing the beta.
+
+| 1.x subpath     | npm replacement                                                         |
+| --------------- | ----------------------------------------------------------------------- |
+| `/image-assets` | `/image` for the external SVG renderer and its props                    |
+| `/vip-crowns`   | `/accessories` for crown values and types                               |
+| `/battle`       | Package root for battle components and hooks, `/types` for battle types |
+| `/expressions`  | Package root for expression lists, `/types` for `ExpressionMood`        |
 
 ### Athletics outfits
 

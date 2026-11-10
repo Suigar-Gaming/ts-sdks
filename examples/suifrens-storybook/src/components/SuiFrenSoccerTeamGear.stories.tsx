@@ -4,7 +4,7 @@ import {
 	SOCCER_TEAM_KITS,
 	type SoccerTeamCountryCode,
 } from '@suigar/suifrens-display-system/accessories';
-import { SuiFrenImage as SuiFrenImageAssets } from '@suigar/suifrens-display-system/image-assets';
+import { SuiFrenImage as SuiFrenImageAssets } from '@suigar/suifrens-display-system/image';
 import { SuiFrenImage } from '@suigar/suifrens-display-system/image-inline';
 
 const capyAttributes = {

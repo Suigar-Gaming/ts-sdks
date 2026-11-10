@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { accessories } from '@suigar/suifrens-display-system/accessories';
-import { SuiFrenImage as Assets } from '@suigar/suifrens-display-system/image-assets';
+import { SuiFrenImage as Assets } from '@suigar/suifrens-display-system/image';
 import { SuiFrenImage as Inline } from '@suigar/suifrens-display-system/image-inline';
 
 for (const kind of ['capy', 'bullshark']) {

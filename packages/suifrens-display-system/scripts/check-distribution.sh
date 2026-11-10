@@ -9,8 +9,8 @@ node --input-type=module - "$project" <<'JS'
 import assert from 'node:assert/strict';
 import { writeFileSync } from 'node:fs';
 import pkg from './package.json' with { type: 'json' };
-const entries = ['.', './image', './image-inline', './image-assets', './accessories', './colors',
-	'./attributes', './expressions', './vip-crowns', './animation', './battle', './types'];
+const entries = ['.', './image', './image-inline', './accessories', './colors',
+	'./attributes', './animation', './types'];
 assert.deepEqual(Object.keys(pkg.exports).sort(), [...entries].sort());
 const imports = entries.map(entry =>
 	`import * as ${entry === '.' ? 'root' : entry.slice(2).replaceAll('-', '_')} from '${pkg.name}${entry.slice(1)}';`

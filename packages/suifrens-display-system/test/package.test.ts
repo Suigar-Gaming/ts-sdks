@@ -25,7 +25,7 @@ test('built inline and asset renderers preserve custom kits for both species and
 		accent: '#ABCDEF',
 		pattern: 'vertical',
 	};
-	for (const entry of ['/image-inline', '/image', '/image-assets']) {
+	for (const entry of ['/image-inline', '/image']) {
 		const { SuiFrenImage } = await import(manifest.name + entry);
 		for (const species of ['capy', 'bullshark']) {
 			for (const side of ['home', 'away']) {
@@ -73,38 +73,36 @@ test('historical root species renderers remain exported', async () => {
 
 test('built goth boot assets contain only the selected boot without clipping', async () => {
 	const { accessories } = await import(manifest.name + '/accessories');
+	const { SuiFrenImage } = await import(manifest.name + '/image');
 	for (const side of ['left', 'right']) {
-		for (const entry of ['/image', '/image-assets']) {
-			const { SuiFrenImage } = await import(manifest.name + entry);
-			const svg = renderToStaticMarkup(
-				createElement(SuiFrenImage, {
-					attributes: {
-						mainColor: '6FBBEE',
-						secondaryColor: 'E6FBFF',
-						skin: 'basic',
-						expression: 'happy',
-						earShape: 'default',
-					},
-					accessories: accessories.filter(
-						(item: { name: string }) => item.name === `${side} goth boot`,
-					),
-				}),
-			);
-			const references = [...svg.matchAll(/(?:href|xlink:href)="(file:[^"]+\.svg)#[^"]+"/g)];
-			assert.ok(references.length > 0);
-			for (const [, url] of references) {
-				const asset = readFileSync(new URL(url), 'utf8');
-				assert.doesNotMatch(asset, /clipPath|clip-path/);
-				assert.equal((asset.match(/<path\b/g) ?? []).length, 20);
-				assert.equal((asset.match(new RegExp(`data-boot-side="${side}"`, 'g')) ?? []).length, 4);
-			}
+		const svg = renderToStaticMarkup(
+			createElement(SuiFrenImage, {
+				attributes: {
+					mainColor: '6FBBEE',
+					secondaryColor: 'E6FBFF',
+					skin: 'basic',
+					expression: 'happy',
+					earShape: 'default',
+				},
+				accessories: accessories.filter(
+					(item: { name: string }) => item.name === `${side} goth boot`,
+				),
+			}),
+		);
+		const references = [...svg.matchAll(/(?:href|xlink:href)="(file:[^"]+\.svg)#[^"]+"/g)];
+		assert.ok(references.length > 0);
+		for (const [, url] of references) {
+			const asset = readFileSync(new URL(url), 'utf8');
+			assert.doesNotMatch(asset, /clipPath|clip-path/);
+			assert.equal((asset.match(/<path\b/g) ?? []).length, 20);
+			assert.equal((asset.match(new RegExp(`data-boot-side="${side}"`, 'g')) ?? []).length, 4);
 		}
 	}
 });
 
 test('built runner kits preserve configurable bibs and native limbs in every renderer and species', async () => {
 	const { buildRunnerAccessories } = await import(manifest.name + '/accessories');
-	for (const entry of ['/image-inline', '/image', '/image-assets']) {
+	for (const entry of ['/image-inline', '/image']) {
 		const { SuiFrenImage } = await import(manifest.name + entry);
 		for (const species of ['capy', 'bullshark']) {
 			const svg = renderToStaticMarkup(

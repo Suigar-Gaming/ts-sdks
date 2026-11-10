@@ -1,18 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { SuiFrenBattleSprite, useDuelScript } from '@suigar/suifrens-display-system';
 import { getPresetSequence } from '@suigar/suifrens-display-system/animation';
-import type { AnimationConfig, PlaybackOptions } from '@suigar/suifrens-display-system/animation';
-import { SuiFrenBattleSprite } from '@suigar/suifrens-display-system/battle';
-import {
-	type DuelScript,
-	type DuelSide,
-	useDuelScript,
-} from '@suigar/suifrens-display-system/battle';
 import type {
-	BullsharkExpression,
+	AnimationConfig,
 	BullsharkAttributes,
+	BullsharkExpression,
+	CapyAttributes,
+	DuelScript,
+	DuelSide,
+	PlaybackOptions,
 } from '@suigar/suifrens-display-system/types';
-import type { CapyAttributes } from '@suigar/suifrens-display-system/types';
 
 const SPRITE_SIZE = 240;
 const STAGE_PADDING_X = 0;
