@@ -98,6 +98,7 @@ await rm(OUTPUT_DIR, { recursive: true, force: true });
 await mkdir(OUTPUT_DIR, { recursive: true });
 await mkdir(GENERATED_DIR, { recursive: true });
 
+const MANIFEST_IMPORTS: Array<string> = [];
 const MANIFEST_ENTRIES: Array<string> = [];
 const SPLIT_LIMB_ASSET_NAMES: Array<string> = [];
 
@@ -208,12 +209,14 @@ ${entries.join(',\n')}
 		join(OUTPUT_DIR, filename),
 		`<svg xmlns="http://www.w3.org/2000/svg">${symbols.join('')}</svg>`,
 	);
-	MANIFEST_ENTRIES.push(
-		`${JSON.stringify(name)}: new URL("./accessory-assets/${filename}", import.meta.url).href`,
-	);
+	const assetId = dir.replaceAll('-', '_').replace(/^([0-9])/, '_$1');
+	MANIFEST_IMPORTS.push(`import ${assetId} from './accessory-assets/${filename}?url';`);
+	MANIFEST_ENTRIES.push(`${JSON.stringify(name)}: ${assetId}`);
 }
 
-const MANIFEST = `export const SPLIT_LIMB_ASSET_NAMES = new Set<string>(${JSON.stringify(
+const MANIFEST = `${MANIFEST_IMPORTS.join('\n')}
+
+export const SPLIT_LIMB_ASSET_NAMES = new Set<string>(${JSON.stringify(
 	SPLIT_LIMB_ASSET_NAMES,
 )} as const);
 
