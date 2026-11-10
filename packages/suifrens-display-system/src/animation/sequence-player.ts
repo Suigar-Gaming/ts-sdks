@@ -21,21 +21,9 @@ function interpolateScaleAxis(start: number, end: number, eased: number): number
 }
 
 export function normalizePlayback(playback?: PlaybackOptions): NormalizedPlayback {
-	let iterations: number;
-	if (playback?.iterations === 'infinite') {
-		iterations = Infinity;
-	} else if (typeof playback?.iterations === 'number') {
-		iterations = Math.max(1, playback.iterations);
-	} else if (playback?.loop === true) {
-		iterations = Infinity;
-	} else if (typeof playback?.loop === 'number') {
-		iterations = Math.max(1, playback.loop);
-	} else {
-		iterations = 1;
-	}
-
 	return {
-		iterations,
+		iterations:
+			playback?.iterations === 'infinite' ? Infinity : Math.max(1, playback?.iterations ?? 1),
 		alternate: Boolean(playback?.alternate),
 		speed: playback?.speed && playback.speed > 0 ? playback.speed : 1,
 	};

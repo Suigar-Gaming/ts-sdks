@@ -3,7 +3,7 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { getPresetSequence } from '@suigar/suifrens-display-system/animation';
+import { getPresetDurationMs } from '@suigar/suifrens-display-system/animation';
 import { SuiFrenBattleSprite, useDuelScript } from '@suigar/suifrens-display-system/battle';
 import type {
 	AnimationConfig,
@@ -11,7 +11,6 @@ import type {
 	CapyAttributes,
 	DuelScript,
 	DuelSide,
-	PlaybackOptions,
 	SuiFrenExpression,
 } from '@suigar/suifrens-display-system/types';
 
@@ -217,32 +216,6 @@ const getHitFlashTrigger = (animation?: AnimationConfig | null) => {
 	}
 	return animation.trigger ?? animation.preset;
 };
-const resolveIterations = (playback?: PlaybackOptions) => {
-	if (playback?.iterations === 'infinite' || playback?.loop === true) {
-		return Infinity;
-	}
-	if (typeof playback?.iterations === 'number') {
-		return Math.max(1, playback.iterations);
-	}
-	if (typeof playback?.loop === 'number') {
-		return Math.max(1, playback.loop);
-	}
-	return 1;
-};
-const resolveSpeed = (playback?: PlaybackOptions) =>
-	playback?.speed && playback.speed > 0 ? playback.speed : 1;
-const presetDurationMs = (preset: string, playback?: PlaybackOptions) => {
-	const sequence = getPresetSequence(preset);
-	if (!sequence) {
-		return null;
-	}
-	const iterations = resolveIterations(playback);
-	if (!Number.isFinite(iterations)) {
-		return null;
-	}
-	return (sequence.duration / resolveSpeed(playback)) * iterations;
-};
-
 const leftWinScript: DuelScript<SuiFrenExpression> = {
 	name: 'Preset Fight',
 	steps: [
@@ -1350,7 +1323,8 @@ export const Ring: Story = {
 					fightersRef.current = updatedFighters;
 					setFighters(updatedFighters);
 
-					const celebrateDuration = presetDurationMs(FINAL_VICTORY_PRESET, celebratePlayback) ?? 0;
+					const celebrateDuration =
+						getPresetDurationMs(FINAL_VICTORY_PRESET, celebratePlayback) ?? 0;
 					if (celebrateDuration > 0) {
 						ringWinnerTimeoutRef.current = window.setTimeout(() => {
 							const current = fightersRef.current;

@@ -55,23 +55,25 @@ test('switching deferred presets never plays the previous sequence and ignores o
 	const deathSequence = { name: 'death', duration: 100, tracks: [] };
 	await view.render(
 		<svg>
-			<AnimationProvider animation={{ preset: 'run', autoPlay: false }}>{null}</AnimationProvider>
+			<AnimationProvider animation={{ preset: 'run', playState: 'idle' }}>{null}</AnimationProvider>
 		</svg>,
 	);
 	expect(applied.mock.lastCall?.[0]).toBeNull();
 	await act(async () => {
 		run.resolve(runSequence);
 	});
-	expect(applied.mock.lastCall?.[0]).toMatchObject({ sequence: runSequence, autoPlay: false });
+	expect(applied.mock.lastCall?.[0]).toMatchObject({ sequence: runSequence, playState: 'idle' });
 	await view.render(
 		<svg>
-			<AnimationProvider animation={{ preset: 'hit', autoPlay: false }}>{null}</AnimationProvider>
+			<AnimationProvider animation={{ preset: 'hit', playState: 'idle' }}>{null}</AnimationProvider>
 		</svg>,
 	);
 	expect(applied.mock.lastCall?.[0]).toBeNull();
 	await view.render(
 		<svg>
-			<AnimationProvider animation={{ preset: 'death', autoPlay: false }}>{null}</AnimationProvider>
+			<AnimationProvider animation={{ preset: 'death', playState: 'idle' }}>
+				{null}
+			</AnimationProvider>
 		</svg>,
 	);
 	await act(async () => {
@@ -102,12 +104,14 @@ test('explicit and synchronous sequences remain immediate; rejected loads cannot
 	resolver.load.mockReturnValue(pending.promise);
 	await view.render(
 		<svg>
-			<AnimationProvider animation={{ preset: 'run', autoPlay: false }}>{null}</AnimationProvider>
+			<AnimationProvider animation={{ preset: 'run', playState: 'idle' }}>{null}</AnimationProvider>
 		</svg>,
 	);
 	await view.render(
 		<svg>
-			<AnimationProvider animation={{ preset: 'walk', autoPlay: false }}>{null}</AnimationProvider>
+			<AnimationProvider animation={{ preset: 'walk', playState: 'idle' }}>
+				{null}
+			</AnimationProvider>
 		</svg>,
 	);
 	expect(applied.mock.lastCall?.[0]).toMatchObject({ sequence: resolver.walk });
@@ -118,7 +122,7 @@ test('explicit and synchronous sequences remain immediate; rejected loads cannot
 	const sequence = { name: 'custom', duration: 200, tracks: [] };
 	await view.render(
 		<svg>
-			<AnimationProvider animation={{ sequence, autoPlay: false }}>{null}</AnimationProvider>
+			<AnimationProvider animation={{ sequence, playState: 'idle' }}>{null}</AnimationProvider>
 		</svg>,
 	);
 	expect(applied.mock.lastCall?.[0]).toMatchObject({ sequence });
@@ -130,7 +134,7 @@ test('a failed current deferred load leaves animation disabled', async () => {
 	resolver.load.mockReturnValue(pending.promise);
 	await view.render(
 		<svg>
-			<AnimationProvider animation={{ preset: 'run', autoPlay: false }}>{null}</AnimationProvider>
+			<AnimationProvider animation={{ preset: 'run', playState: 'idle' }}>{null}</AnimationProvider>
 		</svg>,
 	);
 	await act(async () => {

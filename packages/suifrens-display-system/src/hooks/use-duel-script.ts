@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { getPresetSequence } from '../animation/presets.js';
+import { getPresetDurationMs } from '../animation/presets.js';
 import type { AnimationConfig, PlaybackOptions } from '../types/animation.type.js';
 import type {
 	DuelHealth,
@@ -11,35 +11,6 @@ import type {
 	UseDuelScriptOptions,
 	UseDuelScriptResult,
 } from '../types/battle.type.js';
-
-function resolveIterations(playback?: PlaybackOptions): number {
-	if (playback?.iterations === 'infinite' || playback?.loop === true) {
-		return Infinity;
-	}
-	if (typeof playback?.iterations === 'number') {
-		return Math.max(1, playback.iterations);
-	}
-	if (typeof playback?.loop === 'number') {
-		return Math.max(1, playback.loop);
-	}
-	return 1;
-}
-
-function resolveSpeed(playback?: PlaybackOptions): number {
-	return playback?.speed && playback.speed > 0 ? playback.speed : 1;
-}
-
-function presetDurationMs(preset: string, playback?: PlaybackOptions): number | null {
-	const sequence = getPresetSequence(preset);
-	if (!sequence) {
-		return null;
-	}
-	const iterations = resolveIterations(playback);
-	if (!Number.isFinite(iterations)) {
-		return null;
-	}
-	return (sequence.duration / resolveSpeed(playback)) * iterations;
-}
 
 function wait(ms: number, signal: AbortSignal): Promise<void> {
 	return new Promise<void>((resolve, reject) => {
@@ -295,8 +266,10 @@ export function useDuelScript<TExpression extends string = string>({
 							}
 						}
 
-						const attackDuration = presetDurationMs(step.preset, { iterations: 1 as const }) ?? 0;
-						const reactionDuration = presetDurationMs(hitPreset, { iterations: 1 as const }) ?? 0;
+						const attackDuration =
+							getPresetDurationMs(step.preset, { iterations: 1 as const }) ?? 0;
+						const reactionDuration =
+							getPresetDurationMs(hitPreset, { iterations: 1 as const }) ?? 0;
 						const totalDuration = Math.max(attackDuration, hitDelayMs + reactionDuration);
 						const remaining = Math.max(0, totalDuration - hitDelayMs);
 						if (remaining > 0) {
@@ -327,7 +300,7 @@ export function useDuelScript<TExpression extends string = string>({
 						}
 						playPreset(step.side, step.preset, { iterations: 1 as const }, true);
 						markDead(step.side);
-						const duration = presetDurationMs(step.preset, { iterations: 1 as const });
+						const duration = getPresetDurationMs(step.preset, { iterations: 1 as const });
 						if (duration) {
 							await wait(duration, signal);
 						}
@@ -348,7 +321,7 @@ export function useDuelScript<TExpression extends string = string>({
 						}
 
 						playPreset(step.side, preset, { iterations: loops });
-						const duration = presetDurationMs(preset, { iterations: loops });
+						const duration = getPresetDurationMs(preset, { iterations: loops });
 						if (duration) {
 							await wait(duration, signal);
 						}

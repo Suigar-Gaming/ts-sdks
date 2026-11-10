@@ -10,7 +10,7 @@ import type {
 	PlayState,
 } from '../types/animation.type.js';
 import type { AnimationStore } from './animation-store.js';
-import { SequencePlayer } from './sequence-player.js';
+import { normalizePlayback, SequencePlayer } from './sequence-player.js';
 
 type SequenceSource = {
 	sequence: AnimationSequence;
@@ -20,19 +20,7 @@ type SequenceSource = {
 const DEFAULT_TRANSITION_MS = 140;
 
 function playbackSignature(playback?: PlaybackOptions): string {
-	let iterations: number;
-	if (playback?.iterations === 'infinite' || playback?.loop === true) {
-		iterations = Infinity;
-	} else if (typeof playback?.iterations === 'number') {
-		iterations = Math.max(1, playback.iterations);
-	} else if (typeof playback?.loop === 'number') {
-		iterations = Math.max(1, playback.loop);
-	} else {
-		iterations = 1;
-	}
-
-	const alternate = Boolean(playback?.alternate);
-	const speed = playback?.speed && playback.speed > 0 ? playback.speed : 1;
+	const { iterations, alternate, speed } = normalizePlayback(playback);
 	return `${iterations}|${alternate ? 1 : 0}|${speed}`;
 }
 
@@ -155,7 +143,7 @@ export class AnimationController {
 				? config.transitionMs
 				: DEFAULT_TRANSITION_MS;
 		this.transitionDurationMs = transitionMs;
-		const playState = this.resolvePlayState(config);
+		const playState = config.playState ?? 'running';
 		const shouldTransition =
 			transitionMs > 0 &&
 			playState !== 'idle' &&
@@ -253,16 +241,6 @@ export class AnimationController {
 			return config.sequence;
 		}
 		return null;
-	}
-
-	private resolvePlayState(config: AnimationConfig): PlayState {
-		if (config.playState) {
-			return config.playState;
-		}
-		if (config.autoPlay === false) {
-			return 'idle';
-		}
-		return 'running';
 	}
 
 	private settleCompletedPlayback(): void {

@@ -61,8 +61,6 @@ export type PlaybackOptions = {
 	alternate?: boolean;
 	/** Speed multiplier, where 1 is the authored speed. */
 	speed?: number;
-	/** Convenience alias for iterations. `true` means infinite loop. */
-	loop?: boolean | number;
 };
 
 export type AnimationDirection = 'forward' | 'reverse';
@@ -71,7 +69,6 @@ export type PlayState = 'idle' | 'running' | 'paused' | 'stopped';
 
 type AnimationBaseConfig = {
 	playback?: PlaybackOptions;
-	autoPlay?: boolean;
 	playState?: PlayState;
 	direction?: AnimationDirection;
 	/** Changing the trigger value restarts the animation timeline. */
@@ -87,9 +84,11 @@ type AnimationBaseConfig = {
 export type AnimationConfig =
 	| (AnimationBaseConfig & {
 			sequence: AnimationSequence;
+			preset?: never;
 	  })
 	| (AnimationBaseConfig & {
 			preset: string;
+			sequence?: never;
 	  });
 
 export type AnimationTarget = {

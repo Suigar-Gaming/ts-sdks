@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { getPresetSequence } from '@suigar/suifrens-display-system/animation';
+import { getPresetDurationMs, normalizePlayback } from '@suigar/suifrens-display-system/animation';
 import type { AnimationConfig, PlaybackOptions } from '@suigar/suifrens-display-system/types';
 
 export type LocomotionState = 'idle' | 'walk' | 'run' | 'jump' | 'crouch' | 'crouchWalk';
@@ -95,33 +95,7 @@ function playbackEquals(a?: PlaybackOptions, b?: PlaybackOptions) {
 	if (!a || !b) {
 		return false;
 	}
-	return (
-		a.iterations === b.iterations &&
-		a.alternate === b.alternate &&
-		a.speed === b.speed &&
-		a.loop === b.loop
-	);
-}
-
-function getPlaybackIterations(playback?: PlaybackOptions) {
-	if (!playback) {
-		return 1;
-	}
-	if (playback.iterations === 'infinite' || playback.loop === true) {
-		return Infinity;
-	}
-	if (typeof playback.iterations === 'number') {
-		return Math.max(1, playback.iterations);
-	}
-	if (typeof playback.loop === 'number') {
-		return Math.max(1, playback.loop);
-	}
-	return 1;
-}
-
-function getPresetDuration(preset: string): number | null {
-	const sequence = getPresetSequence(preset);
-	return sequence?.duration ?? null;
+	return a.iterations === b.iterations && a.alternate === b.alternate && a.speed === b.speed;
 }
 
 function deriveAnimation(locomotion: LocomotionState, speedMultiplier: number): PresetAnimation {
@@ -394,10 +368,8 @@ export function useSuiFrenActor<TExpression extends string = string>(
 
 			const animation = deriveAnimation(locomotion, movementMultiplier);
 
-			const iterations = getPlaybackIterations(animation.playback);
-			const presetDuration = getPresetDuration(animation.preset);
-			const speed =
-				animation.playback?.speed && animation.playback.speed > 0 ? animation.playback.speed : 1;
+			const { iterations, speed } = normalizePlayback(animation.playback);
+			const presetDuration = getPresetDurationMs(animation.preset);
 			const loopDuration = presetDuration ? presetDuration / speed : null;
 
 			if (loopDuration && locomotion !== 'idle' && locomotion !== 'crouch') {

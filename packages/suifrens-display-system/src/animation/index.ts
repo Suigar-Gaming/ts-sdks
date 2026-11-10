@@ -8,4 +8,5 @@ export {
 } from './AnimationContext.js';
 export { AnimatedAccessory } from './AnimatedAccessory.js';
 export { useAnimatedPartTransform } from '../hooks/use-animated-part-transform.js';
-export { getPresetSequence } from './presets.js';
+export { normalizePlayback } from './sequence-player.js';
+export { getPresetDurationMs, getPresetSequence } from './presets.js';

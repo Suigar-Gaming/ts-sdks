@@ -5,7 +5,6 @@ import type {
 	AnimationConfig,
 	AnimationSequence,
 	AnimationTarget,
-	PlaybackOptions,
 } from '../types/animation.type.js';
 import { matrixToAnimationTransform, parseMatrix } from '../utils/matrix.js';
 import { type AnimationStore, composePartTransform } from './animation-store.js';
@@ -53,20 +52,10 @@ function getTargets(store: AnimationStore, sequence: AnimationSequence): Array<W
 		.filter((target): target is WaapiTarget => Boolean(target.element));
 }
 
-function playbackDuration(sequence: AnimationSequence, playback?: PlaybackOptions): number {
-	const normalized = normalizePlayback(playback);
-	return sequence.duration / normalized.speed;
-}
-
-function playbackIterations(playback?: PlaybackOptions): number {
-	return normalizePlayback(playback).iterations;
-}
-
 function playbackDirection(
 	direction: AnimationConfig['direction'],
-	playback?: PlaybackOptions,
+	alternate: boolean,
 ): PlaybackDirection {
-	const alternate = normalizePlayback(playback).alternate;
 	if (direction === 'reverse') {
 		return alternate ? 'alternate-reverse' : 'reverse';
 	}
@@ -175,7 +164,7 @@ export function startWaapiAnimation(
 			: { handled: false };
 	}
 
-	const playState = config.playState ?? (config.autoPlay === false ? 'idle' : 'running');
+	const playState = config.playState ?? 'running';
 	const targets = getTargets(store, config.sequence);
 
 	if (playState === 'idle' || playState === 'stopped') {
@@ -202,17 +191,20 @@ export function startWaapiAnimation(
 	setBaseTransforms(targets);
 
 	const offsets = buildOffsets(sequence);
+	const { speed, iterations, alternate } = normalizePlayback(config.playback);
+	const duration = sequence.duration / speed;
+	const direction = playbackDirection(config.direction, alternate);
 	const animations = targets.map((target) => {
 		const animation = target.element.animate(getTargetKeyframes(target, sequence, offsets), {
-			duration: playbackDuration(sequence, config.playback),
-			iterations: playbackIterations(config.playback),
-			direction: playbackDirection(config.direction, config.playback),
+			duration,
+			iterations,
+			direction,
 			easing: 'linear',
 			fill: config.holdOnComplete ? 'forwards' : 'none',
 		});
 
 		if (config.startAt === 'end') {
-			animation.currentTime = playbackDuration(sequence, config.playback);
+			animation.currentTime = duration;
 		}
 		if (playState === 'paused') {
 			animation.pause();
