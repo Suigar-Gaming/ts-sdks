@@ -5,7 +5,7 @@ import { SuiFrenBattleSprite } from '../src/components/battle/SuiFrenBattleSprit
 import { createTestRoot } from './helpers/react-dom.js';
 
 const image = vi.hoisted(() => ({ mounted: vi.fn<() => void>(), unmounted: vi.fn<() => void>() }));
-vi.mock('../src/image-inline.js', () => ({
+vi.mock('../src/image-inline/index.js', () => ({
 	SuiFrenImage: function Image() {
 		useEffect(() => {
 			image.mounted();

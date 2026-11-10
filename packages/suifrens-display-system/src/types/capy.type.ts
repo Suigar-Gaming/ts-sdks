@@ -1,5 +1,5 @@
 import type { SVGProps } from 'react';
-import type { colors } from '../constants/colors.js';
+import type { colors } from '../colors/index.js';
 import type { AccessoryMetadata } from './accessory.type.js';
 
 export type CapyImageProps = {

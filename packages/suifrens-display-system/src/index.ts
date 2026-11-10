@@ -1,6 +1,6 @@
-export * from './image-inline.js';
-export * from './accessories.js';
-export * from './animation.js';
+export * from './image-inline/index.js';
+export * from './accessories/index.js';
+export * from './animation/index.js';
 export { MinecraftHealthBar } from './components/battle/MinecraftHealthBar.js';
 export { SuiFrenBattleSprite } from './components/battle/SuiFrenBattleSprite.js';
 export { useDuelScript } from './components/battle/useDuelScript.js';
@@ -19,8 +19,8 @@ export type {
 	SuiFrenBattleSpriteProps,
 	UseDuelScriptOptions,
 } from './types/battle.type.js';
-export * from './colors.js';
-export * from './attributes.js';
+export * from './colors/index.js';
+export * from './attributes/index.js';
 export type { ExpressionMood } from './types/expression.type.js';
 export {
 	ALL_BULLSHARK_EXPRESSIONS,

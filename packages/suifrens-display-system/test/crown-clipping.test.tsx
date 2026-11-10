@@ -7,8 +7,8 @@ import {
 	getVipCrownAssetViewport,
 } from '../src/components/accessories/crownAssets.js';
 import { vipCrownAccessories } from '../src/constants/vip-crowns.js';
-import { SuiFrenImage } from '../src/image-inline.js';
-import { SuiFrenImage as SuiFrenImageAssets } from '../src/image.js';
+import { SuiFrenImage } from '../src/image-inline/index.js';
+import { SuiFrenImage as SuiFrenImageAssets } from '../src/image/index.js';
 
 const common = {
 	mainColor: '6FBBEE',

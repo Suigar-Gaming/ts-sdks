@@ -5,8 +5,8 @@ import { afterEach, expect, test, vi } from 'vitest';
 import { AnimationStore, composePartTransform } from '../src/animation/AnimationStore.js';
 import { parseMatrix } from '../src/animation/matrix.js';
 import { GothBoots } from '../src/components/accessories/feet/GothBoots.js';
-import { SuiFrenImage } from '../src/image-inline.js';
-import { SuiFrenImage as SuiFrenImageAssets } from '../src/image.js';
+import { SuiFrenImage } from '../src/image-inline/index.js';
+import { SuiFrenImage as SuiFrenImageAssets } from '../src/image/index.js';
 import type { SuiFrenAttributes } from '../src/types/suifren.type.js';
 import { createTestRoot } from './helpers/react-dom.js';
 

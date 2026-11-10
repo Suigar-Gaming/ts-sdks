@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { SuiFrenImage } from '../../image-inline.js';
+import { SuiFrenImage } from '../../image-inline/index.js';
 import type { SuiFrenBattleSpriteProps } from '../../types/battle.type.js';
 import { MinecraftHealthBar } from './MinecraftHealthBar.js';
 
