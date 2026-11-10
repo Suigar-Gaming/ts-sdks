@@ -1,5 +1,5 @@
-import type { AccessoryMetadata } from '../../types/accessory.type.js';
-import type { RunnerKitOptions } from '../../types/runner-kit.type.js';
+import type { AccessoryMetadata } from '../types/accessory.type.js';
+import type { RunnerKitOptions } from '../types/runner-kit.type.js';
 
 export const RUNNER_ACCESSORY_NAMES = new Set([
 	'runner singlet',

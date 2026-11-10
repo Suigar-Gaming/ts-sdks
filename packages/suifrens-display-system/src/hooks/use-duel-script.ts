@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { getPresetSequence } from '../../animation/presets.js';
-import type { AnimationConfig, PlaybackOptions } from '../../types/animation.type.js';
+import { getPresetSequence } from '../animation/presets.js';
+import type { AnimationConfig, PlaybackOptions } from '../types/animation.type.js';
 import type {
 	DuelHealth,
 	DuelSide,
 	DuelState,
 	UseDuelScriptOptions,
-} from '../../types/battle.type.js';
+} from '../types/battle.type.js';
 
 function resolveIterations(playback?: PlaybackOptions) {
 	if (playback?.iterations === 'infinite' || playback?.loop === true) {

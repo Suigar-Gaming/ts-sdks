@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest';
-import { composePartTransform } from '../src/animation/AnimationStore.js';
-import { parseMatrix } from '../src/animation/matrix.js';
+import { composePartTransform } from '../src/animation/animation-store.js';
 import type { AnimationPart, PartPose } from '../src/types/animation.type.js';
+import { parseMatrix } from '../src/utils/matrix.js';
 
 // Native capy and bullshark arms share these shoulder seams and mirrored bases.
 test.each([

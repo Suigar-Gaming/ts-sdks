@@ -1,14 +1,11 @@
 // @vitest-environment happy-dom
 import { act } from 'react';
 import { afterEach, expect, test, vi } from 'vitest';
-import { AnimationStore } from '../src/animation/AnimationStore.js';
+import { AnimationStore } from '../src/animation/animation-store.js';
 import { AccessoryRendererProvider } from '../src/components/accessories/AccessorySlot.js';
 import { KitArtwork } from '../src/components/accessories/KitArtwork.js';
-import {
-	buildRunnerAccessories,
-	resolveRunnerKit,
-} from '../src/components/accessories/runnerKit.js';
 import { CapyImage } from '../src/components/capy/CapyImage.js';
+import { buildRunnerAccessories, resolveRunnerKit } from '../src/helpers/runner-kit.js';
 import { createTestRoot } from './helpers/react-dom.js';
 const context = vi.hoisted(() => ({ store: null as AnimationStore | null }));
 vi.mock('../src/animation/AnimationContext.js', () => ({ useAnimationStore: () => context.store }));

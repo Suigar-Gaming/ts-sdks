@@ -1,5 +1,5 @@
+import { formatNumber } from '../animation/parts.js';
 import type { Matrix } from '../types/animation.type.js';
-import { formatNumber } from './parts.js';
 
 export const IDENTITY_MATRIX: Matrix = [1, 0, 0, 1, 0, 0];
 

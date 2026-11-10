@@ -2,7 +2,7 @@ import type {
 	SoccerTeamCountryCode,
 	SoccerTeamKit,
 	SoccerTeamSide,
-} from '../../types/soccer-kit.type.js';
+} from '../types/soccer-kit.type.js';
 
 const DARK_STROKE = '#050916';
 

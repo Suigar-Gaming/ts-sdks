@@ -1,6 +1,6 @@
 import type { SVGProps } from 'react';
 import { AnimatedAccessory } from '../../../animation/AnimatedAccessory.js';
-import { useAnimatedPartTransform } from '../../../animation/useAnimatedPartTransform.js';
+import { useAnimatedPartTransform } from '../../../hooks/use-animated-part-transform.js';
 type FinProps = SVGProps<SVGPathElement>;
 
 export function Fin(props: FinProps) {

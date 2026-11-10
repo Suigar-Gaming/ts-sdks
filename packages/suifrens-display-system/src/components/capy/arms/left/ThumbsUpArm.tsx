@@ -1,12 +1,12 @@
 import { AnimatedAccessory } from '../../../../animation/AnimatedAccessory.js';
+import { getPartDefinition } from '../../../../animation/parts.js';
 import {
 	matrixToString,
 	multiplyMatrix,
 	rotateMatrix,
 	scaleMatrix,
 	translateMatrix,
-} from '../../../../animation/matrix.js';
-import { getPartDefinition } from '../../../../animation/parts.js';
+} from '../../../../utils/matrix.js';
 
 type ThumbsUpArmProps = {
 	armColor: string;

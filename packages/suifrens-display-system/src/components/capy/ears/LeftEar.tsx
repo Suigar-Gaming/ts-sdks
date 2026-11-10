@@ -6,7 +6,7 @@ import type {
 	QuietLeftEarProps,
 	WildLeftEarProps,
 } from '../../../types/capy.type.js';
-import { assertUnreachable } from '../../../utils/assertUnreachable.js';
+import { assertUnreachable } from '../../../utils/assert-unreachable.js';
 import { DefaultLeftEar } from './left/DefaultLeftEar.js';
 import { MischievousLeftEar } from './left/MischievousLeftEar.js';
 import { QuietLeftEar } from './left/QuietLeftEar.js';

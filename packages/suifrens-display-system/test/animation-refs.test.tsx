@@ -2,8 +2,8 @@
 import { act, createRef, forwardRef, type ReactElement, type Ref } from 'react';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { AnimatedAccessory } from '../src/animation/AnimatedAccessory.js';
-import { AnimationStore } from '../src/animation/AnimationStore.js';
-import { useAnimatedPartTransform } from '../src/animation/useAnimatedPartTransform.js';
+import { AnimationStore } from '../src/animation/animation-store.js';
+import { useAnimatedPartTransform } from '../src/hooks/use-animated-part-transform.js';
 import { createTestRoot } from './helpers/react-dom.js';
 
 const context = vi.hoisted(() => ({ store: null as AnimationStore | null }));

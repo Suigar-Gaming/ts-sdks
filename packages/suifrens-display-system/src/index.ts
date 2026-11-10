@@ -3,7 +3,7 @@ export * from './accessories/index.js';
 export * from './animation/index.js';
 export { MinecraftHealthBar } from './components/battle/MinecraftHealthBar.js';
 export { SuiFrenBattleSprite } from './components/battle/SuiFrenBattleSprite.js';
-export { useDuelScript } from './components/battle/useDuelScript.js';
+export { useDuelScript } from './hooks/use-duel-script.js';
 export type {
 	DuelAttackStep,
 	DuelDeathStep,

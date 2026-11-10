@@ -1,5 +1,5 @@
 import type { ComponentType, SVGProps } from 'react';
-import { useAnimatedPartTransform } from '../../../../animation/useAnimatedPartTransform.js';
+import { useAnimatedPartTransform } from '../../../../hooks/use-animated-part-transform.js';
 import type { CapySkin } from '../../../../types/capy.type.js';
 import { DalmationRightLegPattern } from './patterns/DalmationRightLegPattern.js';
 import { SnakeRightLegPattern } from './patterns/SnakeRightLegPattern.js';

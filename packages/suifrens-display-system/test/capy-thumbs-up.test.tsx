@@ -1,10 +1,10 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, test } from 'vitest';
-import { parseMatrix } from '../src/animation/matrix.js';
 import { getPartDefinition } from '../src/animation/parts.js';
 import { accessories } from '../src/constants/accessories.js';
 import { SuiFrenImage } from '../src/image-inline/index.js';
 import { SuiFrenImage as SuiFrenImageAssets } from '../src/image/index.js';
+import { parseMatrix } from '../src/utils/matrix.js';
 
 const capy = {
 	mainColor: 'A87C4C',

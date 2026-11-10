@@ -7,7 +7,7 @@ import {
 	rotateMatrix,
 	scaleMatrix,
 	translateMatrix,
-} from './matrix.js';
+} from '../utils/matrix.js';
 import { getPartDefinition } from './parts.js';
 
 type ElementRegistration = {

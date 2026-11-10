@@ -1,5 +1,5 @@
 import type { AnimationSequence } from '../types/animation.type.js';
-import { getCorePresetSequence } from './corePresets.js';
+import { getCorePresetSequence } from './core-presets.js';
 
 const DEFERRED_PRESET_NAMES = new Set([
 	'run',
@@ -44,7 +44,7 @@ export function loadDeferredPresetSequence(name: string) {
 		return inFlight;
 	}
 
-	const promise = import('./battleRoyalePresets.js')
+	const promise = import('./battle-royale-presets.js')
 		.then(({ BATTLE_ROYALE_PRESETS }) => {
 			const sequence = BATTLE_ROYALE_PRESETS[name] ?? null;
 			deferredPresetCache.set(name, sequence);

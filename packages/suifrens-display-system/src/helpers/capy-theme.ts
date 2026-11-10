@@ -1,5 +1,5 @@
-import type { CapySkin } from '../../types/capy.type.js';
-import { assertUnreachable } from '../../utils/assertUnreachable.js';
+import type { CapySkin } from '../types/capy.type.js';
+import { assertUnreachable } from '../utils/assert-unreachable.js';
 
 export function getThemeFromSkin(
 	skin: CapySkin,

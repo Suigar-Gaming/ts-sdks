@@ -6,7 +6,7 @@ import type {
 	PartPose,
 	PlaybackOptions,
 } from '../types/animation.type.js';
-import { getEasing } from './easing.js';
+import { getEasing } from '../utils/easing.js';
 
 const EPSILON = 0.0001;
 

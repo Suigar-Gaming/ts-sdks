@@ -1,7 +1,7 @@
 import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 const OUTPUT_DIR = 'src/generated/accessory-assets';
-const MANIFEST_PATH = 'src/generated/accessoryAssetManifest.ts';
+const MANIFEST_PATH = 'src/generated/accessory-asset-manifest.ts';
 
 function minifySvg(markup: string) {
 	let svg = markup
@@ -177,8 +177,8 @@ export const ACCESSORY_ASSET_MANIFEST = {
 await writeFile(MANIFEST_PATH, manifest);
 
 for (const [file, imports, entries] of [
-	['inlineArtwork', inlineImports, inlineEntries],
-	['kitArtwork', kitImports, kitEntries],
+	['inline-artwork', inlineImports, inlineEntries],
+	['kit-artwork', kitImports, kitEntries],
 ] as const) {
 	await writeFile(
 		`src/generated/${file}.ts`,

@@ -2,8 +2,8 @@ import type { SuiClientTypes } from '@mysten/sui/client';
 import { SuiGrpcClient } from '@mysten/sui/grpc';
 import { accessories } from '@suigar/suifrens-display-system/accessories';
 import type { AccessoryMetadata, SuiFrenType } from '@suigar/suifrens-display-system/types';
-import { parseSuiFrenAttributes } from '../../utils/attributeUtils.js';
-import { extractBaseFrenType } from '../../utils/objectTypeUtils.js';
+import { parseSuiFrenAttributes } from '../../utils/attribute-utils.js';
+import { extractBaseFrenType } from '../../utils/object-type-utils.js';
 import { ACCESSORIES_KEY_TYPE, BULLSHARK_TYPE, CAPY_TYPE, NETWORK } from '../lib/config.js';
 
 export const suiClient = new SuiGrpcClient({

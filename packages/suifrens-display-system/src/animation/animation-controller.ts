@@ -6,8 +6,8 @@ import type {
 	PlaybackOptions,
 	PlayState,
 } from '../types/animation.type.js';
-import type { AnimationStore } from './AnimationStore.js';
-import { SequencePlayer } from './SequencePlayer.js';
+import type { AnimationStore } from './animation-store.js';
+import { SequencePlayer } from './sequence-player.js';
 
 type SequenceSource = {
 	sequence: AnimationSequence;

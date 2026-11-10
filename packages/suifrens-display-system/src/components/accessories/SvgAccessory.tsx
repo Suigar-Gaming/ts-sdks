@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import type { AccessoryPlacement, SvgAccessoryProps } from '../../types/accessory.type.js';
-import { resolveEmbeddedSvgSymbolSource } from './svgSymbolDataUrl.js';
+import { resolveEmbeddedSvgSymbolSource } from '../../utils/svg-symbol-data-url.js';
 
 const DEFAULT_ORIGIN = 1500;
 const SCALE_EPSILON = 0.0001;

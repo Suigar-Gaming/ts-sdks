@@ -6,7 +6,7 @@ import {
 	type SuiFrenActorPose,
 	type SuiFrenActorSnapshot,
 	useSuiFrenActor,
-} from '../utils/useSuiFrenActor.js';
+} from '../utils/use-suifren-actor.js';
 
 const PLAYGROUND_WIDTH = 960;
 const PLAYGROUND_HEIGHT = 540;

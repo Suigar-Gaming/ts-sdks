@@ -2,15 +2,16 @@ import { AnimatedAccessory } from '../../animation/AnimatedAccessory.js';
 import {
 	ACCESSORY_ASSET_MANIFEST,
 	SPLIT_LIMB_ASSET_NAMES,
-} from '../../generated/accessoryAssetManifest.js';
+} from '../../generated/accessory-asset-manifest.js';
+import { getVipCrownAssetSrc, getVipCrownAssetViewport } from '../../helpers/crown-assets.js';
+import { isKitAccessory } from '../../helpers/kit-accessory.js';
 import type {
 	AccessoryAssetVariant,
 	AccessoryRendererProps,
 	BodyAccessoryProps,
 } from '../../types/accessory.type.js';
 import type { AnimationPart } from '../../types/animation.type.js';
-import { getVipCrownAssetSrc, getVipCrownAssetViewport } from './crownAssets.js';
-import { isKitAccessory, KitArtwork } from './KitArtwork.js';
+import { KitArtwork } from './KitArtwork.js';
 import { SvgAccessory } from './SvgAccessory.js';
 
 const TYPE_FALLBACK: Partial<Record<string, AnimationPart>> = {

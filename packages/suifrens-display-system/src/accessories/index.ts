@@ -7,14 +7,14 @@ export {
 	SOCCER_TEAM_KITS,
 	resolveSoccerCountryCode,
 	resolveSoccerTeamKit,
-} from '../components/accessories/soccerTeamKit.js';
+} from '../helpers/soccer-team-kit.js';
 export type {
 	SoccerTeamCountryCode,
 	SoccerTeamKit,
 	SoccerTeamSide,
 } from '../types/soccer-kit.type.js';
 
-export { getAccessoriesByType } from '../utils/accessoryUtils.js';
+export { getAccessoriesByType } from '../utils/accessories.js';
 
 export {
 	type AccessoryMetadata,
@@ -23,6 +23,6 @@ export {
 	type SuiFrenSpecies,
 } from '../types/accessory.type.js';
 
-export { buildRunnerAccessories, resolveRunnerKit } from '../components/accessories/runnerKit.js';
+export { buildRunnerAccessories, resolveRunnerKit } from '../helpers/runner-kit.js';
 
 export type { RunnerKitOptions } from '../types/runner-kit.type.js';

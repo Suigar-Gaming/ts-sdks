@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { accessories } from '@suigar/suifrens-display-system/accessories';
 import { SuiFrenImage } from '@suigar/suifrens-display-system/image-inline';
-import { PRESET_CATALOG } from '../animation/presetCatalog.js';
+import { PRESET_CATALOG } from '../animation/preset-catalog.js';
 
 const bullsharkAttributes = {
 	mainColor: '6FBBEE',

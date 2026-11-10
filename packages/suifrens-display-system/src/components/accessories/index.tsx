@@ -1,9 +1,10 @@
 import { AnimatedAccessory } from '../../animation/AnimatedAccessory.js';
-import { artwork } from '../../generated/inlineArtwork.js';
+import { artwork } from '../../generated/inline-artwork.js';
+import { getVipCrownAssetSrc, getVipCrownAssetViewport } from '../../helpers/crown-assets.js';
+import { isKitAccessory } from '../../helpers/kit-accessory.js';
 import type { AccessoryMetadata, AccessoryRendererProps } from '../../types/accessory.type.js';
 import type { AnimationPart } from '../../types/animation.type.js';
-import { getVipCrownAssetSrc, getVipCrownAssetViewport } from './crownAssets.js';
-import { isKitAccessory, KitArtwork } from './KitArtwork.js';
+import { KitArtwork } from './KitArtwork.js';
 import { SvgAccessory } from './SvgAccessory.js';
 import { SvgArtwork } from './SvgArtwork.js';
 

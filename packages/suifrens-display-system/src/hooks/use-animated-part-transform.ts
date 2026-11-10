@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import { useAnimationStore } from '../animation/AnimationContext.js';
 import type { AnimationPart } from '../types/animation.type.js';
-import { useAnimationStore } from './AnimationContext.js';
 
 type Options = {
 	pivotOverride?: { x: number; y: number };

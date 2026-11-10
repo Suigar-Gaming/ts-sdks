@@ -6,7 +6,7 @@ import type {
 	QuietRightEarProps,
 	WildRightEarProps,
 } from '../../../types/capy.type.js';
-import { assertUnreachable } from '../../../utils/assertUnreachable.js';
+import { assertUnreachable } from '../../../utils/assert-unreachable.js';
 import { DefaultRightEar } from './right/DefaultRightEar.js';
 import { MischievousRightEar } from './right/MischievousRightEar.js';
 import { QuietRightEar } from './right/QuietRightEar.js';

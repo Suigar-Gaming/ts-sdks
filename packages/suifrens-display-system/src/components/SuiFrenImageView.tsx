@@ -1,14 +1,14 @@
 import { type ReactNode, useMemo } from 'react';
 import { AnimationProvider } from '../animation/AnimationContext.js';
+import { shouldRenderMicrophoneArmInForeground } from '../helpers/foreground-layering.js';
 import type { AccessoryRenderer } from '../types/accessory.type.js';
 import type { AnimationConfig } from '../types/animation.type.js';
 import type { SuiFrenImageProps } from '../types/suifren.type.js';
-import { getAccessoriesByType } from '../utils/accessoryUtils.js';
-import { assertUnreachable } from '../utils/assertUnreachable.js';
+import { getAccessoriesByType } from '../utils/accessories.js';
+import { assertUnreachable } from '../utils/assert-unreachable.js';
 import { AccessoryRendererProvider } from './accessories/AccessorySlot.js';
 import { BullsharkImage } from './bullshark/BullsharkImage.js';
 import { CapyImage } from './capy/CapyImage.js';
-import { shouldRenderMicrophoneArmInForeground } from './foregroundLayering.js';
 
 export function SuiFrenImageView({
 	accessoryRenderer,

@@ -3,9 +3,9 @@ import type {
 	AnimationSequence,
 	PlaybackOptions,
 } from '../types/animation.type.js';
-import { type AnimationStore, composePartTransform } from './AnimationStore.js';
-import { matrixToAnimationTransform, parseMatrix } from './matrix.js';
-import { interpolateSequencePoses, normalizePlayback } from './SequencePlayer.js';
+import { matrixToAnimationTransform, parseMatrix } from '../utils/matrix.js';
+import { type AnimationStore, composePartTransform } from './animation-store.js';
+import { interpolateSequencePoses, normalizePlayback } from './sequence-player.js';
 
 type BackendPreference = 'auto' | 'waapi' | 'fallback';
 

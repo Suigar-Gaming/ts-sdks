@@ -2,12 +2,12 @@
 import { act } from 'react';
 import { expect, test, vi } from 'vitest';
 import { AnimatedAccessory } from '../src/animation/AnimatedAccessory.js';
-import { AnimationStore } from '../src/animation/AnimationStore.js';
-import { parseMatrix } from '../src/animation/matrix.js';
+import { AnimationStore } from '../src/animation/animation-store.js';
 import { AccessoryRendererProvider } from '../src/components/accessories/AccessorySlot.js';
 import { BullsharkImage } from '../src/components/bullshark/BullsharkImage.js';
 import { CapyImage } from '../src/components/capy/CapyImage.js';
 import type { AccessoryMetadata } from '../src/types/accessory.type.js';
+import { parseMatrix } from '../src/utils/matrix.js';
 import { createTestRoot } from './helpers/react-dom.js';
 const context = vi.hoisted(() => ({ store: null as AnimationStore | null }));
 vi.mock('../src/animation/AnimationContext.js', () => ({ useAnimationStore: () => context.store }));

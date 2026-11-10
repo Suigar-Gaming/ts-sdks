@@ -1,4 +1,4 @@
-import { useAnimatedPartTransform } from '../../animation/useAnimatedPartTransform.js';
+import { useAnimatedPartTransform } from '../../hooks/use-animated-part-transform.js';
 
 export function Nostrils() {
 	const baseTransform = 'matrix(2.9166107177734375, 0, 0, 2.9166107177734375, 2037.2,948.05)';

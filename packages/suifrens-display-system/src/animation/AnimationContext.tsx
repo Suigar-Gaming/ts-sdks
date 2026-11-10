@@ -8,15 +8,15 @@ import {
 	useState,
 } from 'react';
 import type { AnimationConfig } from '../types/animation.type.js';
-import { AnimationController } from './AnimationController.js';
-import { AnimationStore } from './AnimationStore.js';
+import { AnimationController } from './animation-controller.js';
+import { AnimationStore } from './animation-store.js';
 import { matchPartByTransform } from './parts.js';
 import {
 	isDeferredPreset,
 	loadDeferredPresetSequence,
 	resolvePresetSequenceSync,
-} from './presetResolver.js';
-import { startWaapiAnimation } from './waapiBackend.js';
+} from './preset-resolver.js';
+import { startWaapiAnimation } from './waapi-backend.js';
 
 type AnimationContextValue = {
 	store: AnimationStore;

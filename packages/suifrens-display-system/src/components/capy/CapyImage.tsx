@@ -1,4 +1,5 @@
 import { AnimatedAccessory } from '../../animation/AnimatedAccessory.js';
+import { getThemeFromSkin } from '../../helpers/capy-theme.js';
 import type { CapyImageProps } from '../../types/capy.type.js';
 import { AccessorySlot } from '../accessories/AccessorySlot.js';
 import { LeftArm } from './arms/left/LeftArm.js';
@@ -18,7 +19,6 @@ import { LeftLegPattern } from './legs/left/LeftLegPattern.js';
 import { RightLeg } from './legs/right/RightLeg.js';
 import { RightLegPattern } from './legs/right/RightLegPattern.js';
 import { Nostrils } from './Nostrils.js';
-import { getThemeFromSkin } from './theme.js';
 
 export function CapyImage({
 	attributes,

@@ -1,4 +1,5 @@
 import { AnimatedAccessory } from '../../animation/AnimatedAccessory.js';
+import { getThemeFromSkin } from '../../helpers/bullshark-theme.js';
 import type { BullsharkImageProps } from '../../types/bullshark.type.js';
 import { AccessorySlot } from '../accessories/AccessorySlot.js';
 import { LeftArm } from './arms/left/LeftArm.js';
@@ -18,7 +19,6 @@ import { RightLeg } from './legs/right/RightLeg.js';
 import { RightLegPattern } from './legs/right/RightLegPattern.js';
 import { Tail } from './tail/Tail.js';
 import { TailPattern } from './tail/TailPattern.js';
-import { getThemeFromSkin } from './theme.js';
 
 export function BullsharkImage({
 	attributes,

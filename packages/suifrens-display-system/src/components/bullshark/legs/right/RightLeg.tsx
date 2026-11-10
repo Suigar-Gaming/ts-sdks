@@ -1,5 +1,5 @@
 import type { SVGProps } from 'react';
-import { useAnimatedPartTransform } from '../../../../animation/useAnimatedPartTransform.js';
+import { useAnimatedPartTransform } from '../../../../hooks/use-animated-part-transform.js';
 
 type RightLegProps = SVGProps<SVGPathElement>;
 

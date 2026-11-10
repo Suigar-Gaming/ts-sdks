@@ -2,11 +2,8 @@
 import { readFileSync } from 'node:fs';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { expect, test } from 'vitest';
-import {
-	getVipCrownAssetSrc,
-	getVipCrownAssetViewport,
-} from '../src/components/accessories/crownAssets.js';
 import { vipCrownAccessories } from '../src/constants/vip-crowns.js';
+import { getVipCrownAssetSrc, getVipCrownAssetViewport } from '../src/helpers/crown-assets.js';
 import { SuiFrenImage } from '../src/image-inline/index.js';
 import { SuiFrenImage as SuiFrenImageAssets } from '../src/image/index.js';
 
