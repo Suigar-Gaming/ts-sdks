@@ -202,6 +202,8 @@ Storybook lives in `storybook/`, alongside `src/` and `test/`. After building th
 pnpm --filter @suigar/suifrens-storybook dev
 ```
 
+Install the test browser once with `pnpm --filter @suigar/suifrens-storybook exec playwright install --only-shell chromium`. In Storybook, use the testing widget to run component, interaction and accessibility tests. Use `pnpm --filter @suigar/suifrens-storybook test:coverage` to run the full suite, including the light and dark portrait screenshot comparisons. Open `storybook/coverage/index.html` for the coverage report.
+
 The HTTP rendering server lives in `examples/fastify/`:
 
 ```bash

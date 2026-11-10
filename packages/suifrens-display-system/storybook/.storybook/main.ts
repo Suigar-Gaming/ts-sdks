@@ -31,8 +31,9 @@ const config: StorybookConfig = {
 	addons: [
 		'@storybook/addon-links',
 		'@storybook/addon-docs',
+		'@storybook/addon-vitest',
+		'@storybook/addon-a11y',
 		'storybook-addon-tag-badges',
-		'@chromatic-com/storybook',
 	],
 	framework: '@storybook/react-vite',
 };

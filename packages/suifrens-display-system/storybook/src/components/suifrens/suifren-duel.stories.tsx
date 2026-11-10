@@ -768,10 +768,7 @@ export const Duel: Story = {
 					</div>
 				</div>
 
-				<div className="story-scene relative overflow-hidden rounded-2xl border border-slate-200 bg-linear-to-b from-sky-50 to-blue-100 inset-shadow-sm dark:border-slate-700 dark:from-slate-800 dark:to-blue-950">
-					<div className="absolute inset-4 rounded-2xl bg-linear-to-b from-white/70 to-sky-50 dark:from-slate-800 dark:to-sky-950" />
-					<div className="absolute inset-x-10 bottom-10 h-6 rounded-full bg-slate-400/10 blur-md" />
-
+				<div className="story-scene story-stage">
 					<div className="battle-field relative px-4 py-8">
 						<div ref={stageRef} className="relative" style={{ height: STAGE_HEIGHT }}>
 							<SuiFrenBattleSprite
@@ -1679,7 +1676,7 @@ export const Ring: Story = {
 										style={{
 											padding: '2px 8px',
 											borderRadius: 999,
-											background: '#0ea5e9',
+											background: '#0369a1',
 											color: '#fff',
 											fontWeight: 800,
 											letterSpacing: 0.6,

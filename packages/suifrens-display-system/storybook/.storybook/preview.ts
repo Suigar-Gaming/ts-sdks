@@ -36,6 +36,7 @@ const preview: Preview = {
 			),
 	],
 	parameters: {
+		a11y: { test: 'error' },
 		docs: { container: ThemeDocsContainer },
 		options: {
 			storySort: { order: ['Suifrens', ['Onboarding', 'Characters', 'Accessories', 'Kits', '*']] },

@@ -3,6 +3,7 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { type PointerEvent, type RefObject, useEffect, useRef, useState } from 'react';
+import { expect } from 'storybook/test';
 import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
 import type { SuiFrenExpression } from '@suigar/suifrens-display-system/types';
 import {
@@ -114,12 +115,9 @@ function SuiFrenStage({ state, spriteRef, title, note }: StageProps) {
 				<h3 className="mb-2 text-sm font-semibold text-slate-800 dark:text-slate-200">{title}</h3>
 			) : null}
 			<div
-				className="story-scene relative overflow-hidden rounded-2xl border border-slate-200 bg-linear-to-b from-sky-50 to-blue-100 inset-shadow-sm dark:border-slate-700 dark:from-slate-800 dark:to-blue-950"
+				className="story-scene story-stage"
 				style={{ aspectRatio: PLAYGROUND_WIDTH / PLAYGROUND_HEIGHT }}
 			>
-				<div className="absolute inset-4 rounded-2xl bg-linear-to-b from-white/70 to-sky-50 dark:from-slate-800 dark:to-sky-950" />
-				<div className="absolute inset-x-6 bottom-12 h-6 rounded-full bg-slate-400/10 blur-md" />
-
 				<div
 					ref={spriteRef}
 					style={{
@@ -163,6 +161,12 @@ function SuiFrenStage({ state, spriteRef, title, note }: StageProps) {
 }
 
 export const ControlPadPlayground: Story = {
+	play: async ({ canvas, userEvent }) => {
+		await userEvent.click(canvas.getByRole('button', { name: 'Heart eyes' }));
+		await expect(canvas.getByText('Expression: heartEyes', { exact: false })).toBeVisible();
+		await userEvent.click(canvas.getByRole('button', { name: 'Reset position' }));
+		await expect(canvas.getByText('Expression: happy', { exact: false })).toBeVisible();
+	},
 	render: () => {
 		const isDocs =
 			typeof window !== 'undefined' &&
