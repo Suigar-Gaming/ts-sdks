@@ -189,7 +189,7 @@ export function CapyImage({
 			)}
 
 			{runnerHeadband && headAccessory && (
-				<AccessorySlot accessory={accessoriesByType['head']} species="capy" />
+				<AccessorySlot accessory={headAccessory} species="capy" />
 			)}
 
 			{!incognito && <Expression expression={expression} />}

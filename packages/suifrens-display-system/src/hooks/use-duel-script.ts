@@ -169,19 +169,14 @@ export function useDuelScript<TExpression extends string = string>({
 	);
 
 	const playPreset = useCallback(
-		(
-			side: DuelSide,
-			preset: string,
-			playback?: PlaybackOptions,
-			options?: { holdOnComplete?: boolean },
-		) => {
+		(side: DuelSide, preset: string, playback?: PlaybackOptions, holdOnComplete?: boolean) => {
 			triggerRef.current[side] += 1;
 			const trigger = triggerRef.current[side];
 			const config: AnimationConfig = {
 				preset,
-				playback,
+				...(playback && { playback }),
 				trigger,
-				holdOnComplete: options?.holdOnComplete,
+				...(holdOnComplete !== undefined && { holdOnComplete }),
 			};
 			commit((prev) => ({
 				...prev,
@@ -260,9 +255,7 @@ export function useDuelScript<TExpression extends string = string>({
 						if (step.expression) {
 							setExpression(step.side, step.expression);
 						}
-						playPreset(step.side, step.preset, step.playback, {
-							holdOnComplete: step.holdOnComplete,
-						});
+						playPreset(step.side, step.preset, step.playback, step.holdOnComplete);
 						if (step.durationMs !== undefined) {
 							await wait(step.durationMs, signal);
 							if (step.revertToIdle !== false && stateRef.current[step.side].status !== 'dead') {
@@ -330,12 +323,7 @@ export function useDuelScript<TExpression extends string = string>({
 						if (step.expression) {
 							setExpression(step.side, step.expression);
 						}
-						playPreset(
-							step.side,
-							step.preset,
-							{ iterations: 1 as const },
-							{ holdOnComplete: true },
-						);
+						playPreset(step.side, step.preset, { iterations: 1 as const }, true);
 						markDead(step.side);
 						const duration = presetDurationMs(step.preset, { iterations: 1 as const });
 						if (duration) {

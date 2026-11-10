@@ -107,7 +107,7 @@ test.each(['full', 'head'] as const)(
 		);
 		const bands = view.container.querySelectorAll('#runner-headband-head');
 		expect(bands).toHaveLength(1);
-		const band = bands[0];
+		const band = bands.item(0);
 		const coordinates = (
 			band
 				.querySelector('path')!

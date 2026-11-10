@@ -1,7 +1,7 @@
 export type AnimationRegistration = {
 	getBaseTransform: () => string | undefined;
 	setTransform: (value: string) => void;
-	pivotOverride?: { x: number; y: number };
+	pivotOverride?: { x: number; y: number } | undefined;
 	lastTransform?: string;
 	element?: SVGGraphicsElement;
 };

@@ -1720,11 +1720,7 @@ function combineSequences(name: string, items: Array<SequenceWithHold>): Animati
 		for (const track of sequence.tracks) {
 			const existing = trackMap.get(track.part) ?? [];
 			for (const keyframe of track.keyframes) {
-				existing.push({
-					at: keyframe.at + startOffset,
-					pose: keyframe.pose,
-					ease: keyframe.ease,
-				});
+				existing.push({ ...keyframe, at: keyframe.at + startOffset });
 			}
 			trackMap.set(track.part, existing);
 		}
@@ -1732,14 +1728,14 @@ function combineSequences(name: string, items: Array<SequenceWithHold>): Animati
 		if (hold > 0) {
 			for (const track of sequence.tracks) {
 				const existing = trackMap.get(track.part);
-				if (!existing || !track.keyframes.length) {
+				const lastKeyframe = track.keyframes.at(-1);
+				if (!existing || !lastKeyframe) {
 					continue;
 				}
-				const lastKeyframe = track.keyframes[track.keyframes.length - 1];
+
 				existing.push({
+					...lastKeyframe,
 					at: endOffset + hold,
-					pose: lastKeyframe.pose,
-					ease: lastKeyframe.ease,
 				});
 			}
 		}

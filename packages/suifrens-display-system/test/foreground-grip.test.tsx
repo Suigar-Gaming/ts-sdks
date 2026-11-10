@@ -68,7 +68,8 @@ test.each(['capy', 'bullshark'] as const)(
 			await render(false);
 			await render(true);
 			const arm = view.container
-				.querySelectorAll('[data-suifren-animation-part="leftArm"]')[1]
+				.querySelectorAll('[data-suifren-animation-part="leftArm"]')
+				.item(1)
 				.querySelector('g[transform]')!;
 			const object = view.container.querySelector('[data-cup]')!;
 			expect(arm).not.toBeNull();

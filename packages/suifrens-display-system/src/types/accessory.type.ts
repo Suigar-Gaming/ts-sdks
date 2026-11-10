@@ -55,8 +55,8 @@ export type AccessoryRenderer = (props: AccessoryRendererProps) => JSX.Element |
 
 export type SvgAccessoryProps = {
 	assetSrc: string;
-	symbolId?: string;
+	symbolId?: string | undefined;
 	species: SuiFrenSpecies;
-	placement?: Partial<Record<SuiFrenSpecies, AccessoryPlacement>>;
-	viewport?: { x: number; y: number; width: number; height: number };
+	placement?: Partial<Record<SuiFrenSpecies, AccessoryPlacement>> | undefined;
+	viewport?: { x: number; y: number; width: number; height: number } | undefined;
 };

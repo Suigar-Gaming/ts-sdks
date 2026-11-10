@@ -25,13 +25,7 @@ export function RightEar({ ...props }: RightEarProps) {
 			content = <DefaultRightEar fill={props.fill} />;
 			break;
 		case 'wild':
-			content = (
-				<WildRightEar
-					earShape={props.earShape}
-					innerEarProps={props.innerEarProps}
-					outerEarProps={props.outerEarProps}
-				/>
-			);
+			content = <WildRightEar {...props} />;
 			break;
 		case 'mischievous':
 			content = <MischievousRightEar fill={props.fill} />;

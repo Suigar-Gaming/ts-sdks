@@ -43,7 +43,9 @@ test.each([
 				expect(svg.getAttribute('overflow')).toBe('visible');
 				expect(svg.getAttribute('width')).toBe('64');
 				const image = svg.querySelector('image')!;
-				const viewport = getVipCrownAssetViewport(getVipCrownAssetSrc(accessory.name))!;
+				const asset = getVipCrownAssetSrc(accessory.name);
+				if (!asset) throw new Error(`Missing crown: ${accessory.name}`);
+				const viewport = getVipCrownAssetViewport(asset)!;
 				const scaleX = Number(image.getAttribute('width')) / 3209;
 				const scaleY = Number(image.getAttribute('height')) / 3609;
 				expect(scaleX).toBeCloseTo(3000 / 3009);

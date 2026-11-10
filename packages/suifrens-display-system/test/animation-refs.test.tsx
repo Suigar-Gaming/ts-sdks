@@ -197,8 +197,8 @@ test('a transformed accessory root is detected without falling back to the wrong
 	);
 	const targets = store.getAnimationTargets();
 	expect(targets).toHaveLength(1);
-	expect(targets[0].part).toBe('fin');
-	expect(targets[0].element).toBe(view.container.querySelector('[data-fin]'));
+	expect(targets[0]?.part).toBe('fin');
+	expect(targets[0]?.element).toBe(view.container.querySelector('[data-fin]'));
 	await view.render(null);
 	expect(store.getAnimationTargets()).toHaveLength(0);
 });

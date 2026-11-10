@@ -40,7 +40,7 @@ function renderHit(trigger?: string | number | null) {
 			attributes={attributes}
 			health={10}
 			maxHealth={10}
-			hitFlashTrigger={trigger}
+			{...(trigger !== undefined && { hitFlashTrigger: trigger })}
 			imageStyle={{ filter: 'blur(2px)' }}
 		/>,
 	);

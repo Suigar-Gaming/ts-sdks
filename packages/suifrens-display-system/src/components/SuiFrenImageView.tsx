@@ -99,7 +99,7 @@ export function SuiFrenImageView({
 	if ('finStyle' in attributes) {
 		suiFrenImageContent = (
 			<BullsharkImage
-				accessoriesByType={accessoriesByType}
+				{...(accessoriesByType && { accessoriesByType })}
 				attributes={attributes}
 				detail={detail}
 				incognito={incognito}
@@ -109,8 +109,8 @@ export function SuiFrenImageView({
 	} else if ('earShape' in attributes) {
 		suiFrenImageContent = (
 			<CapyImage
-				gesture={capyGesture}
-				accessoriesByType={accessoriesByType}
+				{...(capyGesture && { gesture: capyGesture })}
+				{...(accessoriesByType && { accessoriesByType })}
 				attributes={attributes}
 				detail={detail}
 				incognito={incognito}

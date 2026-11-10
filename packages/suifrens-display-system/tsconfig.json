@@ -1,13 +1,10 @@
 {
 	"extends": "../../tsconfig.shared.json",
 	"compilerOptions": {
-		"exactOptionalPropertyTypes": false,
-		"noUncheckedIndexedAccess": false,
-		"rootDir": ".",
 		"outDir": "dist",
+		"rootDir": ".",
 		"tsBuildInfoFile": "node_modules/.cache/typecheck.tsbuildinfo",
-		"types": ["node", "vite/client"],
-		"lib": ["DOM", "DOM.Iterable", "ESNext"]
+		"types": ["node", "vite/client"]
 	},
 	"include": ["src", "scripts", "test", "tsdown.config.ts", "vitest.config.ts"]
 }

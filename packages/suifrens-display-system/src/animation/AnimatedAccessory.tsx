@@ -14,7 +14,7 @@ import { matchPartByTransform } from './parts.js';
 
 type AnimatedAccessoryProps = {
 	children: ReactElement;
-	fallbackPart?: AnimationPart;
+	fallbackPart?: AnimationPart | undefined;
 };
 
 const REACT_FORWARD_REF_TYPE = Symbol.for('react.forward_ref');

@@ -11,7 +11,7 @@ import { SequencePlayer } from './sequence-player.js';
 
 type SequenceSource = {
 	sequence: AnimationSequence;
-	playback?: PlaybackOptions;
+	playback: PlaybackOptions | undefined;
 } | null;
 
 const DEFAULT_TRANSITION_MS = 140;

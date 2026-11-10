@@ -120,7 +120,9 @@ for (const source of (await readdir(sourceDir)).sort()) {
 	}
 	const layers = await readLayers(source, inlineImports, inlineEntries);
 	const symbols: Array<string> = [];
-	const baseContent = extractSvgContent(minifySvg(layers['default']));
+	const baseLayer = layers['default'];
+	if (!baseLayer) throw new Error(`Missing default SVG layer for ${name}`);
+	const baseContent = extractSvgContent(minifySvg(baseLayer));
 	const bodyGroup = extractGroupByRole(baseContent, 'body');
 	const rightLegGroup = extractGroupByRole(baseContent, 'backleg');
 	const leftLegGroup = extractGroupByRole(baseContent, 'frontleg');
@@ -149,7 +151,7 @@ for (const source of (await readdir(sourceDir)).sort()) {
 		}
 	} else {
 		for (const key of ['default', 'body', 'left', 'right']) {
-			const svg = minifySvg(layers[key] ?? layers['default']);
+			const svg = minifySvg(layers[key] ?? baseLayer);
 			const content = scopeSvgReferences(extractSvgContent(svg), `${dir}-${key}`);
 			symbols.push(`<symbol id="${key}" viewBox="0 0 3000 3000">${content}</symbol>`);
 		}

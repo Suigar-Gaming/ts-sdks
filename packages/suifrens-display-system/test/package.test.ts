@@ -53,6 +53,7 @@ test('built inline and asset renderers preserve custom kits for both species and
 					const references = [...svg.matchAll(/(?:href|xlink:href)="(file:[^"]+\.svg)#[^"]+"/g)];
 					assert.ok(references.length > 0, 'asset renderer must reference emitted SVGs');
 					for (const [, url] of references) {
+						assert.ok(url);
 						assert.ok(existsSync(new URL(url)), `missing asset ${url}`);
 					}
 				} else {
@@ -92,6 +93,7 @@ test('built goth boot assets contain only the selected boot without clipping', a
 		const references = [...svg.matchAll(/(?:href|xlink:href)="(file:[^"]+\.svg)#[^"]+"/g)];
 		assert.ok(references.length > 0);
 		for (const [, url] of references) {
+			assert.ok(url);
 			const asset = readFileSync(new URL(url), 'utf8');
 			assert.doesNotMatch(asset, /clipPath|clip-path/);
 			assert.equal((asset.match(/<path\b/g) ?? []).length, 20);

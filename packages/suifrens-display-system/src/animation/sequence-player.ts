@@ -51,8 +51,7 @@ export function interpolatePose(track: AnimationTrack, time: number): PartPose |
 	let previous = track.keyframes[0];
 	let next = track.keyframes[track.keyframes.length - 1];
 
-	for (let index = 0; index < track.keyframes.length; index++) {
-		const frame = track.keyframes[index];
+	for (const frame of track.keyframes) {
 		if (frame.at <= time) {
 			previous = frame;
 		}

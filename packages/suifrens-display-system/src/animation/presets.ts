@@ -4,7 +4,6 @@ import { CORE_PRESET_SEQUENCES } from './core-presets.js';
 
 const PRESETS: Record<string, AnimationSequence> = {
 	...CORE_PRESET_SEQUENCES,
-	victory: CORE_PRESET_SEQUENCES['celebrate'],
 	...BATTLE_ROYALE_PRESETS,
 };
 

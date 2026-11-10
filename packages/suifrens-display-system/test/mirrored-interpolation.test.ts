@@ -19,8 +19,8 @@ test.each([0, 45, 89.9999, 90, 90.0001, 135, 180])(
 		expect(rotation[0] * rotation[3] - rotation[1] * rotation[2]).toBeGreaterThan(0);
 		expect(transform).toMatch(/ scale\(-1, 1\)$/);
 		const composed = multiplyMatrix(rotation, [-1, 0, 0, 1, 0, 0]);
-		for (let index = 0; index < 6; index++) {
-			expect(composed[index]).toBeCloseTo(original[index], 5);
+		for (const [index, value] of original.entries()) {
+			expect(composed[index]).toBeCloseTo(value, 5);
 		}
 	},
 );

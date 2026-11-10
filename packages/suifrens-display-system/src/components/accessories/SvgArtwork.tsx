@@ -10,6 +10,7 @@ function ArtworkElement({ source }: { source: string }) {
 		const end = svg.indexOf('>');
 		const attributes: Record<string, string> = {};
 		for (const [, name, value] of svg.slice(0, end).matchAll(/ ([\w:-]+)="([^"]*)"/g)) {
+			if (!name || value === undefined) continue;
 			attributes[name === 'xml:space' ? 'xmlSpace' : name === 'xmlns:xlink' ? 'xmlnsXlink' : name] =
 				value;
 		}
@@ -24,7 +25,7 @@ export function SvgArtwork({
 	fallbackPart,
 }: {
 	source: string;
-	fallbackPart?: AnimationPart;
+	fallbackPart?: AnimationPart | undefined;
 }) {
 	return (
 		<AnimatedAccessory key={source} fallbackPart={fallbackPart}>
