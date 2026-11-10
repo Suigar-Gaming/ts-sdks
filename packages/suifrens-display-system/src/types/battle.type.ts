@@ -71,14 +71,13 @@ export type DuelPoseStep<TExpression extends string = string> = {
 export type DuelAttackStep<TExpression extends string = string> = {
 	type: 'attack';
 	label: string;
-	attacker: DuelSide;
-	preset: string;
-	target: DuelSide;
-	damage: number;
-	hitPreset?: string;
-	hitDelayMs?: number;
-	attackerExpression?: TExpression;
-	targetExpression?: TExpression;
+	attacker: { side: DuelSide; preset: string; expression?: TExpression };
+	target: {
+		damage: number;
+		preset?: string;
+		delayMs?: number;
+		expression?: TExpression;
+	};
 	afterMs?: number;
 };
 
@@ -96,7 +95,7 @@ export type DuelVictoryStep<TExpression extends string = string> = {
 	label: string;
 	side: DuelSide;
 	preset?: string;
-	loops?: number;
+	iterations?: number;
 	expression?: TExpression;
 	afterMs?: number;
 };

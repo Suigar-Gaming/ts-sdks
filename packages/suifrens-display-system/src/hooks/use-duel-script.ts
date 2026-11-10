@@ -64,7 +64,6 @@ export function useDuelScript<TExpression extends string = string>({
 	);
 
 	const triggerRef = useRef<DuelHealth>({ left: 0, right: 0 });
-	const healthRef = useRef<DuelHealth>({ left: initialHealth.left, right: initialHealth.right });
 	const controllerRef = useRef<AbortController | null>(null);
 
 	const initialState = useMemo<DuelState<TExpression>>(
@@ -120,9 +119,8 @@ export function useDuelScript<TExpression extends string = string>({
 	const reset = useCallback(() => {
 		abortRun();
 		triggerRef.current = { left: 0, right: 0 };
-		healthRef.current = { left: initialHealth.left, right: initialHealth.right };
 		commit(() => initialState);
-	}, [abortRun, commit, initialHealth.left, initialHealth.right, initialState]);
+	}, [abortRun, commit, initialState]);
 
 	const setPhase = useCallback(
 		(phase: string) => {
@@ -168,14 +166,10 @@ export function useDuelScript<TExpression extends string = string>({
 
 	const applyDamage = useCallback(
 		(side: DuelSide, amount: number) => {
-			const current = healthRef.current[side];
-			const next = Math.max(0, current - Math.max(0, amount));
-			healthRef.current[side] = next;
 			commit((prev) => ({
 				...prev,
-				[side]: { ...prev[side], health: next },
+				[side]: { ...prev[side], health: Math.max(0, prev[side].health - Math.max(0, amount)) },
 			}));
-			return next;
 		},
 		[commit],
 	);
@@ -239,35 +233,33 @@ export function useDuelScript<TExpression extends string = string>({
 						break;
 					}
 					case 'attack': {
-						if (stateRef.current[step.attacker].status === 'dead') {
+						const { attacker, target } = step;
+						const targetSide = attacker.side === 'left' ? 'right' : 'left';
+						if (stateRef.current[attacker.side].status === 'dead') {
 							break;
 						}
-						const hitPreset = step.hitPreset ?? 'hit';
-						const hitDelayMs = step.hitDelayMs ?? 140;
+						const hitPreset = target.preset ?? 'hit';
+						const hitDelayMs = target.delayMs ?? 140;
 						const afterMs = step.afterMs ?? 140;
 
-						if (step.attackerExpression) {
-							setExpression(step.attacker, step.attackerExpression);
+						if (attacker.expression) {
+							setExpression(attacker.side, attacker.expression);
 						}
-						if (step.targetExpression) {
-							setExpression(step.target, step.targetExpression);
+						if (target.expression) {
+							setExpression(targetSide, target.expression);
 						}
 
-						playPreset(step.attacker, step.preset, { iterations: 1 as const });
+						playPreset(attacker.side, attacker.preset, { iterations: 1 as const });
 
 						await wait(hitDelayMs, signal);
 
-						if (stateRef.current[step.target].status !== 'dead') {
-							playPreset(step.target, hitPreset, { iterations: 1 as const });
-							const nextHealth = applyDamage(step.target, step.damage);
-							if (nextHealth <= 0) {
-								// Keep the target in the hit pose until the script explicitly kills them.
-								// (This keeps KO logic declarative and makes death variants easy to swap.)
-							}
+						if (stateRef.current[targetSide].status !== 'dead') {
+							playPreset(targetSide, hitPreset, { iterations: 1 as const });
+							applyDamage(targetSide, target.damage);
 						}
 
 						const attackDuration =
-							getPresetDurationMs(step.preset, { iterations: 1 as const }) ?? 0;
+							getPresetDurationMs(attacker.preset, { iterations: 1 as const }) ?? 0;
 						const reactionDuration =
 							getPresetDurationMs(hitPreset, { iterations: 1 as const }) ?? 0;
 						const totalDuration = Math.max(attackDuration, hitDelayMs + reactionDuration);
@@ -277,17 +269,17 @@ export function useDuelScript<TExpression extends string = string>({
 						}
 						await wait(afterMs, signal);
 
-						if (stateRef.current[step.attacker].status !== 'dead') {
-							idle(step.attacker);
-							setExpression(step.attacker, stateRef.current[step.attacker].baseExpression);
+						if (stateRef.current[attacker.side].status !== 'dead') {
+							idle(attacker.side);
+							setExpression(attacker.side, stateRef.current[attacker.side].baseExpression);
 						}
 
 						if (
-							stateRef.current[step.target].status !== 'dead' &&
-							healthRef.current[step.target] > 0
+							stateRef.current[targetSide].status !== 'dead' &&
+							stateRef.current[targetSide].health > 0
 						) {
-							idle(step.target);
-							setExpression(step.target, stateRef.current[step.target].baseExpression);
+							idle(targetSide);
+							setExpression(targetSide, stateRef.current[targetSide].baseExpression);
 						}
 						break;
 					}
@@ -315,13 +307,13 @@ export function useDuelScript<TExpression extends string = string>({
 						}
 
 						const preset = step.preset ?? 'victory';
-						const loops = step.loops ?? 5;
+						const playback = { iterations: step.iterations ?? 5 };
 						if (step.expression) {
 							setExpression(step.side, step.expression);
 						}
 
-						playPreset(step.side, preset, { iterations: loops });
-						const duration = getPresetDurationMs(preset, { iterations: loops });
+						playPreset(step.side, preset, playback);
+						const duration = getPresetDurationMs(preset, playback);
 						if (duration) {
 							await wait(duration, signal);
 						}
