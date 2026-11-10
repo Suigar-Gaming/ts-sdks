@@ -40,7 +40,7 @@ import layer38 from '../assets/accessories/patterns/vertical/shirt.svg';
 import layer39 from '../assets/accessories/patterns/vertical/waist.svg';
 import layer40 from '../assets/accessories/runner-headband/bullshark.svg';
 import layer41 from '../assets/accessories/runner-headband/default.svg';
-import layer42 from '../assets/accessories/runner-shoes/default.svg';
+import layer42 from '../assets/accessories/runner-shoes.svg';
 import layer43 from '../assets/accessories/runner-shorts/body.svg';
 import layer44 from '../assets/accessories/runner-shorts/default.svg';
 import layer45 from '../assets/accessories/runner-singlet/body.svg';

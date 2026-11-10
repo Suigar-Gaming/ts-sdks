@@ -88,19 +88,24 @@ const kitEntries: Array<string> = [];
 async function readLayers(source: string, imports: Array<string>, entries: Array<string>) {
 	const layers: Record<string, string> = {};
 	const fields: Array<string> = [];
-	for (const file of (await readdir(join(sourceDir, source))).sort()) {
-		const relativePath = source + '/' + file;
-		const layer = file.replace(/\.svg$/, '');
+	const singleFile = source.endsWith('.svg');
+	const files = singleFile ? [source] : (await readdir(join(sourceDir, source))).sort();
+	for (const file of files) {
+		const relativePath = singleFile ? file : source + '/' + file;
+		const layer = singleFile ? 'default' : file.replace(/\.svg$/, '');
 		const id = 'layer' + imports.length;
 		imports.push(`import ${id} from '../assets/accessories/${relativePath}';`);
 		fields.push(`${JSON.stringify(layer)}: ${id}`);
 		layers[layer] = await readFile(join(sourceDir, relativePath), 'utf8');
 	}
-	entries.push(`${JSON.stringify(source.replaceAll('-', ' '))}: { ${fields.join(', ')} }`);
+	entries.push(
+		`${JSON.stringify(source.replace(/\.svg$/, '').replaceAll('-', ' '))}: { ${fields.join(', ')} }`,
+	);
 	return layers;
 }
 
-for (const dir of (await readdir(sourceDir)).sort()) {
+for (const source of (await readdir(sourceDir)).sort()) {
+	const dir = source.replace(/\.svg$/, '');
 	if (dir === 'crowns') continue;
 	if (dir === 'patterns') {
 		for (const pattern of (await readdir(join(sourceDir, dir))).sort()) {
@@ -110,10 +115,10 @@ for (const dir of (await readdir(sourceDir)).sort()) {
 	}
 	const name = dir.replaceAll('-', ' ');
 	if (dir.startsWith('runner-') || dir.startsWith('soccer-team-')) {
-		await readLayers(dir, kitImports, kitEntries);
+		await readLayers(source, kitImports, kitEntries);
 		continue;
 	}
-	const layers = await readLayers(dir, inlineImports, inlineEntries);
+	const layers = await readLayers(source, inlineImports, inlineEntries);
 	const symbols: Array<string> = [];
 	const baseContent = extractSvgContent(minifySvg(layers['default']));
 	const bodyGroup = extractGroupByRole(baseContent, 'body');
