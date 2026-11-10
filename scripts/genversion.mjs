@@ -1,9 +1,8 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import { readdir, readFile, writeFile } from 'node:fs/promises';
-
-const packagesDir = new URL('../packages/', import.meta.url);
+import { readFile, writeFile } from 'node:fs/promises';
+import deno from '../deno.json' with { type: 'json' };
 
 function hasErrorCode(error, code) {
 	return error instanceof Error && 'code' in error && error.code === code;
@@ -27,12 +26,8 @@ async function replaceVersionInFile(path, version) {
 	}
 }
 
-for (const directory of await readdir(packagesDir, { withFileTypes: true })) {
-	if (!directory.isDirectory()) {
-		continue;
-	}
-
-	const packageDir = new URL(`${directory.name}/`, packagesDir);
+for (const member of deno.workspace) {
+	const packageDir = new URL(`../${member}/`, import.meta.url);
 	const packageJsonPath = new URL('package.json', packageDir);
 	const jsrJsonPath = new URL('jsr.json', packageDir);
 	const packageJson = await readJson(packageJsonPath);

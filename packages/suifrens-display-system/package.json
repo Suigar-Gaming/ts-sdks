@@ -1,0 +1,116 @@
+{
+	"name": "@suigar/suifrens-display-system",
+	"version": "1.2.2",
+	"license": "Apache-2.0",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Suigar-Gaming/ts-sdks.git",
+		"directory": "packages/suifrens-display-system"
+	},
+	"files": [
+		"dist",
+		"CHANGELOG.md",
+		"README.md"
+	],
+	"type": "module",
+	"sideEffects": false,
+	"main": "./dist/index.mjs",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.mts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.mts",
+			"import": "./dist/index.mjs",
+			"default": "./dist/index.mjs"
+		},
+		"./image": {
+			"types": "./dist/image.d.mts",
+			"import": "./dist/image.mjs",
+			"default": "./dist/image.mjs"
+		},
+		"./image-inline": {
+			"types": "./dist/image-inline.d.mts",
+			"import": "./dist/image-inline.mjs",
+			"default": "./dist/image-inline.mjs"
+		},
+		"./image-assets": {
+			"types": "./dist/image-assets.d.mts",
+			"import": "./dist/image-assets.mjs",
+			"default": "./dist/image-assets.mjs"
+		},
+		"./accessories": {
+			"types": "./dist/accessories.d.mts",
+			"import": "./dist/accessories.mjs",
+			"default": "./dist/accessories.mjs"
+		},
+		"./colors": {
+			"types": "./dist/colors.d.mts",
+			"import": "./dist/colors.mjs",
+			"default": "./dist/colors.mjs"
+		},
+		"./attributes": {
+			"types": "./dist/attributes.d.mts",
+			"import": "./dist/attributes.mjs",
+			"default": "./dist/attributes.mjs"
+		},
+		"./expressions": {
+			"types": "./dist/expressions.d.mts",
+			"import": "./dist/expressions.mjs",
+			"default": "./dist/expressions.mjs"
+		},
+		"./vip-crowns": {
+			"types": "./dist/vip-crowns.d.mts",
+			"import": "./dist/vip-crowns.mjs",
+			"default": "./dist/vip-crowns.mjs"
+		},
+		"./animation": {
+			"types": "./dist/animation.d.mts",
+			"import": "./dist/animation.mjs",
+			"default": "./dist/animation.mjs"
+		},
+		"./battle": {
+			"types": "./dist/battle.d.mts",
+			"import": "./dist/battle.mjs",
+			"default": "./dist/battle.mjs"
+		},
+		"./types": {
+			"types": "./dist/types.d.mts",
+			"import": "./dist/types.mjs",
+			"default": "./dist/types.mjs"
+		}
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"build": "pnpm run clean && pnpm run codegen && tsdown",
+		"build:ci": "pnpm run clean && tsdown",
+		"typecheck": "tsc --noEmit",
+		"test": "vitest run",
+		"lint": "pnpm run oxlint && pnpm run oxfmt",
+		"clean": "rimraf dist",
+		"oxlint": "oxlint .",
+		"oxlint:fix": "oxlint . --fix",
+		"oxfmt": "oxfmt . --check",
+		"oxfmt:fix": "oxfmt .",
+		"lint:fix": "pnpm run oxlint:fix && pnpm run oxfmt:fix",
+		"codegen": "node --import tsx scripts/generate-accessory-assets.tsx && oxfmt src/generated/accessoryAssetManifest.ts"
+	},
+	"devDependencies": {
+		"@types/node": "catalog:typescript",
+		"@types/react": "catalog:typescript",
+		"@types/react-dom": "catalog:typescript",
+		"happy-dom": "^21.0.4",
+		"react": "catalog:frontend",
+		"react-dom": "catalog:frontend",
+		"tsdown": "catalog:tooling",
+		"tsx": "^4.23.15",
+		"typescript": "catalog:typescript",
+		"vite": "^8.3.6",
+		"vitest": "catalog:tooling"
+	},
+	"peerDependencies": {
+		"react": "^18.2.0 || ^19.0.0",
+		"react-dom": "^18.2.0 || ^19.0.0"
+	}
+}

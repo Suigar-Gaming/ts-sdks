@@ -4,10 +4,11 @@ These instructions apply throughout the repository. Scoped instructions add pack
 
 ## Workspace and instruction map
 
-This private pnpm workspace contains two ESM-only publishable packages and a local integration app:
+This private pnpm workspace contains three ESM-only publishable packages, a local integration app:
 
 - [`packages/sdk/AGENTS.md`](packages/sdk/AGENTS.md): `@suigar/sdk`, public SDK APIs, transaction builders, generated Move bindings, configuration, and SDK tests.
 - [`packages/mcp/AGENTS.md`](packages/mcp/AGENTS.md): `@suigar/mcp`, stdio protocol, tools, wallet bridges, inspector App, and MCP tests.
+- [`packages/suifrens-display-system/AGENTS.md`](packages/suifrens-display-system/AGENTS.md): display rendering, compatibility and release validation.
 - [`playground/AGENTS.md`](playground/AGENTS.md): private `@suigar/sdk-playground` Next.js integration app.
 
 Shared dependencies and catalogs live in `pnpm-workspace.yaml`; shared compiler options live in `tsconfig.shared.json`. Package source, scripts, and tests live under their own workspace directory. `dist/` contains generated build output. Do not copy package-specific instructions into this file.
@@ -29,7 +30,7 @@ Use each package's scoped instructions for build, code generation, tests, and ty
 
 ## Shared testing conventions
 
-- Both packages use Vitest 5 in the Node.js environment. Run tests through the package scripts or from the package root so its Vitest config is loaded. For `-t` filters, match an individual test name or use `.*` between suite and test names.
+- The packages use Vitest 5 in the Node.js environment. Run tests through the package scripts or from the package root so its Vitest config is loaded. For `-t` filters, match an individual test name or use `.*` between suite and test names.
 - Add regression coverage near the affected behavior. Check observable results, argument normalization, configuration overrides, and actionable failures where relevant. Transaction tests should cover the applicable game or action and its generated contract-call arguments; keep standard and PvP flows separate.
 - Reuse nearby test fixtures and helpers. Mock external services and generated contract boundaries where needed, while exercising the package's own behavior. Keep tests independent of live networks and real wallet credentials; wallet bridge tests may use local loopback servers and temporary storage.
 - Vitest clears mock call history before each test by default. Reset mock implementations, module state, environment variables, timers, and resources explicitly when a test changes them; clearing call history does not reset those. Keep `vi.mock`, `vi.unmock`, and `vi.hoisted` at module scope, and use `vi.doMock` for runtime mocking. Await asynchronous assertions.
@@ -131,3 +132,7 @@ List the checks you ran and whether they passed. If you skipped a check, say why
 - [ ] Generated contract bindings changed.
 - [ ] Compatibility issues, limitations, or follow-up work need attention.
 ```
+
+## Suifrens Display System
+
+The [display package](packages/suifrens-display-system/README.md) builds with `pnpm --filter @suigar/suifrens-display-system build`. Changesets manages the display package’s npm beta releases.

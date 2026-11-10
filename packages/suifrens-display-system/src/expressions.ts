@@ -1,0 +1,9 @@
+export type { ExpressionMood } from './constants/expressions.js';
+export {
+	ALL_BULLSHARK_EXPRESSIONS,
+	ALL_CAPY_EXPRESSIONS,
+	NEGATIVE_BULLSHARK_EXPRESSIONS,
+	NEGATIVE_CAPY_EXPRESSIONS,
+	POSITIVE_BULLSHARK_EXPRESSIONS,
+	POSITIVE_CAPY_EXPRESSIONS,
+} from './constants/expressions.js';

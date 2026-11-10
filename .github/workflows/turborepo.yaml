@@ -103,3 +103,9 @@ jobs:
       - name: Run Playground build
         shell: bash
         run: pnpm turbo run build --filter='./playground'
+
+      - name: Exercise isolated display packages
+        working-directory: packages/suifrens-display-system
+        run: |
+          bash scripts/check-distribution.sh 18.2.0
+          bash scripts/check-distribution.sh 19
