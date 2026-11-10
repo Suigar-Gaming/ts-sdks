@@ -2,13 +2,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import type { SVGProps } from 'react';
-import type { AccessoryMetadata } from './accessory.type.js';
+import type { AccessorySlots } from './accessory.type.js';
 import type { SuiFrenAppearance } from './appearance.type.js';
 import type { SuiFrenGestureProps } from './gesture.type.js';
 
 export type CapyImageProps = SuiFrenGestureProps & {
 	attributes: CapyAttributes;
-	accessoriesByType?: Record<string, AccessoryMetadata>;
+	accessoriesByType?: AccessorySlots;
 	detail?: 'full' | 'head';
 	incognito?: boolean;
 	renderMicrophoneArmInForeground?: boolean;

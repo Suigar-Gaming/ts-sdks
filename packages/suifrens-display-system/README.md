@@ -128,7 +128,7 @@ For custom animated components, import `AnimationProvider`, `AnimatedAccessory` 
 
 ## Accessories and outfits
 
-Pass selected catalogue entries or your own `AccessoryMetadata` objects through `accessories`:
+Pass selected catalogue entries or your own `SuiFrenAccessory` objects (from `/types`) through `accessories`:
 
 ```tsx
 import { accessories } from '@suigar/suifrens-display-system/accessories';

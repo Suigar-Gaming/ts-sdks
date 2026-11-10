@@ -1,9 +1,9 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import type { AccessoryMetadata } from '../types/accessory.type.js';
+import type { AccessorySlots, SuiFrenAccessory } from '../types/accessory.type.js';
 
-function getAccessorySlotKey(accessory: AccessoryMetadata): string {
+function getAccessorySlotKey(accessory: SuiFrenAccessory): string {
 	if (accessory.type === 'feet') {
 		if (accessory.renderOptions.animationPart === 'leftLeg') {
 			return 'leftFeet';
@@ -16,11 +16,11 @@ function getAccessorySlotKey(accessory: AccessoryMetadata): string {
 	return accessory.type;
 }
 
-export function getAccessoriesByType(
-	accessories: Array<AccessoryMetadata>,
-): Record<string, AccessoryMetadata> {
-	return accessories.reduce<Record<string, AccessoryMetadata>>((accumulator, accessory) => {
+export function getAccessoriesByType<T extends SuiFrenAccessory>(
+	accessories: ReadonlyArray<T>,
+): AccessorySlots<T> {
+	return accessories.reduce<AccessorySlots<T>>((accumulator, accessory) => {
 		accumulator[getAccessorySlotKey(accessory)] = accessory;
 		return accumulator;
-	}, {});
+	}, Object.create(null));
 }

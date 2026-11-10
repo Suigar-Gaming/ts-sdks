@@ -37,23 +37,29 @@ export type AccessoryRenderOptions = {
 	foreground?: boolean;
 };
 
-export type AccessoryMetadata = {
+export type SuiFrenAccessory = {
 	type: string;
 	category: string;
 	renderOptions: AccessoryRenderOptions;
 	name: string;
+};
+
+export type AccessoryMetadata = SuiFrenAccessory & {
 	price: number;
 	quantity: number | null;
 	description: string;
 	collection: string;
 };
 
+export type AccessorySlots<T extends SuiFrenAccessory = SuiFrenAccessory | AccessoryMetadata> =
+	Partial<Record<string, T>>;
+
 export type BodyAccessoryProps = {
 	layer?: 'body' | 'left' | 'right';
 };
 
 export type AccessoryRendererProps = BodyAccessoryProps & {
-	accessory: AccessoryMetadata;
+	accessory: SuiFrenAccessory;
 	species: SuiFrenSpecies;
 };
 

@@ -3,7 +3,7 @@
 
 // @vitest-environment happy-dom
 import { afterEach, expect, test, vi } from 'vitest';
-import { accessories } from '../../../src/accessories/index.js';
+import { accessories, getAccessoriesByType } from '../../../src/accessories/index.js';
 import { AnimationStore } from '../../../src/animation/animation-store.js';
 import { SuiFrenImageInline } from '../../../src/image-inline/index.js';
 import { SuiFrenImage } from '../../../src/index.js';
@@ -79,4 +79,26 @@ test.each([
 		/>,
 	);
 	expect(view.container.querySelector('image')?.getAttribute('href')).toBe(assetSrc);
+});
+
+test.each([SuiFrenImage, SuiFrenImageInline])(
+	'renders a custom accessory with only visual fields',
+	async (Renderer) => {
+		const hat = {
+			name: 'custom hat',
+			type: 'head',
+			category: 'hats',
+			renderOptions: { assetSrc: '/custom.svg' },
+		};
+		view = createTestRoot();
+		await view.render(<Renderer attributes={capy} accessories={[hat]} />);
+		expect(view.container.querySelector('image')?.getAttribute('href')).toBe('/custom.svg');
+	},
+);
+
+test('slot lookup preserves catalogue metadata and returns undefined for empty slots', () => {
+	const slots = getAccessoriesByType(accessories.filter((item) => item.name === 'baseball cap'));
+	expect(slots['head']?.price).toBe(2000000000);
+	expect(slots['feet']).toBeUndefined();
+	expect(slots['constructor']).toBeUndefined();
 });

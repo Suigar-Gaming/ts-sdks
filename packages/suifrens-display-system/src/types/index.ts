@@ -4,6 +4,8 @@
 export type {
 	AccessoryKit,
 	AccessoryMetadata,
+	AccessorySlots,
+	SuiFrenAccessory,
 	AccessoryPlacement,
 	AccessoryRenderOptions,
 	SuiFrenSpecies,

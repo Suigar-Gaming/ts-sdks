@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import type { CSSProperties, ReactNode } from 'react';
-import type { AccessoryMetadata } from './accessory.type.js';
+import type { AccessoryMetadata, SuiFrenAccessory } from './accessory.type.js';
 import type { AnimationConfig } from './animation.type.js';
 import type { BullsharkAttributes } from './bullshark.type.js';
 import type { CapyAttributes } from './capy.type.js';
@@ -17,7 +17,7 @@ export type SuiFrenRenderSize =
 
 export type SuiFrenImageProps = SuiFrenGestureProps & {
 	attributes: SuiFrenAttributes;
-	accessories?: Array<AccessoryMetadata>;
+	accessories?: ReadonlyArray<SuiFrenAccessory | AccessoryMetadata>;
 	detail?: 'full' | 'head';
 	renderSize?: SuiFrenRenderSize;
 	incognito?: boolean;
