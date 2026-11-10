@@ -75,16 +75,17 @@
 	"scripts": {
 		"build": "pnpm run clean && pnpm run codegen && tsdown",
 		"build:ci": "pnpm run clean && tsdown",
-		"typecheck": "tsc --noEmit",
-		"test": "vitest run",
-		"lint": "pnpm run oxlint && pnpm run oxfmt",
 		"clean": "rimraf dist",
+		"codegen": "node scripts/generate-accessory-assets.ts && oxfmt src/generated/*.ts",
+		"test": "vitest run",
+		"typecheck": "tsc --noEmit",
+		"doctor": "react-doctor --yes",
 		"oxlint": "oxlint .",
 		"oxlint:fix": "oxlint . --fix",
 		"oxfmt": "oxfmt . --check",
 		"oxfmt:fix": "oxfmt .",
-		"lint:fix": "pnpm run oxlint:fix && pnpm run oxfmt:fix",
-		"codegen": "node scripts/generate-accessory-assets.ts && oxfmt src/generated/*.ts"
+		"lint": "pnpm run oxlint && pnpm run oxfmt",
+		"lint:fix": "pnpm run oxlint:fix && pnpm run oxfmt:fix"
 	},
 	"devDependencies": {
 		"@types/node": "catalog:typescript",
@@ -92,6 +93,7 @@
 		"@types/react-dom": "catalog:typescript",
 		"happy-dom": "catalog:tooling",
 		"react": "catalog:frontend",
+		"react-doctor": "catalog:tooling",
 		"react-dom": "catalog:frontend",
 		"tsdown": "catalog:tooling",
 		"typescript": "catalog:typescript",
