@@ -15,7 +15,7 @@ import { CapyImage } from './capy/CapyImage.js';
 export function SuiFrenImageView({
 	accessoryRenderer,
 	attributes,
-	capyGesture,
+	gesture,
 	accessories,
 	detail = 'full',
 	renderSize,
@@ -40,6 +40,7 @@ export function SuiFrenImageView({
 	if ('finStyle' in attributes) {
 		suiFrenImageContent = (
 			<BullsharkImage
+				gesture={gesture}
 				{...(accessoriesByType && { accessoriesByType })}
 				attributes={attributes}
 				detail={detail}
@@ -50,7 +51,7 @@ export function SuiFrenImageView({
 	} else if ('earShape' in attributes) {
 		suiFrenImageContent = (
 			<CapyImage
-				{...(capyGesture && { gesture: capyGesture })}
+				gesture={gesture}
 				{...(accessoriesByType && { accessoriesByType })}
 				attributes={attributes}
 				detail={detail}

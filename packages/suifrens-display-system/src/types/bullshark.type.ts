@@ -3,8 +3,9 @@
 
 import type { AccessoryMetadata } from './accessory.type.js';
 import type { SuiFrenAppearance } from './appearance.type.js';
+import type { SuiFrenGestureProps } from './gesture.type.js';
 
-export type BullsharkImageProps = {
+export type BullsharkImageProps = SuiFrenGestureProps & {
 	attributes: BullsharkAttributes;
 	accessoriesByType?: Record<string, AccessoryMetadata>;
 	detail?: 'full' | 'head';

@@ -4,10 +4,10 @@
 import type { SVGProps } from 'react';
 import type { AccessoryMetadata } from './accessory.type.js';
 import type { SuiFrenAppearance } from './appearance.type.js';
+import type { SuiFrenGestureProps } from './gesture.type.js';
 
-export type CapyImageProps = {
+export type CapyImageProps = SuiFrenGestureProps & {
 	attributes: CapyAttributes;
-	gesture?: 'thumbs_up';
 	accessoriesByType?: Record<string, AccessoryMetadata>;
 	detail?: 'full' | 'head';
 	incognito?: boolean;

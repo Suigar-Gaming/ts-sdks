@@ -24,7 +24,7 @@ describe.each([
 ] as const)('%s capy thumbs up', (_name, Image) => {
 	test('uses one foreground posed hand and leaves the resting pose unchanged by default', () => {
 		const resting = renderToStaticMarkup(<Image attributes={capy} />);
-		const raised = renderToStaticMarkup(<Image attributes={capy} capyGesture="thumbs_up" />);
+		const raised = renderToStaticMarkup(<Image attributes={capy} gesture="thumbs_up" />);
 		expect(resting).not.toContain('data-suifren-gesture');
 		expect(resting).toContain(restingArm);
 		expect(raised.match(/data-suifren-gesture="thumbs-up"/g)).toHaveLength(1);
@@ -35,7 +35,7 @@ describe.each([
 		);
 	});
 	test('keeps the thumb up and the wrist toward the belly with the small down-left offset', () => {
-		const raised = renderToStaticMarkup(<Image attributes={capy} capyGesture="thumbs_up" />);
+		const raised = renderToStaticMarkup(<Image attributes={capy} gesture="thumbs_up" />);
 		const transform = raised.match(
 			/data-suifren-gesture="thumbs-up"[\s\S]*?<g transform="([^"]+)"/,
 		);
@@ -57,7 +57,7 @@ describe.each([
 		expect(shoulder.y).toBeCloseTo(nativeShoulder.y + 35, 2);
 	});
 	test('uses one continuous outline without an added thumb ellipse or a clipped wrist splice', () => {
-		const raised = renderToStaticMarkup(<Image attributes={capy} capyGesture="thumbs_up" />);
+		const raised = renderToStaticMarkup(<Image attributes={capy} gesture="thumbs_up" />);
 		const gesture = raised.slice(raised.indexOf('data-suifren-gesture="thumbs-up"'));
 		expect(gesture).not.toContain('<ellipse');
 		expect(gesture).not.toContain('<clipPath');
@@ -65,7 +65,7 @@ describe.each([
 	});
 	test('does not change a head portrait or bullshark', () => {
 		expect(
-			renderToStaticMarkup(<Image attributes={capy} detail="head" capyGesture="thumbs_up" />),
+			renderToStaticMarkup(<Image attributes={capy} detail="head" gesture="thumbs_up" />),
 		).toBe(renderToStaticMarkup(<Image attributes={capy} detail="head" />));
 		const shark = {
 			mainColor: 'A87C4C',
@@ -74,14 +74,14 @@ describe.each([
 			expression: 'happy',
 			finStyle: 'classic',
 		} as const;
-		expect(renderToStaticMarkup(<Image attributes={shark} capyGesture="thumbs_up" />)).toBe(
+		expect(renderToStaticMarkup(<Image attributes={shark} gesture="thumbs_up" />)).toBe(
 			renderToStaticMarkup(<Image attributes={shark} />),
 		);
 	});
 	test('preserves the grip when holding an object', () => {
 		const object = accessories.find((accessory) => accessory.name === 'microphone')!;
 		const props = { attributes: capy, accessories: [object] };
-		expect(renderToStaticMarkup(<Image {...props} capyGesture="thumbs_up" />)).toBe(
+		expect(renderToStaticMarkup(<Image {...props} gesture="thumbs_up" />)).toBe(
 			renderToStaticMarkup(<Image {...props} />),
 		);
 	});

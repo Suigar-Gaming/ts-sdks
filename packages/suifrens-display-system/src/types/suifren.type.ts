@@ -5,7 +5,8 @@ import type { CSSProperties, ReactNode } from 'react';
 import type { AccessoryMetadata } from './accessory.type.js';
 import type { AnimationConfig } from './animation.type.js';
 import type { BullsharkAttributes } from './bullshark.type.js';
-import type { CapyAttributes, CapyImageProps } from './capy.type.js';
+import type { CapyAttributes } from './capy.type.js';
+import type { SuiFrenGestureProps } from './gesture.type.js';
 
 export type SuiFrenRenderSize =
 	| number
@@ -14,10 +15,8 @@ export type SuiFrenRenderSize =
 			height: number;
 	  };
 
-export type SuiFrenImageProps = {
+export type SuiFrenImageProps = SuiFrenGestureProps & {
 	attributes: SuiFrenAttributes;
-	/** Optional native capy gesture; bullsharks and head portraits are unchanged. */
-	capyGesture?: CapyImageProps['gesture'];
 	accessories?: Array<AccessoryMetadata>;
 	detail?: 'full' | 'head';
 	renderSize?: SuiFrenRenderSize;
