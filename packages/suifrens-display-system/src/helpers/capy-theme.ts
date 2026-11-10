@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import type { CapySkin } from '../types/capy.type.js';
 import { assertUnreachable } from '../utils/assert-unreachable.js';
 

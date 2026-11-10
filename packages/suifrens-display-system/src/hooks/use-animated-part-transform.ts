@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import { useEffect, useRef, useState } from 'react';
 import { useAnimationStore } from '../animation/AnimationContext.js';
 import type { AnimationPart } from '../types/animation.type.js';

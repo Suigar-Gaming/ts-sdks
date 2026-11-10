@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 // @vitest-environment happy-dom
 import { act, useEffect } from 'react';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';

@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 type Config = {
 	packageId: string;
 	packageIdV2: string;

@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import { formatNumber } from '../animation/parts.js';
 import type { Matrix } from '../types/animation.type.js';
 

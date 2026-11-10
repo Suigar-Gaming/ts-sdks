@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import type { CSSProperties, ReactNode } from 'react';
 import type { AnimationConfig, PlaybackOptions } from './animation.type.js';
 import type { SuiFrenAttributes } from './suifren.type.js';

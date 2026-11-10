@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import type { BullsharkExpression } from '../types/bullshark.type.js';
 import type { CapyExpression } from '../types/capy.type.js';
 

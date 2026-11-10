@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import { useId } from 'react';
 import { SVG_WRAPPER_PATTERN } from '../../constants/svg-patterns.js';
 import { artwork } from '../../generated/kit-artwork.js';

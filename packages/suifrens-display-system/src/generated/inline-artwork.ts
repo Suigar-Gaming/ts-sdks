@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import layer0 from '../accessories/artwork/8-bit-glasses.svg';
 import layer1 from '../accessories/artwork/apron/body.svg';
 import layer2 from '../accessories/artwork/apron/default.svg';

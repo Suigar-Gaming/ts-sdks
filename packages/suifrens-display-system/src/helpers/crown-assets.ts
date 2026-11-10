@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import { VIP_CROWN_IMAGE_VIEWPORT } from '../constants/crown-viewport.js';
 
 const VIP_CROWN_ASSET_BY_NAME: Record<string, string> = {

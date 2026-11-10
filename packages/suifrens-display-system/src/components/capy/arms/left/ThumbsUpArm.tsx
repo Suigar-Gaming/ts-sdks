@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import { AnimatedAccessory } from '../../../../animation/AnimatedAccessory.js';
 import { getPartDefinition } from '../../../../animation/parts.js';
 import {

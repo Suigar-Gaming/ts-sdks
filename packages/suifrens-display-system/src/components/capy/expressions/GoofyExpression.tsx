@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 export function GoofyExpression() {
 	return (
 		<svg xmlns="http://www.w3.org/2000/svg" width="3000" height="3000" fill="none">

@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import type { EasingFunction, EasingName } from '../types/animation.type.js';
 
 const EASINGS: Record<EasingName, EasingFunction> = {

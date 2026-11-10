@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import { earGeneToEarShape } from '@suigar/suifrens-display-system/attributes';
 import type {
 	BullsharkAttributes,

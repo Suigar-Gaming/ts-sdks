@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import type { SVGProps } from 'react';
 
 export function QuietRightEar(props: SVGProps<SVGPathElement>) {

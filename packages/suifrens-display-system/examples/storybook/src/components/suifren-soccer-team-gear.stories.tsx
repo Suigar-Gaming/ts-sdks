@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { SuiFrenImage } from '@suigar/suifrens-display-system';
 import { accessories } from '@suigar/suifrens-display-system/accessories';

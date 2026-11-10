@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import type { AnimationConfig } from '@suigar/suifrens-display-system/types';
 
 export type PresetCatalogEntry = {

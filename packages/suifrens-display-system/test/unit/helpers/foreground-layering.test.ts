@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import { expect, test } from 'vitest';
 import { shouldRenderMicrophoneArmInForeground } from '../../../src/helpers/foreground-layering.js';
 import type { AccessoryMetadata } from '../../../src/types/accessory.type.js';

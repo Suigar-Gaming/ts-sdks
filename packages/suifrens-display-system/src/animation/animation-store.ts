@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import type { AnimationPart, AnimationRegistration, PartPose } from '../types/animation.type.js';
 import {
 	IDENTITY_MATRIX,

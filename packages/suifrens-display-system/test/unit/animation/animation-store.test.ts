@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import { expect, test } from 'vitest';
 import { composePartTransform } from '../../../src/animation/animation-store.js';
 import type { AnimationPart, PartPose } from '../../../src/types/animation.type.js';

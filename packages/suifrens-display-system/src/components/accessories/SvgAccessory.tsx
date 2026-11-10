@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import { useMemo } from 'react';
 import type { AccessoryPlacement, SvgAccessoryProps } from '../../types/accessory.type.js';
 import { resolveEmbeddedSvgSymbolSource } from '../../utils/svg-symbol-data-url.js';

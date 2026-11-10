@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import { buildRunnerAccessories } from '../helpers/runner-kit.js';
 import type { AccessoryMetadata } from '../types/accessory.type.js';
 import { vipCrownAccessories } from './vip-crowns.js';

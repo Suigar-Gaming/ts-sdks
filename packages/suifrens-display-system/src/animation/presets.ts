@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import type { AnimationSequence } from '../types/animation.type.js';
 import { BATTLE_ROYALE_PRESETS } from './battle-royale-presets.js';
 import { CORE_PRESET_SEQUENCES } from './core-presets.js';

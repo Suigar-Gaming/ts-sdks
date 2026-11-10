@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import type { CapyEarShape } from '../types/capy.type.js';
 
 export const earGeneToEarShape: Record<string, CapyEarShape> = {

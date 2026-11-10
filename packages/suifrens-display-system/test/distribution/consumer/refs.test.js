@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 // @vitest-environment happy-dom
 import { createElement, createRef } from 'react';
 import { flushSync } from 'react-dom';

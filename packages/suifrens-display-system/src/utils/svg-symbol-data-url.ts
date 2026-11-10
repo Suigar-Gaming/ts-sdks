@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 const BASE64_PARAMETER_PATTERN: RegExp = /;base64(?:;|$)/i;
 const SVG_DATA_URL_PREFIX = 'data:image/svg+xml';
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';

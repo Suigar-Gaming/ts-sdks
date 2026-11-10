@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import { ObjectError } from '@mysten/sui/client';
 import { beforeEach, expect, test, vi } from 'vitest';
 import { buildServer } from '../../../src/api/app.js';

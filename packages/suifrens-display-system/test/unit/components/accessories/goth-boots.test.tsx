@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 // @vitest-environment happy-dom
 import { readFileSync } from 'node:fs';
 import { renderToStaticMarkup } from 'react-dom/server';

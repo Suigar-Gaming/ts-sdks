@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { getPresetSequence } from '../animation/presets.js';
 import type { AnimationConfig, PlaybackOptions } from '../types/animation.type.js';

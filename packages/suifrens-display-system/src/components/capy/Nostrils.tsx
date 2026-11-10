@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import { useAnimatedPartTransform } from '../../hooks/use-animated-part-transform.js';
 
 export function Nostrils() {

@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import { useMemo } from 'react';
 import { AnimatedAccessory } from '../../animation/AnimatedAccessory.js';
 import { BETWEEN_TAGS_WHITESPACE_PATTERN } from '../../constants/svg-patterns.js';

@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 // The authored crown paths extend above and left of their original 3009px artboard.
 // Match the padded SVG viewport at the original 3000 / 3009 rendering scale.
 const CROWN_SCALE = 3000 / 3009;

@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import { type ReactNode, useMemo } from 'react';
 import { AnimationProvider } from '../animation/AnimationContext.js';
 import { shouldRenderMicrophoneArmInForeground } from '../helpers/foreground-layering.js';

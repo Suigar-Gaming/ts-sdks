@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import { createElement } from 'react';

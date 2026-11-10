@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import { buildServer } from './app.js';
 
 const fastify = buildServer();

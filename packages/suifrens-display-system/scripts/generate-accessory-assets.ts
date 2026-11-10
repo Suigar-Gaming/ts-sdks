@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import {
@@ -18,6 +21,7 @@ const SVG_URL_REFERENCE_PATTERN: RegExp = /url\(#([^)]+)\)/g;
 const SVG_HREF_REFERENCE_PATTERN: RegExp = /(href|xlink:href)="#([^"]+)"/g;
 const GROUP_TAG_PATTERN: RegExp = /<\/?g\b[^>]*>/g;
 const SVG_EXTENSION_PATTERN: RegExp = /\.svg$/;
+const GENERATED_HEADER = '// Copyright (c) Suigar\n// SPDX-License-Identifier: Apache-2.0\n\n';
 const OUTPUT_DIR = 'src/generated/accessory-assets';
 const MANIFEST_PATH = 'src/generated/accessory-asset-manifest.ts';
 
@@ -198,7 +202,7 @@ export const ACCESSORY_ASSET_MANIFEST = {
 } as const satisfies Record<string, string>;
 `;
 
-await writeFile(MANIFEST_PATH, manifest);
+await writeFile(MANIFEST_PATH, GENERATED_HEADER + manifest);
 
 for (const [file, imports, entries] of [
 	['inline-artwork', inlineImports, inlineEntries],
@@ -206,6 +210,6 @@ for (const [file, imports, entries] of [
 ] as const) {
 	await writeFile(
 		`src/generated/${file}.ts`,
-		`${imports.join('\n')}\nexport const artwork: Readonly<Record<string, Readonly<Record<string,string>>>> = {\n${entries.join(',\n')}\n};\n`,
+		`${GENERATED_HEADER}${imports.join('\n')}\nexport const artwork: Readonly<Record<string, Readonly<Record<string,string>>>> = {\n${entries.join(',\n')}\n};\n`,
 	);
 }

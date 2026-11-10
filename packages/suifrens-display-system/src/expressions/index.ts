@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 export {
 	ALL_BULLSHARK_EXPRESSIONS,
 	ALL_CAPY_EXPRESSIONS,

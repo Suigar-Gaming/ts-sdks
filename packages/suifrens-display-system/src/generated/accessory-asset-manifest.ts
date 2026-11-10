@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 export const SPLIT_LIMB_ASSET_NAMES = new Set<string>([
 	'bell bottoms',
 	'blue jeans',

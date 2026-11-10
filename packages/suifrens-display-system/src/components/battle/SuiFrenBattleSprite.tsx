@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import { useEffect, useRef, useState } from 'react';
 import { SuiFrenImageInline } from '../../image-inline/index.js';
 import type { SuiFrenBattleSpriteProps } from '../../types/battle.type.js';

@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import type { CSSProperties, ReactNode } from 'react';
 import type { AccessoryMetadata } from './accessory.type.js';
 import type {

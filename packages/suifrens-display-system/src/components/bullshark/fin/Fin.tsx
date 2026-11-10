@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import type { SVGProps } from 'react';
 import { AnimatedAccessory } from '../../../animation/AnimatedAccessory.js';
 import { useAnimatedPartTransform } from '../../../hooks/use-animated-part-transform.js';

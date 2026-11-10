@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import { ObjectError } from '@mysten/sui/client';
 import type { FastifyPluginAsync } from 'fastify';

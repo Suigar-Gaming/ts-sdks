@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import type { Meta, StoryObj } from '@storybook/react';
 import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
 import { buildRunnerAccessories } from '@suigar/suifrens-display-system/kits';

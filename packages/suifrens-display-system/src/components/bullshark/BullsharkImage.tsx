@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import { AnimatedAccessory } from '../../animation/AnimatedAccessory.js';
 import { getAccessoryLayers } from '../../helpers/accessory-layers.js';
 import { getThemeFromSkin } from '../../helpers/bullshark-theme.js';

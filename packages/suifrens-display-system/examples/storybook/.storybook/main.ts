@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import type { StorybookConfig } from '@storybook/react-vite';
 
 const config: StorybookConfig = {

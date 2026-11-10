@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import { bcs } from '@mysten/sui/bcs';
 
 // suifrens::SuiFren<T> has a phantom species parameter, so both species share this layout.

@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import { WHITESPACE_PATTERN } from '../constants/svg-patterns.js';
 import type { AnimationPart } from '../types/animation.type.js';
 

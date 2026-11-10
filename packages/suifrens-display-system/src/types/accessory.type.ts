@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import type { JSX } from 'react';
 import type { AnimationPart } from './animation.type.js';
 import type { RunnerKitOptions } from './runner-kit.type.js';

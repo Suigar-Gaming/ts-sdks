@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 export * as root from '@suigar/suifrens-display-system';
 export * as accessories from '@suigar/suifrens-display-system/accessories';
 export * as animation from '@suigar/suifrens-display-system/animation';

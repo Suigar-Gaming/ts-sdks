@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import { act, type ReactNode } from 'react';
 import { createRoot } from 'react-dom/client';
 

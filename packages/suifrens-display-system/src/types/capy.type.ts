@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import type { SVGProps } from 'react';
 import type { colors } from '../colors/index.js';
 import type { AccessoryMetadata } from './accessory.type.js';

@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import type { WildRightEarProps } from '../../../../types/capy.type.js';
 
 export function WildRightEar({ outerEarProps, innerEarProps }: WildRightEarProps) {

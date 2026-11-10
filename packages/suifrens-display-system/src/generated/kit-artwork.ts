@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import layer0 from '../accessories/artwork/patterns/canton/leg.svg';
 import layer1 from '../accessories/artwork/patterns/canton/patch.svg';
 import layer2 from '../accessories/artwork/patterns/canton/shirt.svg';

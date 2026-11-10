@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import { expect, test } from 'vitest';
 import type { Matrix } from '../../../src/types/animation.type.js';
 import {

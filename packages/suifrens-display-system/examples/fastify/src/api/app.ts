@@ -1,3 +1,6 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
 import compress from '@fastify/compress';
 import cors from '@fastify/cors';
 import Fastify, { type FastifyServerOptions } from 'fastify';
