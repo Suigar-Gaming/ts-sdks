@@ -1,0 +1,36 @@
+import type { Meta, StoryObj } from '@storybook/react';
+import { buildRunnerAccessories } from '@suigar/suifrens-display-system/accessories';
+import { SuiFrenImage } from '@suigar/suifrens-display-system/image-inline';
+const meta = {
+	title: 'SuiFrens/Runner kit',
+	component: SuiFrenImage,
+	parameters: { layout: 'centered' },
+} satisfies Meta<typeof SuiFrenImage>;
+export default meta;
+type Story = StoryObj<typeof meta>;
+export const Capy: Story = {
+	args: {
+		attributes: {
+			mainColor: 'A87C4C',
+			secondaryColor: 'D5CBB1',
+			skin: 'basic',
+			expression: 'bigSmile',
+			earShape: 'default',
+		},
+		accessories: buildRunnerAccessories({ color: '#ec7da6', number: 3 }),
+		style: { width: 300 },
+	},
+};
+export const Bullshark: Story = {
+	args: {
+		attributes: {
+			mainColor: '469DFD',
+			secondaryColor: 'E6FBFF',
+			skin: 'basic',
+			expression: 'happy',
+			finStyle: 'classic',
+		},
+		accessories: buildRunnerAccessories({ color: '#73d4be', number: 8 }),
+		style: { width: 300 },
+	},
+};

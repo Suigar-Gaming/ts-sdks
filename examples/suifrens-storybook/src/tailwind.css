@@ -1,0 +1,16 @@
+@import 'tailwindcss';
+
+/* Preserve the Storybook controls' Tailwind 3 defaults. */
+@layer base {
+	*,
+	::before,
+	::after,
+	::backdrop,
+	::file-selector-button {
+		border-color: var(--color-gray-200, currentColor);
+	}
+	button:not(:disabled),
+	[role='button']:not(:disabled) {
+		cursor: pointer;
+	}
+}

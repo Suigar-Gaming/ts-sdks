@@ -4,7 +4,7 @@ These instructions apply throughout the repository. Scoped instructions add pack
 
 ## Workspace and instruction map
 
-This private pnpm workspace contains three ESM-only publishable packages, a local integration app and a private Fastify example:
+This private pnpm workspace contains three ESM-only publishable packages, a local integration app and two private display examples:
 
 - [`packages/sdk/AGENTS.md`](packages/sdk/AGENTS.md): `@suigar/sdk`, public SDK APIs, transaction builders, generated Move bindings, configuration, and SDK tests.
 - [`packages/mcp/AGENTS.md`](packages/mcp/AGENTS.md): `@suigar/mcp`, stdio protocol, tools, wallet bridges, inspector App, and MCP tests.
@@ -135,4 +135,4 @@ List the checks you ran and whether they passed. If you skipped a check, say why
 
 ## Suifrens Display System
 
-The [display package](packages/suifrens-display-system/README.md) builds with `pnpm --filter @suigar/suifrens-display-system build`. After building the library, run the private [Fastify example](examples/suifrens-fastify) with `pnpm --filter @suigar/suifrens-fastify dev`. Changesets manages the display package’s npm beta releases.
+The [display package](packages/suifrens-display-system/README.md) builds with `pnpm --filter @suigar/suifrens-display-system build`. Its private [Storybook](examples/suifrens-storybook) and [Fastify server](examples/suifrens-fastify) consume its public exports. After building the library, run either example with `pnpm --filter @suigar/suifrens-storybook dev` or `pnpm --filter @suigar/suifrens-fastify dev`. Changesets manages the display package’s npm beta releases.
