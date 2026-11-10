@@ -1,7 +1,25 @@
 {
 	"name": "@suigar/suifrens-display-system",
 	"version": "1.2.2",
+	"description": "React components for rendering and animating Suifrens capys and bullsharks with inline or external SVG accessories.",
+	"keywords": [
+		"animation",
+		"bullshark",
+		"capy",
+		"nft",
+		"react",
+		"sui",
+		"suifrens",
+		"suigar",
+		"svg",
+		"typescript"
+	],
+	"homepage": "https://github.com/Suigar-Gaming/ts-sdks/blob/main/packages/suifrens-display-system/README.md#migrating-from-the-1x-github-archive",
+	"bugs": {
+		"url": "https://github.com/Suigar-Gaming/ts-sdks/issues/new"
+	},
 	"license": "Apache-2.0",
+	"author": "Suigar Gaming <contact.suigar@gmail.com>",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/Suigar-Gaming/ts-sdks.git",
