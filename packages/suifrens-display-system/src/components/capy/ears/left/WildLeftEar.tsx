@@ -1,9 +1,12 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import type { WildLeftEarProps } from '../../../../types/capy.type.js';
+import type { CapyEarProps } from '../../../../types/capy.type.js';
 
-export function WildLeftEar({ outerEarProps, innerEarProps }: WildLeftEarProps) {
+export function WildLeftEar({
+	outerEarProps,
+	innerEarProps,
+}: Extract<CapyEarProps, { earShape: 'wild' }>) {
 	return (
 		<g transform="matrix(2.9166107177734375, 0, 0, 2.9166107177734375, 746.1,619.15)">
 			<g transform="matrix(1, 0, 0, 1, 0, 0)">

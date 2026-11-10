@@ -20,41 +20,14 @@ export type CapyAttributes = SuiFrenAppearance & {
 	earShape: CapyEarShape;
 };
 
-export type DefaultLeftEarProps = {
-	earShape: 'default';
-} & SVGProps<SVGPathElement>;
-
-export type MischievousLeftEarProps = {
-	earShape: 'mischievous';
-} & SVGProps<SVGPathElement>;
-
-export type QuietLeftEarProps = {
-	earShape: 'quiet';
-} & SVGProps<SVGGElement>;
-
-export type WildLeftEarProps = {
-	earShape: 'wild';
-	outerEarProps?: SVGProps<SVGPathElement>;
-	innerEarProps?: SVGProps<SVGPathElement>;
-};
-
-export type DefaultRightEarProps = {
-	earShape: 'default';
-} & SVGProps<SVGPathElement>;
-
-export type MischievousRightEarProps = {
-	earShape: 'mischievous';
-} & SVGProps<SVGPathElement>;
-
-export type QuietRightEarProps = {
-	earShape: 'quiet';
-} & SVGProps<SVGGElement>;
-
-export type WildRightEarProps = {
-	earShape: 'wild';
-	outerEarProps?: SVGProps<SVGPathElement>;
-	innerEarProps?: SVGProps<SVGPathElement>;
-};
+export type CapyEarProps =
+	| ({ earShape: 'default' | 'mischievous' } & SVGProps<SVGPathElement>)
+	| ({ earShape: 'quiet' } & SVGProps<SVGGElement>)
+	| {
+			earShape: 'wild';
+			outerEarProps?: SVGProps<SVGPathElement>;
+			innerEarProps?: SVGProps<SVGPathElement>;
+	  };
 
 export type CapyTheme = {
 	head: string;

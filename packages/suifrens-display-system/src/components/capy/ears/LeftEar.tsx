@@ -3,25 +3,14 @@
 
 import type { JSX } from 'react';
 import { AnimatedAccessory } from '../../../animation/AnimatedAccessory.js';
-import type {
-	DefaultLeftEarProps,
-	MischievousLeftEarProps,
-	QuietLeftEarProps,
-	WildLeftEarProps,
-} from '../../../types/capy.type.js';
+import type { CapyEarProps } from '../../../types/capy.type.js';
 import { assertUnreachable } from '../../../utils/assert-unreachable.js';
 import { DefaultLeftEar } from './left/DefaultLeftEar.js';
 import { MischievousLeftEar } from './left/MischievousLeftEar.js';
 import { QuietLeftEar } from './left/QuietLeftEar.js';
 import { WildLeftEar } from './left/WildLeftEar.js';
 
-type LeftEarProps =
-	| DefaultLeftEarProps
-	| WildLeftEarProps
-	| MischievousLeftEarProps
-	| QuietLeftEarProps;
-
-export function LeftEar({ ...props }: LeftEarProps) {
+export function LeftEar(props: CapyEarProps) {
 	let content: JSX.Element;
 	switch (props.earShape) {
 		case 'default':
