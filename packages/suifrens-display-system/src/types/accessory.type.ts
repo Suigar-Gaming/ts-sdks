@@ -4,7 +4,7 @@
 import type { JSX } from 'react';
 import type { AnimationPart } from './animation.type.js';
 import type { RunnerKitOptions } from './runner-kit.type.js';
-import type { SoccerTeamKit } from './soccer-kit.type.js';
+import type { SoccerTeamCountryCode, SoccerTeamKit, SoccerTeamSide } from './soccer-kit.type.js';
 
 export type AccessoryAssetVariant = 'default' | 'body' | 'left' | 'right' | 'leftLeg' | 'rightLeg';
 
@@ -19,13 +19,17 @@ export type AccessoryPlacement = {
 	originY?: number;
 };
 
-export type AccessoryRenderOptions = Record<string, unknown> & {
-	runnerKit?: RunnerKitOptions;
+export type AccessoryKit =
+	| ({ type: 'runner' } & RunnerKitOptions)
+	| ({ type: 'soccer'; side?: SoccerTeamSide } & (
+			| { country?: SoccerTeamCountryCode; team?: never }
+			| { team: SoccerTeamKit; country?: never }
+	  ));
+
+export type AccessoryRenderOptions = {
+	kit?: AccessoryKit;
 	showEars?: boolean;
 	showFin?: boolean;
-	country?: string;
-	teamKit?: SoccerTeamKit;
-	side?: 'home' | 'away';
 	assetSrc?: string;
 	placement?: Partial<Record<SuiFrenSpecies, AccessoryPlacement>>;
 	animationPart?: AnimationPart;

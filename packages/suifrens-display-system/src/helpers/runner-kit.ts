@@ -26,7 +26,7 @@ export function resolveRunnerKit(value: unknown): Required<RunnerKitOptions> {
 	};
 }
 export function buildRunnerAccessories(options: RunnerKitOptions = {}): Array<AccessoryMetadata> {
-	const runnerKit = resolveRunnerKit(options);
+	const kit = { type: 'runner', ...resolveRunnerKit(options) } as const;
 	return [...RUNNER_ACCESSORY_NAMES].map((name) => ({
 		name,
 		type:
@@ -42,6 +42,6 @@ export function buildRunnerAccessories(options: RunnerKitOptions = {}): Array<Ac
 		description: 'Athletics kit with native animated limb registration.',
 		price: 0,
 		quantity: null,
-		renderOptions: { runnerKit, showEars: true, showFin: true },
+		renderOptions: { kit, showEars: true, showFin: true },
 	}));
 }

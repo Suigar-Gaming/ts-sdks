@@ -6,7 +6,11 @@ import { SuiFrenImage } from '@suigar/suifrens-display-system';
 import { accessories } from '@suigar/suifrens-display-system/accessories';
 import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
 import { SOCCER_TEAM_KITS } from '@suigar/suifrens-display-system/kits';
-import type { SoccerTeamCountryCode } from '@suigar/suifrens-display-system/types';
+import type {
+	AccessoryKit,
+	SoccerTeamCountryCode,
+	SoccerTeamSide,
+} from '@suigar/suifrens-display-system/types';
 
 const capyAttributes = {
 	mainColor: '6FBBEE',
@@ -33,15 +37,16 @@ const countries = Object.keys(SOCCER_TEAM_KITS).filter(
 	(code) => code !== 'GLOBAL',
 ) as Array<SoccerTeamCountryCode>;
 
-function buildTeamGear(country: SoccerTeamCountryCode, side: 'home' | 'away' = 'home') {
+function buildTeamGear(country: SoccerTeamCountryCode, side: SoccerTeamSide = 'home') {
+	const kit: AccessoryKit = { type: 'soccer', country, side };
 	return [
 		{
 			...teamShirt,
-			renderOptions: { ...teamShirt.renderOptions, country, side },
+			renderOptions: { ...teamShirt.renderOptions, kit },
 		},
 		{
 			...teamTrunks,
-			renderOptions: { ...teamTrunks.renderOptions, country, side },
+			renderOptions: { ...teamTrunks.renderOptions, kit },
 		},
 		leftGothBoot,
 		rightGothBoot,

@@ -45,7 +45,10 @@ test('built inline and asset renderers preserve custom kits for both species and
 					.filter((item: { name: string }) =>
 						['soccer team shirt', 'soccer team swim trunks', 'left goth boot'].includes(item.name),
 					)
-					.map((item: object) => ({ ...item, renderOptions: { teamKit: kit, side } }));
+					.map((item: object) => ({
+						...item,
+						renderOptions: { kit: { type: 'soccer', team: kit, side } },
+					}));
 				const svg = renderToStaticMarkup(
 					createElement(SuiFrenImage, {
 						attributes: {

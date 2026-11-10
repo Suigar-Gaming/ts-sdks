@@ -310,7 +310,7 @@ export const accessories: Array<AccessoryMetadata> = [
 	{
 		type: 'torso',
 		category: 'team',
-		renderOptions: { country: 'US', side: 'home' },
+		renderOptions: { kit: { type: 'soccer', country: 'US', side: 'home' } },
 		name: 'soccer team shirt',
 		price: 2000000000,
 		quantity: null,
@@ -320,7 +320,7 @@ export const accessories: Array<AccessoryMetadata> = [
 	{
 		type: 'legs',
 		category: 'team',
-		renderOptions: { country: 'US', side: 'home' },
+		renderOptions: { kit: { type: 'soccer', country: 'US', side: 'home' } },
 		name: 'soccer team swim trunks',
 		price: 2000000000,
 		quantity: null,

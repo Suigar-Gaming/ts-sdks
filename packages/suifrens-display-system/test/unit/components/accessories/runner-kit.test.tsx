@@ -33,7 +33,7 @@ test('validates kit inputs and keeps fins and ears visible', () => {
 		mirrorBib: true,
 	});
 	for (const item of buildRunnerAccessories({ color: '#123456', number: 9 })) {
-		expect(item.renderOptions.runnerKit?.number).toBe(9);
+		expect(item.renderOptions.kit).toMatchObject({ type: 'runner', number: 9 });
 		expect(item.renderOptions.showEars).toBe(true);
 		expect(item.renderOptions.showFin).toBe(true);
 	}
