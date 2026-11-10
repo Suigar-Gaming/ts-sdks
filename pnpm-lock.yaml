@@ -485,7 +485,7 @@ importers:
         version: link:..
     devDependencies:
       '@storybook/addon-a11y':
-        specifier: 10.6.6
+        specifier: ^10.6.6
         version: 10.6.6(storybook@10.6.6(@types/react@19.3.0)(prettier@3.9.6)(react@19.3.1))
       '@storybook/addon-docs':
         specifier: ^10.6.6
@@ -494,7 +494,7 @@ importers:
         specifier: ^10.6.6
         version: 10.6.6(@types/react@19.3.0)(react@19.3.1)(storybook@10.6.6(@types/react@19.3.0)(prettier@3.9.6)(react@19.3.1))
       '@storybook/addon-vitest':
-        specifier: 10.6.6
+        specifier: ^10.6.6
         version: 10.6.6(@vitest/browser-playwright@5.1.0)(@vitest/browser@5.1.0)(react@19.3.1)(storybook@10.6.6(@types/react@19.3.0)(prettier@3.9.6)(react@19.3.1))(vitest@5.1.0)
       '@storybook/react':
         specifier: ^10.6.6
@@ -515,16 +515,16 @@ importers:
         specifier: catalog:typescript
         version: 19.3.0(@types/react@19.3.0)
       '@vitest/browser-playwright':
-        specifier: 5.1.0
+        specifier: ^5.1.0
         version: 5.1.0(playwright@1.65.0)(vite@8.3.6(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))(vitest@5.1.0)
       '@vitest/coverage-v8':
-        specifier: 5.1.0
+        specifier: ^5.1.0
         version: 5.1.0(@vitest/browser@5.1.0)(vitest@5.1.0)
       happy-dom:
         specifier: catalog:tooling
         version: 21.0.4
       playwright:
-        specifier: 1.65.0
+        specifier: ^1.65.0
         version: 1.65.0
       postcss:
         specifier: ^8.5.32
