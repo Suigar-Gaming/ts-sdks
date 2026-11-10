@@ -1,16 +1,17 @@
 import { type ReactNode, useMemo } from 'react';
 import { AnimationProvider } from '../animation/AnimationContext.js';
+import type { AccessoryRenderer } from '../types/accessory.type.js';
 import type { AnimationConfig } from '../types/animation.type.js';
-import type { SuiFrenImageAssetsProps } from '../types/suifren.type.js';
+import type { SuiFrenImageProps } from '../types/suifren.type.js';
 import { getAccessoriesByType } from '../utils/accessoryUtils.js';
 import { assertUnreachable } from '../utils/assertUnreachable.js';
 import { AccessoryRendererProvider } from './accessories/AccessorySlot.js';
-import { AssetAccessory } from './accessories/AssetAccessory.js';
 import { BullsharkImage } from './bullshark/BullsharkImage.js';
 import { CapyImage } from './capy/CapyImage.js';
 import { shouldRenderMicrophoneArmInForeground } from './foregroundLayering.js';
 
-export function SuiFrenImageAssets({
+export function SuiFrenImageView({
+	accessoryRenderer,
 	attributes,
 	capyGesture,
 	accessories,
@@ -31,7 +32,7 @@ export function SuiFrenImageAssets({
 	animationStartAt,
 	animationAutoPlay,
 	animationHoldOnComplete,
-}: SuiFrenImageAssetsProps) {
+}: SuiFrenImageProps & { accessoryRenderer: AccessoryRenderer }) {
 	const accessoriesByType = useMemo(
 		() => (accessories ? getAccessoriesByType(accessories) : undefined),
 		[accessories],
@@ -123,7 +124,7 @@ export function SuiFrenImageAssets({
 	const resolvedSize =
 		typeof renderSize === 'number' ? { width: renderSize, height: renderSize } : renderSize;
 	const renderedContent = (
-		<AccessoryRendererProvider renderer={AssetAccessory}>
+		<AccessoryRendererProvider renderer={accessoryRenderer}>
 			{suiFrenImageContent}
 		</AccessoryRendererProvider>
 	);

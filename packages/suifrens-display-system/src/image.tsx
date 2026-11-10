@@ -1,6 +1,12 @@
-export { SuiFrenImageAssets as SuiFrenImage } from './components/SuiFrenImageAssets.js';
+import { AssetAccessory } from './components/accessories/AssetAccessory.js';
+import { SuiFrenImageView } from './components/SuiFrenImageView.js';
+import type { SuiFrenImageProps } from './types/suifren.type.js';
 
-export type { SuiFrenImageAssetsProps as SuiFrenImageProps } from './types/suifren.type.js';
+export function SuiFrenImage(props: SuiFrenImageProps) {
+	return <SuiFrenImageView {...props} accessoryRenderer={AssetAccessory} />;
+}
+
+export type { SuiFrenImageProps } from './types/suifren.type.js';
 
 export type { SuiFrenRenderSize } from './types/suifren.type.js';
 

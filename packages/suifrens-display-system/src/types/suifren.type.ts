@@ -41,8 +41,6 @@ export type SuiFrenImageProps = {
 	animationHoldOnComplete?: boolean;
 };
 
-export type SuiFrenImageAssetsProps = SuiFrenImageProps;
-
 export enum SuiFrenType {
 	BULLSHARK = 'BULLSHARK',
 	CAPY = 'CAPY',

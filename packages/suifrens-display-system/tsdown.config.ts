@@ -5,8 +5,8 @@ import { defineConfig } from 'tsdown';
 export default defineConfig({
 	entry: {
 		index: 'src/index.ts',
-		image: 'src/image.ts',
-		'image-inline': 'src/image-inline.ts',
+		image: 'src/image.tsx',
+		'image-inline': 'src/image-inline.tsx',
 		accessories: 'src/accessories.ts',
 		colors: 'src/colors.ts',
 		attributes: 'src/attributes.ts',

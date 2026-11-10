@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import { SuiFrenImage } from '../../image-inline.js';
 import type { SuiFrenBattleSpriteProps } from '../../types/battle.type.js';
-import { SuiFrenImage } from '../SuiFrenImage.js';
 import { MinecraftHealthBar } from './MinecraftHealthBar.js';
 
 const HIT_FLASH_FILTER_ID = 'hit-flash-red';
