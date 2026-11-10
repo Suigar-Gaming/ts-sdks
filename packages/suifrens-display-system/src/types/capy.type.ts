@@ -4,7 +4,7 @@ import type { AccessoryMetadata } from './accessory.type.js';
 
 export type CapyImageProps = {
 	attributes: CapyAttributes;
-	gesture?: 'thumbsUp';
+	gesture?: 'thumbs_up';
 	accessoriesByType?: Record<string, AccessoryMetadata>;
 	detail?: 'full' | 'head';
 	incognito?: boolean;

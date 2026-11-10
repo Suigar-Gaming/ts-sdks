@@ -8,7 +8,7 @@ import type {
 	PlayState,
 } from './animation.type.js';
 import type { BullsharkAttributes } from './bullshark.type.js';
-import type { CapyAttributes } from './capy.type.js';
+import type { CapyAttributes, CapyImageProps } from './capy.type.js';
 
 export type SuiFrenRenderSize =
 	| number
@@ -20,7 +20,7 @@ export type SuiFrenRenderSize =
 export type SuiFrenImageProps = {
 	attributes: SuiFrenAttributes;
 	/** Optional native capy gesture; bullsharks and head portraits are unchanged. */
-	capyGesture?: 'thumbsUp';
+	capyGesture?: CapyImageProps['gesture'];
 	accessories?: Array<AccessoryMetadata>;
 	detail?: 'full' | 'head';
 	renderSize?: SuiFrenRenderSize;

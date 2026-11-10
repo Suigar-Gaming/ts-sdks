@@ -32,7 +32,7 @@ export function CapyImage({
 	const colorTheme = getThemeFromSkin(skin, `#${mainColor}`, `#${secondaryColor}`, incognito);
 	const headAccessory = accessoriesByType?.['head'];
 	// Held objects retain their native grip and take precedence over a free-hand gesture.
-	const thumbsUp = gesture === 'thumbsUp' && !accessoriesByType?.['object'];
+	const thumbsUp = gesture === 'thumbs_up' && !accessoriesByType?.['object'];
 	const runnerHeadband = headAccessory?.name === 'runner headband';
 	const showEars = !headAccessory || headAccessory.renderOptions.showEars;
 

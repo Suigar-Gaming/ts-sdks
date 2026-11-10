@@ -42,7 +42,7 @@ The npm beta has eight public entry points: the package root, `/image`, `/image-
 
 ### Capy thumbs-up gesture
 
-Pass `capyGesture="thumbsUp"` to `SuiFrenImage` (inline or asset entry) to raise the capy's near arm with an upright thumb. The native head/body, palette and canvas stay unchanged. Head-only portraits and bullsharks ignore this option; a held object takes precedence so its original grip is preserved. Direct `CapyImage` consumers use `gesture="thumbsUp"`.
+Pass `capyGesture="thumbs_up"` to `SuiFrenImage` (inline or asset entry) to raise the capy's near arm with an upright thumb. The native head/body, palette and canvas stay unchanged. Head-only portraits and bullsharks ignore this option; a held object takes precedence so its original grip is preserved. Direct `CapyImage` consumers use `gesture="thumbs_up"`.
 
 ### Registry distribution
 
