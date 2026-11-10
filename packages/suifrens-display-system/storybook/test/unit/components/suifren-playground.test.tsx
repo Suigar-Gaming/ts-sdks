@@ -5,6 +5,7 @@
 import type { ComponentType } from 'react';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { ControlPadPlayground } from '../../../src/components/suifren-playground.stories.js';
+import type { SuiFrenActorPose } from '../../../src/utils/use-suifren-actor.js';
 import { createTestRoot } from '../../helpers/react-dom.js';
 
 const actor = vi.hoisted(() => ({
@@ -26,7 +27,10 @@ const actor = vi.hoisted(() => ({
 		reset: vi.fn<() => void>(),
 	},
 }));
-vi.mock('../../../src/utils/use-suifren-actor.js', () => ({ useSuiFrenActor: () => actor }));
+const useActor = vi.hoisted(() =>
+	vi.fn<({ onPose }: { onPose: (pose: SuiFrenActorPose) => void }) => typeof actor>(),
+);
+vi.mock('../../../src/utils/use-suifren-actor.js', () => ({ useSuiFrenActor: useActor }));
 vi.mock('@suigar/suifrens-display-system/image-inline', () => ({
 	SuiFrenImageInline: () => <svg />,
 }));
@@ -35,32 +39,38 @@ let view: ReturnType<typeof createTestRoot>;
 beforeEach(() => {
 	view = createTestRoot();
 	vi.clearAllMocks();
+	useActor.mockReturnValue(actor);
 });
 afterEach(async () => {
 	await view.unmount();
 	window.history.replaceState(null, '', '/');
 });
 
-test('switching docs/canvas starts and stops animation frames and keyboard listeners', async () => {
-	const schedule = vi.spyOn(globalThis, 'requestAnimationFrame').mockReturnValue(42);
-	const cancel = vi.spyOn(globalThis, 'cancelAnimationFrame').mockImplementation(() => {});
+test('docs renders jump elevation from the actor and leaves global keyboard shortcuts to canvas', async () => {
 	window.history.replaceState(null, '', '/?viewMode=docs');
 	await view.render(<Playground />);
-	expect(schedule).not.toHaveBeenCalled();
+	view.container.querySelector<HTMLButtonElement>('button[aria-label="Jump"]')!.click();
+	expect(actor.controls.requestJump).toHaveBeenCalledOnce();
+	const sprite = view.container.querySelector<HTMLElement>('[style*="will-change"]')!;
+	const pose = { position: { x: 480, y: 420 }, elevation: 0, facing: 'right' } as const;
+	const { onPose } = useActor.mock.calls[0]![0];
+	onPose(pose);
+	const grounded = sprite.style.transform;
+	onPose({ ...pose, elevation: 80 });
+	expect(sprite.style.transform).not.toBe(grounded);
+	onPose(pose);
+	expect(sprite.style.transform).toBe(grounded);
 	window.dispatchEvent(new KeyboardEvent('keydown', { code: 'ArrowRight' }));
 	expect(actor.controls.setDirection).not.toHaveBeenCalled();
 
 	window.history.replaceState(null, '', '/?viewMode=story');
 	await view.render(<Playground />);
-	expect(schedule).toHaveBeenCalledTimes(1);
 	window.dispatchEvent(new KeyboardEvent('keydown', { code: 'ArrowRight' }));
 	expect(actor.controls.setDirection).toHaveBeenLastCalledWith(1, 0);
 
 	window.history.replaceState(null, '', '/?viewMode=docs');
 	await view.render(<Playground />);
-	expect(cancel).toHaveBeenCalledExactlyOnceWith(42);
 	actor.controls.setDirection.mockClear();
 	window.dispatchEvent(new KeyboardEvent('keydown', { code: 'ArrowLeft' }));
 	expect(actor.controls.setDirection).not.toHaveBeenCalled();
-	expect(schedule).toHaveBeenCalledTimes(1);
 });

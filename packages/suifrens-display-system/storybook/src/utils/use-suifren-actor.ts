@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { getPresetDurationMs, normalizePlayback } from '@suigar/suifrens-display-system/animation';
 import type { AnimationConfig, PlaybackOptions } from '@suigar/suifrens-display-system/types';
 
 export type LocomotionState = 'idle' | 'walk' | 'run' | 'jump' | 'crouch' | 'crouchWalk';
@@ -193,9 +192,6 @@ export function useSuiFrenActor<TExpression extends string = string>(
 		elevation: 0,
 		facing: 'right',
 	});
-	const lockedUntilRef = useRef(0);
-	const lockedLocomotionRef = useRef<LocomotionState | null>(null);
-	const pendingLocomotionRef = useRef<LocomotionState | null>(null);
 	const onPoseRef = useRef(options.onPose);
 
 	useEffect(() => {
@@ -248,14 +244,18 @@ export function useSuiFrenActor<TExpression extends string = string>(
 			}
 
 			const current = stateRef.current;
-			const previousLocomotion = current.locomotion;
+
 			const controls = controlsRef.current;
 
-			const directionMagnitude = Math.hypot(controls.x, controls.y);
-			const normalizedX = directionMagnitude > 1 ? controls.x / directionMagnitude : controls.x;
+			const runEnabled = controls.run && !controls.crouch;
+			let directionX = controls.x;
+			if (runEnabled && directionX === 0 && controls.y === 0) {
+				directionX = current.facing === 'left' ? -1 : 1;
+			}
+			const directionMagnitude = Math.hypot(directionX, controls.y);
+			const normalizedX = directionMagnitude > 1 ? directionX / directionMagnitude : directionX;
 			const normalizedY = directionMagnitude > 1 ? controls.y / directionMagnitude : controls.y;
 
-			const runEnabled = controls.run && !controls.crouch;
 			const movementMultiplier = controls.crouch
 				? config.crouchMultiplier
 				: runEnabled
@@ -325,67 +325,21 @@ export function useSuiFrenActor<TExpression extends string = string>(
 
 			const moving = directionMagnitude > 0.05;
 			const planarSpeed = Math.hypot(nextPlanarVelocity.x, nextPlanarVelocity.y);
-			let requestedLocomotion: LocomotionState = current.locomotion;
+			let locomotion: LocomotionState = current.locomotion;
 			if (jumpingRef.current || elevation > 0) {
-				requestedLocomotion = 'jump';
+				locomotion = 'jump';
 			} else if (controls.crouch) {
-				requestedLocomotion = moving ? 'crouchWalk' : 'crouch';
-			} else if (moving && runEnabled && planarSpeed > 1) {
-				requestedLocomotion = 'run';
+				locomotion = moving ? 'crouchWalk' : 'crouch';
+			} else if (runEnabled) {
+				locomotion = 'run';
 			} else if (moving || planarSpeed > 8) {
-				requestedLocomotion = 'walk';
+				locomotion = 'walk';
 			} else {
-				requestedLocomotion = 'idle';
+				locomotion = 'idle';
 			}
 
-			const now = time;
-			let locomotion = requestedLocomotion;
-
-			if (lockedLocomotionRef.current) {
-				if (lockedLocomotionRef.current === 'idle') {
-					lockedLocomotionRef.current = null;
-					lockedUntilRef.current = 0;
-					pendingLocomotionRef.current = null;
-				} else if (now < lockedUntilRef.current) {
-					if (requestedLocomotion !== lockedLocomotionRef.current) {
-						pendingLocomotionRef.current = requestedLocomotion;
-					}
-					locomotion = lockedLocomotionRef.current;
-				} else {
-					lockedLocomotionRef.current = null;
-					lockedUntilRef.current = 0;
-					if (pendingLocomotionRef.current) {
-						locomotion = pendingLocomotionRef.current;
-						pendingLocomotionRef.current = null;
-					}
-				}
-			}
-
-			let trigger = current.animation.trigger;
-			if (locomotion === 'jump' || (locomotion === 'idle' && previousLocomotion === 'jump')) {
-				trigger += 1;
-			}
-
+			const trigger = current.animation.trigger + (consumedJump ? 1 : 0);
 			const animation = deriveAnimation(locomotion, movementMultiplier);
-
-			const { iterations, speed } = normalizePlayback(animation.playback);
-			const presetDuration = getPresetDurationMs(animation.preset);
-			const loopDuration = presetDuration ? presetDuration / speed : null;
-
-			if (loopDuration && locomotion !== 'idle' && locomotion !== 'crouch') {
-				if (lockedLocomotionRef.current === locomotion) {
-					if (!Number.isFinite(iterations) && now >= lockedUntilRef.current) {
-						lockedUntilRef.current = now + loopDuration;
-					}
-				} else {
-					const lockLength = Number.isFinite(iterations) ? loopDuration * iterations : loopDuration;
-					lockedLocomotionRef.current = locomotion;
-					lockedUntilRef.current = now + lockLength;
-				}
-			} else {
-				lockedLocomotionRef.current = null;
-				lockedUntilRef.current = 0;
-			}
 
 			const emote = emoteRef.current;
 			if (emote && emote.until <= time) {
@@ -393,9 +347,7 @@ export function useSuiFrenActor<TExpression extends string = string>(
 			}
 			const expression = emoteRef.current?.expression ?? baseExpressionRef.current;
 
-			if (consumedJump) {
-				controlsRef.current.jumpRequested = false;
-			}
+			controls.jumpRequested = false;
 			planarVelocityRef.current = nextPlanarVelocity;
 
 			poseRef.current = {
@@ -470,8 +422,6 @@ export function useSuiFrenActor<TExpression extends string = string>(
 		if (crouch) {
 			controlsRef.current.run = false;
 			controlsRef.current.jumpRequested = false;
-			jumpingRef.current = false;
-			verticalVelocityRef.current = 0;
 		}
 	}, []);
 
@@ -505,9 +455,6 @@ export function useSuiFrenActor<TExpression extends string = string>(
 			jumpingRef.current = false;
 			verticalVelocityRef.current = 0;
 			planarVelocityRef.current = { x: 0, y: 0 };
-			lockedUntilRef.current = 0;
-			lockedLocomotionRef.current = null;
-			pendingLocomotionRef.current = null;
 
 			const nextPosition = position ?? config.startPosition;
 			const animation = deriveAnimation('idle', config.runMultiplier);

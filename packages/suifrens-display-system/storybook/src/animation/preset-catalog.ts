@@ -31,6 +31,8 @@ export const PRESET_CATALOG: Array<PresetCatalogGroup> = [
 				name: 'goalkeeperCrab',
 				config: { preset: 'goalkeeperCrab', playback: LOOP },
 			},
+			{ label: 'Sit', name: 'sit', config: { preset: 'sit', playback: LOOP } },
+			{ label: 'Stand', name: 'stand', config: { preset: 'stand', playback: LOOP } },
 			{ label: 'Run', name: 'run', config: { preset: 'run', playback: LOOP } },
 			{ label: 'Sprint', name: 'sprint', config: { preset: 'sprint', playback: LOOP } },
 			{

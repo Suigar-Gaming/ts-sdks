@@ -2,14 +2,14 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import type { ComponentProps } from 'react';
-import { ALL_EXPRESSIONS } from '@suigar/suifrens-display-system/expressions';
 import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
-import type { BullsharkAttributes } from '@suigar/suifrens-display-system/types';
+import type { BullsharkAttributes, SuiFrenImageProps } from '@suigar/suifrens-display-system/types';
+import { ExpressionCard, ExpressionGallery, ExpressionTransition } from './ExpressionCard.js';
 import { SuiLogo } from './logos/SuiLogo.js';
 
 const meta = {
-	title: 'SuiFrenImageInline/Bullshark',
+	id: 'suifrenimageinline-bullshark',
+	title: 'Suifrens/Characters/Bullshark',
 	component: SuiFrenImageInline,
 	tags: ['autodocs'],
 } satisfies Meta<typeof SuiFrenImageInline>;
@@ -18,30 +18,13 @@ export default meta;
 
 type Story = StoryObj<typeof SuiFrenImageInline>;
 
-type StoryPropsWithAllExpressions = Omit<
-	ComponentProps<typeof SuiFrenImageInline>,
-	'attributes'
-> & {
+type StoryPropsWithAllExpressions = Omit<SuiFrenImageProps, 'attributes'> & {
 	attributes: Omit<BullsharkAttributes, 'expression'>;
 };
 type StoryWithAllExpressions = StoryObj<StoryPropsWithAllExpressions>;
 
 export const Basic: StoryWithAllExpressions = {
-	render: ({ attributes, ...props }) => (
-		<div className="flex flex-wrap gap-2">
-			{ALL_EXPRESSIONS.map((expression) => (
-				<div className="h-60 w-60 shrink-0" key={expression}>
-					<SuiFrenImageInline
-						attributes={{
-							...attributes,
-							expression,
-						}}
-						{...props}
-					/>
-				</div>
-			))}
-		</div>
-	),
+	render: (props) => <ExpressionGallery {...props} />,
 	args: {
 		attributes: {
 			mainColor: '6FBBEE',
@@ -50,6 +33,12 @@ export const Basic: StoryWithAllExpressions = {
 			finStyle: 'classic',
 		},
 	},
+};
+
+export const BullsharkTransition: StoryWithAllExpressions = {
+	...Basic,
+	name: 'Expression Transition',
+	render: (props) => <ExpressionTransition {...props} />,
 };
 
 export const Cheetah: StoryWithAllExpressions = {
@@ -137,13 +126,7 @@ export const Snake: StoryWithAllExpressions = {
 };
 
 export const WithShadow: Story = {
-	decorators: [
-		(Story) => (
-			<div className="h-60 w-60">
-				<Story />
-			</div>
-		),
-	],
+	render: (props) => <ExpressionCard {...props} />,
 	args: {
 		attributes: {
 			mainColor: '6FBBEE',
@@ -186,6 +169,7 @@ export const Incognito: Story = {
 
 export const ThumbsUp: Story = {
 	...WithShadow,
+	tags: ['unreleased'],
 	args: {
 		...WithShadow.args,
 		gesture: 'thumbs_up',
@@ -194,7 +178,12 @@ export const ThumbsUp: Story = {
 
 export const ThumbsDown: Story = {
 	...WithShadow,
+	tags: ['unreleased'],
 	args: { ...WithShadow.args, gesture: 'thumbs_down' },
 };
 
-export const Point: Story = { ...WithShadow, args: { ...WithShadow.args, gesture: 'point' } };
+export const Point: Story = {
+	...WithShadow,
+	tags: ['unreleased'],
+	args: { ...WithShadow.args, gesture: 'point' },
+};

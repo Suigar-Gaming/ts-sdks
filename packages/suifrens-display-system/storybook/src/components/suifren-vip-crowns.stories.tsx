@@ -82,7 +82,8 @@ const MOTION_VARIANTS = [
 ] as const;
 
 const meta = {
-	title: 'SuiFrenImageInline/VIP Crowns',
+	id: 'suifrenimageinline-vip-crowns',
+	title: 'Suifrens/Accessories/VIP Crowns',
 	component: SuiFrenImageInline,
 	tags: ['autodocs'],
 } satisfies Meta<typeof SuiFrenImageInline>;
@@ -93,28 +94,18 @@ type Story = StoryObj<typeof SuiFrenImageInline>;
 
 export const ClippingCheck: Story = {
 	render: () => (
-		<div
-			style={{
-				display: 'grid',
-				gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-				gap: 24,
-			}}
-		>
+		<div className="flex flex-col gap-10">
 			{vipCrownAccessories.map((accessory) => (
-				<section key={accessory.name}>
-					<h2>{accessory.name}</h2>
-					{RENDERERS.map(({ label, Renderer }) => (
-						<div key={label} style={{ display: 'flex', gap: 12, alignItems: 'end' }}>
-							{[STATIC_VARIANTS[0], STATIC_VARIANTS[2]].map((variant) => (
-								<div key={variant.label}>
-									<div
-										style={{
-											width: 128,
-											height: 128,
-											paddingTop: 32,
-											outline: '1px solid #cbd5e1',
-										}}
-									>
+				<section key={accessory.name} className="story-panel">
+					<h2 className="story-heading">{accessory.name}</h2>
+					<div className="mt-5 grid grid-cols-[repeat(auto-fit,minmax(min(100%,10rem),1fr))] gap-4">
+						{RENDERERS.flatMap(({ label, Renderer }) =>
+							[STATIC_VARIANTS[0], STATIC_VARIANTS[2]].map((variant) => (
+								<figure
+									key={`${label}-${variant.label}`}
+									className="story-tile grid justify-items-center gap-3 p-4"
+								>
+									<div className="grid size-32 place-items-center">
 										<Renderer
 											attributes={variant.attributes}
 											accessories={[accessory]}
@@ -122,16 +113,7 @@ export const ClippingCheck: Story = {
 											shadow
 										/>
 									</div>
-									<div
-										style={{
-											width: 64,
-											height: 64,
-											overflow: 'hidden',
-											borderRadius: '50%',
-											transform: 'scaleX(-1)',
-											marginTop: 12,
-										}}
-									>
+									<div className="size-16 -scale-x-100 overflow-hidden rounded-full bg-white outline outline-slate-300">
 										<Renderer
 											attributes={variant.attributes}
 											accessories={[accessory]}
@@ -139,13 +121,13 @@ export const ClippingCheck: Story = {
 											shadow
 										/>
 									</div>
-									<small>
+									<figcaption className="text-center text-xs font-semibold text-slate-600">
 										{label} · {variant.label}
-									</small>
-								</div>
-							))}
-						</div>
-					))}
+									</figcaption>
+								</figure>
+							)),
+						)}
+					</div>
 				</section>
 			))}
 		</div>
@@ -156,13 +138,10 @@ export const Gallery: Story = {
 	render: () => (
 		<div className="flex flex-col gap-10">
 			{vipCrownAccessories.map((accessory) => (
-				<section
-					key={accessory.name}
-					className="rounded-3xl border border-slate-200 bg-white p-5 shadow-xs"
-				>
+				<section key={accessory.name} className="story-panel">
 					<div className="flex flex-wrap items-baseline justify-between gap-3">
 						<div>
-							<h2 className="text-base font-semibold text-slate-900">{accessory.name}</h2>
+							<h2 className="story-heading">{accessory.name}</h2>
 							<p className="text-sm text-slate-500">
 								Static crown fit across capy and bullshark declinations.
 							</p>
@@ -173,11 +152,8 @@ export const Gallery: Story = {
 					</div>
 					<div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
 						{STATIC_VARIANTS.map((variant) => (
-							<article
-								key={variant.label}
-								className="rounded-2xl border border-slate-200/80 bg-slate-50 p-4"
-							>
-								<div className="mx-auto h-44 w-44">
+							<article key={variant.label} className="story-tile p-4">
+								<div className="mx-auto aspect-square w-full max-w-44">
 									<SuiFrenImageInline
 										attributes={variant.attributes}
 										accessories={[accessory]}
@@ -201,13 +177,10 @@ export const MotionCheck: Story = {
 	render: () => (
 		<div className="flex flex-col gap-10">
 			{vipCrownAccessories.map((accessory) => (
-				<section
-					key={accessory.name}
-					className="rounded-3xl border border-slate-200 bg-white p-5 shadow-xs"
-				>
+				<section key={accessory.name} className="story-panel">
 					<div className="flex flex-wrap items-baseline justify-between gap-3">
 						<div>
-							<h2 className="text-base font-semibold text-slate-900">{accessory.name}</h2>
+							<h2 className="story-heading">{accessory.name}</h2>
 							<p className="text-sm text-slate-500">
 								Motion preview to verify the crown stays bonded to the head.
 							</p>
@@ -218,11 +191,8 @@ export const MotionCheck: Story = {
 					</div>
 					<div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
 						{MOTION_VARIANTS.map((variant) => (
-							<article
-								key={variant.label}
-								className="rounded-2xl border border-slate-200/80 bg-slate-50 p-4"
-							>
-								<div className="mx-auto h-52 w-52">
+							<article key={variant.label} className="story-tile p-4">
+								<div className="mx-auto aspect-square w-full max-w-52">
 									<SuiFrenImageInline
 										attributes={variant.attributes}
 										accessories={[accessory]}

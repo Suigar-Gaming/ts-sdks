@@ -416,14 +416,53 @@ const FIGHT_SLOT_COUNT = Math.min(
 );
 
 const meta = {
-	title: 'SuiFrenImage/Battle Royale',
+	id: 'suifrenimage-battle-royale',
+	title: 'Suifrens/Playground/Battle Royale',
 	component: SuiFrenBattleSprite,
-	tags: ['autodocs'],
+	tags: ['autodocs', 'beta'],
 } satisfies Meta<typeof SuiFrenBattleSprite>;
 
 export default meta;
 
 type Story = StoryObj<typeof SuiFrenBattleSprite>;
+
+function BattleControls({
+	onStart,
+	onRestart,
+	onStop,
+	canStart,
+	canStop,
+}: {
+	onStart: () => void;
+	onRestart: () => void;
+	onStop: () => void;
+	canStart: boolean;
+	canStop: boolean;
+}) {
+	return (
+		<>
+			<button
+				className="story-button disabled:cursor-not-allowed disabled:opacity-50"
+				type="button"
+				disabled={!canStart}
+				onClick={onStart}
+			>
+				Start
+			</button>
+			<button className="story-button" type="button" onClick={onRestart}>
+				Restart
+			</button>
+			<button
+				className="story-button disabled:cursor-not-allowed disabled:opacity-50"
+				type="button"
+				disabled={!canStop}
+				onClick={onStop}
+			>
+				Stop
+			</button>
+		</>
+	);
+}
 
 export const Duel: Story = {
 	render: () => {
@@ -453,7 +492,6 @@ export const Duel: Story = {
 			maxHealth: FIGHT_MAX_HEALTH,
 			idlePreset: 'idle',
 			autoStart: false,
-			disabled: isDocs,
 		});
 
 		useEffect(() => {
@@ -530,12 +568,31 @@ export const Duel: Story = {
 			resetRoam();
 		}, [mode, resetRoam, stageWidth]);
 
+		const startFight = useCallback(
+			(left: number, right: number) => {
+				const minX = STAGE_PADDING_X + SPRITE_SIZE / 2;
+				const maxX = Math.max(minX, stageWidth - STAGE_PADDING_X - SPRITE_SIZE / 2);
+				const gap = Math.min(COLLISION_GAP_MAX, stageWidth * COLLISION_GAP_RATIO);
+				const midpoint = (left + right) / 2;
+				const bullsharkOnLeft = left <= right;
+				const leftTarget = bullsharkOnLeft ? midpoint - gap / 2 : midpoint + gap / 2;
+				const rightTarget = bullsharkOnLeft ? midpoint + gap / 2 : midpoint - gap / 2;
+				const snappedLeft = clamp(leftTarget, minX, maxX);
+				const snappedRight = clamp(rightTarget, minX, maxX);
+				positionsRef.current = { left: snappedLeft, right: snappedRight };
+				setPositions({ left: snappedLeft, right: snappedRight });
+				setMode('fight');
+			},
+			[stageWidth],
+		);
+
 		useEffect(() => {
-			if (isDocs || mode !== 'fight') {
+			if (mode !== 'fight') {
 				return;
 			}
 			restart();
-		}, [isDocs, mode, restart]);
+			return stop;
+		}, [mode, restart, stop]);
 
 		useEffect(() => {
 			if (typeof window === 'undefined' || isDocs || mode !== 'roam' || !stageWidth) {
@@ -591,16 +648,7 @@ export const Duel: Story = {
 				}
 
 				if (Math.abs(left - right) <= COLLISION_DISTANCE) {
-					const gap = Math.min(COLLISION_GAP_MAX, stageWidth * COLLISION_GAP_RATIO);
-					const midpoint = (left + right) / 2;
-					const bullsharkOnLeft = left <= right;
-					const leftTarget = bullsharkOnLeft ? midpoint - gap / 2 : midpoint + gap / 2;
-					const rightTarget = bullsharkOnLeft ? midpoint + gap / 2 : midpoint - gap / 2;
-					const snappedLeft = clamp(leftTarget, minX, maxX);
-					const snappedRight = clamp(rightTarget, minX, maxX);
-					positionsRef.current = { left: snappedLeft, right: snappedRight };
-					setPositions({ left: snappedLeft, right: snappedRight });
-					setMode('fight');
+					startFight(left, right);
 					return;
 				}
 
@@ -611,7 +659,7 @@ export const Duel: Story = {
 
 			frameId = window.requestAnimationFrame(tick);
 			return () => window.cancelAnimationFrame(frameId);
-		}, [isDocs, mode, setWanderVelocity, stageWidth]);
+		}, [isDocs, mode, setWanderVelocity, stageWidth, startFight]);
 
 		const leftDead = state.left.status === 'dead';
 		const rightDead = state.right.status === 'dead';
@@ -702,28 +750,29 @@ export const Duel: Story = {
 		};
 
 		return (
-			<div className="flex flex-col gap-4">
+			<div className="story-panel flex flex-col gap-4">
 				<div className="flex flex-wrap items-center gap-3">
-					<button
-						className="rounded-sm border bg-white px-3 py-1"
-						type="button"
-						onClick={handleRestart}
-					>
-						Restart
-					</button>
-					<button className="rounded-sm border bg-white px-3 py-1" type="button" onClick={stop}>
-						Stop
-					</button>
+					<BattleControls
+						canStart={Boolean(stageWidth) && !state.running}
+						canStop={state.running}
+						onStart={() =>
+							mode === 'roam'
+								? startFight(positionsRef.current.left, positionsRef.current.right)
+								: restart()
+						}
+						onRestart={handleRestart}
+						onStop={stop}
+					/>
 					<div className="text-sm text-slate-700">
 						<span className="font-semibold text-slate-900">Phase:</span> {phaseLabel}
 					</div>
 				</div>
 
-				<div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-linear-to-b from-sky-50 to-blue-100 inset-shadow-sm">
+				<div className="story-scene relative overflow-hidden rounded-2xl border border-slate-200 bg-linear-to-b from-sky-50 to-blue-100 inset-shadow-sm">
 					<div className="absolute inset-4 rounded-2xl bg-linear-to-b from-white/70 to-sky-50" />
 					<div className="absolute inset-x-10 bottom-10 h-6 rounded-full bg-slate-400/10 blur-md" />
 
-					<div className="relative px-10 py-16">
+					<div className="battle-field relative px-4 py-8">
 						<div ref={stageRef} className="relative" style={{ height: STAGE_HEIGHT }}>
 							<SuiFrenBattleSprite
 								label="Bullshark"
@@ -769,10 +818,7 @@ export const Duel: Story = {
 
 export const Ring: Story = {
 	render: () => {
-		const isDocs =
-			typeof window !== 'undefined' &&
-			new URLSearchParams(window.location.search).get('viewMode') === 'docs';
-
+		const [session, setSession] = useState<'ready' | 'running' | 'stopped'>('ready');
 		const ringRef = useRef<HTMLDivElement | null>(null);
 		const [ringSize, setRingSize] = useState(0);
 		const [fighters, setFighters] = useState<Array<FighterState>>([]);
@@ -803,16 +849,14 @@ export const Ring: Story = {
 			baseExpression: FIGHT_BASE_EXPRESSIONS,
 			maxHealth: FIGHT_MAX_HEALTH,
 			idlePreset: 'idle',
-			autoStart: !isDocs && Boolean(activeFightBySlot[0]),
-			disabled: isDocs,
+			autoStart: session === 'running' && Boolean(activeFightBySlot[0]),
 		});
 		const duelSlot1 = useDuelScript<SuiFrenExpression>({
 			script: activeFightBySlot[1]?.script ?? leftWinScript,
 			baseExpression: FIGHT_BASE_EXPRESSIONS,
 			maxHealth: FIGHT_MAX_HEALTH,
 			idlePreset: 'idle',
-			autoStart: !isDocs && Boolean(activeFightBySlot[1]),
-			disabled: isDocs,
+			autoStart: session === 'running' && Boolean(activeFightBySlot[1]),
 		});
 
 		const { state: duelState0, reset: resetDuel0, stop: stopDuel0 } = duelSlot0;
@@ -913,7 +957,7 @@ export const Ring: Story = {
 		}, [resetRing, ringSize]);
 
 		useEffect(() => {
-			if (typeof window === 'undefined' || isDocs || !ringSize) {
+			if (typeof window === 'undefined' || session !== 'running' || ringWinnerId || !ringSize) {
 				return;
 			}
 
@@ -1174,10 +1218,10 @@ export const Ring: Story = {
 
 			frameId = window.requestAnimationFrame(tick);
 			return () => window.cancelAnimationFrame(frameId);
-		}, [isDocs, ringSize, updateVelocity]);
+		}, [session, ringWinnerId, ringSize, updateVelocity]);
 
 		useEffect(() => {
-			if (!activeFights.length) {
+			if (session !== 'running' || !activeFights.length) {
 				return;
 			}
 
@@ -1315,12 +1359,12 @@ export const Ring: Story = {
 					}
 				}
 			}
-		}, [activeFights, duelStates, updateVelocity]);
+		}, [activeFights, duelStates, session, updateVelocity]);
 
-		const handleReset = () => {
+		const handleStop = () => {
+			setSession('stopped');
 			stopDuel0();
 			stopDuel1();
-			resetRing();
 		};
 
 		useEffect(
@@ -1371,24 +1415,37 @@ export const Ring: Story = {
 		const firstPredictedWinner = firstFight
 			? (fightersById.get(firstFight.winnerId) ?? null)
 			: null;
-		const ringPhase = ringWinnerId ? 'Victory' : activeFights.length ? 'Fighting' : 'Roaming';
+		const ringPhase =
+			session === 'stopped'
+				? 'Stopped'
+				: ringWinnerId
+					? 'Victory'
+					: activeFights.length
+						? 'Fighting'
+						: 'Roaming';
 
 		return (
-			<div className="flex flex-col gap-4">
+			<div className="story-panel flex flex-col gap-4">
 				<div className="flex flex-wrap items-center gap-3">
-					<button
-						className="rounded-sm border bg-white px-3 py-1"
-						type="button"
-						onClick={handleReset}
-					>
-						Reset Ring
-					</button>
+					<BattleControls
+						canStart={Boolean(ringSize) && (session !== 'running' || Boolean(ringWinnerId))}
+						canStop={session === 'running' && !ringWinnerId}
+						onStart={() => {
+							if (session === 'stopped' || ringWinnerId) resetRing();
+							setSession('running');
+						}}
+						onRestart={() => {
+							setSession('ready');
+							resetRing();
+						}}
+						onStop={handleStop}
+					/>
 					<div className="text-sm text-slate-700">
 						<span className="font-semibold text-slate-900">Fighters:</span> {fighters.length}
 					</div>
 				</div>
 
-				<div className="rounded-2xl border border-slate-200 bg-white/80 p-4 text-xs text-slate-700 shadow-xs">
+				<div className="story-tile p-4 text-sm text-slate-700">
 					<div className="flex flex-wrap gap-4">
 						<div>
 							<span className="font-semibold text-slate-900">Phase:</span> {ringPhase}
@@ -1432,8 +1489,8 @@ export const Ring: Story = {
 					</div>
 
 					<div className="mt-4 grid gap-4 lg:grid-cols-2">
-						<div className="rounded-xl bg-slate-50/80 px-3 py-2">
-							<div className="mb-2 text-[11px] font-semibold text-slate-800">Active fights</div>
+						<div className="rounded-xl bg-white px-3 py-2">
+							<div className="mb-2 text-sm font-semibold text-slate-800">Active fights</div>
 							{activeFights.length ? (
 								<div className="grid gap-1">
 									{sortedActiveFights.map((fight) => {
@@ -1476,8 +1533,8 @@ export const Ring: Story = {
 							)}
 						</div>
 
-						<div className="rounded-xl bg-slate-50/80 px-3 py-2">
-							<div className="mb-2 text-[11px] font-semibold text-slate-800">Roster snapshot</div>
+						<div className="rounded-xl bg-white px-3 py-2">
+							<div className="mb-2 text-sm font-semibold text-slate-800">Roster snapshot</div>
 							<div className="grid gap-1">
 								{fighters.map((fighter) => {
 									const entry = fightLookup.get(fighter.id);
@@ -1539,11 +1596,8 @@ export const Ring: Story = {
 					</div>
 				</div>
 
-				<div className="relative overflow-hidden rounded-[28px] border-4 border-slate-800 bg-linear-to-br from-amber-50 via-amber-100 to-amber-200 inset-shadow-sm">
-					<div className="absolute inset-3 rounded-3xl border border-slate-400/60" />
-					<div className="absolute inset-6 rounded-[20px] border border-slate-400/45" />
-					<div className="absolute inset-9 rounded-2xl border border-slate-400/30" />
-					<div className="relative mx-auto w-full max-w-[860px] px-6 py-8">
+				<div className="story-scene relative overflow-hidden rounded-2xl border border-slate-300 bg-linear-to-br from-amber-50 via-amber-100 to-amber-200 inset-shadow-sm">
+					<div className="battle-field relative mx-auto w-full max-w-215 px-6 py-8">
 						<div ref={ringRef} className="relative w-full" style={{ height: ringSize }}>
 							{fighters.map((fighter) => {
 								const entry = fightLookup.get(fighter.id);

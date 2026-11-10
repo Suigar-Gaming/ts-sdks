@@ -15,6 +15,9 @@ const PLAYGROUND_WIDTH = 960;
 const PLAYGROUND_HEIGHT = 540;
 const SPRITE_SIZE = 240;
 
+const bounds = { width: PLAYGROUND_WIDTH, height: PLAYGROUND_HEIGHT, padding: SPRITE_SIZE / 2 };
+const initialPosition = { x: PLAYGROUND_WIDTH / 2, y: PLAYGROUND_HEIGHT - bounds.padding };
+
 const baseAttributes = {
 	mainColor: '6FBBEE',
 	secondaryColor: 'E6FBFF',
@@ -24,7 +27,8 @@ const baseAttributes = {
 } as const;
 
 const meta = {
-	title: 'SuiFrenImageInline/Playable Sandbox',
+	id: 'suifrenimageinline-playable-sandbox',
+	title: 'Suifrens/Playground/Playable Sandbox',
 	component: SuiFrenImageInline,
 	tags: ['autodocs'],
 } satisfies Meta<typeof SuiFrenImageInline>;
@@ -53,17 +57,10 @@ function ControlButton({
 	className,
 }: ControlButtonProps) {
 	const handleDown = (event: PointerEvent<HTMLButtonElement>) => {
+		if (event.button !== 0 || !onRelease) return;
 		event.preventDefault();
-		event.currentTarget.setPointerCapture?.(event.pointerId);
+		event.currentTarget.setPointerCapture(event.pointerId);
 		onPress();
-	};
-	const handleUp = (event: PointerEvent<HTMLButtonElement>) => {
-		event.preventDefault();
-		onRelease?.();
-		event.currentTarget.releasePointerCapture?.(event.pointerId);
-	};
-	const handleLeave = () => {
-		onRelease?.();
 	};
 
 	return (
@@ -71,11 +68,17 @@ function ControlButton({
 			type="button"
 			aria-label={ariaLabel ?? label}
 			onPointerDown={handleDown}
-			onPointerUp={handleUp}
-			onPointerLeave={handleLeave}
-			onPointerCancel={handleLeave}
+			onLostPointerCapture={onRelease}
+			onClick={onRelease ? undefined : onPress}
+			onKeyDown={(event) => {
+				if (onRelease && !event.repeat && (event.key === ' ' || event.key === 'Enter')) onPress();
+			}}
+			onKeyUp={(event) => {
+				if (event.key === ' ' || event.key === 'Enter') onRelease?.();
+			}}
+			onBlur={onRelease}
 			className={[
-				'flex h-12 items-center justify-center rounded-xl border text-sm font-semibold shadow-xs transition',
+				'flex min-h-12 touch-none select-none px-2 items-center justify-center rounded-xl border text-sm font-semibold shadow-xs transition',
 				active
 					? 'border-blue-500 bg-blue-500 text-white shadow-blue-200'
 					: 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50 active:bg-slate-100',
@@ -91,58 +94,27 @@ function ControlButton({
 
 type StageProps = {
 	state: SuiFrenActorSnapshot<SuiFrenExpression>;
-	poseRef: RefObject<SuiFrenActorPose>;
+	spriteRef: RefObject<HTMLDivElement | null>;
 	title?: string;
 	note?: string;
-	live?: boolean;
 };
 
-function SuiFrenStage({ state, poseRef, title, note, live = true }: StageProps) {
-	const spriteRef = useRef<HTMLDivElement | null>(null);
+function updateSprite(el: HTMLDivElement | null, pose: SuiFrenActorPose) {
+	if (!el) return;
+	const x = (pose.position.x / SPRITE_SIZE - 0.5) * 100;
+	const y = ((pose.position.y - pose.elevation) / SPRITE_SIZE - 1) * 100;
+	el.style.transform = `translate3d(${x}%, ${y}%, 0) scaleX(${pose.facing === 'left' ? -1 : 1})`;
+}
+
+function SuiFrenStage({ state, spriteRef, title, note }: StageProps) {
 	const isEmoting = state.expression !== state.baseExpression;
-
-	useEffect(() => {
-		const el = spriteRef.current;
-		const pose = poseRef.current;
-		if (!el || !pose) {
-			return;
-		}
-		const x = pose.position.x - SPRITE_SIZE / 2;
-		const y = pose.position.y - SPRITE_SIZE - pose.elevation;
-		const flip = pose.facing === 'left' ? -1 : 1;
-		el.style.transform = `translate3d(${x}px, ${y}px, 0) scaleX(${flip})`;
-	}, [poseRef, live]);
-
-	useEffect(() => {
-		if (!live || typeof window === 'undefined') {
-			return;
-		}
-		let raf = 0;
-		const updateTransform = () => {
-			if (document.visibilityState === 'hidden') {
-				raf = requestAnimationFrame(updateTransform);
-				return;
-			}
-			const pose = poseRef.current;
-			const el = spriteRef.current;
-			if (pose && el) {
-				const x = pose.position.x - SPRITE_SIZE / 2;
-				const y = pose.position.y - SPRITE_SIZE - pose.elevation;
-				const flip = pose.facing === 'left' ? -1 : 1;
-				el.style.transform = `translate3d(${x}px, ${y}px, 0) scaleX(${flip})`;
-			}
-			raf = requestAnimationFrame(updateTransform);
-		};
-		raf = requestAnimationFrame(updateTransform);
-		return () => cancelAnimationFrame(raf);
-	}, [poseRef, live]);
 
 	return (
 		<div>
 			{title ? <h3 className="mb-2 text-sm font-semibold text-slate-800">{title}</h3> : null}
 			<div
-				className="relative overflow-hidden rounded-2xl border border-slate-200 bg-linear-to-b from-sky-50 to-blue-100 inset-shadow-sm"
-				style={{ width: PLAYGROUND_WIDTH, height: PLAYGROUND_HEIGHT }}
+				className="story-scene relative overflow-hidden rounded-2xl border border-slate-200 bg-linear-to-b from-sky-50 to-blue-100 inset-shadow-sm"
+				style={{ aspectRatio: PLAYGROUND_WIDTH / PLAYGROUND_HEIGHT }}
 			>
 				<div className="absolute inset-4 rounded-2xl bg-linear-to-b from-white/70 to-sky-50" />
 				<div className="absolute inset-x-6 bottom-12 h-6 rounded-full bg-slate-400/10 blur-md" />
@@ -150,8 +122,8 @@ function SuiFrenStage({ state, poseRef, title, note, live = true }: StageProps) 
 				<div
 					ref={spriteRef}
 					style={{
-						width: SPRITE_SIZE,
-						height: SPRITE_SIZE,
+						width: `${(SPRITE_SIZE / PLAYGROUND_WIDTH) * 100}%`,
+						aspectRatio: '1',
 						position: 'absolute',
 						transformOrigin: '50% 80%',
 						willChange: 'transform',
@@ -195,12 +167,11 @@ export const ControlPadPlayground: Story = {
 			typeof window !== 'undefined' &&
 			new URLSearchParams(window.location.search).get('viewMode') === 'docs';
 
-		const { state, controls, poseRef } = useSuiFrenActor<SuiFrenExpression>({
-			bounds: { width: PLAYGROUND_WIDTH, height: PLAYGROUND_HEIGHT, padding: SPRITE_SIZE / 2 },
-			initialPosition: {
-				x: PLAYGROUND_WIDTH / 2,
-				y: PLAYGROUND_HEIGHT - SPRITE_SIZE * 0.4,
-			},
+		const spriteRef = useRef<HTMLDivElement>(null);
+		const { state, controls } = useSuiFrenActor<SuiFrenExpression>({
+			bounds,
+			initialPosition,
+			onPose: (pose) => updateSprite(spriteRef.current, pose),
 			moveSpeed: 320,
 			runMultiplier: 1.8,
 			jumpStrength: 820,
@@ -243,6 +214,8 @@ export const ControlPadPlayground: Story = {
 
 		const pressRun = () => {
 			runRef.current = true;
+			crouchRef.current = false;
+			setCrouchActive(false);
 			setRunActive(true);
 			applyControls();
 		};
@@ -286,9 +259,35 @@ export const ControlPadPlayground: Story = {
 			};
 
 			const handleKeyDown = (event: KeyboardEvent) => {
-				if (event.metaKey || event.ctrlKey || event.altKey) {
+				if (
+					event.metaKey ||
+					event.ctrlKey ||
+					event.altKey ||
+					(event.code === 'Space' && event.target instanceof HTMLButtonElement) ||
+					![
+						'ArrowLeft',
+						'ArrowRight',
+						'ArrowUp',
+						'ArrowDown',
+						'KeyA',
+						'KeyD',
+						'KeyW',
+						'KeyS',
+						'ShiftLeft',
+						'ShiftRight',
+						'KeyC',
+						'Space',
+						'Digit1',
+						'Digit2',
+						'Digit3',
+						'Digit4',
+						'KeyR',
+					].includes(event.code)
+				) {
 					return;
 				}
+				event.preventDefault();
+				if (event.repeat) return;
 				held.add(event.code);
 
 				if (event.code === 'Space') {
@@ -309,8 +308,7 @@ export const ControlPadPlayground: Story = {
 			};
 
 			const handleKeyUp = (event: KeyboardEvent) => {
-				held.delete(event.code);
-				updateFromKeys();
+				if (held.delete(event.code)) updateFromKeys();
 			};
 
 			window.addEventListener('keydown', handleKeyDown);
@@ -323,18 +321,17 @@ export const ControlPadPlayground: Story = {
 		}, [controls, isDocs]);
 
 		return (
-			<div className="flex flex-col gap-4 lg:flex-row">
-				<div className="flex-1">
+			<div className="flex w-full flex-wrap items-start gap-4">
+				<div className="min-w-0 flex-[3_1_28rem]">
 					<SuiFrenStage
 						state={state}
-						poseRef={poseRef}
+						spriteRef={spriteRef}
 						title="Control Pad"
-						note="Buttons can be long-pressed; movement, run, crouch, jump, and emotes stay independent so you can trigger emotes mid-run or mid-jump."
-						live={!isDocs}
+						note="Hold Run to run forward. Use the arrows to steer."
 					/>
 				</div>
 
-				<div className="flex w-full max-w-sm flex-col gap-4 rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-xs backdrop-blur-sm">
+				<div className="story-panel flex flex-[1_1_16rem] flex-col gap-4">
 					<div>
 						<h3 className="text-sm font-semibold text-slate-800">Movement Pad</h3>
 						<div className="mt-3 grid grid-cols-3 gap-2">
@@ -362,7 +359,6 @@ export const ControlPadPlayground: Story = {
 								onPress={() => pressDirection('right')}
 								onRelease={() => releaseDirection('right')}
 							/>
-							<div />
 							<div />
 							<ControlButton
 								label="↓"

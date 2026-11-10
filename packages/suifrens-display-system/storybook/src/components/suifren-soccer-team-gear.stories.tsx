@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { SuiFrenImage } from '@suigar/suifrens-display-system';
 import { accessories } from '@suigar/suifrens-display-system/accessories';
 import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
 import { SOCCER_TEAM_KITS } from '@suigar/suifrens-display-system/kits';
@@ -11,6 +10,7 @@ import type {
 	SoccerTeamCountryCode,
 	SoccerTeamSide,
 } from '@suigar/suifrens-display-system/types';
+import { KitRendererComparison } from './KitRendererComparison.js';
 
 const capyAttributes = {
 	mainColor: '6FBBEE',
@@ -54,9 +54,10 @@ function buildTeamGear(country: SoccerTeamCountryCode, side: SoccerTeamSide = 'h
 }
 
 const meta = {
-	title: 'SuiFrenImageInline/Soccer Team Gear',
+	id: 'suifrens-kits-soccer-team-kit',
+	title: 'Suifrens/Kits/Soccer Team Kit',
 	component: SuiFrenImageInline,
-	tags: ['autodocs'],
+	tags: ['autodocs', 'since-1.0.3'],
 } satisfies Meta<typeof SuiFrenImageInline>;
 
 export default meta;
@@ -65,11 +66,11 @@ type Story = StoryObj<typeof SuiFrenImageInline>;
 
 export const AllCountries: Story = {
 	render: () => (
-		<div className="grid grid-cols-2 gap-3 bg-slate-100 p-4 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7">
+		<div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-7">
 			{countries.map((country) => (
-				<div key={country} className="rounded-xl border border-slate-300 bg-white p-2 shadow-xs">
+				<div key={country} className="story-tile p-3">
 					<div className="mb-1 flex items-center justify-between">
-						<span className="text-sm font-black text-slate-900">{country}</span>
+						<span className="story-heading">{country}</span>
 						<span className="text-[10px] font-bold text-slate-500 uppercase">Inline</span>
 					</div>
 					<div className="h-36">
@@ -87,6 +88,7 @@ export const AllCountries: Story = {
 };
 
 export const InlineAndAssetRenderers: Story = {
+	name: 'Compare SVG Renderers',
 	render: () => {
 		const showcaseCountries: Array<SoccerTeamCountryCode> = [
 			'AR',
@@ -99,28 +101,25 @@ export const InlineAndAssetRenderers: Story = {
 		];
 
 		return (
-			<div className="grid grid-cols-1 gap-4 bg-slate-100 p-4 md:grid-cols-2">
+			<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 				{showcaseCountries.map((country) => (
-					<div key={country} className="rounded-xl border border-slate-300 bg-white p-3">
-						<h2 className="mb-2 text-sm font-black text-slate-900">{country}</h2>
-						<div className="grid grid-cols-2 gap-3">
-							<div className="h-56">
-								<SuiFrenImageInline
-									attributes={capyAttributes}
-									accessories={buildTeamGear(country)}
+					<div key={country} className="story-panel">
+						<h2 className="story-heading mb-2">{country}</h2>
+						{(
+							[
+								{ label: 'Capy · Home', attributes: capyAttributes, side: 'home' },
+								{ label: 'Bullshark · Away', attributes: bullsharkAttributes, side: 'away' },
+							] as const
+						).map(({ label, attributes, side }) => (
+							<div key={side} className="mt-3">
+								<h3 className="mb-2 text-sm font-semibold text-slate-700">{label}</h3>
+								<KitRendererComparison
+									attributes={attributes}
+									accessories={buildTeamGear(country, side)}
 									shadow
-									style={{ width: '100%', height: '100%' }}
 								/>
 							</div>
-							<div className="h-56">
-								<SuiFrenImage
-									attributes={bullsharkAttributes}
-									accessories={buildTeamGear(country, 'away')}
-									shadow
-									style={{ width: '100%', height: '100%' }}
-								/>
-							</div>
-						</div>
+						))}
 					</div>
 				))}
 			</div>

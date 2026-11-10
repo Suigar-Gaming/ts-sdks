@@ -4,3 +4,30 @@
  */
 
 @import 'tailwindcss';
+
+@layer components {
+	.story-page {
+		@apply mx-auto w-full max-w-6xl min-w-0 text-slate-900;
+		container-type: inline-size;
+	}
+	.story-panel {
+		@apply min-w-0 rounded-3xl border border-slate-200 bg-white p-4 shadow-xs;
+	}
+	.story-tile {
+		@apply min-w-0 rounded-2xl border border-slate-200 bg-slate-50;
+	}
+	.story-page .suifren-image:not(.story-scene *) {
+		@apply rounded-lg bg-white outline outline-slate-300;
+	}
+	.story-button {
+		@apply min-h-11 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-xs hover:bg-slate-50;
+	}
+	.story-heading {
+		@apply text-base font-semibold text-slate-900;
+	}
+	@container (max-width: 36rem) {
+		.battle-field {
+			zoom: 0.6;
+		}
+	}
+}
