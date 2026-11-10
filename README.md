@@ -124,4 +124,4 @@ pnpm run oxfmt:fix
 
 ## Suifrens Display System
 
-The [display package](packages/suifrens-display-system/README.md) builds with `pnpm --filter @suigar/suifrens-display-system build`. Its private [Storybook](examples/suifrens-storybook) and [Fastify server](examples/suifrens-fastify) consume its public exports. After building the library, run either example with `pnpm --filter @suigar/suifrens-storybook dev` or `pnpm --filter @suigar/suifrens-fastify dev`. Changesets manages the display package’s npm beta releases.
+The [display package](packages/suifrens-display-system/README.md) builds with `pnpm --filter @suigar/suifrens-display-system build`. Its private [Storybook](packages/suifrens-display-system/examples/storybook) and [Fastify server](packages/suifrens-display-system/examples/fastify) consume its public exports. After building the library, run either example with `pnpm --filter @suigar/suifrens-storybook dev` or `pnpm --filter @suigar/suifrens-fastify dev`. Changesets manages the display package’s npm beta releases.

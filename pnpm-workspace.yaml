@@ -1,6 +1,6 @@
 packages:
   - packages/*
-  - examples/*
+  - packages/suifrens-display-system/examples/*
   - playground
 
 catalogs:

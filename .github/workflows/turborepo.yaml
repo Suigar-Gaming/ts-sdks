@@ -15,7 +15,6 @@ on:
       - '**/*.[cm][jt]s'
       - '.oxlintrc.json'
       - '.oxfmtrc.json'
-      - 'examples/**'
       - 'playground/**'
       - 'packages/**'
       - 'package.json'
@@ -34,7 +33,6 @@ on:
       - '**/*.[cm][jt]s'
       - '.oxlintrc.json'
       - '.oxfmtrc.json'
-      - 'examples/**'
       - 'playground/**'
       - 'packages/**'
       - 'package.json'
@@ -110,7 +108,7 @@ jobs:
         run: pnpm turbo run build --filter='./playground'
 
       - name: Validate display examples
-        run: pnpm turbo run build test typecheck --filter='./examples/*'
+        run: pnpm turbo run build test typecheck --filter='./packages/suifrens-display-system/examples/*'
 
       - name: Exercise isolated display packages
         working-directory: packages/suifrens-display-system
