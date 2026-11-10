@@ -121,7 +121,7 @@
 		"tailwindcss": "catalog:tooling",
 		"tsdown": "catalog:tooling",
 		"typescript": "catalog:typescript",
-		"vite": "^8.3.6",
+		"vite": "catalog:tooling",
 		"vite-plugin-singlefile": "^2.3.4",
 		"vitest": "catalog:tooling"
 	},

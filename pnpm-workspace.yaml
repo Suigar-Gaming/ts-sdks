@@ -16,9 +16,11 @@ catalogs:
   tooling:
     '@tailwindcss/postcss': ^4.3.5
     '@tailwindcss/vite': ^4.3.5
+    'happy-dom': ^21.0.4
     'react-doctor': ^0.9.22
     'tailwindcss': ^4.3.5
     'tsdown': ^0.23.7
+    'vite': ^8.3.6
     'vitest': ^5.1.0
   typescript:
     '@types/node': ^24.19.2

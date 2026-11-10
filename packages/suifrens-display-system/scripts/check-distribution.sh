@@ -17,10 +17,11 @@ const imports = entries.map(entry =>
 );
 writeFileSync(process.argv[2] + '/entries.mts', imports.join('\n') + '\nexport const species = [root.CapyImage, root.BullsharkImage];\n');
 JS
+happy_dom_version=$(node -p "require('happy-dom/package.json').version")
 cd "$project"
 echo '{"type":"module","private":true}' > package.json
 major=${1%%.*}
-npm install --ignore-scripts --no-audit --no-fund ./*.tgz "react@$1" "react-dom@$1" "@types/react@$major" "@types/react-dom@$major" typescript@5.9.3 happy-dom@21.0.4
+npm install --ignore-scripts --no-audit --no-fund ./*.tgz "react@$1" "react-dom@$1" "@types/react@$major" "@types/react-dom@$major" typescript@5.9.3 "happy-dom@$happy_dom_version"
 node --experimental-strip-types entries.mts
 ./node_modules/.bin/tsc --strict --noEmit --module nodenext --target es2022 entries.mts
 node consumer.mjs

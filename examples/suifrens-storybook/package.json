@@ -19,18 +19,18 @@
 		"@storybook/addon-onboarding": "^10.6.5",
 		"@storybook/react": "^10.6.5",
 		"@storybook/react-vite": "^10.6.5",
-		"@tailwindcss/postcss": "^4.3.3",
+		"@tailwindcss/postcss": "catalog:tooling",
 		"@types/node": "catalog:typescript",
 		"@types/react": "catalog:typescript",
 		"@types/react-dom": "catalog:typescript",
-		"happy-dom": "^21.0.4",
+		"happy-dom": "catalog:tooling",
 		"postcss": "^8.5.32",
 		"react": "catalog:frontend",
 		"react-dom": "catalog:frontend",
 		"storybook": "^10.6.5",
 		"tailwindcss": "catalog:tooling",
 		"typescript": "catalog:typescript",
-		"vite": "^8.3.6",
+		"vite": "catalog:tooling",
 		"vitest": "catalog:tooling"
 	}
 }

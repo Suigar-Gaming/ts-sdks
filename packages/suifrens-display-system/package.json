@@ -74,19 +74,18 @@
 		"oxfmt": "oxfmt . --check",
 		"oxfmt:fix": "oxfmt .",
 		"lint:fix": "pnpm run oxlint:fix && pnpm run oxfmt:fix",
-		"codegen": "node --import tsx scripts/generate-accessory-assets.tsx && oxfmt src/generated/accessoryAssetManifest.ts"
+		"codegen": "tsdown --no-config scripts/generate-accessory-assets.ts --no-dts --out-dir node_modules/.cache/suifrens-codegen && node node_modules/.cache/suifrens-codegen/generate-accessory-assets.mjs && oxfmt src/generated/accessoryAssetManifest.ts"
 	},
 	"devDependencies": {
 		"@types/node": "catalog:typescript",
 		"@types/react": "catalog:typescript",
 		"@types/react-dom": "catalog:typescript",
-		"happy-dom": "^21.0.4",
+		"happy-dom": "catalog:tooling",
 		"react": "catalog:frontend",
 		"react-dom": "catalog:frontend",
 		"tsdown": "catalog:tooling",
-		"tsx": "^4.23.15",
 		"typescript": "catalog:typescript",
-		"vite": "^8.3.6",
+		"vite": "catalog:tooling",
 		"vitest": "catalog:tooling"
 	},
 	"peerDependencies": {
