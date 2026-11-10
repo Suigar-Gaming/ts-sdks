@@ -768,8 +768,8 @@ export const Duel: Story = {
 					</div>
 				</div>
 
-				<div className="story-scene relative overflow-hidden rounded-2xl border border-slate-200 bg-linear-to-b from-sky-50 to-blue-100 inset-shadow-sm">
-					<div className="absolute inset-4 rounded-2xl bg-linear-to-b from-white/70 to-sky-50" />
+				<div className="story-scene relative overflow-hidden rounded-2xl border border-slate-200 bg-linear-to-b from-sky-50 to-blue-100 inset-shadow-sm dark:border-slate-700 dark:from-slate-800 dark:to-blue-950">
+					<div className="absolute inset-4 rounded-2xl bg-linear-to-b from-white/70 to-sky-50 dark:from-slate-800 dark:to-sky-950" />
 					<div className="absolute inset-x-10 bottom-10 h-6 rounded-full bg-slate-400/10 blur-md" />
 
 					<div className="battle-field relative px-4 py-8">
@@ -786,6 +786,7 @@ export const Duel: Story = {
 								style={leftSpriteStyle}
 								imageStyle={leftImageStyle}
 								healthBarProps={{
+									style: { color: 'inherit' },
 									showNumbers: false,
 									size: 18,
 									hearts: leftDead ? 0 : FIGHT_HEARTS,
@@ -803,6 +804,7 @@ export const Duel: Story = {
 								style={rightSpriteStyle}
 								imageStyle={rightImageStyle}
 								healthBarProps={{
+									style: { color: 'inherit' },
 									showNumbers: false,
 									size: 18,
 									hearts: rightDead ? 0 : FIGHT_HEARTS,
@@ -1614,7 +1616,7 @@ export const Ring: Story = {
 					</div>
 				</div>
 
-				<div className="story-scene relative overflow-hidden rounded-2xl border border-slate-300 bg-linear-to-br from-amber-50 via-amber-100 to-amber-200 inset-shadow-sm">
+				<div className="story-scene relative overflow-hidden rounded-2xl border border-slate-300 bg-linear-to-br from-amber-50 via-amber-100 to-amber-200 inset-shadow-sm dark:border-stone-700 dark:from-stone-800 dark:via-stone-900 dark:to-amber-950">
 					<div className="battle-field relative mx-auto w-full max-w-215 px-6 py-8">
 						<div ref={ringRef} className="relative w-full" style={{ height: ringSize }}>
 							{fighters.map((fighter) => {
@@ -1714,6 +1716,7 @@ export const Ring: Story = {
 											style={style}
 											imageStyle={imageStyle}
 											healthBarProps={{
+												style: { color: 'inherit' },
 												showNumbers: false,
 												size: 14,
 												hearts: isDead ? 0 : FIGHT_HEARTS,
@@ -1736,6 +1739,7 @@ export const Ring: Story = {
 										style={style}
 										imageStyle={imageStyle}
 										healthBarProps={{
+											style: { color: 'inherit' },
 											showNumbers: false,
 											size: 14,
 											hearts: isDead ? 0 : FIGHT_HEARTS,

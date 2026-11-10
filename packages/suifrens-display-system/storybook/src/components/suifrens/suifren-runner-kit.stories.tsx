@@ -4,11 +4,13 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
 import { buildRunnerAccessories } from '@suigar/suifrens-display-system/kits';
+import { imageControls } from './character-controls.js';
 import { KitRendererComparison } from './KitRendererComparison.js';
 
 const meta: Meta<typeof SuiFrenImageInline> = {
 	title: 'Suifrens/Kits/Runner Kit',
 	component: SuiFrenImageInline,
+	argTypes: imageControls,
 	tags: ['1.1.0'],
 };
 export default meta;

@@ -51,3 +51,28 @@ export function ExpressionTransitionPreview({ attributes, ...props }: Expression
 	}, []);
 	return <ExpressionCard {...props} attributes={{ ...attributes, expression }} />;
 }
+
+export type CharacterArgs<T extends CapyAttributes | BullsharkAttributes> = Omit<
+	SuiFrenImageProps,
+	'attributes'
+> &
+	Omit<T, 'expression'> & { expression?: SuiFrenExpression };
+
+export function CharacterPreview({
+	preview: Preview = ExpressionCard,
+	mainColor,
+	secondaryColor,
+	skin,
+	expression = 'happy',
+	earShape,
+	finStyle,
+	...props
+}: CharacterArgs<CapyAttributes | BullsharkAttributes> & {
+	earShape?: CapyAttributes['earShape'];
+	finStyle?: BullsharkAttributes['finStyle'];
+	preview?: typeof ExpressionCard;
+}) {
+	const traits = earShape ? { earShape } : { finStyle: finStyle ?? 'classic' };
+	const attributes = { mainColor, secondaryColor, skin, expression, ...traits };
+	return <Preview {...props} attributes={attributes} />;
+}

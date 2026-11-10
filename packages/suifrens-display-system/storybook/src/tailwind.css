@@ -5,11 +5,27 @@
 
 @import 'tailwindcss';
 
-@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+@custom-variant dark {
+	&:where([data-theme='dark'], [data-theme='dark'] *) {
+		@slot;
+	}
+	@media (prefers-color-scheme: dark) {
+		&:where([data-theme='system'], [data-theme='system'] *) {
+			@slot;
+		}
+	}
+}
 
 body.sb-show-main:has(.story-page[data-theme='dark']),
 .docs-story:has(.story-page[data-theme='dark']) {
 	background-color: var(--color-slate-950);
+}
+
+@media (prefers-color-scheme: dark) {
+	body.sb-show-main:has(.story-page[data-theme='system']),
+	.docs-story:has(.story-page[data-theme='system']) {
+		background-color: var(--color-slate-950);
+	}
 }
 
 @layer components {

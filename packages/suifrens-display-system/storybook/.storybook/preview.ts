@@ -3,6 +3,7 @@
 
 import type { Preview } from '@storybook/react-vite';
 import { createElement } from 'react';
+import { ThemeDocsContainer } from '../src/components/ThemeDocsContainer.js';
 import '../src/tailwind.css';
 
 const COLOR_CONTROL_PATTERN: RegExp = /(background|color)$/i;
@@ -17,6 +18,7 @@ const preview: Preview = {
 				title: 'Theme',
 				icon: 'circlehollow',
 				items: [
+					{ value: 'system', title: 'System' },
 					{ value: 'light', title: 'Light' },
 					{ value: 'dark', title: 'Dark' },
 				],
@@ -24,7 +26,7 @@ const preview: Preview = {
 			},
 		},
 	},
-	initialGlobals: { theme: 'light' },
+	initialGlobals: { theme: 'system' },
 	decorators: [
 		(Story, { globals }) =>
 			createElement(
@@ -34,6 +36,7 @@ const preview: Preview = {
 			),
 	],
 	parameters: {
+		docs: { container: ThemeDocsContainer },
 		options: {
 			storySort: { order: ['Suifrens', ['Onboarding', 'Characters', 'Accessories', 'Kits', '*']] },
 		},

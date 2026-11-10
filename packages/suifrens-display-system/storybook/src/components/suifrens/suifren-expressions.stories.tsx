@@ -3,10 +3,13 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { CataloguePreview } from './CataloguePreview.js';
+import { expressionControl } from './character-controls.js';
 
 const meta = {
 	title: 'Suifrens/Characters/Expressions',
 	component: CataloguePreview,
+	argTypes: { expression: expressionControl, title: { table: { disable: true } } },
+	render: (args) => <CataloguePreview {...args} title={args.expression ?? args.title} />,
 	tags: ['!autodocs', '1.0.0'],
 } satisfies Meta<typeof CataloguePreview>;
 export default meta;
