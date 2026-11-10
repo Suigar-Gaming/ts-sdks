@@ -29,10 +29,12 @@ test('gRPC accessory lookup follows pagination and dynamic-object names', async 
 	client.getDynamicObjectField.mockResolvedValue({
 		object: {
 			type: ACCESSORY_TYPE,
-			content: Accessory.serialize({ id: '0x2', name: accessories[0].name, type: 'hat' }).toBytes(),
+			content: Accessory.serialize({ id: '0x2', name: 'baseball cap', type: 'hat' }).toBytes(),
 		},
 	});
-	expect(await getSuiFrenAccessories('0x1')).toEqual([accessories[0]]);
+	expect(await getSuiFrenAccessories('0x1')).toEqual(
+		accessories.filter((item) => item.name === 'baseball cap'),
+	);
 	expect(client.listDynamicFields).toHaveBeenCalledTimes(2);
 	expect(client.listDynamicFields).toHaveBeenNthCalledWith(2, { parentId: '0x1', cursor: 'next' });
 	expect(client.getDynamicObjectField).toHaveBeenCalledExactlyOnceWith({

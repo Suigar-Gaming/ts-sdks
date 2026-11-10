@@ -32,8 +32,8 @@ export async function getSuiFrenAttributesAndAccessories(suiFrenId: string) {
 	}
 	const { attributes } = SuiFren.parse(object.content);
 	return {
-		equippedAccessories: await getSuiFrenAccessories(suiFrenId),
 		attributes: parseSuiFrenAttributes(species, attributes),
+		equippedAccessories: await getSuiFrenAccessories(suiFrenId),
 	};
 }
 

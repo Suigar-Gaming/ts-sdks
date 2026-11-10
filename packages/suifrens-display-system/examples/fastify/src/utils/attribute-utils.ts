@@ -1,32 +1,33 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import { earGeneToEarShape } from '@suigar/suifrens-display-system/attributes';
-import type {
-	BullsharkAttributes,
-	CapyAttributes,
-	SuiFrenAttributes,
-	SuiFrenSpecies,
-} from '@suigar/suifrens-display-system/types';
+import { earGeneToEarShape, SUIFREN_SKINS } from '@suigar/suifrens-display-system/attributes';
+import { colors } from '@suigar/suifrens-display-system/colors';
+import { ALL_EXPRESSIONS } from '@suigar/suifrens-display-system/expressions';
+import type { SuiFrenAttributes, SuiFrenSpecies } from '@suigar/suifrens-display-system/types';
+
+function isColor(value: string | undefined): value is keyof typeof colors {
+	return value !== undefined && Object.hasOwn(colors, value);
+}
 
 export function parseSuiFrenAttributes(
 	species: SuiFrenSpecies,
-	[skin, mainColor, secondaryColor, expression, ...otherAttributes]: Array<string>,
+	[rawSkin, mainColor, secondaryColor, rawExpression, trait]: ReadonlyArray<string>,
 ): SuiFrenAttributes {
-	if (species === 'capy') {
-		return {
-			skin,
-			mainColor,
-			secondaryColor,
-			expression,
-			earShape: earGeneToEarShape[otherAttributes[0]],
-		} as CapyAttributes;
+	const skin = SUIFREN_SKINS.find((value) => value === rawSkin);
+	const expression = ALL_EXPRESSIONS.find((value) => value === rawExpression);
+	if (!skin || !expression || !isColor(mainColor) || !isColor(secondaryColor)) {
+		throw new TypeError(`Invalid ${species} appearance attributes`);
 	}
-	return {
-		skin,
-		mainColor,
-		secondaryColor,
-		expression,
-		finStyle: otherAttributes[0],
-	} as BullsharkAttributes;
+	const appearance = { skin, expression, mainColor, secondaryColor };
+	if (species === 'capy' && trait && Object.hasOwn(earGeneToEarShape, trait)) {
+		const earShape = earGeneToEarShape[trait];
+		if (earShape) {
+			return { ...appearance, earShape };
+		}
+	}
+	if (species === 'bullshark' && trait === 'classic') {
+		return { ...appearance, finStyle: trait };
+	}
+	throw new TypeError(`Invalid ${species} trait`);
 }
