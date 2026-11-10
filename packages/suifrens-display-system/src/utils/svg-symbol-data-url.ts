@@ -1,3 +1,4 @@
+const BASE64_PARAMETER_PATTERN: RegExp = /;base64(?:;|$)/i;
 const SVG_DATA_URL_PREFIX = 'data:image/svg+xml';
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
 const MAX_CACHE_ENTRIES = 128;
@@ -18,7 +19,9 @@ function decodeSvgDataUrl(assetSrc: string) {
 
 	const metadata = assetSrc.slice(0, commaIndex);
 	const payload = assetSrc.slice(commaIndex + 1);
-	return /;base64(?:;|$)/i.test(metadata) ? decodeBase64Utf8(payload) : decodeURIComponent(payload);
+	return BASE64_PARAMETER_PATTERN.test(metadata)
+		? decodeBase64Utf8(payload)
+		: decodeURIComponent(payload);
 }
 
 function rememberSymbolSource(cacheKey: string, source: string | null): string | null {

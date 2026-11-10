@@ -16,8 +16,8 @@ test('Fastify 5 serves health and SVGs, and completes missing-accessory response
 		expect((await app.inject('/')).json()).toEqual({ ok: true });
 		const image = await app.inject('/accessories/soccer%20team%20shirt/svg');
 		expect(image.statusCode).toBe(200);
-		expect(image.headers['content-type']).toMatch(/image\/svg\+xml/);
-		expect(image.body).toMatch(/^<svg/);
+		expect(image.headers['content-type']).toContain('image/svg+xml');
+		expect(image.body.startsWith('<svg')).toBe(true);
 		expect((await app.inject('/accessories/missing/svg')).statusCode).toBe(404);
 		const cors = await app.inject({
 			method: 'OPTIONS',
@@ -61,7 +61,7 @@ test.each([
 	try {
 		const image = await app.inject('/suifrens/0x1/svg');
 		expect(image.statusCode).toBe(200);
-		expect(image.body).toMatch(/^<svg/);
+		expect(image.body.startsWith('<svg')).toBe(true);
 		expect(client.getObject).toHaveBeenCalledWith({ objectId: '0x1', include: { content: true } });
 		client.getObject.mockResolvedValueOnce({
 			object: { type: `${SUIFREN_TYPE}<${species}>`, content: new Uint8Array([1]) },
@@ -74,7 +74,7 @@ test.each([
 		client.getObject.mockRejectedValue(new Error('private upstream detail'));
 		const failed = await app.inject('/suifrens/0x1/svg');
 		expect(failed.statusCode).toBe(500);
-		expect(failed.body).not.toMatch(/private upstream detail/);
+		expect(failed.body).not.toContain('private upstream detail');
 	} finally {
 		await app.close();
 	}

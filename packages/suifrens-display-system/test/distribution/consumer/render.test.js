@@ -3,6 +3,8 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { expect, test } from 'vitest';
 import { battle, accessories as catalogue, expressions, inline, kits, root } from './entries.mts';
+import { EXTERNAL_SVG_FRAGMENT_PATTERN, EXTERNAL_SVG_URL_PATTERN } from './svg-patterns.ts';
+
 test('loads the runtime API from the installed entry points', () => {
 	expect(Object.keys(root).sort()).toEqual(['BullsharkImage', 'CapyImage', 'SuiFrenImage']);
 	expect(typeof battle.useDuelScript).toBe('function');
@@ -25,10 +27,10 @@ test.each(['capy', 'bullshark'])(
 			accessories: catalogue.accessories.filter((item) => item.name === 'left goth boot'),
 		};
 		const markup = renderToStaticMarkup(createElement(inline.SuiFrenImageInline, props));
-		expect(markup).toMatch(/<svg/);
-		expect(markup).not.toMatch(/file:.*\.svg/);
+		expect(markup).toContain('<svg');
+		expect(markup).not.toMatch(EXTERNAL_SVG_URL_PATTERN);
 		const external = renderToStaticMarkup(createElement(root.SuiFrenImage, props));
-		const refs = [...external.matchAll(/href="(file:[^"#]+\.svg)#([^"]+)"/gi)];
+		const refs = [...external.matchAll(EXTERNAL_SVG_FRAGMENT_PATTERN)];
 		expect(refs.length).toBeGreaterThan(0);
 		for (const [, file, id] of refs) {
 			const svg = await readFile(new URL(file), 'utf8');

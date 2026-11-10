@@ -1,8 +1,11 @@
+import { HEX_COLOR_PATTERN } from '../constants/hex-color.js';
 import type {
 	SoccerTeamCountryCode,
 	SoccerTeamKit,
 	SoccerTeamSide,
 } from '../types/soccer-kit.type.js';
+
+const TEAM_CODE_PATTERN: RegExp = /^[A-Z0-9]{1,4}$/;
 
 const DARK_STROKE = '#050916';
 
@@ -294,9 +297,9 @@ export function resolveSoccerTeamKit(country?: unknown, side?: unknown): SoccerT
 		candidate &&
 		typeof candidate === 'object' &&
 		typeof candidate.code === 'string' &&
-		/^[A-Z0-9]{1,4}$/.test(candidate.code) &&
+		TEAM_CODE_PATTERN.test(candidate.code) &&
 		[candidate.primary, candidate.secondary, candidate.accent].every(
-			(value) => typeof value === 'string' && /^#[0-9a-f]{6}$/i.test(value),
+			(value) => typeof value === 'string' && HEX_COLOR_PATTERN.test(value),
 		) &&
 		patterns.includes(candidate.pattern ?? '');
 	const kit: SoccerTeamKit = custom
@@ -315,13 +318,13 @@ export function resolveSoccerTeamKit(country?: unknown, side?: unknown): SoccerT
 }
 
 export function isLightHex(value: string) {
-	const hex = value.replace(/^#/, '');
-	if (!/^[0-9a-f]{6}$/i.test(hex)) {
+	const hex = value.startsWith('#') ? value : `#${value}`;
+	if (!HEX_COLOR_PATTERN.test(hex)) {
 		return false;
 	}
-	const red = parseInt(hex.slice(0, 2), 16);
-	const green = parseInt(hex.slice(2, 4), 16);
-	const blue = parseInt(hex.slice(4, 6), 16);
+	const red = parseInt(hex.slice(1, 3), 16);
+	const green = parseInt(hex.slice(3, 5), 16);
+	const blue = parseInt(hex.slice(5, 7), 16);
 	return red * 0.2126 + green * 0.7152 + blue * 0.0722 >= 196;
 }
 

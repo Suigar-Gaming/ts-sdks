@@ -1,14 +1,32 @@
 import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import {
+	BETWEEN_TAGS_WHITESPACE_PATTERN,
+	SVG_WRAPPER_PATTERN,
+	WHITESPACE_PATTERN,
+} from '../src/constants/svg-patterns.ts';
+
+const DECIMAL_NUMBER_PATTERN: RegExp = /-?\d+\.\d+/g;
+const EMPTY_REACT_ROOT_PATTERN: RegExp = /\s?data-reactroot=""/g;
+const ZERO_FRACTION_PATTERN: RegExp = /\.0+$/;
+const TRAILING_FRACTION_ZEROS_PATTERN: RegExp = /(\.\d*?)0+$/;
+const NEGATIVE_ZERO_PATTERN: RegExp = /^-0$/;
+const NEGATIVE_FRACTION_PREFIX_PATTERN: RegExp = /^-0\./;
+const FRACTION_PREFIX_PATTERN: RegExp = /^0\./;
+const SVG_ID_PATTERN: RegExp = /id="([^"]+)"/g;
+const SVG_URL_REFERENCE_PATTERN: RegExp = /url\(#([^)]+)\)/g;
+const SVG_HREF_REFERENCE_PATTERN: RegExp = /(href|xlink:href)="#([^"]+)"/g;
+const GROUP_TAG_PATTERN: RegExp = /<\/?g\b[^>]*>/g;
+const SVG_EXTENSION_PATTERN: RegExp = /\.svg$/;
 const OUTPUT_DIR = 'src/generated/accessory-assets';
 const MANIFEST_PATH = 'src/generated/accessory-asset-manifest.ts';
 
 function minifySvg(markup: string) {
 	let svg = markup
-		.replace(/\s+/g, ' ')
-		.replace(/>\s+</g, '><')
-		.replace(/-?\d+\.\d+/g, (match) => formatSvgNumber(Number(match)))
-		.replace(/\s?data-reactroot=""/g, '')
+		.replace(WHITESPACE_PATTERN, ' ')
+		.replace(BETWEEN_TAGS_WHITESPACE_PATTERN, '><')
+		.replace(DECIMAL_NUMBER_PATTERN, (match) => formatSvgNumber(Number(match)))
+		.replace(EMPTY_REACT_ROOT_PATTERN, '')
 		.trim();
 
 	if (svg.startsWith('<svg') && !svg.includes('xmlns=')) {
@@ -25,26 +43,26 @@ function formatSvgNumber(value: number) {
 
 	const rounded = value.toFixed(2);
 	return rounded
-		.replace(/\.0+$/, '')
-		.replace(/(\.\d*?)0+$/, '$1')
-		.replace(/^-0$/, '0')
-		.replace(/^-0\./, '-.')
-		.replace(/^0\./, '.');
+		.replace(ZERO_FRACTION_PATTERN, '')
+		.replace(TRAILING_FRACTION_ZEROS_PATTERN, '$1')
+		.replace(NEGATIVE_ZERO_PATTERN, '0')
+		.replace(NEGATIVE_FRACTION_PREFIX_PATTERN, '-.')
+		.replace(FRACTION_PREFIX_PATTERN, '.');
 }
 
 function extractSvgContent(markup: string) {
-	return markup.replace(/^<svg[^>]*>/, '').replace(/<\/svg>$/, '');
+	return markup.replace(SVG_WRAPPER_PATTERN, '');
 }
 
 function scopeSvgReferences(markup: string, prefix: string) {
 	return markup
-		.replace(/id="([^"]+)"/g, `id="${prefix}-$1"`)
-		.replace(/url\(#([^)]+)\)/g, `url(#${prefix}-$1)`)
-		.replace(/(href|xlink:href)="#([^"]+)"/g, `$1="#${prefix}-$2"`);
+		.replace(SVG_ID_PATTERN, `id="${prefix}-$1"`)
+		.replace(SVG_URL_REFERENCE_PATTERN, `url(#${prefix}-$1)`)
+		.replace(SVG_HREF_REFERENCE_PATTERN, `$1="#${prefix}-$2"`);
 }
 
 function extractGroupByRole(markup: string, role: string) {
-	const idMatch = new RegExp(`id="[^"]*${role}[^"]*"`).exec(markup);
+	const idMatch = markup.matchAll(SVG_ID_PATTERN).find((match) => match[1]?.includes(role));
 	if (!idMatch) {
 		return undefined;
 	}
@@ -54,7 +72,7 @@ function extractGroupByRole(markup: string, role: string) {
 		return undefined;
 	}
 
-	const tagMatcher = /<\/?g\b[^>]*>/g;
+	const tagMatcher = new RegExp(GROUP_TAG_PATTERN);
 	tagMatcher.lastIndex = start;
 	let depth = 0;
 	for (let match = tagMatcher.exec(markup); match; match = tagMatcher.exec(markup)) {
@@ -92,20 +110,20 @@ async function readLayers(source: string, imports: Array<string>, entries: Array
 	const files = singleFile ? [source] : (await readdir(join(sourceDir, source))).sort();
 	for (const file of files) {
 		const relativePath = singleFile ? file : source + '/' + file;
-		const layer = singleFile ? 'default' : file.replace(/\.svg$/, '');
+		const layer = singleFile ? 'default' : file.replace(SVG_EXTENSION_PATTERN, '');
 		const id = 'layer' + imports.length;
 		imports.push(`import ${id} from '../accessories/artwork/${relativePath}';`);
 		fields.push(`${JSON.stringify(layer)}: ${id}`);
 		layers[layer] = await readFile(join(sourceDir, relativePath), 'utf8');
 	}
 	entries.push(
-		`${JSON.stringify(source.replace(/\.svg$/, '').replaceAll('-', ' '))}: { ${fields.join(', ')} }`,
+		`${JSON.stringify(source.replace(SVG_EXTENSION_PATTERN, '').replaceAll('-', ' '))}: { ${fields.join(', ')} }`,
 	);
 	return layers;
 }
 
 for (const source of (await readdir(sourceDir)).sort()) {
-	const dir = source.replace(/\.svg$/, '');
+	const dir = source.replace(SVG_EXTENSION_PATTERN, '');
 	if (dir === 'crowns') {
 		continue;
 	}

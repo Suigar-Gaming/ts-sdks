@@ -1,11 +1,12 @@
 {
 	"extends": "../../tsconfig.shared.json",
 	"compilerOptions": {
+		"rewriteRelativeImportExtensions": true,
 		"outDir": "dist",
 		"rootDir": ".",
 		"tsBuildInfoFile": "node_modules/.cache/typecheck.tsbuildinfo",
 		"types": ["node", "vite/client"]
 	},
-	"exclude": ["test/distribution/consumer"],
+	"exclude": ["test/distribution/consumer/entries.mts"],
 	"include": ["src", "scripts", "test", "doctor.config.ts", "tsdown.config.ts", "vitest.config.ts"]
 }

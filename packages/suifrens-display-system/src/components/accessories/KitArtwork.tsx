@@ -1,4 +1,5 @@
 import { useId } from 'react';
+import { SVG_WRAPPER_PATTERN } from '../../constants/svg-patterns.js';
 import { artwork } from '../../generated/kit-artwork.js';
 import { isKitAccessory } from '../../helpers/kit-accessory.js';
 import { resolveRunnerKit, RUNNER_ACCESSORY_NAMES } from '../../helpers/runner-kit.js';
@@ -7,21 +8,25 @@ import type { AccessoryRendererProps, AccessoryRenderOptions } from '../../types
 import type { AnimationPart } from '../../types/animation.type.js';
 import { SvgArtwork } from './SvgArtwork.js';
 
+const TEMPLATE_VARIABLE_PATTERN: RegExp = /\{\{(\w+)\}\}/g;
+const PATTERN_SLOT_PATTERN: RegExp = /<g data-pattern-slot="(\w+)">\s*<\/g>/g;
+const UNSAFE_ID_CHARACTER_PATTERN: RegExp = /[^\w-]/g;
+
 function applyValues(source: string, values: Record<string, string | number>) {
 	// Only validated colors, codes, numbers and internal SVG transforms are substituted.
-	return source.replace(/\{\{(\w+)\}\}/g, (_, key: string) => String(values[key]));
+	return source.replace(TEMPLATE_VARIABLE_PATTERN, (_, key: string) => String(values[key]));
 }
 
 function renderSoccerArtwork(source: string, options: AccessoryRenderOptions, id: string) {
 	const kit = resolveSoccerTeamKit(options.teamKit ?? options.country, options.side);
 	const code = kit.code === 'GLOBAL' ? 'GLO' : kit.code;
 	const patterns = artwork['patterns/' + kit.pattern];
-	source = source.replace(/<g data-pattern-slot="(\w+)">\s*<\/g>/g, (_, slot: string) => {
+	source = source.replace(PATTERN_SLOT_PATTERN, (_, slot: string) => {
 		const pattern = patterns?.[slot];
 		if (!pattern) {
 			throw new Error(`Missing SVG pattern ${kit.pattern}/${slot}`);
 		}
-		return pattern.trim().replace(/^<svg[^>]*>|<\/svg>$/g, '');
+		return pattern.trim().replace(SVG_WRAPPER_PATTERN, '');
 	});
 	return applyValues(source, {
 		id,
@@ -41,7 +46,10 @@ export function KitArtwork({
 	lor,
 	fallbackPart,
 }: AccessoryRendererProps & { fallbackPart?: AnimationPart | undefined }) {
-	const id = useId().replace(/[^\w-]/g, (c) => '-' + c.charCodeAt(0).toString(16) + '-');
+	const id = useId().replace(
+		UNSAFE_ID_CHARACTER_PATTERN,
+		(c) => '-' + c.charCodeAt(0).toString(16) + '-',
+	);
 	const layers = artwork[accessory.name];
 	if (!layers || !isKitAccessory(accessory.name)) {
 		return null;

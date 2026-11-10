@@ -3,6 +3,13 @@ import { existsSync, readFileSync } from 'node:fs';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { test } from 'vitest';
+import {
+	EXTERNAL_SVG_FRAGMENT_PATTERN,
+	EXTERNAL_SVG_URL_PATTERN,
+} from './consumer/svg-patterns.js';
+
+const CLIP_PATH_PATTERN: RegExp = /clipPath|clip-path/;
+const PATH_ELEMENT_PATTERN: RegExp = /<path\b/g;
 
 const root = new URL('../../', import.meta.url);
 const manifest = JSON.parse(readFileSync(new URL('package.json', root), 'utf8'));
@@ -54,14 +61,14 @@ test('built inline and asset renderers preserve custom kits for both species and
 				assert.ok(svg.includes(kit.primary));
 				assert.ok(svg.includes(kit.secondary));
 				if (entry !== '/image-inline') {
-					const references = [...svg.matchAll(/(?:href|xlink:href)="(file:[^"]+\.svg)#[^"]+"/g)];
+					const references = [...svg.matchAll(EXTERNAL_SVG_FRAGMENT_PATTERN)];
 					assert.ok(references.length > 0, 'asset renderer must reference emitted SVGs');
 					for (const [, url] of references) {
 						assert.ok(url);
 						assert.ok(existsSync(new URL(url)), `missing asset ${url}`);
 					}
 				} else {
-					assert.doesNotMatch(svg, /file:.*\.svg/);
+					assert.doesNotMatch(svg, EXTERNAL_SVG_URL_PATTERN);
 				}
 			}
 		}
@@ -94,14 +101,14 @@ test('built goth boot assets contain only the selected boot without clipping', a
 				),
 			}),
 		);
-		const references = [...svg.matchAll(/(?:href|xlink:href)="(file:[^"]+\.svg)#[^"]+"/g)];
+		const references = [...svg.matchAll(EXTERNAL_SVG_FRAGMENT_PATTERN)];
 		assert.ok(references.length > 0);
 		for (const [, url] of references) {
 			assert.ok(url);
 			const asset = readFileSync(new URL(url), 'utf8');
-			assert.doesNotMatch(asset, /clipPath|clip-path/);
-			assert.equal((asset.match(/<path\b/g) ?? []).length, 20);
-			assert.equal((asset.match(new RegExp(`data-boot-side="${side}"`, 'g')) ?? []).length, 4);
+			assert.doesNotMatch(asset, CLIP_PATH_PATTERN);
+			assert.equal((asset.match(PATH_ELEMENT_PATTERN) ?? []).length, 20);
+			assert.equal(asset.split(`data-boot-side="${side}"`).length - 1, 4);
 		}
 	}
 });
@@ -127,7 +134,7 @@ test('built runner kits preserve configurable bibs and native limbs in every ren
 				}),
 			);
 			assert.ok(svg.includes('#123456'));
-			assert.match(svg, />9<\/text>/);
+			assert.ok(svg.includes('>9</text>'));
 			assert.ok(svg.includes('runner-shorts-frontleg'));
 			assert.ok(svg.includes('runner-shoes-backleg'));
 			assert.ok(svg.includes('runner-headband-head'));

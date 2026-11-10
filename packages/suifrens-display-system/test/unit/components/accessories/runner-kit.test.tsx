@@ -7,6 +7,7 @@ import { KitArtwork } from '../../../../src/components/accessories/KitArtwork.js
 import { CapyImage } from '../../../../src/components/capy/CapyImage.js';
 import { buildRunnerAccessories, resolveRunnerKit } from '../../../../src/helpers/runner-kit.js';
 import { createTestRoot } from '../../../helpers/react-dom.js';
+
 const context = vi.hoisted(() => ({ store: null as AnimationStore | null }));
 vi.mock('../../../../src/animation/AnimationContext.js', () => ({
 	useAnimationStore: () => context.store,

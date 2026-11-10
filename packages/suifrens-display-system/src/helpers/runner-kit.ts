@@ -1,3 +1,4 @@
+import { HEX_COLOR_PATTERN } from '../constants/hex-color.js';
 import type { AccessoryMetadata } from '../types/accessory.type.js';
 import type { RunnerKitOptions } from '../types/runner-kit.type.js';
 
@@ -11,7 +12,7 @@ export function resolveRunnerKit(value: unknown): Required<RunnerKitOptions> {
 	const options = value && typeof value === 'object' ? (value as RunnerKitOptions) : {};
 	return {
 		color:
-			typeof options.color === 'string' && /^#[0-9a-f]{6}$/i.test(options.color)
+			typeof options.color === 'string' && HEX_COLOR_PATTERN.test(options.color)
 				? options.color
 				: '#ef8fae',
 		number:
