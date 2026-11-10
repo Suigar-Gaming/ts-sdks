@@ -6,8 +6,8 @@ import { getAccessoriesByType } from '../utils/accessoryUtils.js';
 import { assertUnreachable } from '../utils/assertUnreachable.js';
 import { AccessoryRendererProvider } from './accessories/AccessorySlot.js';
 import { InlineAccessory } from './accessories/index.js';
-import { BullsharkImage } from './bullshark-image/BullsharkImage.js';
-import { CapyImage } from './capy-image/CapyImage.js';
+import { BullsharkImage } from './bullshark/BullsharkImage.js';
+import { CapyImage } from './capy/CapyImage.js';
 import { shouldRenderMicrophoneArmInForeground } from './foregroundLayering.js';
 
 export function SuiFrenImage({

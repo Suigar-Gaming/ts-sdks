@@ -8,7 +8,7 @@ import type {
 } from '../../../types/capy.type.js';
 import { assertUnreachable } from '../../../utils/assertUnreachable.js';
 import { DefaultLeftEar } from './left/DefaultLeftEar.js';
-import { MischievousLeftEar } from './left/MichievousLeftEar.js';
+import { MischievousLeftEar } from './left/MischievousLeftEar.js';
 import { QuietLeftEar } from './left/QuietLeftEar.js';
 import { WildLeftEar } from './left/WildLeftEar.js';
 

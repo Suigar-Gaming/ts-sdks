@@ -4,11 +4,11 @@ export type { SuiFrenImageAssetsProps as SuiFrenImageProps } from './types/suifr
 
 export type { SuiFrenRenderSize } from './types/suifren.type.js';
 
-export { BullsharkImage } from './components/bullshark-image/BullsharkImage.js';
+export { BullsharkImage } from './components/bullshark/BullsharkImage.js';
 
 export type { BullsharkImageProps } from './types/bullshark.type.js';
 
-export { CapyImage } from './components/capy-image/CapyImage.js';
+export { CapyImage } from './components/capy/CapyImage.js';
 
 export type { CapyImageProps } from './types/capy.type.js';
 

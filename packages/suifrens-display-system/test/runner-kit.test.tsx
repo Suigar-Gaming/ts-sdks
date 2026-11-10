@@ -9,7 +9,7 @@ import {
 	resolveRunnerKit,
 	RunnerAccessory,
 } from '../src/components/accessories/runnerKit.js';
-import { CapyImage } from '../src/components/capy-image/CapyImage.js';
+import { CapyImage } from '../src/components/capy/CapyImage.js';
 import { createTestRoot } from './helpers/react-dom.js';
 const context = vi.hoisted(() => ({ store: null as AnimationStore | null }));
 vi.mock('../src/animation/AnimationContext.js', () => ({ useAnimationStore: () => context.store }));

@@ -30,5 +30,5 @@ export {
 	POSITIVE_BULLSHARK_EXPRESSIONS,
 	POSITIVE_CAPY_EXPRESSIONS,
 } from './constants/expressions.js';
-export { CapyImage } from './components/capy-image/CapyImage.js';
-export { BullsharkImage } from './components/bullshark-image/BullsharkImage.js';
+export { CapyImage } from './components/capy/CapyImage.js';
+export { BullsharkImage } from './components/bullshark/BullsharkImage.js';
