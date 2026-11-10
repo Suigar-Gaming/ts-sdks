@@ -22,8 +22,9 @@ const SVG_HREF_REFERENCE_PATTERN: RegExp = /(href|xlink:href)="#([^"]+)"/g;
 const GROUP_TAG_PATTERN: RegExp = /<\/?g\b[^>]*>/g;
 const SVG_EXTENSION_PATTERN: RegExp = /\.svg$/;
 const GENERATED_HEADER = '// Copyright (c) Suigar\n// SPDX-License-Identifier: Apache-2.0\n\n';
-const OUTPUT_DIR = 'src/generated/accessory-assets';
-const MANIFEST_PATH = 'src/generated/accessory-asset-manifest.ts';
+const GENERATED_DIR = 'src/generated';
+const OUTPUT_DIR = join(GENERATED_DIR, 'accessory-assets');
+const MANIFEST_PATH = join(GENERATED_DIR, 'accessory-asset-manifest.ts');
 
 function minifySvg(markup: string): string {
 	let svg = markup
@@ -95,7 +96,7 @@ function extractGroupByRole(markup: string, role: string): string | undefined {
 
 await rm(OUTPUT_DIR, { recursive: true, force: true });
 await mkdir(OUTPUT_DIR, { recursive: true });
-await mkdir('src/generated', { recursive: true });
+await mkdir(GENERATED_DIR, { recursive: true });
 
 const MANIFEST_ENTRIES: Array<string> = [];
 const SPLIT_LIMB_ASSET_NAMES: Array<string> = [];
@@ -213,7 +214,7 @@ for (const [file, imports, entries] of [
 	['kit-artwork', KIT_IMPORTS, KIT_ENTRIES],
 ] as const) {
 	await writeFile(
-		`src/generated/${file}.ts`,
+		join(GENERATED_DIR, `${file}.ts`),
 		`${GENERATED_HEADER}${imports.join('\n')}\nexport const ARTWORK: Readonly<Record<string, Readonly<Record<string,string>>>> = {\n${entries.join(',\n')}\n};\n`,
 	);
 }
