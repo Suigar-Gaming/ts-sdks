@@ -1,7 +1,7 @@
 packages:
   - packages/*
-  - packages/suifrens-display-system/examples/*
-  - packages/suifrens-display-system/storybook
+  - packages/*/examples/*
+  - packages/*/storybook
   - playground
 
 catalogs:
