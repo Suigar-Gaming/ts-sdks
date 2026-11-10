@@ -89,7 +89,7 @@ import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline
 <SuiFrenImageInline attributes={attributes} renderSize={240} />;
 ```
 
-Both image renderers accept the same props. The examples below reuse `attributes` from the quick start.
+Built-in VIP crowns are embedded in the inline SVG and can be exported with the character as one file. Both image renderers accept the same props. The examples below reuse `attributes` from the quick start.
 
 | Prop                 | Usage                                                                     |
 | -------------------- | ------------------------------------------------------------------------- |

@@ -134,6 +134,21 @@ async function readLayers(
 for (const source of (await readdir(SOURCE_DIR)).sort()) {
 	const dir = source.replace(SVG_EXTENSION_PATTERN, '');
 	if (dir === 'crowns') {
+		const entries: Array<string> = [];
+		for (const file of (await readdir(join(SOURCE_DIR, dir)))
+			.filter((name) => name.endsWith('.svg'))
+			.sort()) {
+			const svg = await readFile(join(SOURCE_DIR, dir, file));
+			const key = JSON.stringify(file.replace(SVG_EXTENSION_PATTERN, ''));
+			entries.push(`${key}: "data:image/svg+xml;base64,${svg.toString('base64')}"`);
+		}
+		await writeFile(
+			join(GENERATED_DIR, 'inline-crowns.ts'),
+			`${GENERATED_HEADER}export const INLINE_CROWNS: Readonly<Record<string, string>> = {
+${entries.join(',\n')}
+};
+`,
+		);
 		continue;
 	}
 	if (dir === 'patterns') {

@@ -37,7 +37,7 @@ test.each([
 	['assets', SuiFrenImage],
 ] as const)(
 	'%s preserves avatar framing and crown scale while letting unframed crowns overflow',
-	(_name, Renderer) => {
+	(mode, Renderer) => {
 		for (const attributes of species) {
 			for (const accessory of vipCrownAccessories) {
 				const container = document.createElement('div');
@@ -53,6 +53,14 @@ test.each([
 				if (!asset) {
 					throw new Error(`Missing crown: ${accessory.name}`);
 				}
+				const expectedHref =
+					mode === 'inline'
+						? 'data:image/svg+xml;base64,' +
+							readFileSync(`src/accessories/artwork/crowns/${accessory.name}.svg`).toString(
+								'base64',
+							)
+						: asset;
+				expect(image.getAttribute('href')).toBe(expectedHref);
 				const viewport = getVipCrownAssetViewport(asset)!;
 				const scaleX = Number(image.getAttribute('width')) / 3209;
 				const scaleY = Number(image.getAttribute('height')) / 3609;
