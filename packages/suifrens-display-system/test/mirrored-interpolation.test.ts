@@ -1,11 +1,11 @@
 import { expect, test } from 'vitest';
 import {
-	type Matrix,
 	matrixToAnimationTransform,
 	multiplyMatrix,
 	parseMatrix,
 	rotateMatrix,
 } from '../src/animation/matrix.js';
+import type { Matrix } from '../src/types/animation.type.js';
 
 test.each([0, 45, 89.9999, 90, 90.0001, 135, 180])(
 	'preserves mirrored artwork at %s degrees with a positive-determinant interpolation matrix',

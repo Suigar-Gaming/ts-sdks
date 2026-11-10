@@ -1,6 +1,6 @@
 import type { ComponentType, SVGProps } from 'react';
 import { useAnimatedPartTransform } from '../../../animation/useAnimatedPartTransform.js';
-import type { BullsharkSkin } from '../types.js';
+import type { BullsharkSkin } from '../../../types/bullshark.type.js';
 import { BasicBodyPattern } from './patterns/BasicBodyPattern.js';
 import { CheetahBodyPattern } from './patterns/CheetahBodyPattern.js';
 import { DalmationBodyPattern } from './patterns/DalmationBodyPattern.js';

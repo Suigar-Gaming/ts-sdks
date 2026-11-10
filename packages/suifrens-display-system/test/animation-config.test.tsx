@@ -3,7 +3,7 @@ import { act } from 'react';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { AnimationProvider } from '../src/animation/AnimationContext.js';
 import { AnimationController } from '../src/animation/AnimationController.js';
-import type { AnimationSequence } from '../src/animation/types.js';
+import type { AnimationSequence } from '../src/types/animation.type.js';
 import { createTestRoot } from './helpers/react-dom.js';
 
 const resolver = vi.hoisted(() => ({

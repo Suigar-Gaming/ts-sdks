@@ -2,7 +2,13 @@ import type {
 	AccessoryMetadata,
 	AccessoryPlacement,
 	SuiFrenSpecies,
-} from '../utils/accessoryUtils.js';
+} from '../types/accessory.type.js';
+import type { VipCrownAccessoryName } from '../types/vip-crown.type.js';
+
+type VipCrownPlacementMap = Record<
+	VipCrownAccessoryName,
+	Partial<Record<SuiFrenSpecies, AccessoryPlacement>>
+>;
 
 export const VIP_CROWN_ACCESSORY_NAMES = [
 	'bronze-i',
@@ -24,13 +30,6 @@ export const VIP_CROWN_ACCESSORY_NAMES = [
 	'master-ii',
 	'legend',
 ] as const;
-
-export type VipCrownAccessoryName = (typeof VIP_CROWN_ACCESSORY_NAMES)[number];
-
-type VipCrownPlacementMap = Record<
-	VipCrownAccessoryName,
-	Partial<Record<SuiFrenSpecies, AccessoryPlacement>>
->;
 
 const DEFAULT_CAPY_PLACEMENT: AccessoryPlacement = {
 	x: 0,

@@ -1,4 +1,5 @@
-import type { CSSProperties, ReactNode } from 'react';
+import type { CSSProperties } from 'react';
+import type { MinecraftHealthBarProps } from '../../types/battle.type.js';
 
 type HeartFill = 0 | 0.5 | 1;
 
@@ -112,16 +113,6 @@ function PixelHeart({ fill, size = 16 }: { fill: HeartFill; size?: number }) {
 		</svg>
 	);
 }
-
-export type MinecraftHealthBarProps = {
-	health: number;
-	maxHealth?: number;
-	hearts?: number;
-	size?: number;
-	label?: ReactNode;
-	showNumbers?: boolean;
-	style?: CSSProperties;
-};
 
 export function MinecraftHealthBar({
 	health,

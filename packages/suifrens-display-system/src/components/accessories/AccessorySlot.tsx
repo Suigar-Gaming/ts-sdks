@@ -1,17 +1,5 @@
-import { createContext, type JSX, type ReactNode, useContext } from 'react';
-import type { AccessoryMetadata, SuiFrenSpecies } from '../../utils/accessoryUtils.js';
-
-export type BodyAccessoryProps = {
-	lor?: 'left' | 'right';
-	body?: boolean;
-};
-
-export type AccessoryRendererProps = BodyAccessoryProps & {
-	accessory: AccessoryMetadata;
-	species: SuiFrenSpecies;
-};
-
-export type AccessoryRenderer = (props: AccessoryRendererProps) => JSX.Element | null;
+import { createContext, type ReactNode, useContext } from 'react';
+import type { AccessoryRenderer, AccessoryRendererProps } from '../../types/accessory.type.js';
 
 const AccessoryRendererContext = createContext<AccessoryRenderer | null>(null);
 

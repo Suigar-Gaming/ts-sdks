@@ -1,5 +1,6 @@
 import type { ComponentType } from 'react';
 import { AnimatedAccessory } from '../../animation/AnimatedAccessory.js';
+import type { BullsharkExpression } from '../../types/bullshark.type.js';
 import { AngryExpression } from './expressions/AngryExpression.js';
 import { AnnoyedExpression } from './expressions/AnnoyedExpression.js';
 import { BigSmileExpression } from './expressions/BigSmileExpression.js';
@@ -20,7 +21,6 @@ import { ShockedExpression } from './expressions/ShockedExpression.js';
 import { SleepyExpression } from './expressions/SleepyExpression.js';
 import { TongueOutExpression } from './expressions/TongueOutExpression.js';
 import { WinkExpression } from './expressions/WinkExpression.js';
-import type { BullsharkExpression } from './types.js';
 
 type ExpressionProps = {
 	expression: BullsharkExpression;

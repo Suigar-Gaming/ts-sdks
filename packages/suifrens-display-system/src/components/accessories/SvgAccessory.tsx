@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { AccessoryPlacement, SuiFrenSpecies } from '../../utils/accessoryUtils.js';
+import type { AccessoryPlacement, SvgAccessoryProps } from '../../types/accessory.type.js';
 import { resolveEmbeddedSvgSymbolSource } from './svgSymbolDataUrl.js';
 
 const DEFAULT_ORIGIN = 1500;
@@ -32,14 +32,6 @@ function buildPlacementTransform(placement?: AccessoryPlacement) {
 
 	return transforms.length > 0 ? transforms.join(' ') : undefined;
 }
-
-export type SvgAccessoryProps = {
-	assetSrc: string;
-	symbolId?: string;
-	species: SuiFrenSpecies;
-	placement?: Partial<Record<SuiFrenSpecies, AccessoryPlacement>>;
-	viewport?: { x: number; y: number; width: number; height: number };
-};
 
 export function SvgAccessory({
 	assetSrc,

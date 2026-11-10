@@ -1,10 +1,16 @@
 import type { JSX } from 'react';
 import { AnimatedAccessory } from '../../../animation/AnimatedAccessory.js';
+import type {
+	DefaultLeftEarProps,
+	MischievousLeftEarProps,
+	QuietLeftEarProps,
+	WildLeftEarProps,
+} from '../../../types/capy.type.js';
 import { assertUnreachable } from '../../../utils/assertUnreachable.js';
-import { DefaultLeftEar, type DefaultLeftEarProps } from './left/DefaultLeftEar.js';
-import { MischievousLeftEar, type MischievousLeftEarProps } from './left/MichievousLeftEar.js';
-import { QuietLeftEar, type QuietLeftEarProps } from './left/QuietLeftEar.js';
-import { WildLeftEar, type WildLeftEarProps } from './left/WildLeftEar.js';
+import { DefaultLeftEar } from './left/DefaultLeftEar.js';
+import { MischievousLeftEar } from './left/MichievousLeftEar.js';
+import { QuietLeftEar } from './left/QuietLeftEar.js';
+import { WildLeftEar } from './left/WildLeftEar.js';
 
 type LeftEarProps =
 	| DefaultLeftEarProps

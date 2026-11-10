@@ -1,9 +1,9 @@
 import { useId } from 'react';
+import type { SoccerTeamAccessoryProps } from '../../../types/soccer-kit.type.js';
 import {
 	resolveSoccerTeamKit,
 	SOCCER_TEAM_DARK_STROKE,
 	SoccerKitPattern,
-	type SoccerTeamAccessoryProps,
 } from '../soccerTeamKit.js';
 
 const TRUNKS_BODY_PATH =

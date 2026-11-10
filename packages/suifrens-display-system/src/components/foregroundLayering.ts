@@ -1,5 +1,5 @@
-import type { AnimationConfig } from '../animation/types.js';
-import type { AccessoryMetadata } from '../utils/accessoryUtils.js';
+import type { AccessoryMetadata } from '../types/accessory.type.js';
+import type { AnimationConfig } from '../types/animation.type.js';
 
 export function shouldRenderMicrophoneArmInForeground(
 	animation: AnimationConfig | null,

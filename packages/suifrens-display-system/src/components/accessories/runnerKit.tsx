@@ -1,9 +1,12 @@
 import { useId } from 'react';
-import type { AccessoryMetadata, SuiFrenSpecies } from '../../utils/accessoryUtils.js';
-import type { AccessoryRendererProps } from './AccessorySlot.js';
+import type {
+	AccessoryMetadata,
+	AccessoryRendererProps,
+	SuiFrenSpecies,
+} from '../../types/accessory.type.js';
+import type { RunnerKitOptions } from '../../types/runner-kit.type.js';
 import { RUNNER_BODY_CONTOUR, RUNNER_FOOT_CONTOUR } from './runnerKitGeometry.js';
 
-export type RunnerKitOptions = { color?: string; number?: number; mirrorBib?: boolean };
 export const RUNNER_ACCESSORY_NAMES = new Set([
 	'runner singlet',
 	'runner shorts',

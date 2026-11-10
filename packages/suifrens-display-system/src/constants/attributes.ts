@@ -1,4 +1,4 @@
-import type { CapyEarShape } from '../components/capy-image/types.js';
+import type { CapyEarShape } from '../types/capy.type.js';
 
 export const earGeneToEarShape: Record<string, CapyEarShape> = {
 	ear1: 'default',

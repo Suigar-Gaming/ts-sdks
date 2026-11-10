@@ -1,7 +1,7 @@
 import type { ComponentType, SVGProps } from 'react';
 import { AnimatedAccessory } from '../../../animation/AnimatedAccessory.js';
 import { useAnimatedPartTransform } from '../../../animation/useAnimatedPartTransform.js';
-import type { BullsharkSkin } from '../types.js';
+import type { BullsharkSkin } from '../../../types/bullshark.type.js';
 import { DalmationFinPattern } from './patterns/DalmationFinPattern.js';
 
 type FinPatternProps = {

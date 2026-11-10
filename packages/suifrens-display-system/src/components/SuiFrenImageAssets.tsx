@@ -1,45 +1,14 @@
-import { type CSSProperties, type ReactNode, useMemo } from 'react';
+import { type ReactNode, useMemo } from 'react';
 import { AnimationProvider } from '../animation/AnimationContext.js';
-import type {
-	AnimationConfig,
-	AnimationDirection,
-	AnimationSequence,
-	PlaybackOptions,
-	PlayState,
-} from '../animation/types.js';
-import { type AccessoryMetadata, getAccessoriesByType } from '../utils/accessoryUtils.js';
+import type { AnimationConfig } from '../types/animation.type.js';
+import type { SuiFrenImageAssetsProps } from '../types/suifren.type.js';
+import { getAccessoriesByType } from '../utils/accessoryUtils.js';
 import { assertUnreachable } from '../utils/assertUnreachable.js';
 import { AccessoryRendererProvider } from './accessories/AccessorySlot.js';
 import { AssetAccessory } from './accessories/AssetAccessory.js';
 import { BullsharkImage } from './bullshark-image/BullsharkImage.js';
 import { CapyImage } from './capy-image/CapyImage.js';
 import { shouldRenderMicrophoneArmInForeground } from './foregroundLayering.js';
-import type { SuiFrenRenderSize } from './SuiFrenImage.js';
-import type { SuiFrenAttributes } from './types.js';
-
-export type SuiFrenImageAssetsProps = {
-	attributes: SuiFrenAttributes;
-	/** Optional native capy gesture; bullsharks and head portraits are unchanged. */
-	capyGesture?: 'thumbsUp';
-	accessories?: Array<AccessoryMetadata>;
-	detail?: 'full' | 'head';
-	renderSize?: SuiFrenRenderSize;
-	incognito?: boolean;
-	shadow?: boolean;
-	logo?: ReactNode;
-	className?: string;
-	style?: CSSProperties;
-	animation?: AnimationConfig | null;
-	animationPreset?: string;
-	animationSequence?: AnimationSequence;
-	animationPlayback?: PlaybackOptions;
-	animationPlayState?: PlayState;
-	animationDirection?: AnimationDirection;
-	animationTrigger?: string | number;
-	animationStartAt?: 'start' | 'end';
-	animationAutoPlay?: boolean;
-	animationHoldOnComplete?: boolean;
-};
 
 export function SuiFrenImageAssets({
 	attributes,

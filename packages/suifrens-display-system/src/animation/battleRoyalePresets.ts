@@ -1,4 +1,4 @@
-import type { AnimationSequence } from './types.js';
+import type { AnimationSequence } from '../types/animation.type.js';
 
 const RUN_DURATION = 900;
 

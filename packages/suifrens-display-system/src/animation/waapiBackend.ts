@@ -1,15 +1,13 @@
+import type {
+	AnimationConfig,
+	AnimationSequence,
+	PlaybackOptions,
+} from '../types/animation.type.js';
 import { type AnimationStore, composePartTransform } from './AnimationStore.js';
 import { matrixToAnimationTransform, parseMatrix } from './matrix.js';
 import { interpolateSequencePoses, normalizePlayback } from './SequencePlayer.js';
-import type { AnimationConfig, AnimationSequence, PlaybackOptions } from './types.js';
-
-const SAMPLE_INTERVAL_MS = 1000 / 30;
 
 type BackendPreference = 'auto' | 'waapi' | 'fallback';
-
-declare global {
-	var __SUIFREN_ANIMATION_BACKEND__: BackendPreference | undefined;
-}
 
 type WaapiTarget = ReturnType<AnimationStore['getAnimationTargets']>[number] & {
 	element: SVGGraphicsElement;
@@ -25,6 +23,12 @@ type WaapiStartResult =
 	| {
 			handled: false;
 	  };
+
+const SAMPLE_INTERVAL_MS = 1000 / 30;
+
+declare global {
+	var __SUIFREN_ANIMATION_BACKEND__: BackendPreference | undefined;
+}
 
 function resolveBackendPreference(): BackendPreference {
 	return globalThis.__SUIFREN_ANIMATION_BACKEND__ ?? 'auto';

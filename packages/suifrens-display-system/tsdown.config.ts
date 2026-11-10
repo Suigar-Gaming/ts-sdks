@@ -3,22 +3,20 @@ import { basename } from 'node:path';
 import { defineConfig } from 'tsdown';
 
 export default defineConfig({
-	entry: Object.fromEntries(
-		[
-			'index',
-			'image',
-			'image-inline',
-			'image-assets',
-			'accessories',
-			'colors',
-			'attributes',
-			'expressions',
-			'vip-crowns',
-			'animation',
-			'battle',
-			'types',
-		].map((name) => [name, `src/${name}.ts`]),
-	),
+	entry: {
+		index: 'src/index.ts',
+		image: 'src/image.ts',
+		'image-inline': 'src/image-inline.ts',
+		'image-assets': 'src/image-assets.ts',
+		accessories: 'src/accessories.ts',
+		colors: 'src/colors.ts',
+		attributes: 'src/attributes.ts',
+		expressions: 'src/expressions.ts',
+		'vip-crowns': 'src/vip-crowns.ts',
+		animation: 'src/animation.ts',
+		battle: 'src/battle.ts',
+		types: 'src/types/index.ts',
+	},
 	format: 'esm',
 	platform: 'browser',
 	target: 'es2020',

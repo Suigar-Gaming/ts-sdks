@@ -1,9 +1,5 @@
 import type { SVGProps } from 'react';
 
-export type DefaultLeftEarProps = {
-	earShape: 'default';
-} & SVGProps<SVGPathElement>;
-
 export function DefaultLeftEar(props: SVGProps<SVGPathElement>) {
 	return (
 		<g transform="matrix(2.9166107177734375, 0, 0, 2.9166107177734375, 746.1,619.15)">

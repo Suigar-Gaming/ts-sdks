@@ -1,20 +1,20 @@
-import type { AnimationStore } from './AnimationStore.js';
-import type { AnimationPart } from './parts.js';
-import { SequencePlayer } from './SequencePlayer.js';
 import type {
 	AnimationConfig,
+	AnimationPart,
 	AnimationSequence,
 	PartPose,
 	PlaybackOptions,
 	PlayState,
-} from './types.js';
-
-const DEFAULT_TRANSITION_MS = 140;
+} from '../types/animation.type.js';
+import type { AnimationStore } from './AnimationStore.js';
+import { SequencePlayer } from './SequencePlayer.js';
 
 type SequenceSource = {
 	sequence: AnimationSequence;
 	playback?: PlaybackOptions;
 } | null;
+
+const DEFAULT_TRANSITION_MS = 140;
 
 function playbackSignature(playback?: PlaybackOptions) {
 	let iterations: number;

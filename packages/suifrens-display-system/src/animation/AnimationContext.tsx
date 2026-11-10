@@ -7,6 +7,7 @@ import {
 	useRef,
 	useState,
 } from 'react';
+import type { AnimationConfig } from '../types/animation.type.js';
 import { AnimationController } from './AnimationController.js';
 import { AnimationStore } from './AnimationStore.js';
 import { matchPartByTransform } from './parts.js';
@@ -15,7 +16,6 @@ import {
 	loadDeferredPresetSequence,
 	resolvePresetSequenceSync,
 } from './presetResolver.js';
-import type { AnimationConfig } from './types.js';
 import { startWaapiAnimation } from './waapiBackend.js';
 
 type AnimationContextValue = {
@@ -23,12 +23,12 @@ type AnimationContextValue = {
 	controller: AnimationController;
 };
 
-const AnimationContext = createContext<AnimationContextValue | null>(null);
-
 type AnimationProviderProps = {
 	animation?: AnimationConfig | null;
 	children: ReactNode;
 };
+
+const AnimationContext = createContext<AnimationContextValue | null>(null);
 
 function useResolvedAnimationConfig(animation: AnimationConfig | null) {
 	const presetName = animation && 'preset' in animation ? animation.preset : undefined;

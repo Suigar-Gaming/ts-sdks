@@ -1,6 +1,6 @@
 import type { ComponentType, SVGProps } from 'react';
 import { useAnimatedPartTransform } from '../../../animation/useAnimatedPartTransform.js';
-import type { CapySkin } from '../types.js';
+import type { CapySkin } from '../../../types/capy.type.js';
 import { BasicHeadPattern } from './patterns/BasicHeadPattern.js';
 import { CheetahHeadPattern } from './patterns/CheetahHeadPattern.js';
 import { DalmationHeadPattern } from './patterns/DalmationHeadPattern.js';

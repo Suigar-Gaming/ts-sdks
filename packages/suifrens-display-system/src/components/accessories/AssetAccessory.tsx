@@ -1,11 +1,14 @@
 import { AnimatedAccessory } from '../../animation/AnimatedAccessory.js';
-import type { AnimationPart } from '../../animation/parts.js';
 import {
 	ACCESSORY_ASSET_MANIFEST,
-	type AccessoryAssetVariant,
 	SPLIT_LIMB_ASSET_NAMES,
 } from '../../generated/accessoryAssetManifest.js';
-import type { AccessoryRendererProps, BodyAccessoryProps } from './AccessorySlot.js';
+import type {
+	AccessoryAssetVariant,
+	AccessoryRendererProps,
+	BodyAccessoryProps,
+} from '../../types/accessory.type.js';
+import type { AnimationPart } from '../../types/animation.type.js';
 import { getVipCrownAssetSrc, getVipCrownAssetViewport } from './crownAssets.js';
 import { SoccerTeamSwimTrunks } from './legs/SoccerTeamSwimTrunks.js';
 import { RUNNER_ACCESSORY_NAMES, RunnerAccessory } from './runnerKit.js';

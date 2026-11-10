@@ -1,10 +1,10 @@
 import { useId } from 'react';
+import type { SoccerTeamAccessoryProps } from '../../../types/soccer-kit.type.js';
 import {
 	contrastColor,
 	resolveSoccerTeamKit,
 	SOCCER_TEAM_DARK_STROKE,
 	SoccerKitMotif,
-	type SoccerTeamAccessoryProps,
 } from '../soccerTeamKit.js';
 
 const SHIRT_SLEEVE_PATH =

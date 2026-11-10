@@ -1,7 +1,11 @@
 import { AnimatedAccessory } from '../../animation/AnimatedAccessory.js';
-import type { AnimationPart } from '../../animation/parts.js';
-import type { AccessoryMetadata, SuiFrenSpecies } from '../../utils/accessoryUtils.js';
-import type { AccessoryRenderer, BodyAccessoryProps } from './AccessorySlot.js';
+import type {
+	AccessoryMetadata,
+	AccessoryRenderer,
+	BodyAccessoryProps,
+	SuiFrenSpecies,
+} from '../../types/accessory.type.js';
+import type { AnimationPart } from '../../types/animation.type.js';
 import { SuperHeroCape } from './back/SuperHeroCape.js';
 import { Wings } from './back/Wings.js';
 import { Apron } from './body/Apron.js';
@@ -65,7 +69,12 @@ import { SoccerTeamShirt } from './torso/SoccerTeamShirt.js';
 import { StripeShirt } from './torso/StripeShirt.js';
 import { Swimsuit } from './torso/Swimsuit.js';
 
-export type { BodyAccessoryProps } from './AccessorySlot.js';
+type AccessoryProps = BodyAccessoryProps & {
+	accessory: AccessoryMetadata;
+	species: SuiFrenSpecies;
+};
+
+export type { BodyAccessoryProps } from '../../types/accessory.type.js';
 
 const TYPE_FALLBACK: Partial<Record<string, AnimationPart>> = {
 	head: 'head',
@@ -100,11 +109,6 @@ function resolveAssetSrc(accessory: AccessoryMetadata) {
 		(accessory.category === 'crowns' ? getVipCrownAssetSrc(accessory.name) : undefined)
 	);
 }
-
-type AccessoryProps = BodyAccessoryProps & {
-	accessory: AccessoryMetadata;
-	species: SuiFrenSpecies;
-};
 
 export const ACCESSORY_RENDERERS: Record<string, AccessoryRenderer> = {
 	'runner singlet': (props) => <RunnerAccessory {...props} />,

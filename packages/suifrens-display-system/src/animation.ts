@@ -6,7 +6,9 @@ export {
 export { AnimatedAccessory } from './animation/AnimatedAccessory.js';
 export { useAnimatedPartTransform } from './animation/useAnimatedPartTransform.js';
 export { getPresetSequence } from './animation/presets.js';
-export type { AnimationPart } from './animation/parts.js';
+
+export type { AnimationPart } from './types/animation.type.js';
+
 export type {
 	AnimationConfig,
 	AnimationDirection,
@@ -17,4 +19,4 @@ export type {
 	PartPose,
 	PlaybackOptions,
 	PlayState,
-} from './animation/types.js';
+} from './types/animation.type.js';

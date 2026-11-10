@@ -1,4 +1,30 @@
-import type { AnimationPart } from './parts.js';
+export type AnimationRegistration = {
+	getBaseTransform: () => string | undefined;
+	setTransform: (value: string) => void;
+	pivotOverride?: { x: number; y: number };
+	lastTransform?: string;
+	element?: SVGGraphicsElement;
+};
+
+export type NormalizedPlayback = {
+	iterations: number;
+	alternate: boolean;
+	speed: number;
+};
+
+export type EasingFunction = (t: number) => number;
+
+export type Matrix = [number, number, number, number, number, number];
+
+export type AnimationPart =
+	| 'body'
+	| 'head'
+	| 'leftArm'
+	| 'rightArm'
+	| 'leftLeg'
+	| 'rightLeg'
+	| 'tail'
+	| 'fin';
 
 export type PartPose = {
 	rotate?: number;

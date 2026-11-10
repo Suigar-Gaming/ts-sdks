@@ -1,6 +1,7 @@
 import { expect, test } from 'vitest';
 import { shouldRenderMicrophoneArmInForeground } from '../src/components/foregroundLayering.js';
-import type { AccessoryMetadata } from '../src/utils/accessoryUtils.js';
+import type { AccessoryMetadata } from '../src/types/accessory.type.js';
+
 const cup: AccessoryMetadata = {
 	type: 'object',
 	name: 'sprint cup',

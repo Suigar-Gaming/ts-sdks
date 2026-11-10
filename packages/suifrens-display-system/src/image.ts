@@ -1,23 +1,24 @@
 export { SuiFrenImageAssets as SuiFrenImage } from './components/SuiFrenImageAssets.js';
-export type { SuiFrenImageAssetsProps as SuiFrenImageProps } from './components/SuiFrenImageAssets.js';
-export type { SuiFrenRenderSize } from './components/SuiFrenImage.js';
+
+export type { SuiFrenImageAssetsProps as SuiFrenImageProps } from './types/suifren.type.js';
+
+export type { SuiFrenRenderSize } from './types/suifren.type.js';
 
 export { BullsharkImage } from './components/bullshark-image/BullsharkImage.js';
-export type { BullsharkImageProps } from './components/bullshark-image/BullsharkImage.js';
+
+export type { BullsharkImageProps } from './types/bullshark.type.js';
 
 export { CapyImage } from './components/capy-image/CapyImage.js';
-export type { CapyImageProps } from './components/capy-image/CapyImage.js';
 
-export type { SuiFrenAttributes, SuiFrenType } from './components/types.js';
+export type { CapyImageProps } from './types/capy.type.js';
+
+export type { SuiFrenAttributes, SuiFrenType } from './types/suifren.type.js';
+
 export type {
 	BullsharkAttributes,
 	BullsharkExpression,
 	BullsharkFinStyle,
 	BullsharkSkin,
-} from './components/bullshark-image/types.js';
-export type {
-	CapyAttributes,
-	CapyEarShape,
-	CapyExpression,
-	CapySkin,
-} from './components/capy-image/types.js';
+} from './types/bullshark.type.js';
+
+export type { CapyAttributes, CapyEarShape, CapyExpression, CapySkin } from './types/capy.type.js';

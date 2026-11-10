@@ -1,75 +1,26 @@
-import type { BodyAccessoryProps } from './AccessorySlot.js';
+import type {
+	SoccerTeamCountryCode,
+	SoccerTeamKit,
+	SoccerTeamSide,
+} from '../../types/soccer-kit.type.js';
 
-export type SoccerTeamCountryCode =
-	| 'GLOBAL'
-	| 'AR'
-	| 'AT'
-	| 'AU'
-	| 'BA'
-	| 'BE'
-	| 'BR'
-	| 'CA'
-	| 'CD'
-	| 'CH'
-	| 'CI'
-	| 'CO'
-	| 'CV'
-	| 'CW'
-	| 'CZ'
-	| 'DE'
-	| 'DZ'
-	| 'EC'
-	| 'EG'
-	| 'ES'
-	| 'FR'
-	| 'GB'
-	| 'GH'
-	| 'HT'
-	| 'HR'
-	| 'IQ'
-	| 'IR'
-	| 'JP'
-	| 'JO'
-	| 'KR'
-	| 'MA'
-	| 'MX'
-	| 'NL'
-	| 'NO'
-	| 'NZ'
-	| 'PA'
-	| 'PY'
-	| 'PT'
-	| 'QA'
-	| 'SA'
-	| 'SCT'
-	| 'SE'
-	| 'SN'
-	| 'TN'
-	| 'TR'
-	| 'US'
-	| 'UY'
-	| 'UZ'
-	| 'ZA';
+type SoccerKitMotifProps = {
+	kit: SoccerTeamKit;
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+	clipId?: string;
+	strokeWidth?: number;
+	patchScale?: number;
+};
 
-export type SoccerTeamSide = 'home' | 'away';
-export type SoccerTeamPattern =
-	| 'vertical'
-	| 'horizontal'
-	| 'cross'
-	| 'diagonal'
-	| 'sash'
-	| 'quarters'
-	| 'hoops'
-	| 'canton'
-	| 'sun'
-	| 'chevron';
-
-export type SoccerTeamKit = {
-	code: string;
-	primary: string;
-	secondary: string;
-	accent: string;
-	pattern: SoccerTeamPattern;
+type SoccerKitPatternProps = {
+	kit: SoccerTeamKit;
+	x: number;
+	y: number;
+	width: number;
+	height: number;
 };
 
 const DARK_STROKE = '#050916';
@@ -397,25 +348,6 @@ export function contrastColor(value: string) {
 	return isLightHex(value) ? DARK_STROKE : '#ffffff';
 }
 
-type SoccerKitMotifProps = {
-	kit: SoccerTeamKit;
-	x: number;
-	y: number;
-	width: number;
-	height: number;
-	clipId?: string;
-	strokeWidth?: number;
-	patchScale?: number;
-};
-
-type SoccerKitPatternProps = {
-	kit: SoccerTeamKit;
-	x: number;
-	y: number;
-	width: number;
-	height: number;
-};
-
 export function SoccerKitPattern({ kit, x, y, width, height }: SoccerKitPatternProps) {
 	const third = width / 3;
 	const stripe = height / 3;
@@ -724,10 +656,5 @@ export function SoccerKitMotif({
 
 	return clipId ? <g clipPath={`url(#${clipId})`}>{motif}</g> : <>{motif}</>;
 }
-
-export type SoccerTeamAccessoryProps = BodyAccessoryProps & {
-	country?: string | SoccerTeamKit;
-	side?: SoccerTeamSide;
-};
 
 export { DARK_STROKE as SOCCER_TEAM_DARK_STROKE };

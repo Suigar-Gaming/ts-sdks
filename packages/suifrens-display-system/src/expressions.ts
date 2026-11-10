@@ -1,4 +1,5 @@
-export type { ExpressionMood } from './constants/expressions.js';
+export type { ExpressionMood } from './types/expression.type.js';
+
 export {
 	ALL_BULLSHARK_EXPRESSIONS,
 	ALL_CAPY_EXPRESSIONS,

@@ -1,5 +1,5 @@
+import type { AnimationSequence } from '../types/animation.type.js';
 import { getCorePresetSequence } from './corePresets.js';
-import type { AnimationSequence } from './types.js';
 
 const DEFERRED_PRESET_NAMES = new Set([
 	'run',

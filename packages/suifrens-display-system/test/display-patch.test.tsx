@@ -7,7 +7,7 @@ import { parseMatrix } from '../src/animation/matrix.js';
 import { GothBoots } from '../src/components/accessories/feet/GothBoots.js';
 import { SuiFrenImage } from '../src/components/SuiFrenImage.js';
 import { SuiFrenImageAssets } from '../src/components/SuiFrenImageAssets.js';
-import type { SuiFrenAttributes } from '../src/components/types.js';
+import type { SuiFrenAttributes } from '../src/types/suifren.type.js';
 import { createTestRoot } from './helpers/react-dom.js';
 
 vi.mock('../src/animation/waapiBackend.js', () => ({

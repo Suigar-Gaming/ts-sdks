@@ -1,10 +1,4 @@
-import type { SVGProps } from 'react';
-
-export type WildRightEarProps = {
-	earShape: 'wild';
-	outerEarProps?: SVGProps<SVGPathElement>;
-	innerEarProps?: SVGProps<SVGPathElement>;
-};
+import type { WildRightEarProps } from '../../../../types/capy.type.js';
 
 export function WildRightEar({ outerEarProps, innerEarProps }: WildRightEarProps) {
 	return (

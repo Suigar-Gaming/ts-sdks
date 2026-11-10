@@ -1,4 +1,13 @@
-import type { colors } from '../../constants/colors.js';
+import type { colors } from '../constants/colors.js';
+import type { AccessoryMetadata } from './accessory.type.js';
+
+export type BullsharkImageProps = {
+	attributes: BullsharkAttributes;
+	accessoriesByType?: Record<string, AccessoryMetadata>;
+	detail?: 'full' | 'head';
+	incognito?: boolean;
+	renderMicrophoneArmInForeground?: boolean;
+};
 
 export type BullsharkSkin =
 	| 'basic'

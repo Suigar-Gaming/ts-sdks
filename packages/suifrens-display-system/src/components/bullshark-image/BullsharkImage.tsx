@@ -1,5 +1,5 @@
 import { AnimatedAccessory } from '../../animation/AnimatedAccessory.js';
-import type { AccessoryMetadata } from '../../utils/accessoryUtils.js';
+import type { BullsharkImageProps } from '../../types/bullshark.type.js';
 import { AccessorySlot } from '../accessories/AccessorySlot.js';
 import { LeftArm } from './arms/left/LeftArm.js';
 import { LeftArmPattern } from './arms/left/LeftArmPattern.js';
@@ -19,15 +19,6 @@ import { RightLegPattern } from './legs/right/RightLegPattern.js';
 import { Tail } from './tail/Tail.js';
 import { TailPattern } from './tail/TailPattern.js';
 import { getThemeFromSkin } from './theme.js';
-import type { BullsharkAttributes } from './types.js';
-
-export type BullsharkImageProps = {
-	attributes: BullsharkAttributes;
-	accessoriesByType?: Record<string, AccessoryMetadata>;
-	detail?: 'full' | 'head';
-	incognito?: boolean;
-	renderMicrophoneArmInForeground?: boolean;
-};
 
 export function BullsharkImage({
 	attributes,

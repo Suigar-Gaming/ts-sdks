@@ -1,6 +1,5 @@
+import type { Matrix } from '../types/animation.type.js';
 import { formatNumber } from './parts.js';
-
-export type Matrix = [number, number, number, number, number, number];
 
 export const IDENTITY_MATRIX: Matrix = [1, 0, 0, 1, 0, 0];
 

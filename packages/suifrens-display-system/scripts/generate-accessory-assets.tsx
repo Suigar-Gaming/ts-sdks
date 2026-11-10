@@ -1,9 +1,8 @@
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { renderToStaticMarkup } from 'react-dom/server';
-import type { AccessoryRendererProps } from '../src/components/accessories/AccessorySlot.js';
 import { ACCESSORY_RENDERERS } from '../src/components/accessories/inlineRegistry.js';
-import type { AccessoryMetadata } from '../src/utils/accessoryUtils.js';
+import type { AccessoryMetadata, AccessoryRendererProps } from '../src/types/accessory.type.js';
 
 const OUTPUT_DIR = 'src/generated/accessory-assets';
 const MANIFEST_PATH = 'src/generated/accessoryAssetManifest.ts';
@@ -186,7 +185,6 @@ for (const [name, renderer] of Object.entries(ACCESSORY_RENDERERS).sort(([left],
 
 const manifest = `${imports.join('\n')}
 
-export type AccessoryAssetVariant = "default" | "body" | "left" | "right" | "leftLeg" | "rightLeg";
 
 export const SPLIT_LIMB_ASSET_NAMES = new Set<string>(${JSON.stringify(
 	splitLimbAssetNames,

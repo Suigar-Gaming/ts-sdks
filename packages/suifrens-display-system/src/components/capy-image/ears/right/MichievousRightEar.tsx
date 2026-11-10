@@ -1,9 +1,5 @@
 import type { SVGProps } from 'react';
 
-export type MischievousRightEarProps = {
-	earShape: 'mischievous';
-} & SVGProps<SVGPathElement>;
-
 export function MischievousRightEar(props: SVGProps<SVGPathElement>) {
 	return (
 		<g transform="matrix(2.9166107177734375, 0, 0, 2.9166107177734375, 1097.75,348.85)">

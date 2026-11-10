@@ -1,7 +1,5 @@
-import type { BullsharkExpression } from '../components/bullshark-image/types.js';
-import type { CapyExpression } from '../components/capy-image/types.js';
-
-export type ExpressionMood = 'all' | 'positive' | 'negative';
+import type { BullsharkExpression } from '../types/bullshark.type.js';
+import type { CapyExpression } from '../types/capy.type.js';
 
 export const POSITIVE_CAPY_EXPRESSIONS = [
 	'bigSmile',

@@ -1,5 +1,13 @@
-import type { AnimationPart } from './parts.js';
-import type { AnimationKeyframe, AnimationSequence } from './types.js';
+import type {
+	AnimationKeyframe,
+	AnimationPart,
+	AnimationSequence,
+} from '../types/animation.type.js';
+
+type SequenceWithHold = {
+	sequence: AnimationSequence;
+	hold?: number;
+};
 
 const WALK_DURATION = 1200;
 
@@ -1699,11 +1707,6 @@ const talkMicrophoneSequence: AnimationSequence = {
 			],
 		},
 	],
-};
-
-type SequenceWithHold = {
-	sequence: AnimationSequence;
-	hold?: number;
 };
 
 function combineSequences(name: string, items: Array<SequenceWithHold>): AnimationSequence {

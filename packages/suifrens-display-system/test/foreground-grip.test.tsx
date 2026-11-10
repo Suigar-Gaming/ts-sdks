@@ -7,7 +7,7 @@ import { parseMatrix } from '../src/animation/matrix.js';
 import { AccessoryRendererProvider } from '../src/components/accessories/AccessorySlot.js';
 import { BullsharkImage } from '../src/components/bullshark-image/BullsharkImage.js';
 import { CapyImage } from '../src/components/capy-image/CapyImage.js';
-import type { AccessoryMetadata } from '../src/utils/accessoryUtils.js';
+import type { AccessoryMetadata } from '../src/types/accessory.type.js';
 import { createTestRoot } from './helpers/react-dom.js';
 const context = vi.hoisted(() => ({ store: null as AnimationStore | null }));
 vi.mock('../src/animation/AnimationContext.js', () => ({ useAnimationStore: () => context.store }));

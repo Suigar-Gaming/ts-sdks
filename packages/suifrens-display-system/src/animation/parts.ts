@@ -1,12 +1,4 @@
-export type AnimationPart =
-	| 'body'
-	| 'head'
-	| 'leftArm'
-	| 'rightArm'
-	| 'leftLeg'
-	| 'rightLeg'
-	| 'tail'
-	| 'fin';
+import type { AnimationPart } from '../types/animation.type.js';
 
 type PartDefinition = {
 	pivot: { x: number; y: number };

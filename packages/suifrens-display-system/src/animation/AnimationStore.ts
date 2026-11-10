@@ -1,3 +1,4 @@
+import type { AnimationPart, AnimationRegistration, PartPose } from '../types/animation.type.js';
 import {
 	IDENTITY_MATRIX,
 	matrixToString,
@@ -7,16 +8,7 @@ import {
 	scaleMatrix,
 	translateMatrix,
 } from './matrix.js';
-import { type AnimationPart, getPartDefinition } from './parts.js';
-import type { PartPose } from './types.js';
-
-export type AnimationRegistration = {
-	getBaseTransform: () => string | undefined;
-	setTransform: (value: string) => void;
-	pivotOverride?: { x: number; y: number };
-	lastTransform?: string;
-	element?: SVGGraphicsElement;
-};
+import { getPartDefinition } from './parts.js';
 
 type ElementRegistration = {
 	references: number;

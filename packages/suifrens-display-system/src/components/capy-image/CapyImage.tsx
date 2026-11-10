@@ -1,5 +1,5 @@
 import { AnimatedAccessory } from '../../animation/AnimatedAccessory.js';
-import type { AccessoryMetadata } from '../../utils/accessoryUtils.js';
+import type { CapyImageProps } from '../../types/capy.type.js';
 import { AccessorySlot } from '../accessories/AccessorySlot.js';
 import { LeftArm } from './arms/left/LeftArm.js';
 import { LeftArmPattern } from './arms/left/LeftArmPattern.js';
@@ -19,16 +19,6 @@ import { RightLeg } from './legs/right/RightLeg.js';
 import { RightLegPattern } from './legs/right/RightLegPattern.js';
 import { Nostrils } from './Nostrils.js';
 import { getThemeFromSkin } from './theme.js';
-import type { CapyAttributes } from './types.js';
-
-export type CapyImageProps = {
-	attributes: CapyAttributes;
-	gesture?: 'thumbsUp';
-	accessoriesByType?: Record<string, AccessoryMetadata>;
-	detail?: 'full' | 'head';
-	incognito?: boolean;
-	renderMicrophoneArmInForeground?: boolean;
-};
 
 export function CapyImage({
 	attributes,

@@ -1,6 +1,4 @@
-import type { EasingName } from './types.js';
-
-export type EasingFunction = (t: number) => number;
+import type { EasingFunction, EasingName } from '../types/animation.type.js';
 
 const EASINGS: Record<EasingName, EasingFunction> = {
 	linear: (t) => t,

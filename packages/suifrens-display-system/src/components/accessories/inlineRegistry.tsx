@@ -1,4 +1,4 @@
-import type { AccessoryRenderer } from './AccessorySlot.js';
+import type { AccessoryRenderer } from '../../types/accessory.type.js';
 import { SuperHeroCape } from './back/SuperHeroCape.js';
 import { Wings } from './back/Wings.js';
 import { Apron } from './body/Apron.js';

@@ -63,8 +63,6 @@ import wizardHat from './accessory-assets/wizard-hat.svg';
 import wizardRobe from './accessory-assets/wizard-robe.svg';
 import xrGoggles from './accessory-assets/xr-goggles.svg';
 
-export type AccessoryAssetVariant = 'default' | 'body' | 'left' | 'right' | 'leftLeg' | 'rightLeg';
-
 export const SPLIT_LIMB_ASSET_NAMES = new Set<string>([
 	'bell bottoms',
 	'blue jeans',

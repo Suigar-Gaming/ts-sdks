@@ -1,5 +1,5 @@
 import { buildRunnerAccessories } from '../components/accessories/runnerKit.js';
-import type { AccessoryMetadata } from '../utils/accessoryUtils.js';
+import type { AccessoryMetadata } from '../types/accessory.type.js';
 import { vipCrownAccessories } from './vip-crowns.js';
 
 export const accessories: Array<AccessoryMetadata> = [

@@ -1,25 +1,9 @@
-import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from 'react';
-import type { AnimationConfig } from '../../animation/types.js';
+import { useEffect, useRef, useState } from 'react';
+import type { SuiFrenBattleSpriteProps } from '../../types/battle.type.js';
 import { SuiFrenImage } from '../SuiFrenImage.js';
-import type { SuiFrenAttributes } from '../types.js';
-import { MinecraftHealthBar, type MinecraftHealthBarProps } from './MinecraftHealthBar.js';
+import { MinecraftHealthBar } from './MinecraftHealthBar.js';
 
 const HIT_FLASH_FILTER_ID = 'hit-flash-red';
-
-export type SuiFrenBattleSpriteProps = {
-	attributes: SuiFrenAttributes;
-	animation?: AnimationConfig | null;
-	health: number;
-	maxHealth: number;
-	label?: ReactNode;
-	facing?: 'left' | 'right';
-	size?: number;
-	shadow?: boolean;
-	healthBarProps?: Omit<MinecraftHealthBarProps, 'health' | 'maxHealth' | 'label'>;
-	imageStyle?: CSSProperties;
-	hitFlashTrigger?: string | number | null;
-	style?: CSSProperties;
-};
 
 export function SuiFrenBattleSprite({
 	attributes,

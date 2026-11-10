@@ -1,12 +1,12 @@
+import type {
+	AnimationPart,
+	AnimationSequence,
+	AnimationTrack,
+	NormalizedPlayback,
+	PartPose,
+	PlaybackOptions,
+} from '../types/animation.type.js';
 import { getEasing } from './easing.js';
-import type { AnimationPart } from './parts.js';
-import type { AnimationSequence, AnimationTrack, PartPose, PlaybackOptions } from './types.js';
-
-export type NormalizedPlayback = {
-	iterations: number;
-	alternate: boolean;
-	speed: number;
-};
 
 const EPSILON = 0.0001;
 
