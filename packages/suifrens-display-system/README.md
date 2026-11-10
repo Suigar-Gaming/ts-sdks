@@ -138,7 +138,7 @@ const hats = accessories.filter((accessory) => accessory.name === 'baseball cap'
 <SuiFrenImage attributes={attributes} accessories={hats} renderSize={240} />;
 ```
 
-The `/accessories` entry point also exports `vipCrownAccessories`, `VIP_CROWN_ACCESSORY_NAMES` and `getAccessoriesByType` for slot lookup.
+The `/accessories` entry point also exports `vipCrownAccessories`, `VIP_CROWN_ACCESSORY_NAMES` and `getAccessoriesByType` for slot lookup. VIP crown names use numbered ranks such as `bronze-1` and `platinum-3`; the final rank is `legend`. A missing slot returns `undefined`. Custom accessories need only `name`, `type`, `category` and `renderOptions`. Catalogue entries also include price, quantity, description and collection.
 
 For ordinary accessories, `renderOptions.assetSrc` overrides the catalogue artwork in both renderers. The inline renderer references that source directly, so use a self-contained SVG data URL when exporting standalone markup.
 

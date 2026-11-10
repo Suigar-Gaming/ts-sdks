@@ -233,3 +233,7 @@ const accessories = buildRunnerAccessories({ color: '#ec7da6', number: 3 });
 ## Verify your application
 
 After updating imports and props, run your application's typecheck and build. Check both species in each renderer you use: static images, animation playback, custom accessories and exported SVGs. For duel scripts, also check damage timing and victory iteration counts.
+
+## VIP crown names
+
+Update stored crown names and catalogue lookups to use numeric tiers: for example, `bronze-i` becomes `bronze-1` and `platinium-ii` becomes `platinum-2`. Bronze, silver, gold, platinum and diamond have tiers 1–3. Master has tiers 1–2. The final crown is `legend`.
