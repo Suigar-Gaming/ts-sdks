@@ -1,5 +1,4 @@
 {
 	"*.{ts,tsx,mts,cts,js,jsx,mjs,cjs}": ["oxlint --fix", "oxfmt --no-error-on-unmatched-pattern"],
-	".changeset/*.md": "oxfmt --no-error-on-unmatched-pattern",
 	"*.{json,md,yml,yaml}": "oxfmt --no-error-on-unmatched-pattern"
 }
