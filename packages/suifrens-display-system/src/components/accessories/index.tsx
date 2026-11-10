@@ -50,9 +50,15 @@ export function InlineAccessory(props: AccessoryRendererProps) {
 	const fallbackPart =
 		props.accessory.renderOptions.animationPart ?? resolveFallbackPart(props.accessory);
 
-	if (isKitAccessory(name)) return <KitArtwork {...props} fallbackPart={fallbackPart} />;
-	if (source) return <SvgArtwork source={source} fallbackPart={fallbackPart} />;
-	if (!assetSrc) return null;
+	if (isKitAccessory(name)) {
+		return <KitArtwork {...props} fallbackPart={fallbackPart} />;
+	}
+	if (source) {
+		return <SvgArtwork source={source} fallbackPart={fallbackPart} />;
+	}
+	if (!assetSrc) {
+		return null;
+	}
 	return (
 		<AnimatedAccessory fallbackPart={fallbackPart}>
 			<SvgAccessory

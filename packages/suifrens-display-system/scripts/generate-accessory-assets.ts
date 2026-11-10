@@ -106,7 +106,9 @@ async function readLayers(source: string, imports: Array<string>, entries: Array
 
 for (const source of (await readdir(sourceDir)).sort()) {
 	const dir = source.replace(/\.svg$/, '');
-	if (dir === 'crowns') continue;
+	if (dir === 'crowns') {
+		continue;
+	}
 	if (dir === 'patterns') {
 		for (const pattern of (await readdir(join(sourceDir, dir))).sort()) {
 			await readLayers('patterns/' + pattern, kitImports, kitEntries);
@@ -121,7 +123,9 @@ for (const source of (await readdir(sourceDir)).sort()) {
 	const layers = await readLayers(source, inlineImports, inlineEntries);
 	const symbols: Array<string> = [];
 	const baseLayer = layers['default'];
-	if (!baseLayer) throw new Error(`Missing default SVG layer for ${name}`);
+	if (!baseLayer) {
+		throw new Error(`Missing default SVG layer for ${name}`);
+	}
 	const baseContent = extractSvgContent(minifySvg(baseLayer));
 	const bodyGroup = extractGroupByRole(baseContent, 'body');
 	const rightLegGroup = extractGroupByRole(baseContent, 'backleg');
