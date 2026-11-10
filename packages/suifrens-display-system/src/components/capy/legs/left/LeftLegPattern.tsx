@@ -4,7 +4,7 @@
 import type { ComponentType, SVGProps } from 'react';
 import { useAnimatedPartTransform } from '../../../../hooks/use-animated-part-transform.js';
 import type { SuiFrenSkin } from '../../../../types/appearance.type.js';
-import { DalmationLeftLegPattern } from './patterns/DalmationLeftLegPattern.js';
+import { DalmationLeftLegPattern } from '../../../shared/legs/left/patterns/DalmationLeftLegPattern.js';
 import { SnakeLeftLegPattern } from './patterns/SnakeLeftLegPattern.js';
 
 type LeftLegPatternProps = {

@@ -4,14 +4,14 @@
 import type { ComponentType, SVGProps } from 'react';
 import { useAnimatedPartTransform } from '../../../hooks/use-animated-part-transform.js';
 import type { SuiFrenSkin } from '../../../types/appearance.type.js';
+import { CheetahBodyPattern } from '../../shared/body/patterns/CheetahBodyPattern.js';
+import { DalmationBodyPattern } from '../../shared/body/patterns/DalmationBodyPattern.js';
+import { LizardBodyPattern } from '../../shared/body/patterns/LizardBodyPattern.js';
+import { PandaBodyPattern } from '../../shared/body/patterns/PandaBodyPattern.js';
+import { SnakeBodyPattern } from '../../shared/body/patterns/SnakeBodyPattern.js';
+import { StripesBodyPattern } from '../../shared/body/patterns/StripesBodyPattern.js';
 import { BasicBodyPattern } from './patterns/BasicBodyPattern.js';
-import { CheetahBodyPattern } from './patterns/CheetahBodyPattern.js';
-import { DalmationBodyPattern } from './patterns/DalmationBodyPattern.js';
 import { FoxBodyPattern } from './patterns/FoxBodyPattern.js';
-import { LizardBodyPattern } from './patterns/LizardBodyPattern.js';
-import { PandaBodyPattern } from './patterns/PandaBodyPattern.js';
-import { SnakeBodyPattern } from './patterns/SnakeBodyPattern.js';
-import { StripesBodyPattern } from './patterns/StripesBodyPattern.js';
 
 type BodyPatternProps = {
 	skin: SuiFrenSkin;

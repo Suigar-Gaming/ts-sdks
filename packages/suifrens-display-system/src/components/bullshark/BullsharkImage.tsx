@@ -6,6 +6,7 @@ import { getAccessoryLayers } from '../../helpers/accessory-layers.js';
 import { getThemeFromSkin } from '../../helpers/bullshark-theme.js';
 import type { BullsharkImageProps } from '../../types/bullshark.type.js';
 import { AccessorySlot } from '../accessories/AccessorySlot.js';
+import { ThumbsUpArm } from '../shared/arms/left/ThumbsUpArm.js';
 import { LeftArm } from './arms/left/LeftArm.js';
 import { LeftArmPattern } from './arms/left/LeftArmPattern.js';
 import { RightArm } from './arms/right/RightArm.js';
@@ -44,8 +45,29 @@ function BullsharkHead({
 	);
 }
 
+function BullsharkFin({
+	attributes,
+	accessoriesByType = {},
+	incognito = false,
+	colorTheme,
+}: Pick<BullsharkImageProps, 'attributes' | 'accessoriesByType' | 'incognito'> & {
+	colorTheme: ReturnType<typeof getThemeFromSkin>;
+}) {
+	const headAccessory = accessoriesByType['head'];
+	if (headAccessory && !headAccessory.renderOptions.showFin) {
+		return null;
+	}
+	return (
+		<>
+			<Fin fill={colorTheme.fin} />
+			{!incognito && <FinPattern skin={attributes.skin} fill={colorTheme.patterns} />}
+		</>
+	);
+}
+
 export function BullsharkImage({
 	attributes,
+	gesture,
 	accessoriesByType = {},
 	detail = 'full',
 	incognito = false,
@@ -54,8 +76,8 @@ export function BullsharkImage({
 	const { mainColor, secondaryColor, skin } = attributes;
 	const colorTheme = getThemeFromSkin(skin, `#${mainColor}`, `#${secondaryColor}`);
 	const layers = getAccessoryLayers(accessoriesByType);
-	const headAccessory = accessoriesByType['head'];
-	const showFin = !headAccessory || headAccessory.renderOptions.showFin;
+	// Held objects retain their native grip and take precedence over a free-hand gesture.
+	const thumbsUp = gesture === 'thumbs_up' && !accessoriesByType['object'];
 
 	const head = (
 		<BullsharkHead
@@ -65,11 +87,13 @@ export function BullsharkImage({
 			colorTheme={colorTheme}
 		/>
 	);
-	const fin = showFin && (
-		<>
-			<Fin fill={colorTheme.fin} />
-			{!incognito && <FinPattern skin={skin} fill={colorTheme.patterns} />}
-		</>
+	const fin = (
+		<BullsharkFin
+			attributes={attributes}
+			accessoriesByType={accessoriesByType}
+			incognito={incognito}
+			colorTheme={colorTheme}
+		/>
 	);
 	if (detail === 'head') {
 		return (
@@ -115,10 +139,11 @@ export function BullsharkImage({
 			{!renderMicrophoneArmInForeground && (
 				<AccessorySlot accessory={accessoriesByType['object']} species="bullshark" />
 			)}
-			{!renderMicrophoneArmInForeground && leftArm}
+			{!renderMicrophoneArmInForeground && !thumbsUp && leftArm}
 			<AccessorySlot accessory={accessoriesByType['torso']} species="bullshark" layer="right" />
 			<AccessorySlot accessory={accessoriesByType['body']} species="bullshark" layer="right" />
 			{head}
+			{thumbsUp && <ThumbsUpArm armColor={colorTheme.hands} />}
 			{renderMicrophoneArmInForeground && (
 				<>
 					<AccessorySlot accessory={accessoriesByType['object']} species="bullshark" />

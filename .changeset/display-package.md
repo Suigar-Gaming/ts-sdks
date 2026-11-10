@@ -4,7 +4,7 @@
 
 Distribute the React renderers, TypeScript declarations and external SVG assets on npm. Replace `/image-assets` or `/image` with the package root for external SVG accessories and `/vip-crowns` with `/accessories`. The root now exports the three image components only. For standalone SVG markup use `SuiFrenImageInline` from `/image-inline`. Import all public types from `/types`. Import battle components and hooks from `/battle`, expression lists from `/expressions`, outfit builders and team kits from `/kits`, and animation APIs from `/animation`.
 
-Replace `SuiFrenType` with `SuiFrenSpecies` from `@suigar/suifrens-display-system/types` and use the lowercase values `'capy'` and `'bullshark'`. Rename `capyGesture` to `gesture` on the image renderers and `thumbsUp` to `thumbs_up`. Both species accept the shared `SuiFrenGesture` type. The thumbs-up pose is currently drawn for capys.
+Replace `SuiFrenType` with `SuiFrenSpecies` from `@suigar/suifrens-display-system/types` and use the lowercase values `'capy'` and `'bullshark'`. Rename `capyGesture` to `gesture` on the image renderers and `thumbsUp` to `thumbs_up`. Both species accept the shared `SuiFrenGesture` type. The thumbs-up pose is drawn for both species.
 
 Configure image animations through the single `animation` prop. Move the former top-level animation props into this object, for example `animation={{ preset: 'idle', playState: 'idle' }}`.
 

@@ -4,14 +4,14 @@
 import type { ComponentType, SVGProps } from 'react';
 import { useAnimatedPartTransform } from '../../../hooks/use-animated-part-transform.js';
 import type { SuiFrenSkin } from '../../../types/appearance.type.js';
+import { DalmationHeadPattern } from '../../shared/head/patterns/DalmationHeadPattern.js';
+import { LizardHeadPattern } from '../../shared/head/patterns/LizardHeadPattern.js';
+import { PandaHeadPattern } from '../../shared/head/patterns/PandaHeadPattern.js';
+import { SnakeHeadPattern } from '../../shared/head/patterns/SnakeHeadPattern.js';
+import { StripesHeadPattern } from '../../shared/head/patterns/StripesHeadPattern.js';
 import { BasicHeadPattern } from './patterns/BasicHeadPattern.js';
 import { CheetahHeadPattern } from './patterns/CheetahHeadPattern.js';
-import { DalmationHeadPattern } from './patterns/DalmationHeadPattern.js';
 import { FoxHeadPattern } from './patterns/FoxHeadPattern.js';
-import { LizardHeadPattern } from './patterns/LizardHeadPattern.js';
-import { PandaHeadPattern } from './patterns/PandaHeadPattern.js';
-import { SnakeHeadPattern } from './patterns/SnakeHeadPattern.js';
-import { StripesHeadPattern } from './patterns/StripesHeadPattern.js';
 
 type HeadPatternProps = {
 	skin: SuiFrenSkin;

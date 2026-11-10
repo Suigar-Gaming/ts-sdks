@@ -63,20 +63,10 @@ describe.each([
 		expect(gesture).not.toContain('<clipPath');
 		expect(gesture.match(/stroke="#000"/g)).toHaveLength(1);
 	});
-	test('does not change a head portrait or bullshark', () => {
+	test('does not change a head portrait', () => {
 		expect(
 			renderToStaticMarkup(<Image attributes={capy} detail="head" gesture="thumbs_up" />),
 		).toBe(renderToStaticMarkup(<Image attributes={capy} detail="head" />));
-		const shark = {
-			mainColor: 'A87C4C',
-			secondaryColor: 'D5CBB1',
-			skin: 'basic',
-			expression: 'happy',
-			finStyle: 'classic',
-		} as const;
-		expect(renderToStaticMarkup(<Image attributes={shark} gesture="thumbs_up" />)).toBe(
-			renderToStaticMarkup(<Image attributes={shark} />),
-		);
 	});
 	test('preserves the grip when holding an object', () => {
 		const object = accessories.find((accessory) => accessory.name === 'microphone')!;

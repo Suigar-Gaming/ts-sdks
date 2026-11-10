@@ -13,7 +13,7 @@ import {
 
 type ThumbsUpArmProps = {
 	armColor: string;
-	handColor: string;
+	handColor?: string;
 };
 
 const SHOULDER = getPartDefinition('leftArm').pivot;
@@ -41,7 +41,7 @@ const HAND = `M 1.6 108.7 C 24.4 106.5 47 109 70.8 110
  C 52 162.5 44.1 166 34.8 166.3 C 25.5 166.6 17.4 163.6 10.6 157.2
  C 3.9 150.9 0.4 143.1 0.1 133.8 Z`;
 
-export function ThumbsUpArm({ armColor, handColor }: ThumbsUpArmProps) {
+export function ThumbsUpArm({ armColor, handColor = armColor }: ThumbsUpArmProps) {
 	return (
 		<AnimatedAccessory fallbackPart="leftArm">
 			<g data-suifren-gesture="thumbs-up">

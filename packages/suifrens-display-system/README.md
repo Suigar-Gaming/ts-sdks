@@ -68,6 +68,10 @@ For ordinary accessories, an explicit `renderOptions.assetSrc` overrides catalog
 
 Accessory outfit settings now live under `renderOptions.kit`. Replace `runnerKit` with `kit: { type: 'runner', color, number, mirrorBib }`. For football, use `kit: { type: 'soccer', country: 'FR', side: 'away' }` or supply a custom `team` in place of `country`. The public `AccessoryKit` type is available from `/types`.
 
+### Shared character artwork
+
+SVG pattern components used by both species live in `src/components/shared/`, grouped by body part, alongside shared gestures. Species-specific shapes and pattern selection remain in `src/components/capy/` and `src/components/bullshark/`.
+
 ### Editing accessory artwork
 
 Edit the SVG files in `src/accessories/artwork/`. Single-layer accessories use their own filename, such as `baseball-cap.svg`. Accessories with multiple layers have a folder where `default.svg` supplies the base drawing and optional `body.svg`, `left.svg` and `right.svg` supply the layers drawn separately during animation. Crowns have their own viewport. Running and football kits use SVG templates for their colors, lettering and patterns.
@@ -82,7 +86,7 @@ Run `pnpm run codegen` from the package directory after editing artwork to regen
 
 Use `gesture="thumbs_up"` on either image renderer or directly on `CapyImage` and `BullsharkImage`. For existing calls, rename `capyGesture` to `gesture` and the value `thumbsUp` to `thumbs_up`. The shared `SuiFrenGesture` type is available from `/types`.
 
-The full-body capy raises its near arm when its hand is free. A held object keeps its grip. The bullshark accepts the same prop, with artwork currently available only for the capy.
+Full-body capys and bullsharks raise their near arm when the hand is free. A held object keeps its native grip and takes precedence over the gesture. Head portraits are unchanged.
 
 ### Running the examples
 
