@@ -1,7 +1,9 @@
 import { earGeneToEarShape } from '@suigar/suifrens-display-system/attributes';
-import type { BullsharkAttributes } from '@suigar/suifrens-display-system/types';
-import type { CapyAttributes } from '@suigar/suifrens-display-system/types';
-import { type SuiFrenAttributes } from '@suigar/suifrens-display-system/types';
+import type {
+	BullsharkAttributes,
+	CapyAttributes,
+	SuiFrenAttributes,
+} from '@suigar/suifrens-display-system/types';
 
 export function parseSuiFrenAttributes(
 	suiFrenType: 'CAPY' | 'BULLSHARK',

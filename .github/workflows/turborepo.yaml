@@ -9,6 +9,10 @@ on:
       - '.github/actions/setup-pnpm/action.yaml'
       - '.github/workflows/turborepo.yaml'
       - '.node-version'
+      - '.lintstagedrc.json'
+      - '**/*.[jt]s'
+      - '**/*.[jt]sx'
+      - '**/*.[cm][jt]s'
       - '.oxlintrc.json'
       - '.oxfmtrc.json'
       - 'examples/**'
@@ -24,6 +28,10 @@ on:
       - '.github/actions/setup-pnpm/action.yaml'
       - '.github/workflows/turborepo.yaml'
       - '.node-version'
+      - '.lintstagedrc.json'
+      - '**/*.[jt]s'
+      - '**/*.[jt]sx'
+      - '**/*.[cm][jt]s'
       - '.oxlintrc.json'
       - '.oxfmtrc.json'
       - 'examples/**'
@@ -78,13 +86,8 @@ jobs:
         shell: bash
         run: pnpm exec manypkg check
 
-      - name: Lint packages
-        shell: bash
-        run: pnpm turbo run lint --filter='./packages/*'
-
-      - name: Lint Playground
-        shell: bash
-        run: pnpm turbo run lint --filter='./playground'
+      - name: Lint workspace sources and tests
+        run: pnpm run lint
 
       - name: Run packages tests
         shell: bash

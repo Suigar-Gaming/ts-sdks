@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { accessories } from '@suigar/suifrens-display-system/accessories';
 import {
+	accessories,
 	SOCCER_TEAM_KITS,
 	type SoccerTeamCountryCode,
 } from '@suigar/suifrens-display-system/accessories';

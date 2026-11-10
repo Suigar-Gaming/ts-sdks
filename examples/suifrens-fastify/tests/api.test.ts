@@ -1,4 +1,4 @@
-import { type SuiClientTypes, ObjectError } from '@mysten/sui/client';
+import { ObjectError, type SuiClientTypes } from '@mysten/sui/client';
 import { beforeEach, expect, test, vi } from 'vitest';
 import { accessories } from '@suigar/suifrens-display-system/accessories';
 import { buildServer } from '../src/api/app.js';
