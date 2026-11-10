@@ -8,7 +8,7 @@ import { resolveEmbeddedSvgSymbolSource } from '../../../src/utils/svg-symbol-da
 
 const SPRITE_MARKUP = [
 	'<svg xmlns="http://www.w3.org/2000/svg">',
-	'<defs><linearGradient id="paint"><stop offset="0" stop-color="red" /></linearGradient></defs>',
+	'<defs><linearGradient id="paint"><stop offset="0" stop-color="#FF0000" /></linearGradient></defs>',
 	'<symbol id="leftLeg" viewBox="0 0 3000 3000"><path data-symbol="left" fill="url(#paint)" /></symbol>',
 	'<symbol id="rightLeg" viewBox="0 0 3000 3000"><path data-symbol="right" /></symbol>',
 	'</svg>',

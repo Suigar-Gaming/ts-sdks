@@ -155,9 +155,7 @@ export function MinecraftHealthBar({
 			}}
 		>
 			{label ? (
-				<span style={{ fontWeight: 700, textShadow: '0 1px 0 rgba(255,255,255,0.6)' }}>
-					{label}
-				</span>
+				<span style={{ fontWeight: 700, textShadow: '0 1px 0 #FFFFFF99' }}>{label}</span>
 			) : null}
 			{resolvedHearts > 0 ? (
 				<div style={{ display: 'flex', gap: 2, alignItems: 'center' }}>
