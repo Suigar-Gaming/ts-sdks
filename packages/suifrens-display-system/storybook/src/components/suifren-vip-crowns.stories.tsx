@@ -8,6 +8,11 @@ import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline
 
 const LOOP = { iterations: 'infinite' as const };
 
+const RENDERERS = [
+	{ label: 'Inline', Renderer: SuiFrenImageInline },
+	{ label: 'Assets', Renderer: SuiFrenImage },
+] as const;
+
 const STATIC_VARIANTS = [
 	{
 		label: 'Capy · Soft',
@@ -98,8 +103,8 @@ export const ClippingCheck: Story = {
 			{vipCrownAccessories.map((accessory) => (
 				<section key={accessory.name}>
 					<h2>{accessory.name}</h2>
-					{[SuiFrenImageInline, SuiFrenImage].map((Renderer, index) => (
-						<div key={index} style={{ display: 'flex', gap: 12, alignItems: 'end' }}>
+					{RENDERERS.map(({ label, Renderer }) => (
+						<div key={label} style={{ display: 'flex', gap: 12, alignItems: 'end' }}>
 							{[STATIC_VARIANTS[0], STATIC_VARIANTS[2]].map((variant) => (
 								<div key={variant.label}>
 									<div
@@ -135,7 +140,7 @@ export const ClippingCheck: Story = {
 										/>
 									</div>
 									<small>
-										{index === 0 ? 'Inline' : 'Assets'} · {variant.label}
+										{label} · {variant.label}
 									</small>
 								</div>
 							))}
