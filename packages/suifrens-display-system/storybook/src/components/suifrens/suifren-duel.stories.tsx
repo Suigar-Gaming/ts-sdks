@@ -1430,7 +1430,9 @@ export const Ring: Story = {
 						canStart={Boolean(ringSize) && (session !== 'running' || Boolean(ringWinnerId))}
 						canStop={session === 'running' && !ringWinnerId}
 						onStart={() => {
-							if (session === 'stopped' || ringWinnerId) resetRing();
+							if (session === 'stopped' || ringWinnerId) {
+								resetRing();
+							}
 							setSession('running');
 						}}
 						onRestart={() => {

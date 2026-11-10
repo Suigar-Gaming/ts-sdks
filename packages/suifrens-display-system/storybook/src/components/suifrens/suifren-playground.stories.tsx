@@ -57,7 +57,9 @@ function ControlButton({
 	className,
 }: ControlButtonProps) {
 	const handleDown = (event: PointerEvent<HTMLButtonElement>) => {
-		if (event.button !== 0 || !onRelease) return;
+		if (event.button !== 0 || !onRelease) {
+			return;
+		}
 		event.preventDefault();
 		event.currentTarget.setPointerCapture(event.pointerId);
 		onPress();
@@ -71,10 +73,14 @@ function ControlButton({
 			onLostPointerCapture={onRelease}
 			onClick={onRelease ? undefined : onPress}
 			onKeyDown={(event) => {
-				if (onRelease && !event.repeat && (event.key === ' ' || event.key === 'Enter')) onPress();
+				if (onRelease && !event.repeat && (event.key === ' ' || event.key === 'Enter')) {
+					onPress();
+				}
 			}}
 			onKeyUp={(event) => {
-				if (event.key === ' ' || event.key === 'Enter') onRelease?.();
+				if (event.key === ' ' || event.key === 'Enter') {
+					onRelease?.();
+				}
 			}}
 			onBlur={onRelease}
 			className={[
@@ -100,7 +106,9 @@ type StageProps = {
 };
 
 function updateSprite(el: HTMLDivElement | null, pose: SuiFrenActorPose) {
-	if (!el) return;
+	if (!el) {
+		return;
+	}
 	const x = (pose.position.x / SPRITE_SIZE - 0.5) * 100;
 	const y = ((pose.position.y - pose.elevation) / SPRITE_SIZE - 1) * 100;
 	el.style.transform = `translate3d(${x}%, ${y}%, 0) scaleX(${pose.facing === 'left' ? -1 : 1})`;
@@ -292,7 +300,9 @@ export const ControlPadPlayground: Story = {
 					return;
 				}
 				event.preventDefault();
-				if (event.repeat) return;
+				if (event.repeat) {
+					return;
+				}
 				held.add(event.code);
 
 				if (event.code === 'Space') {
@@ -313,7 +323,9 @@ export const ControlPadPlayground: Story = {
 			};
 
 			const handleKeyUp = (event: KeyboardEvent) => {
-				if (held.delete(event.code)) updateFromKeys();
+				if (held.delete(event.code)) {
+					updateFromKeys();
+				}
 			};
 
 			window.addEventListener('keydown', handleKeyDown);

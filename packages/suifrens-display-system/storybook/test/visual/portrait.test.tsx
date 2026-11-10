@@ -31,7 +31,9 @@ for (const theme of ['light', 'dark']) {
 				),
 			);
 			const portrait = host.querySelector('svg');
-			if (!portrait) throw new Error('Bullshark portrait did not render');
+			if (!portrait) {
+				throw new Error('Bullshark portrait did not render');
+			}
 			await expect.element(portrait).toMatchScreenshot(`bullshark-${theme}`);
 		} finally {
 			root.unmount();

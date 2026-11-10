@@ -37,7 +37,9 @@ export const AllAccessories: Story = {
 
 function accessoryStory(name: string): Story {
 	const accessory = accessories.find((entry) => entry.name === name);
-	if (!accessory) throw new Error(`Unknown accessory: ${name}`);
+	if (!accessory) {
+		throw new Error(`Unknown accessory: ${name}`);
+	}
 	return {
 		render: () => (
 			<CataloguePreview

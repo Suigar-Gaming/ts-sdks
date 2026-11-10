@@ -8,9 +8,13 @@ export function withReleaseFilters(tags: Array<string>, releases: Array<string>)
 	const isActive = (tag: string) => tags.lastIndexOf(tag) > tags.lastIndexOf(`!${tag}`);
 	const version = tags.find((tag) => versionPattern.test(tag) && isActive(tag));
 	const otherTags = tags.filter((tag) => !versionPattern.test(tag.replace(/^!/, '')));
-	if (!version || isActive('beta') || isActive('unreleased')) return otherTags;
+	if (!version || isActive('beta') || isActive('unreleased')) {
+		return otherTags;
+	}
 
 	const firstRelease = releases.indexOf(version);
-	if (firstRelease < 0) throw new Error(`Unknown release tag ${version}`);
+	if (firstRelease < 0) {
+		throw new Error(`Unknown release tag ${version}`);
+	}
 	return [...otherTags, ...releases.slice(firstRelease)];
 }

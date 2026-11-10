@@ -57,7 +57,9 @@ function presetStory(name: string): Story {
 	const preset = PRESET_CATALOG.flatMap((group) => group.presets).find(
 		(entry) => entry.name === name,
 	);
-	if (!preset) throw new Error(`Unknown animation preset: ${name}`);
+	if (!preset) {
+		throw new Error(`Unknown animation preset: ${name}`);
+	}
 	return { render: () => <PresetPreview preset={preset} /> };
 }
 export const Idle: Story = { ...presetStory('idle'), tags: ['!1.0.2', '1.0.1'] };
