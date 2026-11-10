@@ -54,10 +54,9 @@ function buildTeamGear(country: SoccerTeamCountryCode, side: SoccerTeamSide = 'h
 }
 
 const meta = {
-	id: 'suifrens-kits-soccer-team-kit',
 	title: 'Suifrens/Kits/Soccer Team Kit',
 	component: SuiFrenImageInline,
-	tags: ['autodocs', 'since-1.0.3'],
+	tags: ['1.0.3'],
 } satisfies Meta<typeof SuiFrenImageInline>;
 
 export default meta;
@@ -71,7 +70,9 @@ export const AllCountries: Story = {
 				<div key={country} className="story-tile p-3">
 					<div className="mb-1 flex items-center justify-between">
 						<span className="story-heading">{country}</span>
-						<span className="text-[10px] font-bold text-slate-500 uppercase">Inline</span>
+						<span className="text-[10px] font-bold text-slate-500 uppercase dark:text-slate-400">
+							Inline
+						</span>
 					</div>
 					<div className="h-36">
 						<SuiFrenImageInline
@@ -87,7 +88,7 @@ export const AllCountries: Story = {
 	),
 };
 
-export const InlineAndAssetRenderers: Story = {
+export const CompareSvgRenderers: Story = {
 	name: 'Compare SVG Renderers',
 	render: () => {
 		const showcaseCountries: Array<SoccerTeamCountryCode> = [
@@ -112,7 +113,9 @@ export const InlineAndAssetRenderers: Story = {
 							] as const
 						).map(({ label, attributes, side }) => (
 							<div key={side} className="mt-3">
-								<h3 className="mb-2 text-sm font-semibold text-slate-700">{label}</h3>
+								<h3 className="mb-2 text-sm font-semibold text-slate-700 dark:text-slate-200">
+									{label}
+								</h3>
 								<KitRendererComparison
 									attributes={attributes}
 									accessories={buildTeamGear(country, side)}

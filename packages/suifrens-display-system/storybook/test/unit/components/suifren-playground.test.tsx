@@ -4,7 +4,7 @@
 // @vitest-environment happy-dom
 import type { ComponentType } from 'react';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { ControlPadPlayground } from '../../../src/components/suifren-playground.stories.js';
+import { ControlPadPlayground } from '../../../src/components/suifrens/suifren-playground.stories.js';
 import type { SuiFrenActorPose } from '../../../src/utils/use-suifren-actor.js';
 import { createTestRoot } from '../../helpers/react-dom.js';
 

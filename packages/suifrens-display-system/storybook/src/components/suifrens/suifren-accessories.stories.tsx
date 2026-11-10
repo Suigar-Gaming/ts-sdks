@@ -4,13 +4,15 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { accessories } from '@suigar/suifrens-display-system/accessories';
 import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
+import { accessoryLabel } from '../../utils/accessory-label.js';
+import { CatalogueDocs } from '../CatalogueDocs.js';
 import { CataloguePreview } from './CataloguePreview.js';
 
 const meta = {
-	id: 'suifrenimageinline-accessories',
 	title: 'Suifrens/Accessories/Catalogue',
 	component: SuiFrenImageInline,
-	tags: ['autodocs', 'catalogue-entry'],
+	parameters: { docs: { page: CatalogueDocs } },
+	tags: ['1.0.0'],
 } satisfies Meta<typeof SuiFrenImageInline>;
 
 export default meta;
@@ -18,13 +20,13 @@ export default meta;
 type Story = StoryObj<typeof SuiFrenImageInline>;
 
 export const AllAccessories: Story = {
-	tags: ['!catalogue-entry'],
+	tags: ['!1.0.0', '1.0.2'],
 	render: () => (
 		<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
 			{accessories.map((accessory) => (
 				<CataloguePreview
 					key={accessory.name}
-					title={accessory.name}
+					title={accessoryLabel(accessory)}
 					subtitle={accessory.type}
 					accessories={[accessory]}
 				/>
@@ -38,14 +40,30 @@ function accessoryStory(name: string): Story {
 	if (!accessory) throw new Error(`Unknown accessory: ${name}`);
 	return {
 		render: () => (
-			<CataloguePreview title={name} subtitle={accessory.type} accessories={[accessory]} />
+			<CataloguePreview
+				title={accessoryLabel(accessory)}
+				subtitle={accessory.type}
+				accessories={[accessory]}
+			/>
 		),
 	};
 }
-export const RunnerSinglet: Story = accessoryStory('runner singlet');
-export const RunnerShorts: Story = accessoryStory('runner shorts');
-export const RunnerHeadband: Story = accessoryStory('runner headband');
-export const RunnerShoes: Story = accessoryStory('runner shoes');
+export const RunnerSinglet: Story = {
+	...accessoryStory('runner singlet'),
+	tags: ['!1.0.0', '1.1.0'],
+};
+export const RunnerShorts: Story = {
+	...accessoryStory('runner shorts'),
+	tags: ['!1.0.0', '1.1.0'],
+};
+export const RunnerHeadband: Story = {
+	...accessoryStory('runner headband'),
+	tags: ['!1.0.0', '1.1.0'],
+};
+export const RunnerShoes: Story = {
+	...accessoryStory('runner shoes'),
+	tags: ['!1.0.0', '1.1.0'],
+};
 export const BaseballCap: Story = accessoryStory('baseball cap');
 export const Beanie: Story = accessoryStory('beanie');
 export const Beret: Story = accessoryStory('beret');
@@ -76,8 +94,14 @@ export const BlueJeans: Story = accessoryStory('blue jeans');
 export const BusinessSlacks: Story = accessoryStory('business slacks');
 export const Cutoffs: Story = accessoryStory('cutoffs');
 export const SwimTrunks: Story = accessoryStory('swim trunks');
-export const SoccerTeamShirt: Story = accessoryStory('soccer team shirt');
-export const SoccerTeamSwimTrunks: Story = accessoryStory('soccer team swim trunks');
+export const SoccerTeamShirt: Story = {
+	...accessoryStory('soccer team shirt'),
+	tags: ['!1.0.0', '1.0.3'],
+};
+export const SoccerTeamSwimTrunks: Story = {
+	...accessoryStory('soccer team swim trunks'),
+	tags: ['!1.0.0', '1.0.3'],
+};
 export const PunkSkirt: Story = accessoryStory('punk skirt');
 export const RockStarRuffle: Story = accessoryStory('rock star ruffle');
 export const SuperheroStars: Story = accessoryStory('superhero stars');
@@ -101,25 +125,103 @@ export const DressShoes: Story = accessoryStory('dress shoes');
 export const PinkSlipOns: Story = accessoryStory('pink slip ons');
 export const Sneakers: Story = accessoryStory('sneakers');
 export const GothBoots: Story = accessoryStory('goth boots');
-export const LeftGothBoot: Story = accessoryStory('left goth boot');
-export const RightGothBoot: Story = accessoryStory('right goth boot');
+export const LeftGothBoot: Story = {
+	...accessoryStory('left goth boot'),
+	tags: ['!1.0.0', '1.0.3'],
+};
+export const RightGothBoot: Story = {
+	...accessoryStory('right goth boot'),
+	tags: ['!1.0.0', '1.0.3'],
+};
 export const RockStarBoots: Story = accessoryStory('rock star boots');
 export const WitchBoots: Story = accessoryStory('witch boots');
-export const Bronze1: Story = { ...accessoryStory('bronze-1'), name: 'bronze-1' };
-export const Bronze2: Story = { ...accessoryStory('bronze-2'), name: 'bronze-2' };
-export const Bronze3: Story = { ...accessoryStory('bronze-3'), name: 'bronze-3' };
-export const Silver1: Story = { ...accessoryStory('silver-1'), name: 'silver-1' };
-export const Silver2: Story = { ...accessoryStory('silver-2'), name: 'silver-2' };
-export const Silver3: Story = { ...accessoryStory('silver-3'), name: 'silver-3' };
-export const Gold1: Story = { ...accessoryStory('gold-1'), name: 'gold-1' };
-export const Gold2: Story = { ...accessoryStory('gold-2'), name: 'gold-2' };
-export const Gold3: Story = { ...accessoryStory('gold-3'), name: 'gold-3' };
-export const Platinum1: Story = { ...accessoryStory('platinum-1'), name: 'platinum-1' };
-export const Platinum2: Story = { ...accessoryStory('platinum-2'), name: 'platinum-2' };
-export const Platinum3: Story = { ...accessoryStory('platinum-3'), name: 'platinum-3' };
-export const Diamond1: Story = { ...accessoryStory('diamond-1'), name: 'diamond-1' };
-export const Diamond2: Story = { ...accessoryStory('diamond-2'), name: 'diamond-2' };
-export const Diamond3: Story = { ...accessoryStory('diamond-3'), name: 'diamond-3' };
-export const Master1: Story = { ...accessoryStory('master-1'), name: 'master-1' };
-export const Master2: Story = { ...accessoryStory('master-2'), name: 'master-2' };
-export const Legend: Story = accessoryStory('legend');
+export const VipBronzeI: Story = {
+	tags: ['!1.0.0', 'unreleased'],
+	...accessoryStory('bronze-1'),
+	name: 'VIP Bronze I',
+};
+export const VipBronzeII: Story = {
+	tags: ['!1.0.0', 'unreleased'],
+	...accessoryStory('bronze-2'),
+	name: 'VIP Bronze II',
+};
+export const VipBronzeIII: Story = {
+	tags: ['!1.0.0', 'unreleased'],
+	...accessoryStory('bronze-3'),
+	name: 'VIP Bronze III',
+};
+export const VipSilverI: Story = {
+	tags: ['!1.0.0', 'unreleased'],
+	...accessoryStory('silver-1'),
+	name: 'VIP Silver I',
+};
+export const VipSilverII: Story = {
+	tags: ['!1.0.0', 'unreleased'],
+	...accessoryStory('silver-2'),
+	name: 'VIP Silver II',
+};
+export const VipSilverIII: Story = {
+	tags: ['!1.0.0', 'unreleased'],
+	...accessoryStory('silver-3'),
+	name: 'VIP Silver III',
+};
+export const VipGoldI: Story = {
+	tags: ['!1.0.0', 'unreleased'],
+	...accessoryStory('gold-1'),
+	name: 'VIP Gold I',
+};
+export const VipGoldII: Story = {
+	tags: ['!1.0.0', 'unreleased'],
+	...accessoryStory('gold-2'),
+	name: 'VIP Gold II',
+};
+export const VipGoldIII: Story = {
+	tags: ['!1.0.0', 'unreleased'],
+	...accessoryStory('gold-3'),
+	name: 'VIP Gold III',
+};
+export const VipPlatinumI: Story = {
+	tags: ['!1.0.0', 'unreleased'],
+	...accessoryStory('platinum-1'),
+	name: 'VIP Platinum I',
+};
+export const VipPlatinumII: Story = {
+	tags: ['!1.0.0', 'unreleased'],
+	...accessoryStory('platinum-2'),
+	name: 'VIP Platinum II',
+};
+export const VipPlatinumIII: Story = {
+	tags: ['!1.0.0', 'unreleased'],
+	...accessoryStory('platinum-3'),
+	name: 'VIP Platinum III',
+};
+export const VipDiamondI: Story = {
+	tags: ['!1.0.0', 'unreleased'],
+	...accessoryStory('diamond-1'),
+	name: 'VIP Diamond I',
+};
+export const VipDiamondII: Story = {
+	tags: ['!1.0.0', 'unreleased'],
+	...accessoryStory('diamond-2'),
+	name: 'VIP Diamond II',
+};
+export const VipDiamondIII: Story = {
+	tags: ['!1.0.0', 'unreleased'],
+	...accessoryStory('diamond-3'),
+	name: 'VIP Diamond III',
+};
+export const VipMasterI: Story = {
+	tags: ['!1.0.0', 'unreleased'],
+	...accessoryStory('master-1'),
+	name: 'VIP Master I',
+};
+export const VipMasterII: Story = {
+	tags: ['!1.0.0', 'unreleased'],
+	...accessoryStory('master-2'),
+	name: 'VIP Master II',
+};
+export const VipLegend: Story = {
+	...accessoryStory('legend'),
+	name: 'VIP Legend',
+	tags: ['!1.0.0', '1.0.3'],
+};

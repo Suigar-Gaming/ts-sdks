@@ -19,8 +19,12 @@ export function CataloguePreview({ title, subtitle, expression = 'happy', ...pro
 	return (
 		<div className="story-panel">
 			<div className="flex items-baseline justify-between gap-2">
-				<span className="text-sm font-semibold text-slate-800">{title}</span>
-				{subtitle && <span className="font-mono text-[11px] text-slate-500">{subtitle}</span>}
+				<span className="text-sm font-semibold text-slate-800 dark:text-slate-200">{title}</span>
+				{subtitle && (
+					<span className="font-mono text-[11px] text-slate-500 dark:text-slate-400">
+						{subtitle}
+					</span>
+				)}
 			</div>
 			<div className="mt-4 grid grid-cols-2 gap-3">
 				{species.map(({ label, traits }) => (
@@ -39,7 +43,9 @@ export function CataloguePreview({ title, subtitle, expression = 'happy', ...pro
 								style={{ width: '100%', height: '100%' }}
 							/>
 						</div>
-						<figcaption className="text-xs font-semibold text-slate-600">{label}</figcaption>
+						<figcaption className="text-xs font-semibold text-slate-600 dark:text-slate-300">
+							{label}
+						</figcaption>
 					</figure>
 				))}
 			</div>

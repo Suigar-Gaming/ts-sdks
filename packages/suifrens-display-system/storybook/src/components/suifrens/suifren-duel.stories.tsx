@@ -416,10 +416,9 @@ const FIGHT_SLOT_COUNT = Math.min(
 );
 
 const meta = {
-	id: 'suifrenimage-battle-royale',
 	title: 'Suifrens/Playground/Battle Royale',
 	component: SuiFrenBattleSprite,
-	tags: ['autodocs', 'beta'],
+	tags: ['beta'],
 } satisfies Meta<typeof SuiFrenBattleSprite>;
 
 export default meta;
@@ -763,8 +762,9 @@ export const Duel: Story = {
 						onRestart={handleRestart}
 						onStop={stop}
 					/>
-					<div className="text-sm text-slate-700">
-						<span className="font-semibold text-slate-900">Phase:</span> {phaseLabel}
+					<div className="text-sm text-slate-700 dark:text-slate-200">
+						<span className="font-semibold text-slate-900 dark:text-slate-100">Phase:</span>{' '}
+						{phaseLabel}
 					</div>
 				</div>
 
@@ -1440,30 +1440,38 @@ export const Ring: Story = {
 						}}
 						onStop={handleStop}
 					/>
-					<div className="text-sm text-slate-700">
-						<span className="font-semibold text-slate-900">Fighters:</span> {fighters.length}
+					<div className="text-sm text-slate-700 dark:text-slate-200">
+						<span className="font-semibold text-slate-900 dark:text-slate-100">Fighters:</span>{' '}
+						{fighters.length}
 					</div>
 				</div>
 
-				<div className="story-tile p-4 text-sm text-slate-700">
+				<div className="story-tile p-4 text-sm text-slate-700 dark:text-slate-200">
 					<div className="flex flex-wrap gap-4">
 						<div>
-							<span className="font-semibold text-slate-900">Phase:</span> {ringPhase}
+							<span className="font-semibold text-slate-900 dark:text-slate-100">Phase:</span>{' '}
+							{ringPhase}
 						</div>
 						<div>
-							<span className="font-semibold text-slate-900">Active fights:</span>{' '}
+							<span className="font-semibold text-slate-900 dark:text-slate-100">
+								Active fights:
+							</span>{' '}
 							{activeFights.length}
 						</div>
 						<div>
-							<span className="font-semibold text-slate-900">Alive:</span> {aliveFighters.length}/
-							{fighters.length}
+							<span className="font-semibold text-slate-900 dark:text-slate-100">Alive:</span>{' '}
+							{aliveFighters.length}/{fighters.length}
 						</div>
 						<div>
-							<span className="font-semibold text-slate-900">Resolved fights:</span>{' '}
+							<span className="font-semibold text-slate-900 dark:text-slate-100">
+								Resolved fights:
+							</span>{' '}
 							{resolvedFightRef.current.size}
 						</div>
 						<div>
-							<span className="font-semibold text-slate-900">Predicted champion:</span>{' '}
+							<span className="font-semibold text-slate-900 dark:text-slate-100">
+								Predicted champion:
+							</span>{' '}
 							{predictedChampion
 								? predictedChampion.id === CURRENT_USER_FIGHTER_ID
 									? 'YOU'
@@ -1472,14 +1480,16 @@ export const Ring: Story = {
 						</div>
 						{ringWinnerId ? (
 							<div>
-								<span className="font-semibold text-slate-900">Winner:</span>{' '}
+								<span className="font-semibold text-slate-900 dark:text-slate-100">Winner:</span>{' '}
 								{ringWinnerId === CURRENT_USER_FIGHTER_ID
 									? 'YOU'
 									: (fightersById.get(ringWinnerId)?.label ?? ringWinnerId)}
 							</div>
 						) : null}
 						<div>
-							<span className="font-semibold text-slate-900">First predicted winner:</span>{' '}
+							<span className="font-semibold text-slate-900 dark:text-slate-100">
+								First predicted winner:
+							</span>{' '}
 							{firstPredictedWinner
 								? firstPredictedWinner.id === CURRENT_USER_FIGHTER_ID
 									? 'YOU'
@@ -1489,8 +1499,10 @@ export const Ring: Story = {
 					</div>
 
 					<div className="mt-4 grid gap-4 lg:grid-cols-2">
-						<div className="rounded-xl bg-white px-3 py-2">
-							<div className="mb-2 text-sm font-semibold text-slate-800">Active fights</div>
+						<div className="rounded-xl bg-white px-3 py-2 dark:bg-slate-900">
+							<div className="mb-2 text-sm font-semibold text-slate-800 dark:text-slate-200">
+								Active fights
+							</div>
 							{activeFights.length ? (
 								<div className="grid gap-1">
 									{sortedActiveFights.map((fight) => {
@@ -1499,7 +1511,9 @@ export const Ring: Story = {
 										const winner = fightersById.get(fight.winnerId);
 										return (
 											<div key={fight.id} className="flex flex-wrap items-center gap-2">
-												<span className="font-semibold text-slate-900">Fight {fight.id}:</span>
+												<span className="font-semibold text-slate-900 dark:text-slate-100">
+													Fight {fight.id}:
+												</span>
 												<span>
 													{left
 														? left.id === CURRENT_USER_FIGHTER_ID
@@ -1513,8 +1527,8 @@ export const Ring: Story = {
 															: right.label
 														: fight.rightId}
 												</span>
-												<span className="text-slate-500">|</span>
-												<span className="text-slate-600">
+												<span className="text-slate-500 dark:text-slate-400">|</span>
+												<span className="text-slate-600 dark:text-slate-300">
 													Winner:{' '}
 													{winner
 														? winner.id === CURRENT_USER_FIGHTER_ID
@@ -1522,19 +1536,23 @@ export const Ring: Story = {
 															: winner.label
 														: fight.winnerId}
 												</span>
-												<span className="text-slate-500">|</span>
-												<span className="text-slate-500">Slot {fight.slot + 1}</span>
+												<span className="text-slate-500 dark:text-slate-400">|</span>
+												<span className="text-slate-500 dark:text-slate-400">
+													Slot {fight.slot + 1}
+												</span>
 											</div>
 										);
 									})}
 								</div>
 							) : (
-								<div className="text-slate-500">No active fights.</div>
+								<div className="text-slate-500 dark:text-slate-400">No active fights.</div>
 							)}
 						</div>
 
-						<div className="rounded-xl bg-white px-3 py-2">
-							<div className="mb-2 text-sm font-semibold text-slate-800">Roster snapshot</div>
+						<div className="rounded-xl bg-white px-3 py-2 dark:bg-slate-900">
+							<div className="mb-2 text-sm font-semibold text-slate-800 dark:text-slate-200">
+								Roster snapshot
+							</div>
 							<div className="grid gap-1">
 								{fighters.map((fighter) => {
 									const entry = fightLookup.get(fighter.id);
@@ -1567,24 +1585,24 @@ export const Ring: Story = {
 											: fighter.status;
 									return (
 										<div key={fighter.id} className="flex flex-wrap items-center gap-2">
-											<span className="font-semibold text-slate-900">
+											<span className="font-semibold text-slate-900 dark:text-slate-100">
 												{fighter.id === CURRENT_USER_FIGHTER_ID ? 'YOU' : fighter.label}
 											</span>
-											<span className="text-slate-500">|</span>
+											<span className="text-slate-500 dark:text-slate-400">|</span>
 											<span>Status: {statusLabel}</span>
-											<span className="text-slate-500">|</span>
+											<span className="text-slate-500 dark:text-slate-400">|</span>
 											<span>
 												HP: {Math.round(currentHealth)}/{fighter.maxHealth}
 											</span>
-											<span className="text-slate-500">|</span>
+											<span className="text-slate-500 dark:text-slate-400">|</span>
 											<span>Power: {fighter.power}</span>
-											<span className="text-slate-500">|</span>
+											<span className="text-slate-500 dark:text-slate-400">|</span>
 											<span>Expr: {currentExpression}</span>
-											<span className="text-slate-500">|</span>
+											<span className="text-slate-500 dark:text-slate-400">|</span>
 											<span>Anim: {animationLabel}</span>
-											<span className="text-slate-500">|</span>
+											<span className="text-slate-500 dark:text-slate-400">|</span>
 											<span>Facing: {fighter.facing}</span>
-											<span className="text-slate-500">|</span>
+											<span className="text-slate-500 dark:text-slate-400">|</span>
 											<span>
 												Pos: {Math.round(fighter.position.x)},{Math.round(fighter.position.y)}
 											</span>

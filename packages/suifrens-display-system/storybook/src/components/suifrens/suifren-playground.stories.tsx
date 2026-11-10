@@ -9,7 +9,7 @@ import {
 	type SuiFrenActorPose,
 	type SuiFrenActorSnapshot,
 	useSuiFrenActor,
-} from '../utils/use-suifren-actor.js';
+} from '../../utils/use-suifren-actor.js';
 
 const PLAYGROUND_WIDTH = 960;
 const PLAYGROUND_HEIGHT = 540;
@@ -27,10 +27,9 @@ const baseAttributes = {
 } as const;
 
 const meta = {
-	id: 'suifrenimageinline-playable-sandbox',
 	title: 'Suifrens/Playground/Playable Sandbox',
 	component: SuiFrenImageInline,
-	tags: ['autodocs'],
+	tags: ['1.0.2'],
 } satisfies Meta<typeof SuiFrenImageInline>;
 
 export default meta;
@@ -81,7 +80,7 @@ function ControlButton({
 				'flex min-h-12 touch-none select-none px-2 items-center justify-center rounded-xl border text-sm font-semibold shadow-xs transition',
 				active
 					? 'border-blue-500 bg-blue-500 text-white shadow-blue-200'
-					: 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50 active:bg-slate-100',
+					: 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 active:bg-slate-100 dark:active:bg-slate-700',
 				className ?? '',
 			]
 				.filter(Boolean)
@@ -111,7 +110,9 @@ function SuiFrenStage({ state, spriteRef, title, note }: StageProps) {
 
 	return (
 		<div>
-			{title ? <h3 className="mb-2 text-sm font-semibold text-slate-800">{title}</h3> : null}
+			{title ? (
+				<h3 className="mb-2 text-sm font-semibold text-slate-800 dark:text-slate-200">{title}</h3>
+			) : null}
 			<div
 				className="story-scene relative overflow-hidden rounded-2xl border border-slate-200 bg-linear-to-b from-sky-50 to-blue-100 inset-shadow-sm"
 				style={{ aspectRatio: PLAYGROUND_WIDTH / PLAYGROUND_HEIGHT }}
@@ -131,7 +132,7 @@ function SuiFrenStage({ state, spriteRef, title, note }: StageProps) {
 				>
 					<div className="relative h-full w-full">
 						{isEmoting ? (
-							<div className="absolute -top-6 left-1/2 -translate-x-1/2 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm">
+							<div className="absolute -top-6 left-1/2 -translate-x-1/2 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm dark:bg-slate-900/90 dark:text-slate-200">
 								{state.expression}
 							</div>
 						) : null}
@@ -144,7 +145,7 @@ function SuiFrenStage({ state, spriteRef, title, note }: StageProps) {
 					</div>
 				</div>
 
-				<div className="absolute top-4 left-4 flex flex-col gap-1 rounded-lg bg-white/85 px-3 py-2 text-xs font-semibold text-slate-700 shadow-xs">
+				<div className="absolute top-4 left-4 flex flex-col gap-1 rounded-lg bg-white/85 px-3 py-2 text-xs font-semibold text-slate-700 shadow-xs dark:bg-slate-900/85 dark:text-slate-200">
 					<span>Locomotion: {state.locomotion}</span>
 					<span>Facing: {state.facing}</span>
 					<span>
@@ -156,7 +157,7 @@ function SuiFrenStage({ state, spriteRef, title, note }: StageProps) {
 					</span>
 				</div>
 			</div>
-			{note ? <p className="mt-2 text-xs text-slate-600">{note}</p> : null}
+			{note ? <p className="mt-2 text-xs text-slate-600 dark:text-slate-300">{note}</p> : null}
 		</div>
 	);
 }
@@ -333,7 +334,9 @@ export const ControlPadPlayground: Story = {
 
 				<div className="story-panel flex flex-[1_1_16rem] flex-col gap-4">
 					<div>
-						<h3 className="text-sm font-semibold text-slate-800">Movement Pad</h3>
+						<h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+							Movement Pad
+						</h3>
 						<div className="mt-3 grid grid-cols-3 gap-2">
 							<div />
 							<ControlButton
@@ -394,7 +397,7 @@ export const ControlPadPlayground: Story = {
 					</div>
 
 					<div>
-						<h3 className="text-sm font-semibold text-slate-800">Emotes</h3>
+						<h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200">Emotes</h3>
 						<div className="mt-2 grid grid-cols-2 gap-2">
 							<ControlButton
 								label="❤️"

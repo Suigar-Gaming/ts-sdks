@@ -16,7 +16,9 @@ export function KitRendererComparison(props: SuiFrenImageProps) {
 			{renderers.map(({ label, Renderer }) => (
 				<figure key={label} className="story-tile grid justify-items-center gap-2 p-2">
 					<Renderer {...props} style={{ width: '100%', ...props.style }} />
-					<figcaption className="text-xs font-semibold text-slate-600">{label}</figcaption>
+					<figcaption className="text-xs font-semibold text-slate-600 dark:text-slate-300">
+						{label}
+					</figcaption>
 				</figure>
 			))}
 		</div>

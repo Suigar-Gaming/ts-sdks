@@ -5,25 +5,32 @@
 
 @import 'tailwindcss';
 
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+body.sb-show-main:has(.story-page[data-theme='dark']),
+.docs-story:has(.story-page[data-theme='dark']) {
+	background-color: var(--color-slate-950);
+}
+
 @layer components {
 	.story-page {
-		@apply mx-auto w-full max-w-6xl min-w-0 text-slate-900;
+		@apply mx-auto w-full max-w-6xl min-w-0 text-slate-900 dark:text-slate-100;
 		container-type: inline-size;
 	}
 	.story-panel {
-		@apply min-w-0 rounded-3xl border border-slate-200 bg-white p-4 shadow-xs;
+		@apply min-w-0 rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 shadow-xs;
 	}
 	.story-tile {
-		@apply min-w-0 rounded-2xl border border-slate-200 bg-slate-50;
+		@apply min-w-0 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800;
 	}
 	.story-page .suifren-image:not(.story-scene *) {
-		@apply rounded-lg bg-white outline outline-slate-300;
+		@apply rounded-lg bg-white dark:bg-slate-900 outline outline-slate-300 dark:outline-slate-600;
 	}
 	.story-button {
-		@apply min-h-11 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-xs hover:bg-slate-50;
+		@apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 text-sm font-semibold text-slate-700 dark:text-slate-200 no-underline shadow-xs hover:bg-slate-50 dark:hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-400;
 	}
 	.story-heading {
-		@apply text-base font-semibold text-slate-900;
+		@apply text-base font-semibold text-slate-900 dark:text-slate-100;
 	}
 	@container (max-width: 36rem) {
 		.battle-field {

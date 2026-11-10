@@ -7,7 +7,7 @@ import { CataloguePreview } from './CataloguePreview.js';
 const meta = {
 	title: 'Suifrens/Characters/Expressions',
 	component: CataloguePreview,
-	tags: ['!autodocs'],
+	tags: ['!autodocs', '1.0.0'],
 } satisfies Meta<typeof CataloguePreview>;
 export default meta;
 

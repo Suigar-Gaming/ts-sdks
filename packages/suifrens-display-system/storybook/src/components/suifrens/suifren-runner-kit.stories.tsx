@@ -7,10 +7,9 @@ import { buildRunnerAccessories } from '@suigar/suifrens-display-system/kits';
 import { KitRendererComparison } from './KitRendererComparison.js';
 
 const meta: Meta<typeof SuiFrenImageInline> = {
-	id: 'suifrens-kits-runner-kit',
 	title: 'Suifrens/Kits/Runner Kit',
 	component: SuiFrenImageInline,
-	tags: ['since-1.1.0'],
+	tags: ['1.1.0'],
 };
 export default meta;
 type Story = StoryObj<typeof SuiFrenImageInline>;
@@ -50,7 +49,9 @@ export const Runners: Story = {
 						accessories={accessories}
 						style={{ width: '100%' }}
 					/>
-					<figcaption className="text-xs font-semibold text-slate-600">{label}</figcaption>
+					<figcaption className="text-xs font-semibold text-slate-600 dark:text-slate-300">
+						{label}
+					</figcaption>
 				</figure>
 			))}
 		</div>

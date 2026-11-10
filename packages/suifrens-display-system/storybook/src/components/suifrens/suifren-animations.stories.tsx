@@ -4,7 +4,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { accessories } from '@suigar/suifrens-display-system/accessories';
 import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
-import { PRESET_CATALOG, type PresetCatalogEntry } from '../animation/preset-catalog.js';
+import { PRESET_CATALOG, type PresetCatalogEntry } from '../../animation/preset-catalog.js';
+import { CatalogueDocs } from '../CatalogueDocs.js';
 import { CataloguePreview } from './CataloguePreview.js';
 
 const microphoneAccessory = accessories.find((accessory) => accessory.name === 'microphone');
@@ -25,10 +26,10 @@ function PresetPreview({ preset }: { preset: PresetCatalogEntry }) {
 }
 
 const meta = {
-	id: 'suifrenimageinline-animations',
 	title: 'Suifrens/Animations/Presets',
 	component: SuiFrenImageInline,
-	tags: ['autodocs', 'catalogue-entry'],
+	parameters: { docs: { page: CatalogueDocs } },
+	tags: ['1.0.2'],
 } satisfies Meta<typeof SuiFrenImageInline>;
 
 export default meta;
@@ -36,7 +37,6 @@ export default meta;
 type Story = StoryObj<typeof SuiFrenImageInline>;
 
 export const Presets: Story = {
-	tags: ['!catalogue-entry'],
 	render: () => (
 		<div className="flex flex-col gap-10">
 			{PRESET_CATALOG.map((group) => (
@@ -58,22 +58,38 @@ function presetStory(name: string): Story {
 		(entry) => entry.name === name,
 	);
 	if (!preset) throw new Error(`Unknown animation preset: ${name}`);
-	return { tags: ['catalogue-entry'], render: () => <PresetPreview preset={preset} /> };
+	return { render: () => <PresetPreview preset={preset} /> };
 }
-export const Idle: Story = presetStory('idle');
-export const Walk: Story = presetStory('walk');
-export const GoalkeeperCrab: Story = presetStory('goalkeeperCrab');
-export const Sit: Story = presetStory('sit');
-export const Stand: Story = presetStory('stand');
+export const Idle: Story = { ...presetStory('idle'), tags: ['!1.0.2', '1.0.1'] };
+export const Walk: Story = { ...presetStory('walk'), tags: ['!1.0.2', '1.0.1'] };
+export const GoalkeeperCrab: Story = {
+	...presetStory('goalkeeperCrab'),
+	tags: ['!1.0.2', '1.0.3'],
+};
+export const Sit: Story = { ...presetStory('sit'), tags: ['!1.0.2', '1.0.1'] };
+export const Stand: Story = { ...presetStory('stand'), tags: ['!1.0.2', '1.0.1'] };
 export const Run: Story = presetStory('run');
 export const Sprint: Story = presetStory('sprint');
-export const Jump: Story = presetStory('jump');
-export const WalkJumpSit: Story = presetStory('walkJumpSit');
-export const Celebrate: Story = presetStory('celebrate');
-export const Jackpot: Story = presetStory('jackpot');
-export const SlotPull: Story = presetStory('slotPull');
-export const Suspense: Story = presetStory('suspense');
+export const Jump: Story = { ...presetStory('jump'), tags: ['!1.0.2', '1.0.1'] };
+export const WalkJumpSit: Story = {
+	...presetStory('walkJumpSit'),
+	tags: ['!1.0.2', '1.0.1'],
+};
+export const Celebrate: Story = {
+	...presetStory('celebrate'),
+	tags: ['!1.0.2', '1.0.1'],
+};
+export const Jackpot: Story = { ...presetStory('jackpot'), tags: ['!1.0.2', '1.0.1'] };
+export const SlotPull: Story = {
+	...presetStory('slotPull'),
+	tags: ['!1.0.2', '1.0.1'],
+};
+export const Suspense: Story = {
+	...presetStory('suspense'),
+	tags: ['!1.0.2', '1.0.1'],
+};
 export const TalkMicrophone: Story = {
+	tags: ['!1.0.2', '1.0.3'],
 	...presetStory('talkMicrophone'),
 	name: 'Talk Mic · talkMicrophone',
 };

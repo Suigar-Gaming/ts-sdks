@@ -21,7 +21,7 @@ export function ExpressionCard(props: SuiFrenImageProps) {
 			<div className="flex size-full min-h-0 justify-center [&>svg]:max-h-full [&>svg]:max-w-full">
 				<SuiFrenImageInline {...props} />
 			</div>
-			<figcaption className="text-xs font-semibold text-slate-700">
+			<figcaption className="text-xs font-semibold text-slate-700 dark:text-slate-200">
 				{props.attributes.expression}
 			</figcaption>
 		</figure>
@@ -38,7 +38,7 @@ export function ExpressionGallery({ attributes, ...props }: ExpressionGalleryPro
 	);
 }
 
-export function ExpressionTransition({ attributes, ...props }: ExpressionGalleryProps) {
+export function ExpressionTransitionPreview({ attributes, ...props }: ExpressionGalleryProps) {
 	const [expression, setExpression] = useState<SuiFrenExpression>('happy');
 	useEffect(() => {
 		const interval = setInterval(() => {
