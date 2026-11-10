@@ -96,7 +96,7 @@
 		"build": "pnpm run clean && pnpm run codegen && tsdown",
 		"build:ci": "pnpm run clean && tsdown",
 		"clean": "rimraf dist",
-		"codegen": "node scripts/generate-accessory-assets.ts && pnpm run lint:fix",
+		"codegen": "node scripts/generate-accessory-assets.ts && pnpm exec oxfmt src/generated",
 		"test": "vitest run",
 		"typecheck": "tsc --noEmit",
 		"doctor": "react-doctor --yes",
