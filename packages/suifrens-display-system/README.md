@@ -38,7 +38,7 @@ The npm beta has eight public entry points: the package root, `/image`, `/image-
 
 ### Editing accessory artwork
 
-Edit the SVG files in `src/assets/accessories/`. Single-layer accessories use their own filename, such as `baseball-cap.svg`. Accessories with multiple layers have a folder where `default.svg` supplies the base drawing and optional `body.svg`, `left.svg` and `right.svg` supply the layers drawn separately during animation. Crowns have their own viewport. Running and football kits use SVG templates for their colors, lettering and patterns.
+Edit the SVG files in `src/accessories/artwork/`. Single-layer accessories use their own filename, such as `baseball-cap.svg`. Accessories with multiple layers have a folder where `default.svg` supplies the base drawing and optional `body.svg`, `left.svg` and `right.svg` supply the layers drawn separately during animation. Crowns have their own viewport. Running and football kits use SVG templates for their colors, lettering and patterns.
 
 Run `pnpm run codegen` from the package directory after editing artwork to regenerate the import lists and external SVG symbols in `src/generated/`.
 

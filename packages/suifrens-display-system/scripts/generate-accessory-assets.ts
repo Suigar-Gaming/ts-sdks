@@ -79,7 +79,7 @@ const manifestEntries: Array<string> = [];
 const splitLimbAssetNames: Array<string> = [];
 
 // Inline imports stay separate so external-SVG consumers only bundle kit templates.
-const sourceDir = 'src/assets/accessories';
+const sourceDir = 'src/accessories/artwork';
 const inlineImports: Array<string> = [];
 const kitImports: Array<string> = [];
 const inlineEntries: Array<string> = [];
@@ -94,7 +94,7 @@ async function readLayers(source: string, imports: Array<string>, entries: Array
 		const relativePath = singleFile ? file : source + '/' + file;
 		const layer = singleFile ? 'default' : file.replace(/\.svg$/, '');
 		const id = 'layer' + imports.length;
-		imports.push(`import ${id} from '../assets/accessories/${relativePath}';`);
+		imports.push(`import ${id} from '../accessories/artwork/${relativePath}';`);
 		fields.push(`${JSON.stringify(layer)}: ${id}`);
 		layers[layer] = await readFile(join(sourceDir, relativePath), 'utf8');
 	}

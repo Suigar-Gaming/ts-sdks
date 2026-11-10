@@ -22,7 +22,7 @@ const species = [
 ] as const;
 
 test.each(vipCrownAccessories)('$name artwork has room for its tips and ornaments', (accessory) => {
-	const source = readFileSync(`src/assets/accessories/crowns/${accessory.name}.svg`, 'utf8');
+	const source = readFileSync(`src/accessories/artwork/crowns/${accessory.name}.svg`, 'utf8');
 	const container = document.createElement('div');
 	container.innerHTML = source;
 	expect(container.querySelector('svg')?.getAttribute('viewBox')).toBe('-200 -600 3209 3609');
