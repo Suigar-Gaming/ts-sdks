@@ -6,5 +6,6 @@
 		"tsBuildInfoFile": "node_modules/.cache/typecheck.tsbuildinfo",
 		"types": ["node", "vite/client"]
 	},
+	"exclude": ["test/distribution/consumer"],
 	"include": ["src", "scripts", "test", "doctor.config.ts", "tsdown.config.ts", "vitest.config.ts"]
 }
