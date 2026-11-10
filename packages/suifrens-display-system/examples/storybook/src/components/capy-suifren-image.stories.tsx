@@ -221,3 +221,8 @@ export const Incognito: Story = {
 		incognito: true,
 	},
 };
+
+export const ThumbsDown: Story = {
+	...WithShadow,
+	args: { ...WithShadow.args, gesture: 'thumbs_down' },
+};

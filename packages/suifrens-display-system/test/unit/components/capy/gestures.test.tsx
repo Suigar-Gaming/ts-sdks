@@ -21,7 +21,17 @@ const restingArm = '1002.9,1719.3';
 describe.each([
 	['inline', SuiFrenImageInline],
 	['asset', SuiFrenImage],
-] as const)('%s capy thumbs up', (_name, Image) => {
+] as const)('%s capy gestures', (_name, Image) => {
+	test('points the thumb below the palm in the thumbs-down pose', () => {
+		const markup = renderToStaticMarkup(<Image attributes={capy} gesture="thumbs_down" />);
+		const transform = markup.match(
+			/data-suifren-gesture="thumbs-down"[^>]*><g transform="([^"]+)"/,
+		);
+		const matrix = parseMatrix(transform?.[1]);
+		expect(matrix).not.toBeNull();
+		const [, b, , d] = matrix!;
+		expect(b * (97 - 35) + d * (124 - 140)).toBeGreaterThan(0);
+	});
 	test('uses one foreground posed hand and leaves the resting pose unchanged by default', () => {
 		const resting = renderToStaticMarkup(<Image attributes={capy} />);
 		const raised = renderToStaticMarkup(<Image attributes={capy} gesture="thumbs_up" />);
@@ -63,16 +73,22 @@ describe.each([
 		expect(gesture).not.toContain('<clipPath');
 		expect(gesture.match(/stroke="#000"/g)).toHaveLength(1);
 	});
-	test('does not change a head portrait', () => {
-		expect(
-			renderToStaticMarkup(<Image attributes={capy} detail="head" gesture="thumbs_up" />),
-		).toBe(renderToStaticMarkup(<Image attributes={capy} detail="head" />));
-	});
-	test('preserves the grip when holding an object', () => {
-		const object = accessories.find((accessory) => accessory.name === 'microphone')!;
-		const props = { attributes: capy, accessories: [object] };
-		expect(renderToStaticMarkup(<Image {...props} gesture="thumbs_up" />)).toBe(
-			renderToStaticMarkup(<Image {...props} />),
-		);
-	});
+	test.each(['thumbs_up', 'thumbs_down'] as const)(
+		'does not change a head portrait with %s',
+		(gesture) => {
+			expect(
+				renderToStaticMarkup(<Image attributes={capy} detail="head" gesture={gesture} />),
+			).toBe(renderToStaticMarkup(<Image attributes={capy} detail="head" />));
+		},
+	);
+	test.each(['thumbs_up', 'thumbs_down'] as const)(
+		'preserves the grip when holding an object with %s',
+		(gesture) => {
+			const object = accessories.find((accessory) => accessory.name === 'microphone')!;
+			const props = { attributes: capy, accessories: [object] };
+			expect(renderToStaticMarkup(<Image {...props} gesture={gesture} />)).toBe(
+				renderToStaticMarkup(<Image {...props} />),
+			);
+		},
+	);
 });

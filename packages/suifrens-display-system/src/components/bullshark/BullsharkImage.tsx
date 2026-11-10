@@ -6,7 +6,7 @@ import { getAccessoryLayers } from '../../helpers/accessory-layers.js';
 import { getThemeFromSkin } from '../../helpers/bullshark-theme.js';
 import type { BullsharkImageProps } from '../../types/bullshark.type.js';
 import { AccessorySlot } from '../accessories/AccessorySlot.js';
-import { ThumbsUpArm } from '../shared/arms/left/ThumbsUpArm.js';
+import { GestureArm } from '../shared/arms/left/GestureArm.js';
 import { LeftArm } from './arms/left/LeftArm.js';
 import { LeftArmPattern } from './arms/left/LeftArmPattern.js';
 import { RightArm } from './arms/right/RightArm.js';
@@ -77,7 +77,7 @@ export function BullsharkImage({
 	const colorTheme = getThemeFromSkin(skin, `#${mainColor}`, `#${secondaryColor}`);
 	const layers = getAccessoryLayers(accessoriesByType);
 	// Held objects retain their native grip and take precedence over a free-hand gesture.
-	const thumbsUp = gesture === 'thumbs_up' && !accessoriesByType['object'];
+	const freeHandGesture = accessoriesByType['object'] ? undefined : gesture;
 
 	const head = (
 		<BullsharkHead
@@ -139,11 +139,11 @@ export function BullsharkImage({
 			{!renderMicrophoneArmInForeground && (
 				<AccessorySlot accessory={accessoriesByType['object']} species="bullshark" />
 			)}
-			{!renderMicrophoneArmInForeground && !thumbsUp && leftArm}
+			{!renderMicrophoneArmInForeground && !freeHandGesture && leftArm}
 			<AccessorySlot accessory={accessoriesByType['torso']} species="bullshark" layer="right" />
 			<AccessorySlot accessory={accessoriesByType['body']} species="bullshark" layer="right" />
 			{head}
-			{thumbsUp && <ThumbsUpArm armColor={colorTheme.hands} />}
+			{freeHandGesture && <GestureArm gesture={freeHandGesture} armColor={colorTheme.hands} />}
 			{renderMicrophoneArmInForeground && (
 				<>
 					<AccessorySlot accessory={accessoriesByType['object']} species="bullshark" />

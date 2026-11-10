@@ -84,7 +84,7 @@ Run `pnpm run codegen` from the package directory after editing artwork to regen
 
 ### Gestures
 
-Use `gesture="thumbs_up"` on either image renderer or directly on `CapyImage` and `BullsharkImage`. For existing calls, rename `capyGesture` to `gesture` and the value `thumbsUp` to `thumbs_up`. The shared `SuiFrenGesture` type is available from `/types`.
+Use `gesture="thumbs_up"` or `gesture="thumbs_down"` on either image renderer or directly on `CapyImage` and `BullsharkImage`. For existing calls, rename `capyGesture` to `gesture` and the value `thumbsUp` to `thumbs_up`. The shared `SuiFrenGesture` type is available from `/types`.
 
 Full-body capys and bullsharks raise their near arm when the hand is free. A held object keeps its native grip and takes precedence over the gesture. Head portraits are unchanged.
 

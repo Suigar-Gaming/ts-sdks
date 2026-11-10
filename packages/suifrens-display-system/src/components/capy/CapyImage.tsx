@@ -6,7 +6,7 @@ import { getAccessoryLayers } from '../../helpers/accessory-layers.js';
 import { getThemeFromSkin } from '../../helpers/capy-theme.js';
 import type { CapyImageProps } from '../../types/capy.type.js';
 import { AccessorySlot } from '../accessories/AccessorySlot.js';
-import { ThumbsUpArm } from '../shared/arms/left/ThumbsUpArm.js';
+import { GestureArm } from '../shared/arms/left/GestureArm.js';
 import { LeftArm } from './arms/left/LeftArm.js';
 import { LeftArmPattern } from './arms/left/LeftArmPattern.js';
 import { RightArm } from './arms/right/RightArm.js';
@@ -96,7 +96,7 @@ export function CapyImage({
 	const layers = getAccessoryLayers(accessoriesByType);
 
 	// Held objects retain their native grip and take precedence over a free-hand gesture.
-	const thumbsUp = gesture === 'thumbs_up' && !accessoriesByType['object'];
+	const freeHandGesture = accessoriesByType['object'] ? undefined : gesture;
 	const head = (
 		<CapyHead
 			attributes={attributes}
@@ -147,7 +147,7 @@ export function CapyImage({
 				<AccessorySlot accessory={accessoriesByType['object']} species="capy" />
 			)}
 
-			{!renderMicrophoneArmInForeground && !thumbsUp && leftArm}
+			{!renderMicrophoneArmInForeground && !freeHandGesture && leftArm}
 
 			<AccessorySlot accessory={accessoriesByType['torso']} species="capy" layer="right" />
 
@@ -155,7 +155,13 @@ export function CapyImage({
 
 			{head}
 
-			{thumbsUp && <ThumbsUpArm armColor={colorTheme.arms} handColor={colorTheme.appendages} />}
+			{freeHandGesture && (
+				<GestureArm
+					gesture={freeHandGesture}
+					armColor={colorTheme.arms}
+					handColor={colorTheme.appendages}
+				/>
+			)}
 
 			{renderMicrophoneArmInForeground && (
 				<>

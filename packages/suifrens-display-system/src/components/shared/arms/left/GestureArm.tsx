@@ -3,6 +3,7 @@
 
 import { AnimatedAccessory } from '../../../../animation/AnimatedAccessory.js';
 import { getPartDefinition } from '../../../../animation/parts.js';
+import type { SuiFrenGesture } from '../../../../types/gesture.type.js';
 import {
 	matrixToString,
 	multiplyMatrix,
@@ -11,21 +12,24 @@ import {
 	translateMatrix,
 } from '../../../../utils/matrix.js';
 
-type ThumbsUpArmProps = {
+type GestureArmProps = {
+	gesture: SuiFrenGesture;
 	armColor: string;
 	handColor?: string;
 };
 
 const SHOULDER = getPartDefinition('leftArm').pivot;
-const POSE = matrixToString(
+const THUMBS_UP = multiplyMatrix(
+	multiplyMatrix(translateMatrix(-35, 35), rotateMatrix(105, SHOULDER.x, SHOULDER.y)),
 	multiplyMatrix(
-		multiplyMatrix(translateMatrix(-35, 35), rotateMatrix(105, SHOULDER.x, SHOULDER.y)),
-		multiplyMatrix(
-			scaleMatrix(-1, 1, SHOULDER.x, SHOULDER.y),
-			[2.9166107177734375, 0, 0, 2.9166107177734375, 1002.9, 1719.3],
-		),
+		scaleMatrix(-1, 1, SHOULDER.x, SHOULDER.y),
+		[2.9166107177734375, 0, 0, 2.9166107177734375, 1002.9, 1719.3],
 	),
 );
+const POSES = {
+	thumbs_up: matrixToString(THUMBS_UP),
+	thumbs_down: matrixToString(multiplyMatrix(scaleMatrix(1, -1, 0, SHOULDER.y + 35), THUMBS_UP)),
+} satisfies Record<SuiFrenGesture, string>;
 
 // Native arm length and palm volume; the thumb belongs to the same outer contour.
 const OUTLINE = `M 49.7 0 C 33.7 10.8 22.4 25.3 15.6 43.5
@@ -41,11 +45,11 @@ const HAND = `M 1.6 108.7 C 24.4 106.5 47 109 70.8 110
  C 52 162.5 44.1 166 34.8 166.3 C 25.5 166.6 17.4 163.6 10.6 157.2
  C 3.9 150.9 0.4 143.1 0.1 133.8 Z`;
 
-export function ThumbsUpArm({ armColor, handColor = armColor }: ThumbsUpArmProps) {
+export function GestureArm({ gesture, armColor, handColor = armColor }: GestureArmProps) {
 	return (
 		<AnimatedAccessory fallbackPart="leftArm">
-			<g data-suifren-gesture="thumbs-up">
-				<g transform={POSE}>
+			<g data-suifren-gesture={gesture.replace('_', '-')}>
+				<g transform={POSES[gesture]}>
 					<path fill={armColor} d={`${OUTLINE} Z`} />
 					<path fill={handColor} d={HAND} />
 					<path

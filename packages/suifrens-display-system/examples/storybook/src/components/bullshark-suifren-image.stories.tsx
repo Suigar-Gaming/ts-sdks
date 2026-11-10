@@ -191,3 +191,8 @@ export const ThumbsUp: Story = {
 		gesture: 'thumbs_up',
 	},
 };
+
+export const ThumbsDown: Story = {
+	...WithShadow,
+	args: { ...WithShadow.args, gesture: 'thumbs_down' },
+};
