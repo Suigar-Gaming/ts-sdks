@@ -39,7 +39,7 @@ type Story = StoryObj<typeof SuiFrenImageInline>;
 
 type StoryPropsWithAllExpressions = Omit<
 	ComponentProps<typeof SuiFrenImageInline>,
-	'suiFrenType' | 'attributes'
+	'attributes'
 > & {
 	attributes: Omit<CapyAttributes, 'expression'>;
 };

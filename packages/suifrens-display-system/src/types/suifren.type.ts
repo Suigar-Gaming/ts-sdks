@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react';
-import type { AccessoryMetadata, SuiFrenSpecies } from './accessory.type.js';
+import type { AccessoryMetadata } from './accessory.type.js';
 import type {
 	AnimationConfig,
 	AnimationDirection,
@@ -40,7 +40,5 @@ export type SuiFrenImageProps = {
 	animationAutoPlay?: boolean;
 	animationHoldOnComplete?: boolean;
 };
-
-export type SuiFrenType = SuiFrenSpecies;
 
 export type SuiFrenAttributes = CapyAttributes | BullsharkAttributes;

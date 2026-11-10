@@ -27,7 +27,7 @@ The root exports `SuiFrenImage`, `CapyImage` and `BullsharkImage`. Import all pu
 
 ### Migrating from the 1.x GitHub archive
 
-Move former root imports to the matching subpath before installing the beta. Use `/types` for all type-only imports.
+Move former root imports to the matching subpath before installing the beta. Use `/types` for all type-only imports. Replace `SuiFrenType` with `SuiFrenSpecies` from `@suigar/suifrens-display-system/types` and use the lowercase values `'capy'` and `'bullshark'`.
 
 | 1.x subpath     | npm replacement                                  |
 | --------------- | ------------------------------------------------ |

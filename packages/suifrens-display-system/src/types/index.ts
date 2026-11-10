@@ -46,12 +46,7 @@ export type {
 	CapySkin,
 } from './capy.type.js';
 export type { ExpressionMood } from './expression.type.js';
-export type {
-	SuiFrenAttributes,
-	SuiFrenImageProps,
-	SuiFrenRenderSize,
-	SuiFrenType,
-} from './suifren.type.js';
+export type { SuiFrenAttributes, SuiFrenImageProps, SuiFrenRenderSize } from './suifren.type.js';
 export type { VipCrownAccessoryName } from './vip-crown.type.js';
 export type { RunnerKitOptions } from './runner-kit.type.js';
 export type { SoccerTeamCountryCode, SoccerTeamKit, SoccerTeamSide } from './soccer-kit.type.js';
