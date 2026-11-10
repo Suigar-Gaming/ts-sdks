@@ -8,11 +8,11 @@ import { SuiFrenBattleSprite, useDuelScript } from '@suigar/suifrens-display-sys
 import type {
 	AnimationConfig,
 	BullsharkAttributes,
-	BullsharkExpression,
 	CapyAttributes,
 	DuelScript,
 	DuelSide,
 	PlaybackOptions,
+	SuiFrenExpression,
 } from '@suigar/suifrens-display-system/types';
 
 const SPRITE_SIZE = 240;
@@ -41,7 +41,7 @@ const MIN_RING_FIGHT_MS = 1000;
 const FINAL_VICTORY_PRESET = 'victory';
 const FINAL_VICTORY_LOOPS = 2;
 const FINAL_IDLE_PRESET = 'idle';
-const FINAL_VICTORY_EXPRESSION: BullsharkExpression = 'bigSmile';
+const FINAL_VICTORY_EXPRESSION: SuiFrenExpression = 'bigSmile';
 
 type MotionMode = 'roam' | 'fight';
 type WanderPreset = 'walk' | 'run' | 'sprint';
@@ -66,14 +66,14 @@ type FighterState = FighterSeed & {
 	wanderPreset: WanderPreset;
 	facing: 'left' | 'right';
 	animationOverride?: AnimationConfig | null;
-	expressionOverride?: BullsharkExpression;
+	expressionOverride?: SuiFrenExpression;
 };
 type ActiveFight = {
 	id: number;
 	leftId: string;
 	rightId: string;
 	winnerId: string;
-	script: DuelScript<BullsharkExpression>;
+	script: DuelScript<SuiFrenExpression>;
 	slot: number;
 };
 
@@ -93,7 +93,7 @@ const pickWanderPreset = (speed: number): WanderPreset => {
 	}
 	return 'walk';
 };
-const pickWanderExpression = (preset: WanderPreset, base: BullsharkExpression) => {
+const pickWanderExpression = (preset: WanderPreset, base: SuiFrenExpression) => {
 	if (preset === 'sprint') {
 		return 'angry';
 	}
@@ -103,9 +103,7 @@ const pickWanderExpression = (preset: WanderPreset, base: BullsharkExpression) =
 	return base;
 };
 const mirrorSide = (side: DuelSide): DuelSide => (side === 'left' ? 'right' : 'left');
-const mirrorScript = (
-	script: DuelScript<BullsharkExpression>,
-): DuelScript<BullsharkExpression> => ({
+const mirrorScript = (script: DuelScript<SuiFrenExpression>): DuelScript<SuiFrenExpression> => ({
 	...script,
 	steps: script.steps.map((step) => {
 		switch (step.type) {
@@ -245,7 +243,7 @@ const presetDurationMs = (preset: string, playback?: PlaybackOptions) => {
 	return (sequence.duration / resolveSpeed(playback)) * iterations;
 };
 
-const leftWinScript: DuelScript<BullsharkExpression> = {
+const leftWinScript: DuelScript<SuiFrenExpression> = {
 	name: 'Preset Fight',
 	steps: [
 		{
@@ -505,7 +503,7 @@ export const Duel: Story = {
 		const velocityRef = useRef({ left: 0, right: 0 });
 		const nextShiftRef = useRef({ left: 0, right: 0 });
 
-		const { state, restart, reset, stop } = useDuelScript<BullsharkExpression>({
+		const { state, restart, reset, stop } = useDuelScript<SuiFrenExpression>({
 			script: leftWinScript,
 			baseExpression: FIGHT_BASE_EXPRESSIONS,
 			maxHealth: FIGHT_MAX_HEALTH,
@@ -856,7 +854,7 @@ export const Ring: Story = {
 			return slots;
 		}, [activeFights]);
 
-		const duelSlot0 = useDuelScript<BullsharkExpression>({
+		const duelSlot0 = useDuelScript<SuiFrenExpression>({
 			script: activeFightBySlot[0]?.script ?? leftWinScript,
 			baseExpression: FIGHT_BASE_EXPRESSIONS,
 			maxHealth: FIGHT_MAX_HEALTH,
@@ -864,7 +862,7 @@ export const Ring: Story = {
 			autoStart: !isDocs && Boolean(activeFightBySlot[0]),
 			disabled: isDocs,
 		});
-		const duelSlot1 = useDuelScript<BullsharkExpression>({
+		const duelSlot1 = useDuelScript<SuiFrenExpression>({
 			script: activeFightBySlot[1]?.script ?? leftWinScript,
 			baseExpression: FIGHT_BASE_EXPRESSIONS,
 			maxHealth: FIGHT_MAX_HEALTH,

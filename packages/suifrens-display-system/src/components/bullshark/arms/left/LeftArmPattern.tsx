@@ -3,15 +3,15 @@
 
 import type { ComponentType, SVGProps } from 'react';
 import { useAnimatedPartTransform } from '../../../../hooks/use-animated-part-transform.js';
-import type { BullsharkSkin } from '../../../../types/bullshark.type.js';
+import type { SuiFrenSkin } from '../../../../types/appearance.type.js';
 import { DalmationLeftArmPattern } from './patterns/DalmationLeftArmPattern.js';
 import { SnakeLeftArmPattern } from './patterns/SnakeLeftArmPattern.js';
 
 type LeftArmPatternProps = {
-	skin: BullsharkSkin;
+	skin: SuiFrenSkin;
 } & SVGProps<SVGGElement>;
 
-const LEFT_ARM_PATTERN_COMPONENTS: Record<BullsharkSkin, ComponentType | null> = {
+const LEFT_ARM_PATTERN_COMPONENTS: Record<SuiFrenSkin, ComponentType | null> = {
 	basic: null,
 	cheetah: null,
 	fox: null,

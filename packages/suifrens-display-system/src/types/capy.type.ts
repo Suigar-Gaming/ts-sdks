@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import type { SVGProps } from 'react';
-import type { colors } from '../colors/index.js';
 import type { AccessoryMetadata } from './accessory.type.js';
+import type { SuiFrenAppearance } from './appearance.type.js';
 
 export type CapyImageProps = {
 	attributes: CapyAttributes;
@@ -14,46 +14,10 @@ export type CapyImageProps = {
 	renderMicrophoneArmInForeground?: boolean;
 };
 
-export type CapySkin =
-	| 'basic'
-	| 'cheetah'
-	| 'fox'
-	| 'panda'
-	| 'stripes'
-	| 'snake'
-	| 'lizard'
-	| 'dalmation';
-
 export type CapyEarShape = 'default' | 'quiet' | 'wild' | 'mischievous';
 
-export type CapyExpression =
-	| 'angry'
-	| 'annoyed'
-	| 'bigSmile'
-	| 'blush'
-	| 'cool'
-	| 'crying'
-	| 'happy'
-	| 'heartEyes'
-	| 'kiss'
-	| 'laughing'
-	| 'mischievous'
-	| 'relaxed'
-	| 'sad'
-	| 'shocked'
-	| 'sleepy'
-	| 'tongueOut'
-	| 'wink'
-	| 'dizzyFace'
-	| 'goofy'
-	| 'grimace';
-
-export type CapyAttributes = {
-	mainColor: keyof typeof colors;
-	secondaryColor: keyof typeof colors;
+export type CapyAttributes = SuiFrenAppearance & {
 	earShape: CapyEarShape;
-	skin: CapySkin;
-	expression: CapyExpression;
 };
 
 export type DefaultLeftEarProps = {

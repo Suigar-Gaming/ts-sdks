@@ -3,14 +3,14 @@
 
 import type { ComponentType, SVGProps } from 'react';
 import { useAnimatedPartTransform } from '../../../../hooks/use-animated-part-transform.js';
-import type { BullsharkSkin } from '../../../../types/bullshark.type.js';
+import type { SuiFrenSkin } from '../../../../types/appearance.type.js';
 import { DalmationRightLegPattern } from './patterns/DalmationRightLegPattern.js';
 
 type RightLegPatternProps = {
-	skin: BullsharkSkin;
+	skin: SuiFrenSkin;
 } & SVGProps<SVGGElement>;
 
-const RIGHT_LEG_PATTERN_COMPONENTS: Record<BullsharkSkin, ComponentType | null> = {
+const RIGHT_LEG_PATTERN_COMPONENTS: Record<SuiFrenSkin, ComponentType | null> = {
 	basic: null,
 	cheetah: null,
 	fox: null,

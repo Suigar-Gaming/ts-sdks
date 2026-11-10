@@ -1,11 +1,12 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import type { CapySkin, CapyTheme } from '../types/capy.type.js';
+import type { SuiFrenSkin } from '../types/appearance.type.js';
+import type { CapyTheme } from '../types/capy.type.js';
 import { assertUnreachable } from '../utils/assert-unreachable.js';
 
 export function getThemeFromSkin(
-	skin: CapySkin,
+	skin: SuiFrenSkin,
 	mainColor: string,
 	secondaryColor: string,
 	incognito: boolean,

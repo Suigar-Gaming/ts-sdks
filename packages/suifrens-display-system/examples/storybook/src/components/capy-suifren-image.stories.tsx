@@ -3,32 +3,10 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { type ComponentProps, useEffect, useState } from 'react';
+import { ALL_EXPRESSIONS } from '@suigar/suifrens-display-system/expressions';
 import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
-import type { CapyAttributes, CapyExpression } from '@suigar/suifrens-display-system/types';
+import type { CapyAttributes, SuiFrenExpression } from '@suigar/suifrens-display-system/types';
 import { SuiLogo } from './logos/SuiLogo.js';
-
-const allPossibleExpressions: Array<CapyExpression> = [
-	'angry',
-	'annoyed',
-	'bigSmile',
-	'blush',
-	'cool',
-	'crying',
-	'happy',
-	'heartEyes',
-	'kiss',
-	'laughing',
-	'mischievous',
-	'relaxed',
-	'sad',
-	'shocked',
-	'sleepy',
-	'tongueOut',
-	'wink',
-	'dizzyFace',
-	'goofy',
-	'grimace',
-];
 
 const meta = {
 	title: 'SuiFrenImageInline/Capy',
@@ -51,7 +29,7 @@ type StoryWithAllExpressions = StoryObj<StoryPropsWithAllExpressions>;
 export const Basic: StoryWithAllExpressions = {
 	render: ({ attributes, ...props }) => (
 		<div className="flex flex-wrap gap-2">
-			{allPossibleExpressions.map((expression) => (
+			{ALL_EXPRESSIONS.map((expression) => (
 				<div className="h-60 w-60 shrink-0" key={expression}>
 					<SuiFrenImageInline
 						attributes={{
@@ -77,12 +55,14 @@ export const Basic: StoryWithAllExpressions = {
 export const CapyTransition: StoryWithAllExpressions = {
 	// Change periodically expression and rerender the image every 2 seconds
 	render: ({ attributes, ...props }) => {
-		const [expression, setExpression] = useState<CapyExpression>('happy');
+		const [expression, setExpression] = useState<SuiFrenExpression>('happy');
 		useEffect(() => {
 			const interval = setInterval(() => {
 				const randomExpression =
-					allPossibleExpressions[Math.floor(Math.random() * allPossibleExpressions.length)];
-				setExpression(randomExpression);
+					ALL_EXPRESSIONS[Math.floor(Math.random() * ALL_EXPRESSIONS.length)];
+				if (randomExpression) {
+					setExpression(randomExpression);
+				}
 			}, 500);
 			return () => clearInterval(interval);
 		}, []);

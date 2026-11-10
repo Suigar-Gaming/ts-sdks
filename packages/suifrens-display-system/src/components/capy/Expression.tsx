@@ -3,7 +3,7 @@
 
 import type { ComponentType } from 'react';
 import { AnimatedAccessory } from '../../animation/AnimatedAccessory.js';
-import type { CapyExpression } from '../../types/capy.type.js';
+import type { SuiFrenExpression } from '../../types/appearance.type.js';
 import { AngryExpression } from './expressions/AngryExpression.js';
 import { AnnoyedExpression } from './expressions/AnnoyedExpression.js';
 import { BigSmileExpression } from './expressions/BigSmileExpression.js';
@@ -26,10 +26,10 @@ import { TongueOutExpression } from './expressions/TongueOutExpression.js';
 import { WinkExpression } from './expressions/WinkExpression.js';
 
 type ExpressionProps = {
-	expression: CapyExpression;
+	expression: SuiFrenExpression;
 };
 
-export const EXPRESSION_COMPONENTS: Record<CapyExpression, ComponentType> = {
+export const EXPRESSION_COMPONENTS: Record<SuiFrenExpression, ComponentType> = {
 	angry: AngryExpression,
 	annoyed: AnnoyedExpression,
 	bigSmile: BigSmileExpression,

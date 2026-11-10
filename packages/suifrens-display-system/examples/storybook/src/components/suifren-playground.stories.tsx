@@ -4,7 +4,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { type PointerEvent, type RefObject, useEffect, useRef, useState } from 'react';
 import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
-import type { BullsharkExpression } from '@suigar/suifrens-display-system/types';
+import type { SuiFrenExpression } from '@suigar/suifrens-display-system/types';
 import {
 	type SuiFrenActorPose,
 	type SuiFrenActorSnapshot,
@@ -90,7 +90,7 @@ function ControlButton({
 }
 
 type StageProps = {
-	state: SuiFrenActorSnapshot<BullsharkExpression>;
+	state: SuiFrenActorSnapshot<SuiFrenExpression>;
 	poseRef: RefObject<SuiFrenActorPose>;
 	title?: string;
 	note?: string;
@@ -195,7 +195,7 @@ export const ControlPadPlayground: Story = {
 			typeof window !== 'undefined' &&
 			new URLSearchParams(window.location.search).get('viewMode') === 'docs';
 
-		const { state, controls, poseRef } = useSuiFrenActor<BullsharkExpression>({
+		const { state, controls, poseRef } = useSuiFrenActor<SuiFrenExpression>({
 			bounds: { width: PLAYGROUND_WIDTH, height: PLAYGROUND_HEIGHT, padding: SPRITE_SIZE / 2 },
 			initialPosition: {
 				x: PLAYGROUND_WIDTH / 2,

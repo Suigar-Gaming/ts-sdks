@@ -3,7 +3,7 @@
 
 import type { ComponentType, SVGProps } from 'react';
 import { useAnimatedPartTransform } from '../../../hooks/use-animated-part-transform.js';
-import type { CapySkin } from '../../../types/capy.type.js';
+import type { SuiFrenSkin } from '../../../types/appearance.type.js';
 import { BasicBodyPattern } from './patterns/BasicBodyPattern.js';
 import { CheetahBodyPattern } from './patterns/CheetahBodyPattern.js';
 import { DalmationBodyPattern } from './patterns/DalmationBodyPattern.js';
@@ -14,10 +14,10 @@ import { SnakeBodyPattern } from './patterns/SnakeBodyPattern.js';
 import { StripesBodyPattern } from './patterns/StripesBodyPattern.js';
 
 type BodyPatternProps = {
-	skin: CapySkin;
+	skin: SuiFrenSkin;
 } & SVGProps<SVGGElement>;
 
-const BODY_PATTERN_COMPONENTS: Record<CapySkin, ComponentType> = {
+const BODY_PATTERN_COMPONENTS: Record<SuiFrenSkin, ComponentType> = {
 	basic: BasicBodyPattern,
 	cheetah: CheetahBodyPattern,
 	fox: FoxBodyPattern,

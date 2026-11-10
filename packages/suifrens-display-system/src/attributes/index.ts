@@ -9,3 +9,5 @@ export const earGeneToEarShape: Record<string, CapyEarShape> = {
 	ear3: 'quiet',
 	ear4: 'mischievous',
 };
+
+export { SUIFREN_SKINS } from '../constants/skins.js';

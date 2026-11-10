@@ -1,11 +1,12 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import type { BullsharkSkin, BullsharkTheme } from '../types/bullshark.type.js';
+import type { SuiFrenSkin } from '../types/appearance.type.js';
+import type { BullsharkTheme } from '../types/bullshark.type.js';
 import { assertUnreachable } from '../utils/assert-unreachable.js';
 
 export function getThemeFromSkin(
-	skin: BullsharkSkin,
+	skin: SuiFrenSkin,
 	mainColor: string,
 	secondaryColor: string,
 ): BullsharkTheme {

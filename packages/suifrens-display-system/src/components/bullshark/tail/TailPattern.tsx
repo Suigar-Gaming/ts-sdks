@@ -4,14 +4,14 @@
 import type { ComponentType, SVGProps } from 'react';
 import { AnimatedAccessory } from '../../../animation/AnimatedAccessory.js';
 import { useAnimatedPartTransform } from '../../../hooks/use-animated-part-transform.js';
-import type { BullsharkSkin } from '../../../types/bullshark.type.js';
+import type { SuiFrenSkin } from '../../../types/appearance.type.js';
 import { DalmationTailPattern } from './patterns/DalmationTailPattern.js';
 
 type TailPatternProps = {
-	skin: BullsharkSkin;
+	skin: SuiFrenSkin;
 } & SVGProps<SVGGElement>;
 
-const TAIL_PATTERN_COMPONENTS: Record<BullsharkSkin, ComponentType | null> = {
+const TAIL_PATTERN_COMPONENTS: Record<SuiFrenSkin, ComponentType | null> = {
 	basic: null,
 	cheetah: null,
 	fox: null,
