@@ -17,10 +17,8 @@ export default defineConfig({
 		types: 'src/types/index.ts',
 	},
 	format: 'esm',
-	platform: 'browser',
-	minify: true,
+	unbundle: true,
 	dts: true,
-	fixedExtension: true,
 	loader: { '.svg': 'text' },
 	inputOptions: { experimental: { resolveNewUrlToAsset: true } },
 });
