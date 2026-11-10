@@ -12,8 +12,8 @@ import { accessories } from '@suigar/suifrens-display-system/accessories';
 import { earGeneToEarShape } from '@suigar/suifrens-display-system/attributes';
 import { colors } from '@suigar/suifrens-display-system/colors';
 import {
-	POSITIVE_CAPY_EXPRESSIONS,
-	NEGATIVE_BULLSHARK_EXPRESSIONS,
+	POSITIVE_EXPRESSIONS,
+	NEGATIVE_EXPRESSIONS,
 } from '@suigar/suifrens-display-system/expressions';
 ```
 
@@ -29,7 +29,7 @@ The root exports `SuiFrenImage`, `CapyImage` and `BullsharkImage`. Import all pu
 
 Move former root imports to the matching subpath before installing the beta. Use `/types` for all type-only imports. Replace `SuiFrenType` with `SuiFrenSpecies` from `@suigar/suifrens-display-system/types` and use the lowercase values `'capy'` and `'bullshark'`.
 
-Configure both `SuiFrenImage` and `SuiFrenImageInline` through the single `animation` prop. Move `animationPreset` to `animation.preset` or `animationSequence` to `animation.sequence`. Move the remaining options into the same object as `playback`, `playState`, `direction`, `trigger`, `startAt`, `autoPlay` and `holdOnComplete`. Omit `animation` or pass `null` for a static image.
+Configure both `SuiFrenImage` and `SuiFrenImageInline` through the single `animation` prop. Move `animationPreset` to `animation.preset` or `animationSequence` to `animation.sequence`. Select exactly one source. Move the remaining options into the same object as `playback`, `playState`, `direction`, `trigger`, `startAt` and `holdOnComplete`. Omit `animation` or pass `null` for a static image.
 
 ```tsx
 <SuiFrenImage
@@ -47,6 +47,27 @@ Configure both `SuiFrenImage` and `SuiFrenImageInline` through the single `anima
 
 Use `/accessories` for the catalogue and slot lookup, `/kits` for runner and football outfit helpers, `/animation` for animation APIs, `/colors` for the palette and `/attributes` for gene mappings.
 
+Replace `autoPlay: false` with `playState: 'idle'`. Omit `playState` to start playback by default. Replace `playback.loop: true` with `playback.iterations: 'infinite'`, a numeric loop count with `iterations: count`, and `false` with one iteration (the default).
+
+Duel attacks group the acting fighter's side, preset and expression under `attacker`. The other fighter is always the target. Put the damage, reaction preset, expression and impact delay under `target`. The delay after the attack remains on the step. For victory steps, replace `loops` with `iterations` (default: five).
+
+```ts
+import type { DuelAttackStep } from '@suigar/suifrens-display-system/types';
+
+const attack = {
+	type: 'attack',
+	label: 'Left punches',
+	attacker: { side: 'left', preset: 'punch', expression: 'angry' },
+	target: { damage: 2, preset: 'hit', delayMs: 140 },
+} satisfies DuelAttackStep;
+```
+
+Both species share the same skin and expression values. Replace the species-specific skin and expression types with `SuiFrenSkin` and `SuiFrenExpression` from `/types`. Use `SUIFREN_SKINS` from `/attributes` and `ALL_EXPRESSIONS`, `POSITIVE_EXPRESSIONS` or `NEGATIVE_EXPRESSIONS` from `/expressions`.
+
+For ordinary accessories, an explicit `renderOptions.assetSrc` overrides catalogue artwork in both renderers. The inline renderer references that source directly; use a self-contained SVG data URL when exporting standalone markup.
+
+Accessory outfit settings now live under `renderOptions.kit`. Replace `runnerKit` with `kit: { type: 'runner', color, number, mirrorBib }`. For football, use `kit: { type: 'soccer', country: 'FR', side: 'away' }` or supply a custom `team` in place of `country`. The public `AccessoryKit` type is available from `/types`.
+
 ### Editing accessory artwork
 
 Edit the SVG files in `src/accessories/artwork/`. Single-layer accessories use their own filename, such as `baseball-cap.svg`. Accessories with multiple layers have a folder where `default.svg` supplies the base drawing and optional `body.svg`, `left.svg` and `right.svg` supply the layers drawn separately during animation. Crowns have their own viewport. Running and football kits use SVG templates for their colors, lettering and patterns.
@@ -57,13 +78,17 @@ Run `pnpm run codegen` from the package directory after editing artwork to regen
 
 `buildRunnerAccessories({ color: '#ec7da6', number: 3 })` from the `/kits` export supplies a native singlet, shorts, headband and running shoes for capys and bullsharks. Colors accept six-digit hex values and bibs accept integers 1–99; invalid inputs use safe defaults. Set `mirrorBib: true` when the consumer mirrors the whole character so the printed number stays readable. Shoes and shorts register each leg separately; ears and fins remain visible. Inline and asset rendering preserve the same configurable SVG geometry.
 
-### Capy thumbs-up gesture
+### Gestures
 
-Pass `capyGesture="thumbs_up"` to `SuiFrenImage` or `SuiFrenImageInline` to raise the capy's near arm with an upright thumb. The native head/body, palette and canvas stay unchanged. Head-only portraits and bullsharks ignore this option; a held object takes precedence so its original grip is preserved. Direct `CapyImage` consumers use `gesture="thumbs_up"`.
+Use `gesture="thumbs_up"` on either image renderer or directly on `CapyImage` and `BullsharkImage`. For existing calls, rename `capyGesture` to `gesture` and the value `thumbsUp` to `thumbs_up`. The shared `SuiFrenGesture` type is available from `/types`.
+
+The full-body capy raises its near arm when its hand is free. A held object keeps its grip. The bullshark accepts the same prop, with artwork currently available only for the capy.
 
 ### Running the examples
 
 Build the library once with `pnpm --filter @suigar/suifrens-display-system build`. Then run `pnpm --filter @suigar/suifrens-storybook dev` for Storybook or `pnpm --filter @suigar/suifrens-fastify dev` for the HTTP server.
+
+The Fastify SVG route validates the skin, palette colors, expression and species trait from the decoded on-chain attributes before fetching accessories. An invalid appearance returns HTTP 500. Extra trailing attributes are ignored.
 
 ### Registry distribution
 
