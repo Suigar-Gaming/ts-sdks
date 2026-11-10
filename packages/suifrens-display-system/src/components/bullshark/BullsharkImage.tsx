@@ -1,4 +1,5 @@
-// Copyright (c) Suigar
+// Original character renderer by Mysten Labs. Suigar adapted it and added gesture support.
+// Copyright (c) Suigar (modifications)
 // SPDX-License-Identifier: Apache-2.0
 
 import { AnimatedAccessory } from '../../animation/AnimatedAccessory.js';

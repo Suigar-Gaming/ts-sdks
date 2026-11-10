@@ -1,4 +1,5 @@
-// Copyright (c) Suigar
+// Original character types by Mysten Labs. Suigar extended them with gesture and rendering options.
+// Copyright (c) Suigar (modifications)
 // SPDX-License-Identifier: Apache-2.0
 
 import type { CSSProperties, ReactNode } from 'react';

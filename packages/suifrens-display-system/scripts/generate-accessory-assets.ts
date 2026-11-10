@@ -21,6 +21,8 @@ const SVG_URL_REFERENCE_PATTERN: RegExp = /url\(#([^)]+)\)/g;
 const SVG_HREF_REFERENCE_PATTERN: RegExp = /(href|xlink:href)="#([^"]+)"/g;
 const GROUP_TAG_PATTERN: RegExp = /<\/?g\b[^>]*>/g;
 const SVG_EXTENSION_PATTERN: RegExp = /\.svg$/;
+const ARTWORK_NOTICE =
+	'<!-- Adapted by Suigar from the SuiFrens Display System by Mysten Labs. -->';
 const GENERATED_HEADER = '// Copyright (c) Suigar\n// SPDX-License-Identifier: Apache-2.0\n\n';
 const GENERATED_DIR = 'src/generated';
 const OUTPUT_DIR = join(GENERATED_DIR, 'accessory-assets');
@@ -28,6 +30,7 @@ const MANIFEST_PATH = join(GENERATED_DIR, 'accessory-asset-manifest.ts');
 
 function minifySvg(markup: string): string {
 	let svg = markup
+		.replace(ARTWORK_NOTICE, '')
 		.replace(WHITESPACE_PATTERN, ' ')
 		.replace(BETWEEN_TAGS_WHITESPACE_PATTERN, '><')
 		.replace(DECIMAL_NUMBER_PATTERN, (match) => formatSvgNumber(Number(match)))
@@ -169,6 +172,9 @@ ${entries.join(',\n')}
 	if (!baseLayer) {
 		throw new Error(`Missing default SVG layer for ${name}`);
 	}
+	const notice = Object.values(layers).some((layer) => layer.includes(ARTWORK_NOTICE))
+		? ARTWORK_NOTICE
+		: '';
 	const baseContent = extractSvgContent(minifySvg(baseLayer));
 	const bodyGroup = extractGroupByRole(baseContent, 'body');
 	const rightLegGroup = extractGroupByRole(baseContent, 'backleg');
@@ -207,7 +213,7 @@ ${entries.join(',\n')}
 	const filename = `${dir}.svg`;
 	await writeFile(
 		join(OUTPUT_DIR, filename),
-		`<svg xmlns="http://www.w3.org/2000/svg">${symbols.join('')}</svg>`,
+		`<svg xmlns="http://www.w3.org/2000/svg">${notice}${symbols.join('')}</svg>`,
 	);
 	const assetId = dir.replaceAll('-', '_').replace(/^([0-9])/, '_$1');
 	MANIFEST_IMPORTS.push(`import ${assetId} from './accessory-assets/${filename}?url';`);

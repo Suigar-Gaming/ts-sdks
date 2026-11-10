@@ -1,4 +1,5 @@
-// Copyright (c) Suigar
+// Adapted by Suigar from the SuiFrens Display System by Mysten Labs.
+// Copyright (c) Suigar (modifications)
 // SPDX-License-Identifier: Apache-2.0
 
 export function CoolExpression() {

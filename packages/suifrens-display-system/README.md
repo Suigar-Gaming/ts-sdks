@@ -2,6 +2,8 @@
 
 React components for rendering and animating Suifrens capys and bullsharks with accessories and outfits.
 
+Mysten Labs created the original [SuiFrens Display System](https://github.com/MystenLabs/suifrens-display-system), including the original capy and bullshark renderers and their accessory artwork. Suigar adapted it in the [Suigar fork](https://github.com/Suigar-Gaming/suifrens-display-system) and now maintains this package in the SDK monorepo. Suigar added character gestures, animation playback, VIP crowns, and the runner and football kits. The original project and this adaptation use the [Apache License 2.0](LICENSE).
+
 ## Installation
 
 After the npm beta is published:
