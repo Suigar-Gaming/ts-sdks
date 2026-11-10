@@ -15,7 +15,7 @@ const releases = [
 ];
 
 const config: StorybookConfig = {
-	staticDirs: [{ from: '../../../../playground/public/logo', to: '/brand' }],
+	staticDirs: ['../public'],
 	stories: ['../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
 	experimental_indexers: (indexers = []) =>
 		indexers.map((indexer) => ({

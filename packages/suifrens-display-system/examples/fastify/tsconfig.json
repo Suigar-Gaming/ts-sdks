@@ -3,7 +3,6 @@
 	"compilerOptions": {
 		"rootDir": ".",
 		"outDir": "dist",
-		"tsBuildInfoFile": "node_modules/.cache/typecheck.tsbuildinfo",
 		"types": ["node", "vite/client"]
 	},
 	"include": ["src", "test", "vitest.config.ts"]

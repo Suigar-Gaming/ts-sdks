@@ -4,7 +4,6 @@
 		"rewriteRelativeImportExtensions": true,
 		"outDir": "dist",
 		"rootDir": ".",
-		"tsBuildInfoFile": "node_modules/.cache/typecheck.tsbuildinfo",
 		"types": ["node", "vite/client"]
 	},
 	"include": ["src", "scripts", "test", "doctor.config.ts", "tsdown.config.ts", "vitest.config.ts"]
