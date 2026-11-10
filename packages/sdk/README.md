@@ -1,12 +1,12 @@
 # `@suigar/sdk`
 
-Use this TypeScript SDK to build transactions for Suigar’s provably fair casino games on Sui, SweetHouse pools, NFTs, and referral claims.
+Use this TypeScript SDK to build transactions for Suigar's provably fair casino games on Sui, SweetHouse pools, NFTs, and referral claims.
 
 ## Documentation
 
-For complete SDK documentation, visit [suigar.com/docs/sdk](https://suigar.com/docs/sdk).
+See the full SDK documentation at [suigar.com/docs/sdk](https://suigar.com/docs/sdk).
 
-For Sui client, transaction, and network APIs, visit the [Sui TypeScript SDK docs](https://sdk.mystenlabs.com/).
+For Sui client, transaction and network APIs, see the [Sui TypeScript SDK docs](https://sdk.mystenlabs.com/).
 
 ## Installation
 
@@ -29,11 +29,11 @@ Runtime requirements:
 
 This SDK targets Sui TypeScript SDK 2.0+ only. Follow the official [Sui 2.0 migration guide](https://sdk.mystenlabs.com/sui/migrations/sui-2.0) if your app still uses the pre-2.0 client API.
 
-## What This Package Exposes
+## Public exports
 
 You can pass `undefined` for the optional extension fields `config`, `partner`, and `cacheTtl`, and for optional SDK transaction fields, even with `exactOptionalPropertyTypes` enabled. For example, `suigar({ partner: undefined })` and `createGameBet({ ...betOptions, betCount: undefined, metadata: undefined })` use the defaults for omitted options. If you supply a nested configuration override, its value must be valid.
 
-The package ships three public entrypoints:
+The package has three public entrypoints:
 
 - `@suigar/sdk` for the extension factory, runtime client class, and core SDK types
 - `@suigar/sdk/games` for game-specific public types
@@ -53,7 +53,7 @@ import {
 
 After registering the extension, access individual transaction builders through `client.suigar.tx`.
 
-Utility exports are available from the utils subpath:
+Import utilities from the utils subpath:
 
 ```ts
 import {
@@ -90,7 +90,7 @@ Numeric helper behavior:
 - `parseCoinType(type)` extracts the normalized first generic coin type from a Move object type string and throws `TypeError` when no coin type can be parsed
 - `parseGameDetails({ game, gameDetails })` decodes standard `BetResultEvent.game_details` byte arrays into the expected string, number, bigint, boolean, and address values while preserving the original on-chain keys
 
-Game-specific type exports are available from the dedicated `games` subpath:
+Import game-specific types from the `games` subpath:
 
 ```ts
 import { GAMES } from '@suigar/sdk/games';
@@ -105,7 +105,7 @@ import type {
 } from '@suigar/sdk/games';
 ```
 
-Current game-type subpath exports:
+The game subpath exports:
 
 - `@suigar/sdk/games`: `GAMES`, `Game`, `StandardGame`, `PvPGame`, `CoinSide`, `PvPCoinflipAction`, `CreateGameBetOptions`, `CoinflipTransactionOptions`, `KenoTransactionOptions`, `LimboTransactionOptions`, `PlinkoTransactionOptions`, `RangeTransactionOptions`, `SoccerTransactionOptions`, `WheelTransactionOptions`, `CreatePvPCoinflipTransactionOptions`, `JoinPvPCoinflipTransactionOptions`, `CancelPvPCoinflipTransactionOptions`
 
@@ -121,7 +121,7 @@ client.suigar.tx;
 client.suigar.bcs;
 ```
 
-## Quick Start
+## Quick start
 
 ```ts
 import { SuiGrpcClient } from '@mysten/sui/grpc';
@@ -145,7 +145,7 @@ const base64 = await client.suigar.serializeTransactionToBase64({
 });
 ```
 
-## Extension Registration
+## Extension registration
 
 ### `suigar(options?)`
 
@@ -153,7 +153,7 @@ Creates a named Sui client extension. By default, it registers under `client.sui
 
 The extension constructor throws `RangeError` when the connected client network is not one of the SDK's supported Sui networks.
 
-### Partner Setup
+### Partner setup
 
 Set `partner` to the wallet address that should receive on-chain attribution. The SDK prepends this address to supported bet metadata.
 
@@ -197,7 +197,7 @@ Supported override areas:
 
 Invalid configuration or missing price-info object IDs throw `TypeError`.
 
-Use `config` when the application needs to patch the NFT V1 package id, override an MVR-backed package id, patch singleton object ids, or adjust supported `sui`/`usdc` coin metadata before a new SDK release is published. Game, referral, and core bindings use `@suigar/*` MVR names by default; optional `packageIds` entries override those defaults when needed. `packageIds.nftV1` remains configured by network because it is not resolved from MVR. Each coin entry includes its price-info object id.
+Use `config` to change the NFT V1 package id, override an MVR-backed package id, change singleton object ids or adjust supported `sui`/`usdc` coin metadata before the next SDK release. Game, referral, and core bindings use `@suigar/*` MVR names by default; optional `packageIds` entries override those defaults when needed. `packageIds.nftV1` remains configured by network because it is not resolved from MVR. Each coin entry includes its price-info object id.
 
 Both supported coin keys accept the same partial metadata shape:
 
@@ -224,13 +224,13 @@ const client = new SuiGrpcClient({ network, baseUrl }).$extend(
 );
 ```
 
-If `partner` is configured, the SDK automatically writes that partner wallet address into supported on-chain bet metadata vec-maps. Bet transaction builder options may also include `metadata`, but reserved keys such as `partner` and `referrer` are ignored with a warning when provided manually.
+When `partner` is configured, the SDK writes that wallet address into supported on-chain bet metadata vec-maps. Builders also accept `metadata`. If you supply reserved keys such as `partner` or `referrer` manually, the SDK ignores them and logs a warning.
 
 `cacheTtl` controls the SDK cache for on-chain reads such as parsed game parameters. It is expressed in milliseconds and defaults to 30 minutes.
 
-## Runtime Surface
+## Client API
 
-The registered extension provides these methods and properties.
+The registered extension has these methods and properties:
 
 - `getConfig()`
 - `getGameParameters({ game, coinType, ...options })`
@@ -262,7 +262,7 @@ console.log(config.coins.sui.coinType);
 
 Returns the on-chain `Parameters<T>` object for any supported game and coin type. The return type is inferred from `game`. `coinType` is required because each game has a distinct parameters object for every supported coin.
 
-The SDK first reads the selected game's settings object from the configured SweetHouse object, then reads that game's coin-specific `Parameters<T>` object. This is useful for displaying or validating current limits such as min/max stake, house edge, or game-specific config bounds. The parsed result is cached using the extension `cacheTtl`.
+The SDK reads the selected game's settings from the configured SweetHouse object, then fetches the coin-specific `Parameters<T>` object. Use the result to display or validate current stake limits, house edge and game-specific config bounds. The extension caches the parsed result for `cacheTtl`.
 
 Float parameter fields such as `min_target_multiplier`, `max_target_multiplier`, `min_rtp`, and `max_rtp` are returned as normal JavaScript numbers. This also applies to float multipliers nested in Plinko and Wheel configs.
 
@@ -281,7 +281,7 @@ Pass `ignoreCache: true` to refresh the on-chain read and replace the cached val
 
 Builds a transaction with the configured Sui client and returns base64-encoded transaction bytes.
 
-Use this when you need a transport-safe payload for a wallet, API, or external signer.
+Use the result to send a transaction to a wallet, API or external signer.
 
 ```ts
 const base64 = await client.suigar.serializeTransactionToBase64({
@@ -291,17 +291,15 @@ const base64 = await client.suigar.serializeTransactionToBase64({
 
 ### `getPvPCoinflipGames(options?)`
 
-Lists unresolved PvP Coinflip games from the configured PvP registry.
+Lists unresolved PvP Coinflip games from the configured PvP registry for use in a lobby.
 
-The SDK reads the registry’s dynamic fields on the active network and fetches the games in bulk with `client.core.getObjects()`. When a match is joined and resolved, the Move contract removes the registry entry and deletes the live `Game` object.
-
-Use the results to display open matches in a lobby.
+The SDK reads the registry's dynamic fields on the active network and fetches the games in bulk with `client.core.getObjects()`. When a match is joined and resolved, the Move contract removes the registry entry and deletes the live `Game` object.
 
 By default, the lookup skips objects it cannot fetch or parse, including deleted games. Pass `throwOnError: true` to reject the lookup if any object fails.
 
 Each returned entry includes the parsed game fields plus a derived `coin_type` string from the underlying Move object type.
 
-When called without options, this returns the first `DEFAULT_QUERY_LIMIT` entries (`50`). Any supported `listDynamicFields()` options such as `limit`, `cursor`, or `signal` can be passed through `options`; provide `limit: DEFAULT_QUERY_LIMIT` explicitly when combining the SDK default page size with another option.
+When called without options, this returns the first `DEFAULT_QUERY_LIMIT` entries (`50`). Pass supported `listDynamicFields()` options, such as `limit`, `cursor` or `signal`, through `options`. Include `limit: DEFAULT_QUERY_LIMIT` when you want the SDK default page size alongside another option.
 
 ```ts
 import { DEFAULT_QUERY_LIMIT } from '@suigar/sdk/utils';
@@ -327,7 +325,7 @@ const games = await client.suigar.getPvPCoinflipGames({
 
 Transaction builders live under `client.suigar.tx`.
 
-### Standard Games
+### Standard games
 
 Use `createGameBet({ game, ...options })` for:
 
@@ -413,21 +411,18 @@ const rangeTx = client.suigar.tx.createGameBet({
 });
 ```
 
-> **Note:**
->
-> - `limbo` converts `targetMultiplier` with `Math.round(targetMultiplier * scale)`
-> - With the default `limbo` scale `100`, exposed as `DEFAULT_LIMBO_MULTIPLIER_SCALE`, a target multiplier of `2.5` becomes `250` on-chain
-> - `range` converts each point with `Math.round(value * scale)`
-> - `range` points are bounded by the contract limit exposed as `RANGE_POINT_LIMIT`
-> - With the default `range` scale `1_000_000`, exposed as `DEFAULT_RANGE_SCALE`, valid UI values are `0` to `100`
-> - `keno`, `plinko`, `soccer`, and `wheel` `configId` values must fit in `u8`; Keno `picks` values must fit in `u8`; `soccer` `countryId` must fit in `u16`, and `shotZoneId` must fit in `u8`
+Scaling and selection limits:
 
-> **Tip:**
->
-> - If you set `scale` to `10_000_000`, valid UI values become `0` to `10`
-> - Do not pre-scale `range` points before passing them to the SDK; pass the human value and let the SDK scale it once
+- `limbo` converts `targetMultiplier` with `Math.round(targetMultiplier * scale)`
+- With the default `limbo` scale `100`, exposed as `DEFAULT_LIMBO_MULTIPLIER_SCALE`, a target multiplier of `2.5` becomes `250` on-chain
+- `range` converts each point with `Math.round(value * scale)`
+- `range` points are bounded by the contract limit exposed as `RANGE_POINT_LIMIT`
+- With the default `range` scale `1_000_000`, exposed as `DEFAULT_RANGE_SCALE`, valid UI values are `0` to `100`
+- `keno`, `plinko`, `soccer`, and `wheel` `configId` values must fit in `u8`; Keno `picks` values must fit in `u8`; `soccer` `countryId` must fit in `u16`, and `shotZoneId` must fit in `u8`
+- If you set `scale` to `10_000_000`, valid UI values become `0` to `10`
+- Do not pre-scale `range` points before passing them to the SDK; pass the human value and let the SDK scale it once
 
-### PvP Games
+### PvP games
 
 #### PvP Coinflip
 
@@ -536,7 +531,7 @@ Deposit amounts are in the underlying coin's base units, so `10_000_000n` is 10 
 
 ### Referral claims
 
-Referrers can claim commission accrued for any supported wager coin, and separately claim their USD-denominated level-up reward in the configured dollar coin (`coins.usdc`). Each builder sets `owner` as the transaction sender and transfers the returned claim coin back to that same address.
+Referrers can claim commission for any supported wager coin. They can also claim USD-denominated level-up rewards in the configured dollar coin (`coins.usdc`). Each builder sets `owner` as the transaction sender and transfers the claim coin to that address.
 
 ```ts
 const commissionClaim = client.suigar.tx.referral.claimCommission({
@@ -589,7 +584,7 @@ const transaction = client.suigar.tx.nftV1.mint({
 
 BCS helpers live under `client.suigar.bcs`.
 
-Current exposed helpers:
+Available helpers:
 
 - `PvPCoinflipGame`
 - `BetResultEvent`
@@ -608,7 +603,7 @@ These are generated Move event decoders. Use them to parse Suigar event payloads
 - `parseCoinType(type)` extracts the normalized coin type from generic Move object type strings such as PvP Coinflip `Game<T>` and throws `TypeError` when the type string does not include a first generic coin type
 - `parseGameDetails({ game, gameDetails })` decodes `BetResultEvent.game_details` entries into the expected string, number, bigint, boolean, and address values
 
-### Parse PvP Coinflip Game Object Data
+### Parse PvP Coinflip game objects
 
 Use the generated BCS helper when you want to fetch and parse a game object:
 
@@ -621,9 +616,9 @@ const game = await client.suigar.bcs.PvPCoinflipGame.get({
 console.log(game.json);
 ```
 
-### Parse Standard Bet Result Data
+### Parse standard bet results
 
-Use the Sui client's `signAndExecuteTransaction` method with a signer supplied by a wallet or keypair, then wait for the finalized result before parsing events. Assume `client` is the configured SDK client, `accountAddress` is the connected wallet address, and `signer` implements the Sui signing interface:
+Call the Sui client's `signAndExecuteTransaction` with a wallet or keypair signer, then wait for the finalized result before parsing events. In this example, `client` is the configured SDK client, `accountAddress` is the connected wallet address, and `signer` implements the Sui signing interface:
 
 ```ts
 const tx = client.suigar.tx.createGameBet({
@@ -709,20 +704,17 @@ if (suigarEvent?.event.type === 'BetResultEvent') {
 
 When the extension is configured with `partner`, decoded event `metadata` will contain that partner wallet address under the `partner` entry.
 
-> **Important:**
->
-> - Execute or wait for the transaction with `include: { events: true }`
-> - Unwrap the core API union with `result.$kind`, `result.Transaction`, and `result.FailedTransaction`
-> - Parse emitted events from the unwrapped transaction result
-> - Use `event.bcs` for consistent decoding across transports
-> - Use `parseSuigarEvent(event)` when you want the decoded payload and game details in one step
+When decoding events:
 
-> **Tip:**
->
-> - `waitForTransaction({ digest, include: { effects: true, events: true } })` is useful when you want the finalized transaction result before decoding
-> - Pass the individual event payload to the decoder.
+- Execute or wait for the transaction with `include: { events: true }`
+- Unwrap the core API union with `result.$kind`, `result.Transaction`, and `result.FailedTransaction`
+- Parse emitted events from the unwrapped transaction result
+- Use `event.bcs` for consistent decoding across transports
+- Use `parseSuigarEvent(event)` when you want the decoded payload and game details in one step
+- `waitForTransaction({ digest, include: { effects: true, events: true } })` is useful when you want the finalized transaction result before decoding
+- Pass the individual event payload to the decoder.
 
-### Parse SweetHouse Redeem Request Data
+### Parse SweetHouse redeem requests
 
 SweetHouse emits `RedeemRequestCreatedEvent` when a redeem request is created. Decode the event payload and read `request_id` to obtain the request ID needed by `client.suigar.tx.sweetHouse.claimOwnRedeemRequestAfterDelay`:
 
@@ -777,7 +769,7 @@ for (const event of transactionResult.events ?? []) {
 
 The decoded event contains `request_id`, `player`, `coin_type.name`, `staked_amount`, and `created_at_ms`. `staked_amount` is in the selected staked coin's base units.
 
-### Parse PvP Coinflip Event Data
+### Parse PvP Coinflip events
 
 Use the matching helper for each PvP Coinflip event payload found in `transactionResult.events`:
 

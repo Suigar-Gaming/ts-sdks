@@ -1,6 +1,6 @@
 # Workspace agent instructions
 
-These instructions apply throughout the repository. Scoped instructions add package-specific rules; read the relevant file before editing that package. Commands below run from the repository root.
+These rules apply across the repository. Before editing a package, read its scoped instructions too. Run the commands below from the repository root.
 
 ## Workspace and instruction map
 
@@ -11,9 +11,9 @@ This private pnpm workspace contains three ESM-only publishable packages, a loca
 - [`packages/suifrens-display-system/AGENTS.md`](packages/suifrens-display-system/AGENTS.md): display rendering, compatibility and release validation.
 - [`playground/AGENTS.md`](playground/AGENTS.md): private `@suigar/sdk-playground` Next.js integration app.
 
-Shared dependencies and catalogs live in `pnpm-workspace.yaml`; shared compiler options live in `tsconfig.shared.json`. Package source, scripts, and tests live under their own workspace directory. `dist/` contains generated build output. Do not copy package-specific instructions into this file.
+Shared dependencies and catalogs are in `pnpm-workspace.yaml`, and shared compiler options are in `tsconfig.shared.json`. Each workspace has its own source, scripts and tests. Build output goes in `dist/`. Keep package-specific instructions in that package's file.
 
-Each instruction directory has a relative `CLAUDE.md -> AGENTS.md` symlink. Update the corresponding `AGENTS.md` rather than creating a separate copy of its instructions.
+Each instruction directory has a relative `CLAUDE.md -> AGENTS.md` symlink. Edit the corresponding `AGENTS.md`; do not create a separate copy of its instructions.
 
 ## Workspace commands
 
@@ -32,23 +32,23 @@ Use each package's scoped instructions for build, code generation, tests, and ty
 
 - The packages use Vitest 5 in the Node.js environment. Run tests through the package scripts or from the package root so its Vitest config is loaded. For `-t` filters, match an individual test name or use `.*` between suite and test names.
 - Add regression coverage near the affected behavior. Check observable results, argument normalization, configuration overrides, and actionable failures where relevant. Transaction tests should cover the applicable game or action and its generated contract-call arguments; keep standard and PvP flows separate.
-- Reuse nearby test fixtures and helpers. Mock external services and generated contract boundaries where needed, while exercising the package's own behavior. Keep tests independent of live networks and real wallet credentials; wallet bridge tests may use local loopback servers and temporary storage.
-- Vitest clears mock call history before each test by default. Reset mock implementations, module state, environment variables, timers, and resources explicitly when a test changes them; clearing call history does not reset those. Keep `vi.mock`, `vi.unmock`, and `vi.hoisted` at module scope, and use `vi.doMock` for runtime mocking. Await asynchronous assertions.
+- Reuse nearby test fixtures and helpers. Mock external services and generated contract boundaries where needed, but exercise the package's own behavior. Keep tests independent of live networks and real wallet credentials; wallet bridge tests may use local loopback servers and temporary storage.
+- Vitest clears mock call history before each test by default. If a test changes mock implementations, module state, environment variables, timers or resources, reset them explicitly. Clearing call history does not reset them. Keep `vi.mock`, `vi.unmock`, and `vi.hoisted` at module scope, and use `vi.doMock` for runtime mocking. Await asynchronous assertions.
 - Run tests and typechecks for every affected package. Package-specific test typechecks and fixtures are documented in the scoped instructions.
 
 ## Release and contribution workflow
 
-### Changeset Conventions
+### Changeset conventions
 
-- **`patch`**: Bug fixes or internal corrections that do not change the public API shape
-- **`minor`**: New public methods, new supported fields, or additive public type changes
-- **`major`**: Breaking API changes, changed behavior contracts, or removed support
+- `patch`: Bug fixes or internal corrections that do not change the public API shape
+- `minor`: New public methods, new supported fields or additive public type changes
+- `major`: Breaking API changes, changed behavior contracts or removed support
 - Changeset notes must describe only package behavior for the packages listed in the changeset frontmatter. Do not mention root-only, workspace-only, playground-only, or tooling-only changes unless they directly affect that package's published behavior.
 - Do not edit changeset files inherited from `main` or unrelated previous work. Reuse a changeset on the current branch only when its package scope and topic match the new change; otherwise create a separate changeset.
 - Split changesets by topic and by package when the changes differ. Dependency updates and type-safety changes require separate release notes. Use a package-specific changeset when the implementation or user-facing impact differs between libraries; list multiple packages together only when the same note accurately describes the same change for all of them.
-- Keep each changeset focused on one coherent release note, with the release level appropriate to each listed package. Across all branch changesets, cover every publishable package with source changes anywhere on the branch, including earlier work. Do not combine unrelated notes merely to keep one changeset per branch.
+- Keep each changeset to one topic and choose the release level for each listed package. Together, the branch changesets must cover every publishable package with source changes, including earlier work on the branch. Do not combine unrelated notes merely to keep one changeset per branch.
 
-### Development Workflow
+### Development workflow
 
 1. Update or add code in the relevant package under `packages/*/src/`
 2. If the branch modifies source files under any publishable package, ensure its `.changeset/*.md` files collectively cover every publishable package changed anywhere on the branch
@@ -58,16 +58,16 @@ Use each package's scoped instructions for build, code generation, tests, and ty
 6. Run type checking for every changed package, for example `pnpm --dir packages/sdk run typecheck` or `pnpm --dir packages/mcp run typecheck`
 7. Add or update the matching branch changeset when user-visible package behavior changes, keeping each note scoped to one topic and the package or packages listed in its frontmatter
 
-Documentation is part of the deliverable:
+Update documentation with the code:
 
 - When publishable-package behavior, public types, generated bindings, examples, or integration guidance change, update the relevant documentation in the same task without waiting for an extra prompt.
 - At minimum, review root `README.md`, the changed package's README where present, `AGENTS.md`, the relevant Suigar skills in `Suigar-Gaming/agent-skills`, and any other user-facing markdown that describes the changed behavior.
-- Treat skill updates as automatic follow-up work when their guidance overlaps the changed SDK behavior; do not wait for the user to ask explicitly.
+- Update skills whose guidance covers the SDK behavior you changed. Do not wait for a separate request.
 - If constants, helper locations, or public utility exports move, update docs and examples to use the public import path instead of internal file paths or copied values.
-- If generated bindings or public runtime ergonomics change, make sure examples and event-decoding guidance stay aligned with the current generated API.
+- When generated bindings or public runtime usage change, update examples and event-decoding guidance to match the generated API.
 - If installation or client setup guidance changes, keep examples aligned with the current APIs such as `@mysten/sui/grpc`, explicit `network`, and ESM-only package requirements.
 
-## AI Skills
+## AI skills
 
 Suigar agent skills live in the separate `Suigar-Gaming/agent-skills` repository.
 
@@ -93,7 +93,7 @@ npx skills add Suigar-Gaming/agent-skills --agent codex --global --yes
 npx skills add Suigar-Gaming/agent-skills --skill suigar-mcp --agent codex --global --yes
 ```
 
-Use these Suigar skills when the task is about building a product on top of this SDK:
+Use these Suigar skills when building a product with this SDK:
 
 - `installation` for SDK setup, client extension wiring, and config
 - `suigar-mcp` for installing, configuring, and operating the `@suigar/mcp` server and MCP App
@@ -101,7 +101,7 @@ Use these Suigar skills when the task is about building a product on top of this
 - `create-pvp-games` for PvP game flows
 - `find-skills` to discover installable external skills when users ask for capabilities or workflows that may already exist
 
-## Pull Requests
+## Pull requests
 
 When creating a PR:
 
@@ -111,7 +111,7 @@ When creating a PR:
 
 Use this format for PR descriptions:
 
-Under Notes, check what applies. The boxes are enough for AI involvement and unchanged bindings. If bindings changed, explain the impact and give the regeneration command. Add other details only if they help with the review.
+Under Notes, check the boxes that apply. The boxes are enough to report AI involvement or unchanged bindings. If bindings changed, explain the impact and include the regeneration command. Add details that help the reviewer assess the change.
 
 ```markdown
 ## Summary

@@ -14,7 +14,7 @@
 		"svg",
 		"typescript"
 	],
-	"homepage": "https://github.com/Suigar-Gaming/ts-sdks/blob/main/packages/suifrens-display-system/README.md#migrating-from-the-1x-github-archive",
+	"homepage": "https://github.com/Suigar-Gaming/ts-sdks/blob/main/packages/suifrens-display-system/README.md",
 	"bugs": {
 		"url": "https://github.com/Suigar-Gaming/ts-sdks/issues/new"
 	},
@@ -28,7 +28,8 @@
 	"files": [
 		"dist",
 		"CHANGELOG.md",
-		"README.md"
+		"README.md",
+		"MIGRATION.md"
 	],
 	"type": "module",
 	"sideEffects": false,

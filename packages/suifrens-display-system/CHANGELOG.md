@@ -10,7 +10,7 @@
 
 ### Patch Changes
 
-- dd2f7e9: Refine the capy thumbs-up into a compact forward-facing pose with a shorter integrated thumb and one continuous limb outline. Move the posed arm slightly down and left, with its wrist directed toward the belly. Preserve the normal resting pose, head portraits, bullsharks, held-object grips, native palette and foreground layering.
+- dd2f7e9: Make the capy thumbs-up pose compact and forward-facing, with a shorter integrated thumb and a continuous limb outline. Move the posed arm slightly down and left, with its wrist directed toward the belly. Preserve the normal resting pose, head portraits, bullsharks, held-object grips, native palette and foreground layering.
 
 ## 1.2.0
 
@@ -22,10 +22,10 @@
 
 ### Patch Changes
 
-- 0ace5d9: Fit running headbands to each species. Keep the capy ribbon short and curved across the front of both ear roots, lower at the near ear and rising just beyond the far ear, in full-body and head-only renders. Preserve a clear forehead, eyes and muzzle, and compact tied ends behind the near ear.
+- 0ace5d9: Fit running headbands to each species. Keep the capy ribbon short and curved across the front of both ear roots, lower at the near ear and rising just beyond the far ear, in full-body and head-only renders. Keep the forehead, eyes and muzzle clear, with compact tied ends behind the near ear.
 - 019ebb1: Anchor native capy and bullshark arm rotations at their shoulder seams instead of SVG origins. Raised arms, patterns and held accessories remain attached to the torso during celebrations and other arm animations.
-- f474fb4: Fit cream runner-singlet binding to the native garment contour: retain the neckline and add continuous inset side/hem piping beneath the animated arms. Replace detached side stripes and shoulder marks with registered fabric edges on capys and bullsharks, preserving bibs, colors and limb registration.
-- da5bb39: Allow left-hand objects to opt into foreground rendering together with the gripping arm, keeping raised trophies visible in front of the head on both species. Preserve the microphone animation's existing automatic layering.
+- f474fb4: Fit cream runner-singlet binding to the native garment contour: retain the neckline and add continuous inset side/hem piping beneath the animated arms. Replace detached side stripes and shoulder marks with fabric edges registered to capys and bullsharks. Keep bibs, colors and limb registration unchanged.
+- da5bb39: Let left-hand objects render in the foreground with the gripping arm so raised trophies stay visible in front of the head on both species. Preserve the microphone animation's existing automatic layering.
 
   Register foreground native arms and their patterns when they mount during a pose change, so held objects and the gripping hand continue to animate together.
 
@@ -33,19 +33,19 @@
 
 ### Patch Changes
 
-- d009895: Fit runner uniforms to the native body and foot silhouettes, close shirt/short seams, remove doubled outlines and detached trim, and simplify the headband joins. Preserve both species, readable bibs and independent native limb animation.
+- d009895: Fit runner uniforms to the native body and foot silhouettes. Close shirt/short seams, remove doubled outlines and detached trim, and simplify headband joins. Keep both species, readable bibs and independent native limb animation.
 
 ## 1.1.0
 
 ### Minor Changes
 
-- ffcfed5: Add configurable runner singlets with numbered bibs, shorts, headbands and running shoes for capys and bullsharks. Export buildRunnerAccessories with validated kit colors, bib numbers and optional mirrored bib compensation. Both inline and asset renderers preserve native animated joint registration.
+- ffcfed5: Add configurable runner singlets with numbered bibs, shorts, headbands and running shoes for capys and bullsharks. Export buildRunnerAccessories with validated kit colors and bib numbers, plus an option to compensate for mirrored bibs. Both inline and asset renderers preserve native animated joint registration.
 
 ## 1.0.7
 
 ### Patch Changes
 
-- 2e4f6f6: Restore the original avatar body placement and facial alignment with or without a crown. Keep the native SVG canvas unchanged and allow complete crown artwork to overflow for unframed characters; framed avatars retain their established crop. This also corrects Capy eyes and other nested SVG artwork that were scaled by the enlarged crown canvas in v1.0.6.
+- 2e4f6f6: Restore the original avatar body placement and facial alignment with or without a crown. Keep the native SVG canvas unchanged. Let complete crown artwork overflow for unframed characters, while framed avatars keep their established crop. This also corrects Capy eyes and other nested SVG artwork that were scaled by the enlarged crown canvas in v1.0.6.
 
 ## 1.0.6
 
@@ -63,7 +63,7 @@
 
 ### Patch Changes
 
-- ebd68e1: Prepare release versions and changelogs through automated Changesets pull requests, and publish the compiled GitHub archive after the version pull request is merged. Validate feature changes with pending changesets without requiring release packing.
+- ebd68e1: Prepare release versions and changelogs through automated Changesets pull requests, and publish the compiled GitHub archive after the version pull request is merged. Validate feature changes with pending changesets; release packing is not required.
 - 5033892: Fix automated GitHub release preparation by invoking Changesets versioning without shell operators being forwarded as command arguments.
 
 ## 1.0.3

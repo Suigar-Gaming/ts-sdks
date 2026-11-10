@@ -10,9 +10,9 @@
 
 ### Minor Changes
 
-- [#181](https://github.com/Suigar-Gaming/ts-sdks/pull/181) [`4a70497`](https://github.com/Suigar-Gaming/ts-sdks/commit/4a7049763b4fe614193fb6235ca60d4adc372d99) - Omit absent optional SDK configuration, package overrides, and transaction options when forwarding them to Sui clients and generated bindings, preserving defaults and compatibility with strict optional property checking. Build forwarded options directly from defined fields instead of copying and deleting undefined fields.
+- [#181](https://github.com/Suigar-Gaming/ts-sdks/pull/181) [`4a70497`](https://github.com/Suigar-Gaming/ts-sdks/commit/4a7049763b4fe614193fb6235ca60d4adc372d99) - Omit absent optional SDK configuration, package overrides and transaction options when forwarding them to Sui clients and generated bindings. This preserves defaults and compatibility with strict optional property checking. Build forwarded options from defined fields instead of copying and deleting undefined fields.
 
-  Allow explicit `undefined` for SDK-owned optional extension, transaction, and cache flags, treating it like an omitted option even with `exactOptionalPropertyTypes` enabled.
+  Accept explicit `undefined` for SDK-owned optional extension, transaction and cache flags. Treat it as an omitted option even with `exactOptionalPropertyTypes` enabled.
 
 ### Patch Changes
 
@@ -34,7 +34,7 @@
 
 ### Patch Changes
 
-- [#176](https://github.com/Suigar-Gaming/ts-sdks/pull/176) [`bf55617`](https://github.com/Suigar-Gaming/ts-sdks/commit/bf55617bcd9cc9fdbb2ceb29aced889208974ff1) - Normalize helper signatures to accept a single object when multiple values are required.
+- [#176](https://github.com/Suigar-Gaming/ts-sdks/pull/176) [`bf55617`](https://github.com/Suigar-Gaming/ts-sdks/commit/bf55617bcd9cc9fdbb2ceb29aced889208974ff1) - Use a single options object for helpers that take multiple values.
 
 - [#173](https://github.com/Suigar-Gaming/ts-sdks/pull/173) [`76ef9f6`](https://github.com/Suigar-Gaming/ts-sdks/commit/76ef9f63169029daded89276c20dac2327029bb8) - Update dependencies.
 
@@ -46,7 +46,7 @@
 
   Use an internal type assertion for SDK package and object IDs. Invalid configuration or missing price-info object IDs throw `TypeError`.
 
-  Classify MCP wallet recovery phrase validation as `TypeError`, and unsupported private-key schemes and oversized wallet bridge requests as `RangeError`. Operational failures retain generic errors.
+  Use `TypeError` for invalid MCP wallet recovery phrases and `RangeError` for unsupported private-key schemes or oversized wallet bridge requests. Keep generic errors for operational failures.
 
 ## 2.0.0-beta.42
 
@@ -66,7 +66,7 @@
 
 - [#163](https://github.com/Suigar-Gaming/ts-sdks/pull/163) [`2897773`](https://github.com/Suigar-Gaming/ts-sdks/commit/28977730f01b8df72bced4c9ea4177c4dc420182) - Rename normalized event fields from `gameId` and `eventName` to `game` and `event`, add `parseSuigarEvent` for decoded event payloads and game details, expose `toU32` from SDK numeric utilities, and update MCP dry-run event summaries to expose `event`.
 
-- [#159](https://github.com/Suigar-Gaming/ts-sdks/pull/159) [`e3c787b`](https://github.com/Suigar-Gaming/ts-sdks/commit/e3c787bf028c5f0bcce051077e8506d6605a16a6) - Narrow PvP Coinflip cancel transaction inputs so `cancelGame` no longer accepts `metadata` or `useGasCoin`, since cancellation does not create a bet coin or write metadata on-chain. The MCP cancel transaction tool schema now follows the same narrower shape.
+- [#159](https://github.com/Suigar-Gaming/ts-sdks/pull/159) [`e3c787b`](https://github.com/Suigar-Gaming/ts-sdks/commit/e3c787bf028c5f0bcce051077e8506d6605a16a6) - Remove `metadata` and `useGasCoin` from PvP Coinflip `cancelGame` inputs because cancellation neither creates a bet coin nor writes on-chain metadata. Apply the same inputs to the MCP cancel tool schema.
 
 ### Minor Changes
 
@@ -86,7 +86,7 @@
 
 ### Minor Changes
 
-- [#158](https://github.com/Suigar-Gaming/ts-sdks/pull/158) [`e82da77`](https://github.com/Suigar-Gaming/ts-sdks/commit/e82da77a0b0b2d937b8396a48c7a0a396f17ac3e) - Treat non-positive `cacheTtl` values as disabling SDK-managed game parameter caching and route TTL cache reads through a shared internal cache helper.
+- [#158](https://github.com/Suigar-Gaming/ts-sdks/pull/158) [`e82da77`](https://github.com/Suigar-Gaming/ts-sdks/commit/e82da77a0b0b2d937b8396a48c7a0a396f17ac3e) - Disable SDK game parameter caching for non-positive `cacheTtl` values. Route TTL cache reads through a shared internal helper.
 
   Add `SuigarClient.reset()` to clear cached SDK reads for the extension instance.
 
@@ -102,13 +102,13 @@
 
 ### Major Changes
 
-- [#147](https://github.com/Suigar-Gaming/ts-sdks/pull/147) [`0444640`](https://github.com/Suigar-Gaming/ts-sdks/commit/0444640b69aa7f3efa8e75adf90387ed181f8d68) - Convert public SDK helpers, including `createGameBet`, to single options object signatures for Mysten-style calls.
+- [#147](https://github.com/Suigar-Gaming/ts-sdks/pull/147) [`0444640`](https://github.com/Suigar-Gaming/ts-sdks/commit/0444640b69aa7f3efa8e75adf90387ed181f8d68) - Change public SDK helpers, including `createGameBet`, to take a single options object, following Mysten conventions.
 
   Update MCP transaction and read tooling to call the new SDK object signatures.
 
 ### Patch Changes
 
-- [#150](https://github.com/Suigar-Gaming/ts-sdks/pull/150) [`22b810f`](https://github.com/Suigar-Gaming/ts-sdks/commit/22b810f2208c9165cca3131d081d145a187c2cb8) - Refactor the internal on-chain game parameters registry type for clearer SDK game settings definitions.
+- [#150](https://github.com/Suigar-Gaming/ts-sdks/pull/150) [`22b810f`](https://github.com/Suigar-Gaming/ts-sdks/commit/22b810f2208c9165cca3131d081d145a187c2cb8) - Refactor the internal on-chain game parameters registry type to clarify SDK game settings definitions.
 
 - [#149](https://github.com/Suigar-Gaming/ts-sdks/pull/149) [`a4a3772`](https://github.com/Suigar-Gaming/ts-sdks/commit/a4a377257285446714d73f0b3cb66b79671b7cac) - Keep NFT V1 mint and PvP Coinflip join transaction builders responsible for resolving their own payment coins from the configured client.
 
@@ -116,7 +116,7 @@
 
 ### Patch Changes
 
-- 0ef83b8: Refresh SDK and MCP discovery text with Suigar casino, AI agent, Sui, NFT, and referral keywords.
+- 0ef83b8: Update SDK and MCP discovery text with Suigar casino, AI agent, Sui, NFT and referral keywords.
 
 ## 2.0.0-beta.35
 
@@ -144,11 +144,11 @@
 
 ### Minor Changes
 
-- 3335aa7: Add composable and complete referrer commission and level-up USD reward claim transactions.
+- 3335aa7: Add referrer commission and level-up USD reward claim transactions, both composable and complete.
 
   Add referral commission and level-up USD reward reads plus unsigned claim transaction builders.
 
-- e029500: Refresh compatibility with the latest supported Mysten Sui libraries.
+- e029500: Update compatibility with the latest supported Mysten Sui libraries.
 
 ### Patch Changes
 
@@ -207,13 +207,13 @@
 ### Patch Changes
 
 - 444436a: Update package compatibility with the latest supported Mysten libraries.
-- a36cf76: Harden SDK numeric error formatting for unusual invalid values and keep async TTL cache refresh behavior explicit under type-aware linting.
+- a36cf76: Handle unusual invalid values safely in SDK numeric error formatting. Make async TTL cache refresh behavior explicit for type-aware linting.
 
 ## 2.0.0-beta.24
 
 ### Patch Changes
 
-- f1c285f: Align package compatibility with the latest supported Mysten libraries.
+- f1c285f: Update package compatibility with the latest supported Mysten libraries.
 
 ## 2.0.0-beta.23
 
@@ -261,7 +261,7 @@
 
 ### Minor Changes
 
-- 10f49e2: Bump the SDK's `@mysten/sui` dependency to the latest shared workspace minor release and align the package metadata and lockfile with that update.
+- 10f49e2: Bump the SDK's `@mysten/sui` dependency to the latest shared workspace minor release and update the package metadata and lockfile to match.
 
 ## 2.0.0-beta.18
 
@@ -320,7 +320,7 @@
 
   The lookup first reads the selected game's settings object from SweetHouse, then reads that game's coin-specific `Parameters<T>` object, parses it with the correct return type for the requested game, and caches the result for SDK integrations that need to display or validate current game limits without repeatedly querying the same on-chain objects.
 
-  This update also broadens the public numeric helpers in `@suigar/sdk/utils`: `toBigInt()` accepts booleans and non-negative integer strings in addition to numbers and `bigint`, `toU8()` accepts plain integer strings such as `'1'` for parsed config ids and other `u8` values, and `toU16()` provides the same validation pattern for `u16` values.
+  Expand the public numeric helpers in `@suigar/sdk/utils`: `toBigInt()` accepts booleans and non-negative integer strings in addition to numbers and `bigint`, `toU8()` accepts plain integer strings such as `'1'` for parsed config ids and other `u8` values, and `toU16()` provides the same validation pattern for `u16` values.
 
 ## 2.0.0-beta.10
 
@@ -344,7 +344,7 @@
 ### Patch Changes
 
 - 0292edb: Rename transaction builder option `owner` to `playerAddress` and remove the separate `sender` option so all game transactions use a single explicit player address.
-- 20311be: Improve the public JSDoc for `parseGameDetails`, `toBigInt`, and `toU8` so the generated API surface explains their coercion, validation, and decoding behavior more clearly.
+- 20311be: Clarify coercion, validation and decoding in the public JSDoc for `parseGameDetails`, `toBigInt` and `toU8` and the generated API documentation.
 - a2aa324: Update PvP Coinflip lookup helpers to use bulk object reads for unresolved lobby discovery and support forwarded lookup options.
   - Make `getPvPCoinflipGames()` parse bulk `client.core.getObjects()` results instead of resolving each game individually.
   - Skip per-object fetch or parse failures by default and continue supporting strict rejection with `throwOnError: true`.
@@ -369,7 +369,7 @@
 
 - bf98e0a: Update PvP Coinflip registry lookups so `getPvPCoinflipGames()` can skip individual game resolution failures by default while still supporting `rejectOnError: true` for strict rejection.
   - Document the `rejectOnError` behavior in the public JSDoc and README examples.
-  - Clarify repo guidance and skill documentation to distinguish general PvP game guidance from the current PvP Coinflip-specific runtime surface.
+  - Separate general PvP guidance from the current PvP Coinflip API in repo guidance and skill documentation.
 
 ## 2.0.0-beta.4
 
@@ -388,9 +388,9 @@
 - b89d0b4: Add a public `@suigar/sdk/games` export subpath for shared game option types, and export `SuigarClient` from the package root.
 - bf1f71b: Add `registryIds` to `SuigarConfig` and resolve them from the network config registry map.
 
-  Document the PvP Coinflip runtime helpers more clearly by describing registry-backed unresolved game discovery through `getPvPCoinflipGames()` and the normalized live-game lookup behavior of `resolvePvPCoinflipGame()`.
+  Document how `getPvPCoinflipGames()` finds unresolved games through the registry and how `resolvePvPCoinflipGame()` normalizes live-game lookups.
 
-- 4861f55: Add public utility exports for shared scaling constants in `@suigar/sdk/utils`, including `RANGE_POINT_LIMIT` and `DEFAULT_RANGE_SCALE`. Update the SDK example app and documentation to use the exported constants and document limbo/range scaling behavior more clearly.
+- 4861f55: Add public utility exports for shared scaling constants in `@suigar/sdk/utils`, including `RANGE_POINT_LIMIT` and `DEFAULT_RANGE_SCALE`. Use the exported constants in the SDK example app and documentation, and clarify limbo/range scaling.
 
 ## 2.0.0-beta.3
 
