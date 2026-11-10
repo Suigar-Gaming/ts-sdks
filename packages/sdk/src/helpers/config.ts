@@ -50,17 +50,14 @@ export function resolveSuigarConfig({
 	const objectIds = OBJECT_IDS[network];
 	const coins = COINS[network];
 
-	const resolvedCoins = getSupportedCoins(coins).reduce(
-		(result, coin) => {
-			result[coin] = resolveCoinMetadata({
-				coin,
-				coinMetadata: coins[coin],
-				configCoinMetadata: config.coins?.[coin],
-			});
-			return result;
-		},
-		{} as SuigarConfig['coins'],
-	);
+	const resolvedCoins = getSupportedCoins(coins).reduce<SuigarConfig['coins']>((result, coin) => {
+		result[coin] = resolveCoinMetadata({
+			coin,
+			coinMetadata: coins[coin],
+			configCoinMetadata: config.coins?.[coin],
+		});
+		return result;
+	}, Object.create(null));
 	const resolvedPackageIds = { ...packageIds, ...config.packageIds };
 	const resolvedObjectIds = { ...objectIds, ...config.objectIds };
 

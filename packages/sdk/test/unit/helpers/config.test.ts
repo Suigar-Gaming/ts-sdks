@@ -12,6 +12,21 @@ import {
 import { resolvePriceInfoObjectId, resolveSuigarConfig } from '../../../src/helpers/index.js';
 
 describe('resolveSuigarConfig', () => {
+	it.each(['testnet', 'mainnet'] as const)(
+		'returns only supported own coin entries without inherited properties on %s',
+		(network) => {
+			const { coins } = resolveSuigarConfig({ network });
+
+			expect(Object.getPrototypeOf(coins)).toBeNull();
+			expect(Object.keys(coins)).toEqual(Object.keys(COINS[network]));
+			expect(Object.hasOwn(coins, 'sui')).toBe(true);
+			expect(Object.hasOwn(coins, 'usdc')).toBe(true);
+			expect(Reflect.get(coins, 'constructor')).toBeUndefined();
+			expect(Reflect.get(coins, '__proto__')).toBeUndefined();
+			expect(JSON.parse(JSON.stringify(coins))).toEqual({ sui: coins.sui, usdc: coins.usdc });
+		},
+	);
+
 	it('resolves NFT package ids and default coin types', () => {
 		const config = resolveSuigarConfig({ network: 'testnet' });
 
