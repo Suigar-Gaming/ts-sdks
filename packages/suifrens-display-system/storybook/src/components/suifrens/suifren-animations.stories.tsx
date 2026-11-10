@@ -3,7 +3,6 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { accessories } from '@suigar/suifrens-display-system/accessories';
-import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
 import { PRESET_CATALOG, type PresetCatalogEntry } from '../../animation/preset-catalog.js';
 import { CatalogueDocs } from '../CatalogueDocs.js';
 import { CataloguePreview } from './CataloguePreview.js';
@@ -27,14 +26,13 @@ function PresetPreview({ preset }: { preset: PresetCatalogEntry }) {
 
 const meta = {
 	title: 'Suifrens/Animations/Presets',
-	component: SuiFrenImageInline,
-	parameters: { docs: { page: CatalogueDocs } },
+	parameters: { controls: { disable: true }, docs: { page: CatalogueDocs } },
 	tags: ['1.0.2'],
-} satisfies Meta<typeof SuiFrenImageInline>;
+} satisfies Meta;
 
 export default meta;
 
-type Story = StoryObj<typeof SuiFrenImageInline>;
+type Story = StoryObj<typeof meta>;
 
 export const Presets: Story = {
 	render: () => (

@@ -3,21 +3,19 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { accessories } from '@suigar/suifrens-display-system/accessories';
-import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
 import { accessoryLabel } from '../../utils/accessory-label.js';
 import { CatalogueDocs } from '../CatalogueDocs.js';
 import { CataloguePreview } from './CataloguePreview.js';
 
 const meta = {
 	title: 'Suifrens/Accessories/Catalogue',
-	component: SuiFrenImageInline,
-	parameters: { docs: { page: CatalogueDocs } },
+	parameters: { controls: { disable: true }, docs: { page: CatalogueDocs } },
 	tags: ['1.0.0'],
-} satisfies Meta<typeof SuiFrenImageInline>;
+} satisfies Meta;
 
 export default meta;
 
-type Story = StoryObj<typeof SuiFrenImageInline>;
+type Story = StoryObj<typeof meta>;
 
 export const AllAccessories: Story = {
 	tags: ['!1.0.0', '1.0.2'],

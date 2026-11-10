@@ -54,14 +54,14 @@ function buildTeamGear(country: SoccerTeamCountryCode, side: SoccerTeamSide = 'h
 }
 
 const meta = {
-	title: 'Suifrens/Kits/Soccer Team Kit',
-	component: SuiFrenImageInline,
+	title: 'Suifrens/Accessories/Kits/Soccer Team Kit',
+	parameters: { controls: { disable: true } },
 	tags: ['1.0.3'],
-} satisfies Meta<typeof SuiFrenImageInline>;
+} satisfies Meta;
 
 export default meta;
 
-type Story = StoryObj<typeof SuiFrenImageInline>;
+type Story = StoryObj<typeof meta>;
 
 export const AllCountries: Story = {
 	render: () => (

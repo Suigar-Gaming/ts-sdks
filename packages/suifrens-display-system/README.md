@@ -204,6 +204,8 @@ pnpm --filter @suigar/suifrens-storybook dev
 
 Install the test browser once with `pnpm --filter @suigar/suifrens-storybook exec playwright install --only-shell chromium`. In Storybook, use the testing widget to run component, interaction and accessibility tests. Use `pnpm --filter @suigar/suifrens-storybook test:coverage` to run the full suite, including the light and dark portrait screenshot comparisons. Open `storybook/coverage/index.html` for the coverage report.
 
+Story definitions use `satisfies Meta<typeof Component>` and `StoryObj<typeof meta>` when exposing component props. Species-specific character previews use their custom argument types. Fixed composite demos use `satisfies Meta` without a component annotation and hide Controls; the accessory and animation catalogue docs also omit the Controls block. Keep Controls enabled only for arguments the rendered preview actually consumes.
+
 The HTTP rendering server lives in `examples/fastify/`:
 
 ```bash

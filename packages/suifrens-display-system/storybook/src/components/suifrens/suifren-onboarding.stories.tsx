@@ -8,8 +8,9 @@ import { CataloguePreview } from './CataloguePreview.js';
 
 const meta = {
 	title: 'Suifrens/Onboarding',
+	component: Onboarding,
 	tags: ['!autodocs'],
-} satisfies Meta;
+} satisfies Meta<typeof Onboarding>;
 
 export default meta;
 
@@ -46,7 +47,7 @@ const steps = [
 			/>
 		),
 		link: 'Open Runner Kit',
-		story: 'suifrens-kits-runner-kit--runners',
+		story: 'suifrens-accessories-kits-runner-kit--runners',
 	},
 ];
 
@@ -98,4 +99,4 @@ function Onboarding() {
 	);
 }
 
-export const GettingStarted: StoryObj = { render: () => <Onboarding /> };
+export const GettingStarted: StoryObj<typeof meta> = { render: () => <Onboarding /> };

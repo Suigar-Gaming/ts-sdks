@@ -2,19 +2,20 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { ComponentProps } from 'react';
 import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
 import { buildRunnerAccessories } from '@suigar/suifrens-display-system/kits';
 import { imageControls } from './character-controls.js';
 import { KitRendererComparison } from './KitRendererComparison.js';
 
-const meta: Meta<typeof SuiFrenImageInline> = {
-	title: 'Suifrens/Kits/Runner Kit',
-	component: SuiFrenImageInline,
+const meta = {
+	title: 'Suifrens/Accessories/Kits/Runner Kit',
+	component: RunnerKitPreview,
 	argTypes: imageControls,
 	tags: ['1.1.0'],
-};
+} satisfies Meta<typeof RunnerKitPreview>;
 export default meta;
-type Story = StoryObj<typeof SuiFrenImageInline>;
+type Story = StoryObj<typeof meta>;
 const runners = [
 	{
 		label: 'Capy',
@@ -40,8 +41,10 @@ const runners = [
 	},
 ] as const;
 
-export const Runners: Story = {
-	render: (props) => (
+function RunnerKitPreview(
+	props: Omit<ComponentProps<typeof SuiFrenImageInline>, 'attributes' | 'accessories'>,
+) {
+	return (
 		<div className="story-panel grid max-w-2xl grid-cols-2 gap-3">
 			{runners.map(({ label, attributes, accessories }) => (
 				<figure key={label} className="story-tile grid justify-items-center gap-2 p-3">
@@ -57,8 +60,10 @@ export const Runners: Story = {
 				</figure>
 			))}
 		</div>
-	),
-};
+	);
+}
+
+export const Runners: Story = {};
 
 export const CompareSvgRenderers: Story = {
 	name: 'Compare SVG Renderers',

@@ -42,7 +42,15 @@ const preview: Preview = {
 			storySort: {
 				order: [
 					'Suifrens',
-					['Onboarding', 'Characters', 'Accessories', 'Kits', '*', 'Playground', ['Sandbox']],
+					[
+						'Onboarding',
+						'Characters',
+						'Accessories',
+						['Catalogue', '*', 'Kits'],
+						'*',
+						'Playground',
+						['Sandbox'],
+					],
 				],
 			},
 		},

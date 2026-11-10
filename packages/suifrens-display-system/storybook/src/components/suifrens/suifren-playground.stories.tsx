@@ -29,13 +29,13 @@ const baseAttributes = {
 
 const meta = {
 	title: 'Suifrens/Playground/Sandbox',
-	component: SuiFrenImageInline,
+	parameters: { controls: { disable: true } },
 	tags: ['1.0.2'],
-} satisfies Meta<typeof SuiFrenImageInline>;
+} satisfies Meta;
 
 export default meta;
 
-type Story = StoryObj<typeof SuiFrenImageInline>;
+type Story = StoryObj<typeof meta>;
 
 type DirectionKey = 'up' | 'down' | 'left' | 'right';
 

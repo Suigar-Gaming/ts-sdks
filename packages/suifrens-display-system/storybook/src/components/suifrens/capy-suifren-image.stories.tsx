@@ -27,7 +27,7 @@ const meta = {
 
 export default meta;
 
-type Story = StoryObj<Args>;
+type Story = StoryObj<typeof meta>;
 
 export const Basic: Story = {
 	argTypes: { expression: { table: { disable: true } } },

@@ -1,7 +1,7 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import { Controls, Description, Primary, Subtitle, Title } from '@storybook/addon-docs/blocks';
+import { Description, Primary, Subtitle, Title } from '@storybook/addon-docs/blocks';
 
 export function CatalogueDocs() {
 	return (
@@ -10,7 +10,6 @@ export function CatalogueDocs() {
 			<Subtitle />
 			<Description />
 			<Primary />
-			<Controls />
 		</>
 	);
 }

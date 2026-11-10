@@ -417,13 +417,13 @@ const FIGHT_SLOT_COUNT = Math.min(
 
 const meta = {
 	title: 'Suifrens/Playground/Battle Royale',
-	component: SuiFrenBattleSprite,
+	parameters: { controls: { disable: true } },
 	tags: ['beta'],
-} satisfies Meta<typeof SuiFrenBattleSprite>;
+} satisfies Meta;
 
 export default meta;
 
-type Story = StoryObj<typeof SuiFrenBattleSprite>;
+type Story = StoryObj<typeof meta>;
 
 function BattleControls({
 	onStart,

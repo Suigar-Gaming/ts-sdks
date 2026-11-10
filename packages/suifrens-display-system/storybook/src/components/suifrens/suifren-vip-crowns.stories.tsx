@@ -84,13 +84,13 @@ const MOTION_VARIANTS = [
 
 const meta = {
 	title: 'Suifrens/Accessories/VIP Crowns',
-	component: SuiFrenImageInline,
+	parameters: { controls: { disable: true } },
 	tags: ['1.0.3'],
-} satisfies Meta<typeof SuiFrenImageInline>;
+} satisfies Meta;
 
 export default meta;
 
-type Story = StoryObj<typeof SuiFrenImageInline>;
+type Story = StoryObj<typeof meta>;
 
 export const ClippingCheck: Story = {
 	tags: ['!1.0.3', '1.0.6'],
