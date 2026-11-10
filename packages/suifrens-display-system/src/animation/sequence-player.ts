@@ -10,15 +10,9 @@ import type {
 	PlaybackOptions,
 } from '../types/animation.type.js';
 import { getEasing } from '../utils/easing.js';
+import { interpolatePartPose } from './interpolate-part-pose.js';
 
 const EPSILON = 0.0001;
-
-function interpolateScaleAxis(start: number, end: number, eased: number): number {
-	if (start * end < 0) {
-		return eased < 0.5 ? start : end;
-	}
-	return start + (end - start) * eased;
-}
 
 export function normalizePlayback(playback?: PlaybackOptions): NormalizedPlayback {
 	return {
@@ -64,37 +58,7 @@ export function interpolatePose(track: AnimationTrack, time: number): PartPose |
 	const easing = getEasing(next.ease ?? previous.ease);
 	const eased = easing(Math.min(Math.max(localProgress, 0), 1));
 
-	const pose: PartPose = {};
-
-	if (previous.pose.rotate !== undefined || next.pose.rotate !== undefined) {
-		const start = previous.pose.rotate ?? 0;
-		const end = next.pose.rotate ?? 0;
-		pose.rotate = start + (end - start) * eased;
-	}
-
-	if (previous.pose.translate || next.pose.translate) {
-		const start = previous.pose.translate ?? { x: 0, y: 0 };
-		const end = next.pose.translate ?? { x: 0, y: 0 };
-		pose.translate = {
-			x: start.x + (end.x - start.x) * eased,
-			y: start.y + (end.y - start.y) * eased,
-		};
-	}
-
-	if (previous.pose.scale || next.pose.scale) {
-		const start = previous.pose.scale ?? { x: 1, y: 1 };
-		const end = next.pose.scale ?? { x: 1, y: 1 };
-		const startX = start.x ?? 1;
-		const startY = start.y ?? 1;
-		const endX = end.x ?? 1;
-		const endY = end.y ?? 1;
-		pose.scale = {
-			x: interpolateScaleAxis(startX, endX, eased),
-			y: interpolateScaleAxis(startY, endY, eased),
-		};
-	}
-
-	return pose;
+	return interpolatePartPose(previous.pose, next.pose, eased) ?? {};
 }
 
 export function interpolateSequencePoses(
