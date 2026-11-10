@@ -1594,27 +1594,27 @@ const TALK_MICROPHONE_SEQUENCE: AnimationSequence = {
 			keyframes: [
 				{
 					at: 0,
-					pose: { rotate: -50, translate: { x: -4, y: 74 } },
+					pose: { rotate: -50, translate: { x: -4, y: 26 } },
 					ease: 'easeInOut',
 				},
 				{
 					at: 220,
-					pose: { rotate: -56, translate: { x: -2, y: 68 } },
+					pose: { rotate: -56, translate: { x: -2, y: 20 } },
 					ease: 'easeInOut',
 				},
 				{
 					at: 560,
-					pose: { rotate: -52, translate: { x: -3, y: 71 } },
+					pose: { rotate: -52, translate: { x: -3, y: 23 } },
 					ease: 'easeInOut',
 				},
 				{
 					at: 920,
-					pose: { rotate: -46, translate: { x: -5, y: 78 } },
+					pose: { rotate: -46, translate: { x: -5, y: 30 } },
 					ease: 'easeInOut',
 				},
 				{
 					at: TALK_MICROPHONE_DURATION,
-					pose: { rotate: -50, translate: { x: -4, y: 74 } },
+					pose: { rotate: -50, translate: { x: -4, y: 26 } },
 					ease: 'easeInOut',
 				},
 			],
