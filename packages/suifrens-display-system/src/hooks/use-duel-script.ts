@@ -130,11 +130,9 @@ export function useDuelScript<TExpression extends string = string>({
 
 	const commit = useCallback(
 		(updater: (prev: DuelState<TExpression>) => DuelState<TExpression>) => {
-			setState((prev) => {
-				const next = updater(prev);
-				stateRef.current = next;
-				return next;
-			});
+			const next = updater(stateRef.current);
+			stateRef.current = next;
+			setState(next);
 		},
 		[],
 	);
@@ -367,7 +365,9 @@ export function useDuelScript<TExpression extends string = string>({
 				}
 			}
 
-			setPhase('Complete');
+			if (!signal.aborted) {
+				setPhase('Complete');
+			}
 		} catch (error) {
 			if ((error as Error)?.name !== 'AbortError') {
 				setPhase('Error');
@@ -376,7 +376,10 @@ export function useDuelScript<TExpression extends string = string>({
 				console.error(error);
 			}
 		} finally {
-			commit((prev) => ({ ...prev, running: false }));
+			if (controllerRef.current === controller) {
+				controllerRef.current = null;
+				commit((prev) => ({ ...prev, running: false }));
+			}
 		}
 	}, [
 		applyDamage,
