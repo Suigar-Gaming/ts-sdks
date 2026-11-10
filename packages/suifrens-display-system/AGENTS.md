@@ -1,6 +1,6 @@
 # Suifrens Display System
 
-Preserve the documented public entry points, both species, React 18.2 and 19 refs, and inline and external SVG rendering. Regenerate assets through the package build. Storybook controls and the Fastify server live under `examples/` and use public package exports.
+Preserve the documented public entry points, both species, React 18.2 and 19 refs, and inline and external SVG rendering. Regenerate assets through the package build. Storybook controls live under `storybook/`, alongside `src/` and `test/`. The Fastify server lives under `examples/fastify/`. Both use public package exports.
 
 Use kebab-case filenames for non-component modules and PascalCase for React components.
 

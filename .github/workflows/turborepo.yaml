@@ -101,5 +101,5 @@ jobs:
         shell: bash
         run: pnpm turbo run build --filter='./playground'
 
-      - name: Validate display examples
-        run: pnpm turbo run build test typecheck --filter='./packages/suifrens-display-system/examples/*'
+      - name: Validate display Storybook and examples
+        run: pnpm turbo run build test typecheck --filter='./packages/suifrens-display-system/examples/*' --filter='./packages/suifrens-display-system/storybook'

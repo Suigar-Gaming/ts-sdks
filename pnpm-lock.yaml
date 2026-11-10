@@ -478,11 +478,11 @@ importers:
         specifier: catalog:tooling
         version: 5.1.0(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(happy-dom@21.0.4)(vite@8.3.6(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
 
-  packages/suifrens-display-system/examples/storybook:
+  packages/suifrens-display-system/storybook:
     dependencies:
       '@suigar/suifrens-display-system':
         specifier: workspace:*
-        version: link:../..
+        version: link:..
     devDependencies:
       '@chromatic-com/storybook':
         specifier: ^5.6.0

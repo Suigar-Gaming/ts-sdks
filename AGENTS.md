@@ -4,7 +4,7 @@ These instructions apply throughout the repository. Scoped instructions add pack
 
 ## Workspace and instruction map
 
-This private pnpm workspace contains three ESM-only publishable packages, a local integration app and two private display examples:
+This private pnpm workspace contains three ESM-only publishable packages, a local integration app, a private Storybook workspace and a private Fastify example:
 
 - [`packages/sdk/AGENTS.md`](packages/sdk/AGENTS.md): `@suigar/sdk`, public SDK APIs, transaction builders, generated Move bindings, configuration, and SDK tests.
 - [`packages/mcp/AGENTS.md`](packages/mcp/AGENTS.md): `@suigar/mcp`, stdio protocol, tools, wallet bridges, inspector App, and MCP tests.

@@ -88,7 +88,9 @@ Use `gesture="thumbs_up"` or `gesture="thumbs_down"` on either image renderer or
 
 Full-body capys and bullsharks raise their near arm when the hand is free. A held object keeps its native grip and takes precedence over the gesture. Head portraits are unchanged.
 
-### Running the examples
+### Running Storybook and the Fastify example
+
+Storybook lives in `storybook/`, alongside `src/` and `test/`. The HTTP server example lives in `examples/fastify/`.
 
 Build the library once with `pnpm --filter @suigar/suifrens-display-system build`. Then run `pnpm --filter @suigar/suifrens-storybook dev` for Storybook or `pnpm --filter @suigar/suifrens-fastify dev` for the HTTP server.
 
