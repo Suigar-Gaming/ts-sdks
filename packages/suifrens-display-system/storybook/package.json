@@ -1,6 +1,5 @@
 {
 	"name": "@suigar/suifrens-storybook",
-	"version": "0.0.0",
 	"private": true,
 	"type": "module",
 	"scripts": {
@@ -12,9 +11,6 @@
 		"test:visual": "vitest run --project visual",
 		"typecheck": "tsc"
 	},
-	"dependencies": {
-		"@suigar/suifrens-display-system": "workspace:*"
-	},
 	"devDependencies": {
 		"@storybook/addon-a11y": "^10.6.6",
 		"@storybook/addon-docs": "^10.6.6",
@@ -22,6 +18,7 @@
 		"@storybook/addon-vitest": "^10.6.6",
 		"@storybook/react": "^10.6.6",
 		"@storybook/react-vite": "^10.6.6",
+		"@suigar/suifrens-display-system": "workspace:*",
 		"@tailwindcss/postcss": "catalog:tooling",
 		"@types/node": "catalog:typescript",
 		"@types/react": "catalog:typescript",
@@ -29,8 +26,8 @@
 		"@vitest/browser-playwright": "^5.1.0",
 		"@vitest/coverage-v8": "^5.1.0",
 		"happy-dom": "catalog:tooling",
+		"lucide-react": "^1.70.0",
 		"playwright": "^1.65.0",
-		"postcss": "^8.5.32",
 		"react": "catalog:frontend",
 		"react-dom": "catalog:frontend",
 		"storybook": "^10.6.6",

@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { ArrowRight } from 'lucide-react';
 import { useState } from 'react';
 import { buildRunnerAccessories } from '@suigar/suifrens-display-system/kits';
 import { CataloguePreview } from './CataloguePreview.js';
@@ -69,7 +70,7 @@ function Onboarding() {
 					href={`./?path=/story/${step.story}`}
 					target="_top"
 				>
-					{step.link} <span aria-hidden="true">→</span>
+					{step.link} <ArrowRight size={16} aria-hidden="true" className="shrink-0" />
 				</a>
 			</section>
 			<nav aria-label="Guide steps" className="flex justify-between gap-3">
@@ -91,7 +92,7 @@ function Onboarding() {
 						href="./?path=/story/suifrens-playground-sandbox--control-pad-playground"
 						target="_top"
 					>
-						Try the playground <span aria-hidden="true">→</span>
+						Try the playground <ArrowRight size={16} aria-hidden="true" className="shrink-0" />
 					</a>
 				)}
 			</nav>

@@ -2,6 +2,17 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import {
+	Angry,
+	ArrowDown,
+	ArrowLeft,
+	ArrowRight,
+	ArrowUp,
+	Glasses,
+	Heart,
+	Laugh,
+	type LucideIcon,
+} from 'lucide-react';
 import { type PointerEvent, type RefObject, useEffect, useRef, useState } from 'react';
 import { expect } from 'storybook/test';
 import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
@@ -41,6 +52,7 @@ type DirectionKey = 'up' | 'down' | 'left' | 'right';
 
 type ControlButtonProps = {
 	label: string;
+	icon?: LucideIcon;
 	ariaLabel?: string;
 	active?: boolean;
 	onPress: () => void;
@@ -50,6 +62,7 @@ type ControlButtonProps = {
 
 function ControlButton({
 	label,
+	icon: Icon,
 	ariaLabel,
 	active,
 	onPress,
@@ -93,7 +106,7 @@ function ControlButton({
 				.filter(Boolean)
 				.join(' ')}
 		>
-			{label}
+			{Icon ? <Icon size={20} aria-hidden="true" /> : label}
 		</button>
 	);
 }
@@ -111,7 +124,8 @@ function updateSprite(el: HTMLDivElement | null, pose: SuiFrenActorPose) {
 	}
 	const x = (pose.position.x / SPRITE_SIZE - 0.5) * 100;
 	const y = ((pose.position.y - pose.elevation) / SPRITE_SIZE - 1) * 100;
-	el.style.transform = `translate3d(${x}%, ${y}%, 0) scaleX(${pose.facing === 'left' ? -1 : 1})`;
+	el.style.transform = `translate3d(${x}%, ${y}%, 0)`;
+	el.style.setProperty('--sprite-facing', pose.facing === 'left' ? '-1' : '1');
 }
 
 function SuiFrenStage({ state, spriteRef, title, note }: StageProps) {
@@ -142,12 +156,14 @@ function SuiFrenStage({ state, spriteRef, title, note }: StageProps) {
 								{state.expression}
 							</div>
 						) : null}
-						<SuiFrenImageInline
-							attributes={{ ...baseAttributes, expression: state.expression }}
-							shadow
-							style={{ width: '100%', height: '100%' }}
-							animation={state.animation}
-						/>
+						<div className="h-full w-full" style={{ transform: 'scaleX(var(--sprite-facing, 1))' }}>
+							<SuiFrenImageInline
+								attributes={{ ...baseAttributes, expression: state.expression }}
+								shadow
+								style={{ width: '100%', height: '100%' }}
+								animation={state.animation}
+							/>
+						</div>
 					</div>
 				</div>
 
@@ -356,7 +372,8 @@ export const ControlPadPlayground: Story = {
 						<div className="mt-3 grid grid-cols-3 gap-2">
 							<div />
 							<ControlButton
-								label="↑"
+								label="Move up"
+								icon={ArrowUp}
 								ariaLabel="Move up"
 								active={activeDirections.includes('up')}
 								onPress={() => pressDirection('up')}
@@ -364,7 +381,8 @@ export const ControlPadPlayground: Story = {
 							/>
 							<div />
 							<ControlButton
-								label="←"
+								label="Move left"
+								icon={ArrowLeft}
 								ariaLabel="Move left"
 								active={activeDirections.includes('left')}
 								onPress={() => pressDirection('left')}
@@ -372,7 +390,8 @@ export const ControlPadPlayground: Story = {
 							/>
 							<div />
 							<ControlButton
-								label="→"
+								label="Move right"
+								icon={ArrowRight}
 								ariaLabel="Move right"
 								active={activeDirections.includes('right')}
 								onPress={() => pressDirection('right')}
@@ -380,7 +399,8 @@ export const ControlPadPlayground: Story = {
 							/>
 							<div />
 							<ControlButton
-								label="↓"
+								label="Move down"
+								icon={ArrowDown}
 								ariaLabel="Move down"
 								active={activeDirections.includes('down')}
 								onPress={() => pressDirection('down')}
@@ -416,22 +436,26 @@ export const ControlPadPlayground: Story = {
 						<h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200">Emotes</h3>
 						<div className="mt-2 grid grid-cols-2 gap-2">
 							<ControlButton
-								label="❤️"
+								label="Heart eyes"
+								icon={Heart}
 								ariaLabel="Heart eyes"
 								onPress={() => controls.triggerEmote('heartEyes', 1600)}
 							/>
 							<ControlButton
-								label="😂"
+								label="Laughing"
+								icon={Laugh}
 								ariaLabel="Laughing"
 								onPress={() => controls.triggerEmote('laughing', 1600)}
 							/>
 							<ControlButton
-								label="😡"
+								label="Angry"
+								icon={Angry}
 								ariaLabel="Angry"
 								onPress={() => controls.triggerEmote('angry', 1600)}
 							/>
 							<ControlButton
-								label="😎"
+								label="Cool"
+								icon={Glasses}
 								ariaLabel="Cool"
 								onPress={() => controls.triggerEmote('cool', 1600)}
 							/>
