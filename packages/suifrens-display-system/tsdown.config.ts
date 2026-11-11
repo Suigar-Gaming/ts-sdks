@@ -5,6 +5,8 @@ import { readFile } from 'node:fs/promises';
 import { basename } from 'node:path';
 import { defineConfig } from 'tsdown';
 
+const URL_QUERY_SUFFIX = '?url';
+
 export default defineConfig({
 	entry: {
 		index: 'src/index.ts',
@@ -26,10 +28,10 @@ export default defineConfig({
 		{
 			name: 'external-svg-urls',
 			async load(id) {
-				if (!id.endsWith('.svg?url')) {
+				if (!id.endsWith(`.svg${URL_QUERY_SUFFIX}`)) {
 					return;
 				}
-				const path = id.slice(0, -'?url'.length);
+				const path = id.slice(0, -URL_QUERY_SUFFIX.length);
 				const ref = this.emitFile({
 					type: 'asset',
 					name: basename(path),
