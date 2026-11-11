@@ -6,6 +6,7 @@ import { basename } from 'node:path';
 import { defineConfig } from 'tsdown';
 
 const URL_QUERY_SUFFIX = '?url';
+const SVG_URL_PATTERN = new RegExp(`\\.svg${RegExp.escape(URL_QUERY_SUFFIX)}$`);
 
 export default defineConfig({
 	entry: {
@@ -27,17 +28,19 @@ export default defineConfig({
 	plugins: [
 		{
 			name: 'external-svg-urls',
-			async load(id) {
-				if (!id.endsWith(`.svg${URL_QUERY_SUFFIX}`)) {
-					return;
-				}
-				const path = id.slice(0, -URL_QUERY_SUFFIX.length);
-				const ref = this.emitFile({
-					type: 'asset',
-					name: basename(path),
-					source: await readFile(path),
-				});
-				return `export default import.meta.ROLLDOWN_FILE_URL_${ref};`;
+			load: {
+				filter: { id: SVG_URL_PATTERN },
+				async handler(id) {
+					const path = id.slice(0, -URL_QUERY_SUFFIX.length);
+					const referenceId = this.emitFile({
+						type: 'asset',
+						name: basename(path),
+						source: await readFile(path),
+					});
+					// Rolldown replaces this emitted-file reference with its final URL at build time.
+					// https://rolldown.rs/apis/plugin-api/file-urls
+					return `export default import.meta.ROLLDOWN_FILE_URL_${referenceId};`;
+				},
 			},
 		},
 	],
