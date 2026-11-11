@@ -274,6 +274,25 @@ describe('parseGameDetails', () => {
 		});
 	});
 
+	it.each(['__proto__', 'constructor', 'toString', 'hasOwnProperty', 'prototype'])(
+		'preserves %s as an own string detail without inheriting a prototype',
+		(key) => {
+			const details: Record<string, unknown> = parseGameDetails({
+				game: 'coinflip',
+				gameDetails: gameDetails([
+					{ key: 'player_bet', value: encodeString('heads') },
+					{ key, value: encodeString('custom value') },
+				]),
+			});
+
+			expect(details['player_bet']).toBe('heads');
+			expect(Object.getPrototypeOf(details)).toBeNull();
+			expect(Object.hasOwn(details, key)).toBe(true);
+			expect(details[key]).toBe('custom value');
+			expect(JSON.parse(JSON.stringify(details))[key]).toBe('custom value');
+		},
+	);
+
 	it('decodes numeric, boolean, float, and raw UTF-8 values', () => {
 		const rangeDetails = parseGameDetails({
 			game: 'range',

@@ -4,7 +4,7 @@ Applies to `packages/mcp/` and its descendants, in addition to the [workspace in
 
 ## Package structure and commands
 
-`@suigar/mcp` is an ESM-only stdio MCP server with a bundled inspector App. Package output is built with `tsdown`; Vite produces the single-file App under `packages/mcp/dist/`.
+`@suigar/mcp` is an ESM-only stdio MCP server with a bundled inspector App. `tsdown` builds the package, and Vite produces the single-file App in `packages/mcp/dist/`.
 
 - `packages/mcp/src/server/`: server construction, tool registration, and App resource registration.
 - `packages/mcp/src/tools/handlers/`: SDK-backed tool handlers.
@@ -24,16 +24,16 @@ pnpm --dir packages/mcp run typecheck
 pnpm --dir packages/mcp run lint
 ```
 
-## Architecture and protocol invariants
+## Architecture and protocol
 
-`packages/mcp` exposes a local stdio MCP server plus a bundled MCP App resource. It should stay thin over `@suigar/sdk` and `@mysten/sui`.
+`packages/mcp` exposes a local stdio MCP server plus a bundled MCP App resource. Keep SDK and chain behavior in `@suigar/sdk` and `@mysten/sui`.
 
-- Use ext-apps 2 with MCP SDK 2: `@modelcontextprotocol/server`, `@modelcontextprotocol/server/stdio`, and `@modelcontextprotocol/client`. Prefer shared types, errors, and transports exported by `@modelcontextprotocol/server`; reserve `@modelcontextprotocol/client` for client-specific APIs. The client package is a development dependency for tests and the bundled App build; core is supplied transitively by the SDK packages. Use the published ext-apps React types. Register tools with complete Standard JSON Schema schemas (such as Zod objects) and preserve schema/handler type inference.
-- Target MCP 2026-07-28 and use SDK 2 `serveStdio` for stdio version negotiation, retaining legacy initialization compatibility. Let the SDK validate request metadata and supply discovery, result discriminators, server identity, and cache hints. Keep tool listings deterministic and application state explicit in tool arguments. Test modern wire responses as well as legacy clients.
-- Unknown tool calls reject with a protocol invalid-params error; schema-validation failures return `isError: true`. Keep Suigar handler failures actionable with both text and structured error details.
-- Always return both text `content` and `structuredContent`.
-- Keep tool errors actionable and include the field/config/network detail needed for an agent to retry.
-- Keep SDK-style MCP config documentation aligned with `SuigarConfigOverrides`: both `coins.sui` and `coins.usdc` accept optional `coinType`, `decimals`, and `priceInfoObjectId` metadata.
+- Use ext-apps 2 with MCP SDK 2: `@modelcontextprotocol/server`, `@modelcontextprotocol/server/stdio`, and `@modelcontextprotocol/client`. Prefer shared types, errors, and transports exported by `@modelcontextprotocol/server`; reserve `@modelcontextprotocol/client` for client-specific APIs. The client package is a development dependency for tests and the bundled App build; the SDK packages supply core transitively. Use the published ext-apps React types. Register tools with complete Standard JSON Schema schemas (such as Zod objects) and preserve schema/handler type inference.
+- Target MCP 2026-07-28 and use SDK 2 `serveStdio` for stdio version negotiation, and keep compatibility with legacy initialization. Let the SDK validate request metadata and supply discovery, result discriminators, server identity, and cache hints. Keep tool listings deterministic. Pass application state explicitly in tool arguments. Test modern wire responses as well as legacy clients.
+- Unknown tool calls reject with a protocol invalid-params error; schema validation failures return `isError: true`. For Suigar handler failures, return text and structured error details that explain how to recover.
+- Return both text `content` and `structuredContent`.
+- Include the field, config or network details an agent needs to retry after a tool error.
+- Document MCP config to match `SuigarConfigOverrides`: both `coins.sui` and `coins.usdc` accept optional `coinType`, `decimals`, and `priceInfoObjectId` metadata.
 - Merge partial MCP App host-context updates with the existing context and apply host-provided safe-area insets to every inspector screen.
 - Wallet bridge and session setup state comparisons use `sameState()` from `packages/mcp/src/utils/crypto.ts`; keep hex decoding and strict 32-byte state validation in that shared helper.
 - The MCP App is an inspector UI only. It must not sign or execute transactions, and it should include restrictive `_meta.ui.csp` metadata.
@@ -43,7 +43,7 @@ pnpm --dir packages/mcp run lint
 
 ## Tests and cross-package changes
 
-- The shared configuration disables `isolatedDeclarations` to preserve schema/handler inference for Zod tools and avoid declaration-only annotations throughout the inspector App, tests, and build configuration. Keep the remaining shared strict checks enabled, including `exactOptionalPropertyTypes`, `noUncheckedIndexedAccess`, and `noPropertyAccessFromIndexSignature`.
+- The shared configuration disables `isolatedDeclarations` so Zod can infer tool schema and handler types without declaration-only annotations across the inspector App, tests and build configuration. Keep the remaining shared strict checks enabled, including `exactOptionalPropertyTypes`, `noUncheckedIndexedAccess`, and `noPropertyAccessFromIndexSignature`.
 - Normalize absent optional tool config fields before forwarding nested configuration overrides to the SDK; do not widen SDK config validation or use casts to bypass schema/handler types.
 - Keep tests in `packages/mcp/test/`, grouped into `tools/handlers/`, `tools/schemas/`, `runtime/`, `server/`, `wallet/`, `app/`, and `utils/`, with CLI and package-export coverage alongside them.
 - Wallet bridge tests may use local loopback servers and temporary storage; keep tests independent of live networks and real wallet credentials.

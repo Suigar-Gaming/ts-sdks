@@ -1,7 +1,6 @@
 {
 	"extends": "../../tsconfig.shared.json",
 	"compilerOptions": {
-		"outDir": "dist",
 		"rootDir": "."
 	},
 	"include": ["src/**/*.ts", "scripts/**/*.ts", "vitest.config.ts"]

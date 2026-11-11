@@ -1,0 +1,8 @@
+{
+	"extends": "../../../../tsconfig.shared.json",
+	"compilerOptions": {
+		"rootDir": ".",
+		"types": ["node", "vite/client"]
+	},
+	"include": ["src", "scripts", "test", "vitest.config.ts"]
+}

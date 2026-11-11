@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+  <rect x="-7" y="90" width="106" height="64" fill="{{primary}}">
+  </rect>
+  <rect x="-7" y="111.33333333333333" width="106" height="21.333333333333332" fill="{{secondary}}">
+  </rect>
+  <rect x="-7" y="132.66666666666666" width="106" height="21.333333333333332" fill="{{accent}}">
+  </rect>
+  <rect x="-7" y="119.2" width="106" height="5.6" fill="{{primaryContrast}}" opacity="0.18">
+  </rect>
+</svg>

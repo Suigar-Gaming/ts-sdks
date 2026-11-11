@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+  <rect x="116.03" y="91.57" width="61.94" height="40.86" fill="{{primary}}">
+  </rect>
+  <circle cx="147" cy="112" r="11.440800000000001" fill="{{accent}}">
+  </circle>
+  <path d="M147 97.29039999999999 L151.9552 112 L147 126.7096 L142.0448 112Z" fill="{{secondary}}" opacity="0.82">
+  </path>
+  <rect x="116.03" y="109.2" width="61.94" height="5.6" fill="{{secondary}}" opacity="0.55">
+  </rect>
+</svg>

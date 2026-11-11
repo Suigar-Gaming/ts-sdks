@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3000 3000" data-runner-kit="runner headband">
+  <g id="runner-headband-head" transform="matrix(2.9166107177734375, 0, 0, 2.9166107177734375, 848.15,585.65)" fill="{{color}}" stroke="#000000" stroke-width="8" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M29.5 68.5C128 37 259 34 355.5 62.7C368 72 379 78 390 83.5C266 58 126 61 15 97.5C19 87 24 77 29.5 68.5Z">
+    </path>
+    <g>
+      <path d="M24 84C6 77-10 79-24 89L-8 94L-15 107C2 108 16 101 29 92Z">
+      </path>
+      <path d="M26 86C12 96 6 111 7 130L21 124L32 99Z">
+      </path>
+      <path d="M19 80Q29 76 35 87L30 101Q19 103 15 93Z">
+      </path>
+    </g>
+  </g>
+</svg>

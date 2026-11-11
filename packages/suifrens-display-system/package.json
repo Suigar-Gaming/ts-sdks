@@ -1,0 +1,128 @@
+{
+	"name": "@suigar/suifrens-display-system",
+	"version": "1.2.2",
+	"description": "React components for rendering and animating Suifrens capys and bullsharks with inline or external SVG accessories.",
+	"keywords": [
+		"animation",
+		"bullshark",
+		"capy",
+		"nft",
+		"react",
+		"sui",
+		"suifrens",
+		"suigar",
+		"svg",
+		"typescript"
+	],
+	"homepage": "https://github.com/Suigar-Gaming/ts-sdks/blob/main/packages/suifrens-display-system/README.md",
+	"bugs": {
+		"url": "https://github.com/Suigar-Gaming/ts-sdks/issues/new"
+	},
+	"license": "Apache-2.0",
+	"author": "Suigar Gaming <contact.suigar@gmail.com>",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Suigar-Gaming/ts-sdks.git",
+		"directory": "packages/suifrens-display-system"
+	},
+	"files": [
+		"dist",
+		"CHANGELOG.md",
+		"README.md",
+		"MIGRATION.md",
+		"skills"
+	],
+	"type": "module",
+	"sideEffects": false,
+	"main": "./dist/index.mjs",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.mts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.mts",
+			"import": "./dist/index.mjs",
+			"default": "./dist/index.mjs"
+		},
+		"./image-inline": {
+			"types": "./dist/image-inline.d.mts",
+			"import": "./dist/image-inline.mjs",
+			"default": "./dist/image-inline.mjs"
+		},
+		"./accessories": {
+			"types": "./dist/accessories.d.mts",
+			"import": "./dist/accessories.mjs",
+			"default": "./dist/accessories.mjs"
+		},
+		"./colors": {
+			"types": "./dist/colors.d.mts",
+			"import": "./dist/colors.mjs",
+			"default": "./dist/colors.mjs"
+		},
+		"./attributes": {
+			"types": "./dist/attributes.d.mts",
+			"import": "./dist/attributes.mjs",
+			"default": "./dist/attributes.mjs"
+		},
+		"./animation": {
+			"types": "./dist/animation.d.mts",
+			"import": "./dist/animation.mjs",
+			"default": "./dist/animation.mjs"
+		},
+		"./types": {
+			"types": "./dist/types.d.mts",
+			"import": "./dist/types.mjs",
+			"default": "./dist/types.mjs"
+		},
+		"./battle": {
+			"types": "./dist/battle.d.mts",
+			"import": "./dist/battle.mjs",
+			"default": "./dist/battle.mjs"
+		},
+		"./expressions": {
+			"types": "./dist/expressions.d.mts",
+			"import": "./dist/expressions.mjs",
+			"default": "./dist/expressions.mjs"
+		},
+		"./kits": {
+			"types": "./dist/kits.d.mts",
+			"import": "./dist/kits.mjs",
+			"default": "./dist/kits.mjs"
+		}
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"build": "pnpm run clean && pnpm run codegen && tsdown",
+		"build:ci": "pnpm run clean && tsdown",
+		"clean": "rimraf dist",
+		"codegen": "node scripts/generate-accessory-assets.ts && pnpm exec oxfmt src/generated",
+		"test": "vitest run",
+		"typecheck": "tsc",
+		"doctor": "react-doctor --yes",
+		"oxlint": "oxlint .",
+		"oxlint:fix": "oxlint . --fix",
+		"oxfmt": "oxfmt . --check",
+		"oxfmt:fix": "oxfmt .",
+		"lint": "pnpm run oxlint && pnpm run oxfmt",
+		"lint:fix": "pnpm run oxlint:fix && pnpm run oxfmt:fix"
+	},
+	"devDependencies": {
+		"@types/node": "catalog:typescript",
+		"@types/react": "catalog:typescript",
+		"@types/react-dom": "catalog:typescript",
+		"happy-dom": "catalog:tooling",
+		"react": "catalog:frontend",
+		"react-doctor": "catalog:tooling",
+		"react-dom": "catalog:frontend",
+		"svgo": "^4.1.0",
+		"tsdown": "catalog:tooling",
+		"typescript": "catalog:typescript",
+		"vite": "catalog:tooling",
+		"vitest": "catalog:tooling"
+	},
+	"peerDependencies": {
+		"react": "^18.2.0 || ^19.0.0",
+		"react-dom": "^18.2.0 || ^19.0.0"
+	}
+}

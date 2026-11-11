@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3000 3000" data-runner-kit="runner shorts">
+  <g id="runner-shorts-backleg" transform="matrix(2.9166107177734375, 0, 0, 2.9166107177734375, 1463.45,1961.9)">
+    <path d="M8 104Q47 93 94 103L91 144Q46 152 5 140Z" fill="#30465d">
+    </path>
+    <path d="M8 104L5 140Q46 152 91 144L94 103" fill="none" stroke="#000000" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    </path>
+    <path d="M13 135Q47 146 84 139" fill="none" stroke="{{color}}" stroke-width="5" stroke-linecap="round">
+    </path>
+  </g>
+  <g id="runner-shorts-frontleg" transform="matrix(2.9166107177734375, 0, 0, 2.9166107177734375, 1042.6,1961.9)">
+    <path d="M8 104Q47 93 94 103L91 144Q46 152 5 140Z" fill="#30465d">
+    </path>
+    <path d="M8 104L5 140Q46 152 91 144L94 103" fill="none" stroke="#000000" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    </path>
+    <path d="M13 135Q47 146 84 139" fill="none" stroke="{{color}}" stroke-width="5" stroke-linecap="round">
+    </path>
+  </g>
+</svg>

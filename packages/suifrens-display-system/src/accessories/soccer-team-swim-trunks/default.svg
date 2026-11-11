@@ -1,0 +1,30 @@
+<svg version="1.1" id="pants_x5F_soccerteam_x5F_swimtrunks" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 3000 3000" xml:space="preserve">
+  <g id="pants_x5F_soccerteam_x5F_swimtrunks_x5F_backleg" transform="matrix(2.9166107177734375, 0, 0, 2.9166107177734375, 1463.45,1961.9)">
+    <g>
+      <clipPath id="soccer-team-trunks-{{id}}-trunks-back-leg-{{code}}">
+        <path d="M-5.5 102.2 C9.5 95.5 34.5 90.5 69.2 92.5 C80.4 94 91 98.2 97.2 102.2 V149.6 L84.2 149.8 L10.3 148.9 L-5.5 148.3Z">
+        </path>
+      </clipPath>
+      <g clip-path="url(#soccer-team-trunks-{{id}}-trunks-back-leg-{{code}})">
+        <g data-pattern-slot="leg">
+        </g>
+      </g>
+      <path d="M-5.5 102.2 V148.3 L10.3 148.9 L84.2 149.8 L97.2 149.6 V102.2" fill="none" stroke="#050916" stroke-linecap="round" stroke-linejoin="round" stroke-width="10">
+      </path>
+    </g>
+  </g>
+  <g id="pants_x5F_soccerteam_x5F_swimtrunks_x5F_frontleg" transform="matrix(2.9166107177734375, 0, 0, 2.9166107177734375, 1042.6,1961.9)">
+    <g>
+      <clipPath id="soccer-team-trunks-{{id}}-trunks-front-leg-{{code}}">
+        <path d="M-5.5 102.2 C9.5 95.5 34.5 90.5 69.2 92.5 C80.4 94 91 98.2 97.2 102.2 V149.6 L84.2 149.8 L10.3 148.9 L-5.5 148.3Z">
+        </path>
+      </clipPath>
+      <g clip-path="url(#soccer-team-trunks-{{id}}-trunks-front-leg-{{code}})">
+        <g data-pattern-slot="leg">
+        </g>
+      </g>
+      <path d="M-5.5 102.2 V148.3 L10.3 148.9 L84.2 149.8 L97.2 149.6 V102.2" fill="none" stroke="#050916" stroke-linecap="round" stroke-linejoin="round" stroke-width="10">
+      </path>
+    </g>
+  </g>
+</svg>

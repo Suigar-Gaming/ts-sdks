@@ -1,0 +1,118 @@
+// Copyright (c) Suigar
+// SPDX-License-Identifier: Apache-2.0
+
+// @vitest-environment happy-dom
+import { readFileSync } from 'node:fs';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { expect, test } from 'vitest';
+import { VIP_CROWN_ACCESSORIES } from '../../../src/constants/vip-crowns.js';
+import {
+	getVipCrownAssetSrc,
+	getVipCrownAssetViewport,
+} from '../../../src/helpers/accessories/crown-assets.js';
+import { SuiFrenImageInline } from '../../../src/image-inline/index.js';
+import { SuiFrenImage } from '../../../src/index.js';
+
+const common = {
+	mainColor: '6fbbee',
+	secondaryColor: 'e6fbff',
+	skin: 'basic',
+	expression: 'happy',
+} as const;
+const species = [
+	{ ...common, earShape: 'default' },
+	{ ...common, finStyle: 'classic' },
+] as const;
+
+test.each(VIP_CROWN_ACCESSORIES)(
+	'$name artwork has room for its tips and ornaments',
+	(accessory) => {
+		const source = readFileSync(`src/accessories/crowns/${accessory.name}.svg`, 'utf8');
+		const container = document.createElement('div');
+		container.innerHTML = source;
+		expect(container.querySelector('svg')?.getAttribute('viewBox')).toBe('-200 -600 3209 3609');
+		expect(container.querySelector('clipPath, [clip-path]')).toBeNull();
+	},
+);
+
+test.each([
+	['inline', SuiFrenImageInline],
+	['assets', SuiFrenImage],
+] as const)(
+	'%s preserves avatar framing and crown scale while letting unframed crowns overflow',
+	(mode, Renderer) => {
+		for (const attributes of species) {
+			for (const accessory of VIP_CROWN_ACCESSORIES) {
+				const container = document.createElement('div');
+				container.innerHTML = renderToStaticMarkup(
+					<Renderer attributes={attributes} accessories={[accessory]} renderSize={64} />,
+				);
+				const svg = container.querySelector('svg')!;
+				expect(svg.getAttribute('viewBox')).toBe('0 -200 3000 3000');
+				expect(svg.getAttribute('overflow')).toBe('visible');
+				expect(svg.getAttribute('width')).toBe('64');
+				const image = svg.querySelector('image')!;
+				const asset = getVipCrownAssetSrc(accessory.name);
+				if (!asset) {
+					throw new Error(`Missing crown: ${accessory.name}`);
+				}
+				const expectedHref =
+					mode === 'inline'
+						? 'data:image/svg+xml;base64,' +
+							readFileSync(`src/accessories/crowns/${accessory.name}.svg`).toString('base64')
+						: asset;
+				expect(image.getAttribute('href')).toBe(expectedHref);
+				const viewport = getVipCrownAssetViewport(asset)!;
+				const scaleX = Number(image.getAttribute('width')) / 3209;
+				const scaleY = Number(image.getAttribute('height')) / 3609;
+				expect(scaleX).toBeCloseTo(3000 / 3009);
+				expect(scaleY).toBeCloseTo(scaleX);
+				// The old artboard origin still maps to (0, 0), so crown fit is unchanged.
+				expect(Number(image.getAttribute('x')) + 200 * scaleX).toBeCloseTo(0);
+				expect(Number(image.getAttribute('y')) + 600 * scaleY).toBeCloseTo(0);
+				expect(Number(image.getAttribute('y'))).toBe(viewport.y);
+			}
+		}
+	},
+);
+
+test.each([SuiFrenImageInline, SuiFrenImage])(
+	'uncrowned portraits retain their framing',
+	(Renderer) => {
+		const container = document.createElement('div');
+		container.innerHTML = renderToStaticMarkup(<Renderer attributes={species[0]} />);
+		expect(container.querySelector('svg')?.getAttribute('viewBox')).toBe('0 -200 3000 3000');
+		expect(container.querySelector('svg')?.hasAttribute('overflow')).toBe(false);
+	},
+);
+
+test('custom asset URLs do not inherit the built-in crown viewport', () => {
+	expect(getVipCrownAssetViewport('https://example.com/custom-crown.svg')).toBeUndefined();
+});
+
+test.each([SuiFrenImageInline, SuiFrenImage])(
+	'adding a crown preserves the native body, head and facial coordinate systems',
+	(Renderer) => {
+		for (const attributes of species) {
+			const bare = document.createElement('div');
+			const crowned = document.createElement('div');
+			bare.innerHTML = renderToStaticMarkup(<Renderer attributes={attributes} renderSize={64} />);
+			crowned.innerHTML = renderToStaticMarkup(
+				<Renderer
+					attributes={attributes}
+					accessories={[VIP_CROWN_ACCESSORIES.at(-1)!]}
+					renderSize={64}
+				/>,
+			);
+			for (const selector of ['svg', 'svg svg', 'path']) {
+				const geometry = (container: HTMLElement) =>
+					Array.from(container.querySelectorAll(selector), (element) => ({
+						viewBox: element.getAttribute('viewBox'),
+						d: element.getAttribute('d'),
+						transform: element.getAttribute('transform'),
+					}));
+				expect(geometry(crowned)).toEqual(geometry(bare));
+			}
+		}
+	},
+);

@@ -1,6 +1,6 @@
 # Suigar TypeScript SDKs
 
-Use the TypeScript SDK and MCP server to interact with Suigar contracts on Sui.
+Build Suigar transactions on Sui with the TypeScript SDK or MCP server, and render Suifrens with the React display library.
 
 ## Documentation
 
@@ -8,7 +8,7 @@ Use the TypeScript SDK and MCP server to interact with Suigar contracts on Sui.
 - [Suigar MCP documentation](https://suigar.com/docs/mcp)
 - [Sui TypeScript SDK documentation](https://sdk.mystenlabs.com/)
 
-See also the local [SDK](packages/sdk/README.md) and [MCP](packages/mcp/README.md) guides.
+Package guides: [SDK](packages/sdk/README.md), [MCP](packages/mcp/README.md) and [Suifrens](packages/suifrens-display-system/README.md).
 
 ## Install the MCP server
 
@@ -35,7 +35,9 @@ To configure an MCP client manually, use:
 
 ## Agent skills
 
-The `Suigar-Gaming/agent-skills` repository contains the Suigar agent skills. The MCP skill covers installation and configuration of `@suigar/mcp`. It explains how to read Suigar config, game metadata, NFTs, and claimable referral amounts, and how to build and simulate unsigned transactions, including SweetHouse transactions.
+Each public npm package includes an entry under `skills/`: `suigar-sdk`, `suigar-mcp`, or `suifrens-display-system`. Compatible agents discover these entries and fetch the full instructions and references they need from `main` in the skills repository. Agent skills are not versioned with the packages. Packing the entries needs no install hook or network access.
+
+Suigar agent skills live in `Suigar-Gaming/agent-skills`. The MCP skill explains how to install and configure `@suigar/mcp`, read Suigar config, game metadata, NFTs and claimable referral amounts, and build and simulate unsigned transactions, including SweetHouse transactions.
 
 Install all Suigar skills with:
 
@@ -51,10 +53,11 @@ npx skills add Suigar-Gaming/agent-skills --skill suigar-mcp --global --yes
 
 ## Packages
 
-- `@suigar/sdk` in `packages/sdk`: ESM-only TypeScript SDK for Suigar provably fair on-chain Sui casino game, SweetHouse, NFT, and referral transactions.
+- `@suigar/sdk` in `packages/sdk`: ESM-only TypeScript SDK for transactions involving Suigar's provably fair casino games on Sui, SweetHouse, NFTs and referrals.
 - `@suigar/mcp` in `packages/mcp`: MCP stdio server and MCP App for reading Suigar config, game metadata, NFTs, and referral claim amounts, plus building unsigned Suigar and SweetHouse transactions through the SDK.
+- [`@suigar/suifrens-display-system`](packages/suifrens-display-system/README.md) in `packages/suifrens-display-system`: React components for rendering Suifrens. Its beta will be published on npm.
 
-Both packages are available on [npm](https://www.npmjs.com/search?q=%40suigar) and [JSR](https://jsr.io/@suigar).
+The SDK and MCP packages are available on [npm](https://www.npmjs.com/search?q=%40suigar) and [JSR](https://jsr.io/@suigar).
 
 ## Development
 
@@ -71,7 +74,7 @@ pnpm install
 pnpm run build
 ```
 
-Dependency install scripts are disabled by default in `pnpm-workspace.yaml`. If a new dependency needs an install or build script, explicitly review it before approving it with `pnpm approve-builds`. Transitive dependencies are also blocked from resolving untrusted git or tarball URLs.
+Dependency install scripts are disabled by default in `pnpm-workspace.yaml`. Review any new dependency's install or build script before approving it with `pnpm approve-builds`. Transitive dependencies cannot resolve untrusted git or tarball URLs.
 
 ### Building
 
@@ -91,7 +94,7 @@ pnpm turbo run test
 
 ### Type checking
 
-Workspace packages inherit the strict checks in `tsconfig.shared.json`. This shared configuration disables `isolatedDeclarations` because the generated SDK bindings lack the required annotations and the MCP relies on Zod schema/handler inference. Both packages retain the other shared strict checks.
+Workspace packages inherit the strict checks in `tsconfig.shared.json`. It disables `isolatedDeclarations` because generated SDK bindings lack the required annotations and MCP relies on Zod to infer schema and handler types. SDK and MCP keep the other shared strict checks.
 
 ```bash
 pnpm run typecheck
@@ -107,7 +110,7 @@ This repo uses Oxlint and Oxfmt for linting and formatting.
 pnpm run lint
 ```
 
-To apply automatic fixes, run the following command.
+Apply automatic fixes with:
 
 ```bash
 pnpm run lint:fix

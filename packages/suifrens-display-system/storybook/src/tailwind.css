@@ -1,0 +1,59 @@
+/*
+ * Copyright (c) Suigar
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+@import 'tailwindcss';
+
+@custom-variant dark {
+	&:where([data-theme='dark'], [data-theme='dark'] *) {
+		@slot;
+	}
+	@media (prefers-color-scheme: dark) {
+		&:where([data-theme='system'], [data-theme='system'] *) {
+			@slot;
+		}
+	}
+}
+
+body.sb-show-main:has(.story-page[data-theme='dark']),
+.docs-story:has(.story-page[data-theme='dark']) {
+	background-color: var(--color-slate-950);
+}
+
+@media (prefers-color-scheme: dark) {
+	body.sb-show-main:has(.story-page[data-theme='system']),
+	.docs-story:has(.story-page[data-theme='system']) {
+		background-color: var(--color-slate-950);
+	}
+}
+
+@layer components {
+	.story-stage {
+		@apply relative overflow-hidden rounded-2xl border border-slate-200 bg-sky-50 dark:border-slate-700 dark:bg-slate-800;
+	}
+	.story-page {
+		@apply mx-auto w-full max-w-6xl min-w-0 text-slate-900 dark:text-slate-100;
+		container-type: inline-size;
+	}
+	.story-panel {
+		@apply min-w-0 rounded-3xl border border-slate-200 bg-white p-4 shadow-xs dark:border-slate-700 dark:bg-slate-900;
+	}
+	.story-tile {
+		@apply min-w-0 rounded-2xl border border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800;
+	}
+	.story-page .suifren-image:not(.story-scene *) {
+		@apply rounded-lg bg-white outline outline-slate-300 dark:bg-slate-900 dark:outline-slate-600;
+	}
+	.story-button {
+		@apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 no-underline shadow-xs hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:focus-visible:outline-blue-400;
+	}
+	.story-heading {
+		@apply text-base font-semibold text-slate-900 dark:text-slate-100;
+	}
+	@container (max-width: 36rem) {
+		.battle-field {
+			zoom: 0.6;
+		}
+	}
+}
