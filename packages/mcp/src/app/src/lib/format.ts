@@ -28,12 +28,11 @@ export function formatValue(value: unknown): unknown {
 		return value.length > 0 ? value.join(', ') : null;
 	}
 	if (isRecord(value)) {
-		const record = value;
-		if (typeof record['label'] === 'string' && typeof record['id'] === 'string') {
-			return `${record['label']} (${record['id']})`;
+		if (typeof value['label'] === 'string' && typeof value['id'] === 'string') {
+			return `${value['label']} (${value['id']})`;
 		}
-		if (typeof record['id'] === 'string') {
-			return record['id'];
+		if (typeof value['id'] === 'string') {
+			return value['id'];
 		}
 		return stringify(value);
 	}

@@ -134,11 +134,25 @@ type AppToolMeta = {
 	};
 };
 
-/** Capture the input schema and handler together before erasing the heterogeneous input type. */
+/** Keep each schema paired with its handler when registering heterogeneous tools. */
 function defineTool<TInput>(definition: ToolDefinition<TInput>) {
 	return {
 		...definition,
-		handler: (input: unknown) => definition.handler(definition.inputSchema.parse(input)),
+		register(server: McpServer, appToolMeta: AppToolMeta): void {
+			const config = {
+				title: definition.title,
+				description: definition.description,
+				inputSchema: definition.inputSchema,
+				annotations: definition.annotations,
+				outputSchema: toolOutputSchema,
+			};
+			const handler = withToolErrors(definition.handler);
+			if (definition.isAppTool) {
+				registerAppTool(server, definition.name, { ...config, _meta: appToolMeta }, handler);
+			} else {
+				server.registerTool(definition.name, config, handler);
+			}
+		},
 	};
 }
 
@@ -430,18 +444,6 @@ export function registerSuigarTools({
 	appToolMeta: AppToolMeta;
 }): void {
 	for (const tool of toolDefinitions) {
-		const config = {
-			title: tool.title,
-			description: tool.description,
-			inputSchema: tool.inputSchema,
-			annotations: tool.annotations,
-			outputSchema: toolOutputSchema,
-		};
-		const handler = withToolErrors((input: unknown) => tool.handler(input));
-		if (tool.isAppTool) {
-			registerAppTool(server, tool.name, { ...config, _meta: appToolMeta }, handler);
-		} else {
-			server.registerTool(tool.name, config, handler);
-		}
+		tool.register(server, appToolMeta);
 	}
 }

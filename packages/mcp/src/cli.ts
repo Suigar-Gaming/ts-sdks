@@ -84,12 +84,11 @@ export async function runSuigarCli(argv: Array<string> = hideBin(process.argv)):
 					})
 					.option('json', JSON_OPTION),
 			async (args) => {
-				const bridgeArgs = args;
 				const network = normalizeNetwork(args.network);
 				const bridge = await createLoginBridge({
 					network,
-					webOrigin: resolveWebOrigin({ network, webUrl: bridgeArgs.webUrl }),
-					...getBridgeOptions(bridgeArgs),
+					webOrigin: resolveWebOrigin({ network, webUrl: args.webUrl }),
+					...getBridgeOptions(args),
 				});
 				process.stderr.write(`Open this URL to connect your wallet:\n${bridge.url}\n`);
 				const profile = await bridge.done;
@@ -119,12 +118,10 @@ export async function runSuigarCli(argv: Array<string> = hideBin(process.argv)):
 					})
 					.option('json', JSON_OPTION),
 			async (args) => {
-				const bridgeArgs = args;
 				const credentials = await loadCredentials();
 				const network = args.network ?? credentials.defaultNetwork;
-				const bridgeOptions = getBridgeOptions(bridgeArgs);
-				const useNetworkOrigins =
-					args.all && !bridgeArgs.webUrl && !process.env[BRIDGE_WEB_URL_ENV];
+				const bridgeOptions = getBridgeOptions(args);
+				const useNetworkOrigins = args.all && !args.webUrl && !process.env[BRIDGE_WEB_URL_ENV];
 				const bridges: Array<LogoutBridge> = [];
 				if (useNetworkOrigins) {
 					for (const logoutNetwork of SUPPORTED_SUI_NETWORKS) {
@@ -142,7 +139,7 @@ export async function runSuigarCli(argv: Array<string> = hideBin(process.argv)):
 						await createLogoutBridge({
 							network: args.all ? undefined : network,
 							all: args.all,
-							webOrigin: resolveWebOrigin({ network, webUrl: bridgeArgs.webUrl }),
+							webOrigin: resolveWebOrigin({ network, webUrl: args.webUrl }),
 							...bridgeOptions,
 						}),
 					);
