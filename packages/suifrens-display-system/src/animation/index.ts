@@ -9,4 +9,4 @@ export {
 export { AnimatedAccessory } from './AnimatedAccessory.js';
 export { useAnimatedPartTransform } from '../hooks/use-animated-part-transform.js';
 export { normalizePlayback } from './sequence-player.js';
-export { getPresetDurationMs, getPresetSequence } from './presets.js';
+export { getPresetDurationMs, getPresetSequence } from './presets/index.js';

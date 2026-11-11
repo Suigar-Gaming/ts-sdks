@@ -19,7 +19,7 @@ import {
 	isDeferredPreset,
 	loadDeferredPresetSequence,
 	resolvePresetSequenceSync,
-} from './preset-resolver.js';
+} from './presets/resolver.js';
 import { startWaapiAnimation } from './waapi-backend.js';
 
 type AnimationContextValue = {

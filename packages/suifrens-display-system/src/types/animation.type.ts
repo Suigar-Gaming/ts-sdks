@@ -1,6 +1,14 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
+import type { BATTLE_ROYALE_PRESETS } from '../animation/presets/battle-royale.js';
+import type { CORE_PRESET_SEQUENCES } from '../animation/presets/core.js';
+
+/** Names of the built-in core and battle animation presets. */
+export type AnimationPresetName =
+	| keyof typeof CORE_PRESET_SEQUENCES
+	| keyof typeof BATTLE_ROYALE_PRESETS;
+
 export type AnimationRegistration = {
 	getBaseTransform: () => string | undefined;
 	setTransform: (value: string) => void;

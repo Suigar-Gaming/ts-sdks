@@ -1,7 +1,7 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import type { AnimationSequence } from '../types/animation.type.js';
+import type { AnimationSequence } from '../../types/animation.type.js';
 
 const RUN_DURATION = 900;
 
@@ -3226,7 +3226,7 @@ const DEATH3_SEQUENCE: AnimationSequence = {
 	],
 };
 
-export const BATTLE_ROYALE_PRESETS: Record<string, AnimationSequence> = {
+export const BATTLE_ROYALE_PRESETS = {
 	run: RUN_SEQUENCE,
 	sprint: SPRINT_SEQUENCE,
 	crouch: CROUCH_SEQUENCE,
@@ -3245,4 +3245,4 @@ export const BATTLE_ROYALE_PRESETS: Record<string, AnimationSequence> = {
 	death: DEATH_SEQUENCE,
 	death2: DEATH2_SEQUENCE,
 	death3: DEATH3_SEQUENCE,
-};
+} satisfies Record<string, AnimationSequence>;

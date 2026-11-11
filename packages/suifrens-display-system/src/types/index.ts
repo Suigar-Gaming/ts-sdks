@@ -15,6 +15,7 @@ export type {
 	AnimationDirection,
 	AnimationKeyframe,
 	AnimationPart,
+	AnimationPresetName,
 	AnimationSequence,
 	AnimationTrack,
 	EasingName,
@@ -48,5 +49,5 @@ export type { SuiFrenAttributes, SuiFrenImageProps, SuiFrenRenderSize } from './
 export type { VipCrownAccessoryName } from './vip-crown.type.js';
 export type { RunnerKitOptions } from './runner-kit.type.js';
 export type { SoccerTeamCountryCode, SoccerTeamKit, SoccerTeamSide } from './soccer-kit.type.js';
-export type { SuiFrenSkin, SuiFrenExpression } from './appearance.type.js';
+export type { SuiFrenAppearance, SuiFrenSkin, SuiFrenExpression } from './appearance.type.js';
 export type { SuiFrenGesture, SuiFrenGestureProps } from './gesture.type.js';

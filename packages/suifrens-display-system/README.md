@@ -35,7 +35,7 @@ export function CapyAvatar() {
 }
 ```
 
-Colors are palette keys without a leading `#`. For a bullshark, use `BullsharkAttributes` with `finStyle: 'classic'`. The color, skin and expression fields stay the same.
+Colors are palette keys without a leading `#`. For a bullshark, use `BullsharkAttributes` with `finStyle: 'classic'`. The color, skin and expression fields stay the same. Import `SuiFrenAppearance` from `/types` to share those fields between species.
 
 ## Rendering and animation
 
@@ -50,6 +50,8 @@ import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline
 Both renderers accept the same props. Set `detail="head"` for a portrait and pass catalogue entries or custom `SuiFrenAccessory` objects through `accessories`. The `gesture` prop accepts `thumbs_up`, `thumbs_down` or `point`. Held objects take precedence over gestures, and gestures don't affect portraits.
 
 For ordinary accessories, set `renderOptions.assetSrc` to replace the catalogue artwork. The inline renderer uses that source directly, so use an SVG data URL when the export needs to stand alone.
+
+Use `AnimationPresetName` from `/types` to validate built-in preset names, for example `const preset = 'walk' satisfies AnimationPresetName`. The type is derived from both preset catalogues. APIs accepting dynamic strings remain unchanged.
 
 Choose one animation source, `preset` or `sequence`:
 

@@ -1,8 +1,8 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import type { AnimationSequence } from '../types/animation.type.js';
-import { getCorePresetSequence } from './core-presets.js';
+import type { AnimationSequence } from '../../types/animation.type.js';
+import { getCorePresetSequence } from './core.js';
 
 const DEFERRED_PRESET_NAMES = new Set([
 	'run',
@@ -39,7 +39,7 @@ export async function loadDeferredPresetSequence(name: string): Promise<Animatio
 	if (!isDeferredPreset(name)) {
 		return null;
 	}
-	battleRoyalePresetsPromise ??= import('./battle-royale-presets.js')
+	battleRoyalePresetsPromise ??= import('./battle-royale.js')
 		.then(({ BATTLE_ROYALE_PRESETS }) => BATTLE_ROYALE_PRESETS)
 		.catch((error: unknown) => {
 			battleRoyalePresetsPromise = undefined;

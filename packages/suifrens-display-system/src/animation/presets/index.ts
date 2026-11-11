@@ -1,10 +1,10 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import type { AnimationSequence, PlaybackOptions } from '../types/animation.type.js';
-import { BATTLE_ROYALE_PRESETS } from './battle-royale-presets.js';
-import { CORE_PRESET_SEQUENCES } from './core-presets.js';
-import { normalizePlayback } from './sequence-player.js';
+import type { AnimationSequence, PlaybackOptions } from '../../types/animation.type.js';
+import { normalizePlayback } from '../sequence-player.js';
+import { BATTLE_ROYALE_PRESETS } from './battle-royale.js';
+import { CORE_PRESET_SEQUENCES } from './core.js';
 
 const PRESETS: Record<string, AnimationSequence> = {
 	...CORE_PRESET_SEQUENCES,

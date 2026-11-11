@@ -5,7 +5,7 @@ import type {
 	AnimationKeyframe,
 	AnimationPart,
 	AnimationSequence,
-} from '../types/animation.type.js';
+} from '../../types/animation.type.js';
 
 type SequenceWithHold = {
 	sequence: AnimationSequence;
@@ -1766,7 +1766,7 @@ const SHOWCASE_SEQUENCE = combineSequences('walkJumpSit', [
 	{ sequence: IDLE_SEQUENCE, hold: 0 },
 ]);
 
-export const CORE_PRESET_SEQUENCES: Record<string, AnimationSequence> = {
+export const CORE_PRESET_SEQUENCES = {
 	walk: WALK_SEQUENCE,
 	goalkeeperCrab: GOALKEEPER_CRAB_SEQUENCE,
 	celebrate: CELEBRATE_SEQUENCE,
@@ -1779,8 +1779,9 @@ export const CORE_PRESET_SEQUENCES: Record<string, AnimationSequence> = {
 	idle: IDLE_SEQUENCE,
 	talkMicrophone: TALK_MICROPHONE_SEQUENCE,
 	walkJumpSit: SHOWCASE_SEQUENCE,
-};
+} satisfies Record<string, AnimationSequence>;
 
 export function getCorePresetSequence(name: string): AnimationSequence | undefined {
-	return CORE_PRESET_SEQUENCES[name];
+	const presets: Record<string, AnimationSequence> = CORE_PRESET_SEQUENCES;
+	return presets[name];
 }

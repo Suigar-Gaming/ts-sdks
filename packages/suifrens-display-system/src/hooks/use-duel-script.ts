@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { getPresetDurationMs } from '../animation/presets.js';
+import { getPresetDurationMs } from '../animation/presets/index.js';
 import type { AnimationConfig, PlaybackOptions } from '../types/animation.type.js';
 import type {
 	DuelHealth,

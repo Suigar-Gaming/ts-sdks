@@ -25,3 +25,5 @@ Use numeric tiers in VIP crown names and spell the platinum rank `platinum`: for
 Pause JavaScript animations immediately when a character mounts outside the viewport margin, matching native playback. Move the microphone arm higher during speaking animations for both species. Share identical arm, body, head and left-leg SVG patterns without changing their rendering.
 
 Reduce generated accessory SVG sizes while preserving animation groups and references. Fix path distortion caused by rounding SVG numbers with text replacements. Scope accessory IDs and references through SVGO, including CSS rules, quoted URLs, XLink and animation start/end references.
+
+Export `SuiFrenAppearance` for shared species appearance fields and `AnimationPresetName` for the built-in core and battle preset names. Derive preset names from the catalogues while preserving dynamic string lookup APIs.
