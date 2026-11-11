@@ -28,10 +28,7 @@ describe('soccer transaction builder', () => {
 			config: TEST_CONFIG,
 		});
 
-		const options = getFirstMockArg<{
-			package?: string;
-			arguments: Array<unknown>;
-		}>(playV2);
+		const options = getFirstMockArg(playV2);
 		expect(options.package).toBe(TEST_CONFIG.packageIds.soccer);
 		expect(options.arguments[0]).toBe(TEST_CONFIG.objectIds.sweetHouse);
 		expect(options.arguments.slice(4, 7)).toEqual([9, 250, 4]);

@@ -14,7 +14,7 @@ export async function loadTransactionModuleWithMock<TModule extends Record<strin
 	transactionModulePath: string,
 ) {
 	vi.doMock(contractPath, () => mockExports);
-	return (await import(transactionModulePath)) as TModule;
+	return vi.importActual<TModule>(transactionModulePath);
 }
 
 export function createZeroCoinThunk(coinType: string) {

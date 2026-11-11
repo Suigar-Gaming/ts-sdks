@@ -77,18 +77,19 @@ export function readCache<T>({
 
 	const readEntry = () =>
 		sync
-			? cache.readSync<CacheEntry<T>>(key, () => createEntry() as CacheEntry<T>)
+			? cache.readSync<CacheEntry<T | Promise<T>>>(key, () => createEntry())
 			: cache.read<CacheEntry<T | Promise<T>>>(key, () => createEntry({ cache, key }));
 
-	let cached = readEntry() as CacheEntry<T | Promise<T>>;
-
-	if (cached.expiresAt > Date.now()) {
-		return cached.value;
-	}
-
-	cache.clear(key);
-	cached = readEntry() as CacheEntry<T | Promise<T>>;
-	return cached.value;
+	const useEntry = (cached: CacheEntry<T | Promise<T>>): T | Promise<T> => {
+		if (cached.expiresAt > Date.now()) {
+			return cached.value;
+		}
+		cache.clear(key);
+		const refreshed = readEntry();
+		return isPromiseLike(refreshed) ? refreshed.then((entry) => entry.value) : refreshed.value;
+	};
+	const cached = readEntry();
+	return isPromiseLike(cached) ? cached.then(useEntry) : useEntry(cached);
 }
 
 function isPromiseLike<T>(value: T | Promise<T>): value is Promise<T> {

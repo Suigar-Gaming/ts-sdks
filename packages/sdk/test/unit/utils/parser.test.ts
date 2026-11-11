@@ -55,6 +55,19 @@ describe('parseGameEvent', () => {
 		>();
 	});
 
+	it('accepts a minimal event envelope and rejects an unsupported game identifier', () => {
+		expect(parseGameEvent({ module: 'coinflip', eventType: '0x1::core::BetResultEvent' })).toEqual({
+			game: 'coinflip',
+			event: 'BetResultEvent',
+		});
+		expect(
+			parseGameEvent({ module: 'core', eventType: '0x1::core::BetResultEvent<unsupported>' }),
+		).toBeNull();
+		expect(
+			parseSuigarEvent({ module: 'coinflip', eventType: '0x1::core::BetResultEvent' }),
+		).toBeNull();
+	});
+
 	it('parses standard bet result events', () => {
 		expect(
 			parseGameEvent(
@@ -71,7 +84,7 @@ describe('parseGameEvent', () => {
 	});
 
 	it('parses every supported pvp game event from GAME_EVENTS', () => {
-		for (const eventName of GAME_EVENTS.filter((eventName) => eventName !== 'BetResultEvent')) {
+		for (const eventName of GAME_EVENTS.filter((name) => name !== 'BetResultEvent')) {
 			expect(
 				parseGameEvent(
 					createEvent({
@@ -190,6 +203,9 @@ describe('parseSuigarEvent', () => {
 		expectTypeOf<BetResultSuigarEvent['game']>().toEqualTypeOf<Game>();
 		expectTypeOf<BetResultSuigarEvent['event']['type']>().toEqualTypeOf<'BetResultEvent'>();
 		expectTypeOf<BetResultSuigarEvent['gameDetails']>().toEqualTypeOf<GameDetails<Game>>();
+		expectTypeOf<GameDetails<'coinflip' | 'range'>>().toEqualTypeOf<
+			GameDetails<'coinflip'> | GameDetails<'range'>
+		>();
 	});
 
 	it('decodes a PvP event in one step', () => {
@@ -311,7 +327,7 @@ describe('parseGameDetails', () => {
 			range_mode: 2,
 			payout_multiplier: 2.5,
 		});
-		expect(Number(rangeDetails.actual_rtp)).toBeCloseTo(0.97);
+		expect(rangeDetails.actual_rtp).toBeCloseTo(0.97);
 		expect(
 			parseGameDetails({
 				game: 'pvp-coinflip',

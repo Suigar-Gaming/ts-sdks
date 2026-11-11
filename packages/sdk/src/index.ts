@@ -8,5 +8,6 @@
  */
 
 export * from './client.js';
+export { SUIGAR_COINS } from './types/suigar-config.type.js';
 export { SUPPORTED_SUI_NETWORKS } from './types/network.type.js';
 export type { SuigarCoin, SuigarNetwork } from './types/index.js';

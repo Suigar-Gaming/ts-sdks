@@ -34,11 +34,13 @@ export type GameDetail<TValueType extends GameDetailSchemaValueType> =
 		? Array<ScalarGameDetail<TElementType>>
 		: ScalarGameDetail<TValueType & GameDetailValueType>;
 
-export type GameDetails<TGame extends Game> = {
-	[K in keyof (typeof GAME_DETAILS_SCHEMAS)[TGame]]: GameDetail<
-		(typeof GAME_DETAILS_SCHEMAS)[TGame][K] & GameDetailSchemaValueType
-	>;
-};
+export type GameDetails<TGame extends Game> = TGame extends Game
+	? {
+			[K in keyof (typeof GAME_DETAILS_SCHEMAS)[TGame]]: GameDetail<
+				(typeof GAME_DETAILS_SCHEMAS)[TGame][K] & GameDetailSchemaValueType
+			>;
+		}
+	: never;
 
 export const GAME_DETAIL_BCS = {
 	u8: bcs.U8,

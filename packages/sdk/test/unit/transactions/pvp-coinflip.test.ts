@@ -1,6 +1,7 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
+import { SuiGrpcClient } from '@mysten/sui/grpc';
 import { Transaction } from '@mysten/sui/transactions';
 import { fromHex, normalizeStructTag, normalizeSuiAddress } from '@mysten/sui/utils';
 import { describe, expect, it, vi } from 'vitest';
@@ -74,11 +75,7 @@ describe('pvp coinflip transaction builder', () => {
 			config: TEST_CONFIG,
 		});
 
-		const options = getFirstMockArg<{
-			package?: string;
-			typeArguments: Array<string>;
-			arguments: Array<unknown>;
-		}>(createGame);
+		const options = getFirstMockArg(createGame);
 		expect(options.package).toBe(TEST_CONFIG.packageIds.pvpCoinflip);
 		expect(options.typeArguments).toEqual([normalizeStructTag('0x2::sui::SUI')]);
 		expect(options.arguments[0]).toBe(TEST_CONFIG.objectIds.sweetHouse);
@@ -113,7 +110,7 @@ describe('pvp coinflip transaction builder', () => {
 				'../../../src/transactions/pvp-coinflip.js',
 			);
 		const partner = normalizeSuiAddress('0x456');
-		const client = {} as never;
+		const client = new SuiGrpcClient({ network: 'testnet', baseUrl: 'https://sui.test' });
 
 		buildPvPCoinflipTransactionWithMock({
 			action: 'join',
@@ -126,17 +123,16 @@ describe('pvp coinflip transaction builder', () => {
 			config: TEST_CONFIG,
 		});
 
-		const options = getFirstMockArg<{
-			package?: string;
-			arguments: Array<unknown>;
-		}>(joinGameV2);
+		const options = getFirstMockArg(joinGameV2);
 		expect(options.package).toBe(TEST_CONFIG.packageIds.pvpCoinflip);
 		expect(options.arguments[0]).toBe('0x999');
 		expect(options.arguments[1]).toBe(TEST_CONFIG.objectIds.sweetHouse);
 		expect(options.arguments[3]).toEqual(['partner', 'label']);
 		expect(options.arguments[4]).toEqual([Array.from(fromHex(partner)), encodeUtf8('vip')]);
 		expect(options.arguments[5]).toBe(TEST_CONFIG.coins.sui.priceInfoObjectId);
-		await (options.arguments[2] as (tx: Transaction) => Promise<unknown>)(new Transaction());
+		const resolveStake = options.arguments[2];
+		expect.assert(typeof resolveStake === 'function');
+		await resolveStake(new Transaction());
 		expect(getGame).toHaveBeenCalledWith({
 			client,
 			objectId: '0x999',
@@ -166,10 +162,7 @@ describe('pvp coinflip transaction builder', () => {
 			config: TEST_CONFIG,
 		});
 
-		const options = getFirstMockArg<{
-			package?: string;
-			arguments: Array<unknown>;
-		}>(cancelGame);
+		const options = getFirstMockArg(cancelGame);
 		expect(options.package).toBe(TEST_CONFIG.packageIds.pvpCoinflip);
 		expect(options.arguments).toEqual(['0x999', TEST_CONFIG.objectIds.sweetHouse]);
 	});

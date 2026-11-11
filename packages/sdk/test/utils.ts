@@ -6,7 +6,14 @@ import type { Transaction } from '@mysten/sui/transactions';
 import { normalizeStructTag } from '@mysten/sui/utils';
 import { vi } from 'vitest';
 
-type ContractCallMock = (options: unknown) => (tx: Transaction) => unknown;
+type ContractCallOptions = {
+	package?: string;
+	typeArguments?: Array<string>;
+	arguments: Array<unknown>;
+};
+
+type ContractCallMock = (options: ContractCallOptions) => (tx: Transaction) => unknown;
+
 const textEncoder = new TextEncoder();
 const testAddress = (fill: string) => `0x${fill.repeat(64)}`;
 
@@ -77,7 +84,12 @@ export function encodeUtf8(value: string): Array<number> {
 export function createContractCallMock() {
 	return vi.fn<ContractCallMock>(() => (tx: Transaction) => tx.object('0x777'));
 }
-
-export function getFirstMockArg<T>(mock: { mock: { calls: Array<Array<unknown>> } }): T {
-	return mock.mock.calls[0]?.[0] as T;
+export function getFirstMockArg(mock: {
+	mock: { calls: Array<[ContractCallOptions]> };
+}): ContractCallOptions {
+	const options = mock.mock.calls[0]?.[0];
+	if (!options) {
+		throw new Error('Expected a contract call.');
+	}
+	return options;
 }

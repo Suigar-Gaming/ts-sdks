@@ -37,7 +37,9 @@ export interface SuigarExtensionOptions<Name extends string = 'suigar'> {
 	cacheTtl?: number | undefined;
 }
 
-export type SuigarCoin = 'sui' | 'usdc';
+export const SUIGAR_COINS = ['sui', 'usdc'] as const;
+
+export type SuigarCoin = (typeof SUIGAR_COINS)[number];
 
 export type SuigarCoinRegistry = Record<SuigarCoin, SuigarCoinMetadata>;
 

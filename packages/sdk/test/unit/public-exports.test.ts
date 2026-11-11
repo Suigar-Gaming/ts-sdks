@@ -62,13 +62,16 @@ describe('public source subpath modules', () => {
 
 		expect(module).toBeDefined();
 		expect(module.SUPPORTED_SUI_NETWORKS).toEqual(['mainnet', 'testnet']);
+		expect(module.SUIGAR_COINS).toEqual(['sui', 'usdc']);
 	});
 
 	it('loads the games subpath module', async () => {
 		const module = await import('../../src/games.js');
 
 		expect(module).toBeDefined();
-		expect(Object.keys(module)).toEqual(['GAMES']);
+		expect(Object.keys(module)).toEqual(['COIN_SIDES', 'GAMES', 'PVP_COINFLIP_ACTIONS']);
+		expect(module.COIN_SIDES).toEqual(['heads', 'tails']);
+		expect(module.PVP_COINFLIP_ACTIONS).toEqual(['create', 'join', 'cancel']);
 		expect(module.GAMES).toEqual([
 			'coinflip',
 			'keno',
@@ -112,7 +115,7 @@ describe('public source subpath modules', () => {
 	});
 
 	it('exposes only the intended package subpaths', () => {
-		expect(Object.keys(packageJson.exports).sort()).toEqual(['.', './games', './utils']);
+		expect(Object.keys(packageJson.exports).toSorted()).toEqual(['.', './games', './utils']);
 
 		expect(packageJson.exports['./games']).toEqual({
 			types: './dist/games.d.mts',

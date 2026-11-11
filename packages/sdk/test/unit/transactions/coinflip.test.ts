@@ -70,11 +70,7 @@ describe('coinflip transaction builder', () => {
 			config: TEST_CONFIG,
 		});
 
-		const options = getFirstMockArg<{
-			package?: string;
-			typeArguments: Array<string>;
-			arguments: Array<unknown>;
-		}>(playV2);
+		const options = getFirstMockArg(playV2);
 
 		expect(options.package).toBe(TEST_CONFIG.packageIds.coinflip);
 		expect(options.typeArguments).toEqual([normalizeStructTag('0x2::sui::SUI')]);

@@ -1,6 +1,7 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
+import { SuiGrpcClient } from '@mysten/sui/grpc';
 import { normalizeSuiAddress } from '@mysten/sui/utils';
 import { describe, expect, it, vi } from 'vitest';
 import { Factory as NftV1Factory } from '../../../src/contracts/nft-v1/nft.js';
@@ -21,19 +22,37 @@ describe('NFT V1 transaction builder', () => {
 				nftV1Factory: '0x222',
 			},
 		};
-		const client = {} as never;
+		const client = new SuiGrpcClient({ network: 'testnet', baseUrl: 'https://sui.test' });
 		const getNftV1Factory = vi.spyOn(NftV1Factory, 'get').mockResolvedValue({
+			objectId: '0x222',
+			version: '1',
+			digest: 'factory-digest',
+			owner: { $kind: 'Immutable', Immutable: true },
+			type: NftV1Factory.name,
+			content: new Uint8Array(),
+			previousTransaction: undefined,
+			objectBcs: undefined,
+			display: undefined,
 			json: {
+				id: '0x222',
 				specs: {
 					contents: [
 						{
 							key: '0x999',
-							value: { id: '0x999', price: 15n },
+							value: {
+								id: '0x999',
+								name: 'Test NFT',
+								description: '',
+								url: { url: '' },
+								supply: '1',
+								available: '1',
+								price: '15',
+							},
 						},
 					],
 				},
 			},
-		} as never);
+		});
 		const tx = buildMintNftV1Transaction({
 			owner: '0x123',
 			specId: '0x999',

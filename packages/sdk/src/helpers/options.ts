@@ -21,7 +21,8 @@ type OptionalOptions<T> = { [K in keyof T]?: Exclude<T[K], undefined> };
  * @param options - The options to copy without modifying the original object.
  * @returns A new object whose fields are optional and exclude undefined from their value types.
  */
-export function optionalOptions<T extends Record<string, unknown>>(options: T): OptionalOptions<T> {
+export function optionalOptions<T extends Record<string, unknown>>(options: T): OptionalOptions<T>;
+export function optionalOptions(options: Record<string, unknown>): Record<string, unknown> {
 	const result: Record<string, unknown> = {};
 	for (const key of Object.keys(options)) {
 		const value = options[key];
@@ -38,5 +39,5 @@ export function optionalOptions<T extends Record<string, unknown>>(options: T): 
 			}
 		}
 	}
-	return result as OptionalOptions<T>;
+	return result;
 }

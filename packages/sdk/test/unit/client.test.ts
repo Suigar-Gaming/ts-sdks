@@ -3,6 +3,7 @@
 
 import { bcs } from '@mysten/sui/bcs';
 import { CoreClient, type SuiClientTypes } from '@mysten/sui/client';
+import { SuiGrpcClient } from '@mysten/sui/grpc';
 import { Transaction } from '@mysten/sui/transactions';
 import {
 	deriveDynamicFieldID,
@@ -306,7 +307,10 @@ class TestClient extends CoreClient {
 	dynamicFieldObjectReads = 0;
 
 	constructor() {
-		super({ network: 'testnet', base: undefined as never });
+		super({
+			network: 'testnet',
+			base: new SuiGrpcClient({ network: 'testnet', baseUrl: 'https://sui.test' }),
+		});
 	}
 
 	override mvr: SuiClientTypes.MvrMethods = {
@@ -327,16 +331,17 @@ class TestClient extends CoreClient {
 		}),
 	};
 
-	getObjects: CoreClient['getObjects'] = async <Include extends SuiClientTypes.ObjectInclude>(
+	getObjects<Include extends SuiClientTypes.ObjectInclude = {}>(
 		options: SuiClientTypes.GetObjectsOptions<Include>,
-	) => {
+	): Promise<SuiClientTypes.GetObjectsResponse<Include>>;
+	async getObjects(options: SuiClientTypes.GetObjectsOptions<SuiClientTypes.ObjectInclude>) {
 		this.getObjectsCalls.push(options);
 		return {
 			objects: options.objectIds.map((objectId, index) => {
-				const object = this.mockObjects.find((object) => {
+				const object = this.mockObjects.find((candidate) => {
 					return (
-						!(object instanceof Error) &&
-						normalizeSuiAddress(object.objectId) === normalizeSuiAddress(objectId)
+						!(candidate instanceof Error) &&
+						normalizeSuiAddress(candidate.objectId) === normalizeSuiAddress(objectId)
 					);
 				});
 				if (object) {
@@ -368,9 +373,9 @@ class TestClient extends CoreClient {
 				}
 
 				return this.mockObjects[index] ?? new Error(`No object found for id ${objectId}`);
-			}) as SuiClientTypes.GetObjectsResponse<Include>['objects'],
+			}),
 		};
-	};
+	}
 
 	listCoins: CoreClient['listCoins'] = async () => ({
 		objects: [],
@@ -413,10 +418,15 @@ class TestClient extends CoreClient {
 		throw new Error('Not implemented.');
 	};
 
-	simulateTransaction: CoreClient['simulateTransaction'] = async (options) => {
+	simulateTransaction<Include extends SuiClientTypes.SimulateTransactionInclude = {}>(
+		options: SuiClientTypes.SimulateTransactionOptions<Include>,
+	): Promise<SuiClientTypes.SimulateTransactionResult<Include>>;
+	async simulateTransaction(
+		options: SuiClientTypes.SimulateTransactionOptions<SuiClientTypes.SimulateTransactionInclude>,
+	) {
 		this.simulateTransactionCalls.push(options);
-		return this.mockSimulationResult as never;
-	};
+		return this.mockSimulationResult;
+	}
 
 	getReferenceGasPrice: CoreClient['getReferenceGasPrice'] = async () => ({
 		referenceGasPrice: '0',
@@ -458,8 +468,9 @@ class TestClient extends CoreClient {
 			},
 		}) satisfies SuiClientTypes.GetCurrentSystemStateResponse;
 
-	getProtocolConfig: CoreClient['getProtocolConfig'] = async () =>
-		({ protocolConfig: {} }) as SuiClientTypes.GetProtocolConfigResponse;
+	getProtocolConfig: CoreClient['getProtocolConfig'] = async () => ({
+		protocolConfig: { protocolVersion: '1', featureFlags: {}, attributes: {} },
+	});
 
 	getChainIdentifier: CoreClient['getChainIdentifier'] = async () =>
 		({
@@ -475,11 +486,12 @@ class TestClient extends CoreClient {
 		};
 	};
 
-	override getDynamicObjectField: CoreClient['getDynamicObjectField'] = async <
-		Include extends SuiClientTypes.ObjectInclude,
-	>(
+	override getDynamicObjectField<Include extends SuiClientTypes.ObjectInclude = {}>(
 		options: SuiClientTypes.GetDynamicObjectFieldOptions<Include>,
-	) => {
+	): Promise<SuiClientTypes.GetDynamicObjectFieldResponse<Include>>;
+	override async getDynamicObjectField(
+		options: SuiClientTypes.GetDynamicObjectFieldOptions<SuiClientTypes.ObjectInclude>,
+	) {
 		const resolvedOptions = {
 			...options,
 			name: {
@@ -502,41 +514,42 @@ class TestClient extends CoreClient {
 			throw new Error(`No dynamic object field found for ${resolvedOptions.name.type}`);
 		}
 
-		const object =
-			this.mockObjects.find((entry) => {
-				return !(entry instanceof Error) && entry.objectId === lookup.childId;
-			}) ??
-			({
-				objectId: lookup.childId,
-				version: '1',
-				digest: `${lookup.childId}-digest`,
-				owner: {
-					$kind: 'AddressOwner',
-					AddressOwner: '0xowner',
-				},
-				type: resolvedOptions.name.type,
-				previousTransaction: undefined,
-				objectBcs: undefined,
-				json: undefined,
-				display: undefined,
-			} as SuiClientTypes.Object<Include>);
+		const object = this.mockObjects.find((entry) => {
+			return !(entry instanceof Error) && entry.objectId === lookup.childId;
+		}) ?? {
+			objectId: lookup.childId,
+			version: '1',
+			digest: `${lookup.childId}-digest`,
+			owner: {
+				$kind: 'AddressOwner',
+				AddressOwner: '0xowner',
+			},
+			type: resolvedOptions.name.type,
+			previousTransaction: undefined,
+			objectBcs: undefined,
+			json: undefined,
+			display: undefined,
+		};
 
 		if (object instanceof Error) {
 			throw object;
 		}
 
 		return {
-			object: object as SuiClientTypes.GetDynamicObjectFieldResponse<Include>['object'],
+			object,
 		};
-	};
+	}
 
 	resolveTransactionPlugin: CoreClient['resolveTransactionPlugin'] = () => async () => {};
 
-	verifyZkLoginSignature: CoreClient['verifyZkLoginSignature'] = async () =>
-		({ success: true }) as SuiClientTypes.ZkLoginVerifyResponse;
+	verifyZkLoginSignature: CoreClient['verifyZkLoginSignature'] = async () => ({
+		success: true,
+		errors: [],
+	});
 
-	getMoveFunction: CoreClient['getMoveFunction'] = async () =>
-		({ function: null }) as unknown as SuiClientTypes.GetMoveFunctionResponse;
+	getMoveFunction: CoreClient['getMoveFunction'] = async () => {
+		throw new Error('Not implemented.');
+	};
 
 	defaultNameServiceName: CoreClient['defaultNameServiceName'] = async () =>
 		({
@@ -705,9 +718,7 @@ describe('SuigarClient', () => {
 			side: 'heads',
 		});
 
-		const options = getFirstMockArg<{
-			arguments: Array<unknown>;
-		}>(playV2);
+		const options = getFirstMockArg(playV2);
 		expect(options.arguments[5]).toEqual(['partner']);
 		expect(options.arguments[6]).toEqual([Array.from(fromHex(partner))]);
 	});
@@ -720,7 +731,7 @@ describe('SuigarClient', () => {
 		[true, 'Partner must be a non-empty string'],
 		[{}, 'Partner must be a non-empty string'],
 	])('rejects an invalid configured partner address: %j', (partner, message) => {
-		expect(() => new TestClient().$extend(suigar({ partner: partner as string }))).toThrow(
+		expect(() => new TestClient().$extend(Reflect.apply(suigar, undefined, [{ partner }]))).toThrow(
 			new TypeError(message),
 		);
 	});

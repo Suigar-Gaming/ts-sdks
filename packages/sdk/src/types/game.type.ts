@@ -19,13 +19,16 @@ export const GAME_EVENTS = [
 	'GameCancelledEvent',
 ] as const;
 
+export const COIN_SIDES = ['heads', 'tails'] as const;
+export const PVP_COINFLIP_ACTIONS = ['create', 'join', 'cancel'] as const;
+
 export type Game = (typeof GAMES)[number];
 
 export type StandardGame = Exclude<Game, PvPGame>;
 export type PvPGame = Extract<Game, `pvp-${string}`>;
 
-export type CoinSide = 'heads' | 'tails';
-export type PvPCoinflipAction = 'create' | 'join' | 'cancel';
+export type CoinSide = (typeof COIN_SIDES)[number];
+export type PvPCoinflipAction = (typeof PVP_COINFLIP_ACTIONS)[number];
 
 export type GameEvent = (typeof GAME_EVENTS)[number];
 

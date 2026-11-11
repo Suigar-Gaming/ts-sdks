@@ -7,7 +7,7 @@
  * @module
  */
 
-export { GAMES } from './types/game.type.js';
+export { COIN_SIDES, GAMES, PVP_COINFLIP_ACTIONS } from './types/game.type.js';
 export type {
 	CoinSide,
 	CancelPvPCoinflipTransactionOptions,

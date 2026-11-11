@@ -15,7 +15,8 @@ describe('optionalOptions', () => {
 
 	it('copies only own enumerable fields and reads each value once', () => {
 		let reads = 0;
-		const input = Object.create({ inherited: true }) as Record<string, unknown>;
+		const input: Record<string, unknown> = {};
+		Object.setPrototypeOf(input, { inherited: true });
 		Object.defineProperties(input, {
 			hidden: { value: true },
 			package: {

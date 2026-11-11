@@ -29,6 +29,7 @@ import { TypeName } from './contracts/stdlib/type_name.js';
 import {
 	DEFAULT_CACHE_TTL_MS,
 	normalizeGameParameterValues,
+	parseGameParameters,
 	readCache,
 	resolvePartnerAddress,
 	resolveSuigarConfig,
@@ -61,23 +62,24 @@ import type {
 	GameParameters,
 	GetGameParametersOptions,
 	MintNftV1Options,
-	OnChainGameParameters,
 	PvPCoinflipGameOptions,
 	RedeemSweetHouseRequestOptions,
 	SuigarConfig,
 	SuigarExtensionOptions,
-	SuigarNetwork,
 	WithThrowOnError,
 } from './types/index.js';
 import { SUPPORTED_SUI_NETWORKS } from './types/network.type.js';
 import { DEFAULT_QUERY_LIMIT, parseCoinType } from './utils/index.js';
 
-export function suigar<const Name extends string = 'suigar'>({
-	name = 'suigar' as Name,
+export function suigar<const Name extends string = 'suigar'>(
+	options?: SuigarExtensionOptions<Name>,
+): SuiClientRegistration<ClientWithCoreApi, Name, SuigarClient>;
+export function suigar({
+	name = 'suigar',
 	...options
-}: SuigarExtensionOptions<Name> = {}): SuiClientRegistration<
+}: SuigarExtensionOptions<string> = {}): SuiClientRegistration<
 	ClientWithCoreApi,
-	Name,
+	string,
 	SuigarClient
 > {
 	return {
@@ -86,7 +88,7 @@ export function suigar<const Name extends string = 'suigar'>({
 			return new SuigarClient({
 				...options,
 				client,
-				name: String(name),
+				name,
 			});
 		},
 	};
@@ -110,9 +112,9 @@ export class SuigarClient {
 		client: ClientWithCoreApi;
 		name: string;
 	}) {
-		const network = client.network as SuigarNetwork;
-		if (!SUPPORTED_SUI_NETWORKS.includes(network)) {
-			throw new RangeError(`Unsupported network: ${network}`);
+		const network = SUPPORTED_SUI_NETWORKS.find((supported) => supported === client.network);
+		if (!network) {
+			throw new RangeError(`Unsupported network: ${client.network}`);
 		}
 
 		this.#client = client;
@@ -226,9 +228,7 @@ export class SuigarClient {
 				throw new Error(`Missing parameters object content for ${game} and coin type ${coinType}`);
 			}
 
-			return normalizeGameParameterValues(
-				gameDefinition.parameters.parse(object.content) as OnChainGameParameters<TGame>,
-			);
+			return normalizeGameParameterValues(parseGameParameters(game, object.content));
 		};
 
 		return readCache({

@@ -25,9 +25,7 @@ describe('keno transaction builder', () => {
 			config: TEST_CONFIG,
 		});
 
-		const options = getFirstMockArg<{
-			arguments: Array<unknown>;
-		}>(playV2);
+		const options = getFirstMockArg(playV2);
 		expect(options.arguments[4]).toBe(2);
 		expect(options.arguments[5]).toEqual([1, 7, 20]);
 	});

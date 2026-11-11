@@ -25,9 +25,7 @@ describe('range transaction builder', () => {
 			config: TEST_CONFIG,
 		});
 
-		const options = getFirstMockArg<{
-			arguments: Array<unknown>;
-		}>(playV2);
+		const options = getFirstMockArg(playV2);
 		expect(options.arguments[4]).toBe(950000n);
 		expect(options.arguments[5]).toBe(1050000n);
 		expect(options.arguments[6]).toBe(true);

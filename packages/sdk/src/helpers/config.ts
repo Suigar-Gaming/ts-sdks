@@ -18,6 +18,7 @@ import type {
 	WithCoinType,
 	WithConfig,
 } from '../types/index.js';
+import { SUIGAR_COINS } from '../types/suigar-config.type.js';
 
 export const DEFAULT_CACHE_TTL_MS: number = 30 * 60 * 1000;
 
@@ -50,7 +51,7 @@ export function resolveSuigarConfig({
 	const objectIds = OBJECT_IDS[network];
 	const coins = COINS[network];
 
-	const resolvedCoins = getSupportedCoins(coins).reduce<SuigarConfig['coins']>((result, coin) => {
+	const resolvedCoins = SUIGAR_COINS.reduce<SuigarConfig['coins']>((result, coin) => {
 		result[coin] = resolveCoinMetadata({
 			coin,
 			coinMetadata: coins[coin],
@@ -83,10 +84,6 @@ export function resolvePriceInfoObjectId({ config, coinType }: WithConfig<WithCo
 	}
 
 	return objectId;
-}
-
-function getSupportedCoins(coins: SuigarConfig['coins']): Array<SuigarCoin> {
-	return Object.keys(coins) as Array<SuigarCoin>;
 }
 
 function assertSuiObjectIds<T extends Record<string, string | undefined>>(
@@ -126,14 +123,14 @@ function resolveCoinMetadata({
 
 function resolveSupportedCoin({ config, coinType }: WithConfig<WithCoinType>): SuigarCoin {
 	const normalizedCoinType = normalizeStructTag(coinType);
-	const supportedCoin = getSupportedCoins(config.coins).find(
+	const supportedCoin = SUIGAR_COINS.find(
 		(coin) => config.coins[coin].coinType === normalizedCoinType,
 	);
 
 	if (!supportedCoin) {
 		throw new RangeError(
 			`Unsupported coin type ${coinType}. Supported coin types: ${Object.values(config.coins)
-				.map(({ coinType }) => coinType)
+				.map(({ coinType: supportedType }) => supportedType)
 				.join(', ')}`,
 		);
 	}
