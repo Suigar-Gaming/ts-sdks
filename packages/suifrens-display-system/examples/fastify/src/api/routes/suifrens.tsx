@@ -6,7 +6,7 @@ import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import { ObjectError } from '@mysten/sui/client';
 import type { FastifyPluginAsync } from 'fastify';
 import { renderToStaticMarkup } from 'react-dom/server';
-import Type from 'typebox';
+import { Type } from 'typebox';
 import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
 import { getSuiFrenAttributesAndAccessories } from '../client/sui-client.js';
 import { IMAGE_LOGO_SCHEMA, renderImageLogo } from '../lib/image-logo.js';

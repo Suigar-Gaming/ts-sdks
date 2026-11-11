@@ -5,7 +5,7 @@
 import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import type { FastifyPluginAsync } from 'fastify';
 import { renderToStaticMarkup } from 'react-dom/server';
-import Type from 'typebox';
+import { Type } from 'typebox';
 import { ACCESSORIES as suiFrensAccessories } from '@suigar/suifrens-display-system/accessories';
 import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
 import { IMAGE_LOGO_SCHEMA, renderImageLogo } from '../lib/image-logo.js';
@@ -43,7 +43,7 @@ export const accessories: FastifyPluginAsync = async (fastify) => {
 			},
 			async (request, reply) => {
 				const accessoryName = request.params.name;
-				const accessory = suiFrensAccessories.find((accessory) => accessory.name === accessoryName);
+				const accessory = suiFrensAccessories.find((candidate) => candidate.name === accessoryName);
 
 				if (!accessory) {
 					return reply.status(404).send(null);

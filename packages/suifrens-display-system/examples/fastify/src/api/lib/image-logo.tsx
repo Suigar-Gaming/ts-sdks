@@ -1,7 +1,7 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import Type, { type Static } from 'typebox';
+import { type Static, Type } from 'typebox';
 import { SuigarLogo } from '../../components/logos/SuigarLogo.js';
 import { SuiLogo } from '../../components/logos/SuiLogo.js';
 
