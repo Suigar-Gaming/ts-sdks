@@ -256,11 +256,9 @@ describe('parseCoinType', () => {
 
 describe('parseGameDetails', () => {
 	it('supports address scalar and vector detail types', () => {
-		const address = eventSender;
-
 		expect(
-			GAME_DETAIL_BCS.address.parse(GAME_DETAIL_BCS.address.serialize(address).toBytes()),
-		).toBe(address);
+			GAME_DETAIL_BCS.address.parse(GAME_DETAIL_BCS.address.serialize(eventSender).toBytes()),
+		).toBe(eventSender);
 		expectTypeOf<GameDetail<'address'>>().toEqualTypeOf<string>();
 		expectTypeOf<GameDetail<'vector<address>'>>().toEqualTypeOf<Array<string>>();
 	});

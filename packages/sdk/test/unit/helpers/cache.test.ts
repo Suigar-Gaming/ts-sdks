@@ -29,6 +29,20 @@ describe('readCache', () => {
 		expect(load).toHaveBeenCalledTimes(1);
 	});
 
+	it('shares a pending load and exposes the resolved value on subsequent reads', async () => {
+		const cache = new ClientCache().scope('test');
+		const pending = Promise.withResolvers<string>();
+		const load = vi.fn<() => Promise<string>>().mockReturnValue(pending.promise);
+		const key: [string] = ['key'];
+		const options = { cache, key, load, options: { ttlMs: 1000 } };
+		const first = readCache(options);
+		expect(readCache(options)).toBe(first);
+		expect(load).toHaveBeenCalledOnce();
+		pending.resolve('value');
+		await expect(first).resolves.toBe('value');
+		expect(readCache(options)).toBe('value');
+	});
+
 	it('reads sync values through the client cache', () => {
 		const cache = new ClientCache().scope('test');
 		const load = vi.fn<() => string>().mockReturnValue('value');

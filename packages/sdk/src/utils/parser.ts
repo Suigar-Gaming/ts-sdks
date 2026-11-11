@@ -62,8 +62,8 @@ export function parseGameEvent(
 ): SuigarGameEvent | null {
 	const { name: event, typeParams } = parseStructTag(suiEvent.eventType);
 	const module = suiEvent.module.replaceAll('_', '-');
-	const candidate = GAMES.find((game) => game === module) ?? typeParams[0];
-	const game = GAMES.find((known) => known === candidate);
+	const game =
+		GAMES.find((known) => known === module) ?? GAMES.find((known) => known === typeParams[0]);
 	if (!game) {
 		return null;
 	}
@@ -168,15 +168,16 @@ function normalizeBcsGameDetailValue({
 	return value;
 }
 
+function isGameDetailValueType(value: string): value is GameDetailValueType {
+	return Object.hasOwn(GAME_DETAIL_BCS, value);
+}
+
 function parseVectorValueType(valueType: GameDetailSchemaValueType): GameDetailValueType | null {
 	if (!valueType.startsWith('vector<') || !valueType.endsWith('>')) {
 		return null;
 	}
 	const elementType = valueType.slice(7, -1);
-	return (
-		Object.keys(GAME_DETAIL_BCS).find((key): key is GameDetailValueType => key === elementType) ??
-		null
-	);
+	return isGameDetailValueType(elementType) ? elementType : null;
 }
 
 function parseGameDetail({
@@ -205,16 +206,11 @@ function parseGameDetail({
 			normalizeBcsGameDetailValue({ valueType: elementType, value: item }),
 		);
 	}
-	if (valueType in GAME_DETAIL_BCS) {
-		const scalar = Object.keys(GAME_DETAIL_BCS).find(
-			(key): key is GameDetailValueType => key === valueType,
-		);
-		if (scalar) {
-			return normalizeBcsGameDetailValue({
-				valueType: scalar,
-				value: GAME_DETAIL_BCS[scalar].parse(Uint8Array.from(value)),
-			});
-		}
+	if (isGameDetailValueType(valueType)) {
+		return normalizeBcsGameDetailValue({
+			valueType,
+			value: GAME_DETAIL_BCS[valueType].parse(Uint8Array.from(value)),
+		});
 	}
 	throw new TypeError(`Unsupported game detail type: ${valueType}`);
 }
@@ -248,7 +244,7 @@ export function parseGameDetails({
 	gameDetails,
 }: WithGame<{ gameDetails: BetResultGameDetails }>): Record<string, unknown> {
 	const schema: Record<string, GameDetailSchemaValueType> = GAME_DETAILS_SCHEMAS[game];
-	const details = gameDetails.contents.reduce<Record<string, unknown>>((parsedDetails, entry) => {
+	return gameDetails.contents.reduce<Record<string, unknown>>((parsedDetails, entry) => {
 		const valueType = Object.hasOwn(schema, entry.key) ? (schema[entry.key] ?? 'string') : 'string';
 		parsedDetails[entry.key] = parseGameDetail({
 			valueType,
@@ -256,5 +252,4 @@ export function parseGameDetails({
 		});
 		return parsedDetails;
 	}, Object.create(null));
-	return details;
 }
