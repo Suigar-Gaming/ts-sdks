@@ -100,10 +100,3 @@ pnpm --dir packages/suifrens-display-system run test
 pnpm --dir packages/suifrens-display-system run typecheck
 pnpm --dir packages/suifrens-display-system run lint
 ```
-
-After building, run Storybook or the Fastify rendering example:
-
-```bash
-pnpm --filter @suigar/suifrens-storybook dev
-pnpm --filter @suigar/suifrens-fastify dev
-```
