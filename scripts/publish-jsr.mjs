@@ -17,6 +17,9 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+const PACKAGE_JSON_FILENAME = 'package.json';
+const JSR_JSON_FILENAME = 'jsr.json';
+const NODE_MODULES_DIRECTORY = 'node_modules';
 const WORKSPACE_CONFIG_FILE = 'pnpm-workspace.yaml';
 const startDir = process.cwd();
 const workspaceRoot = findUp(startDir, WORKSPACE_CONFIG_FILE);
@@ -29,13 +32,13 @@ for (const packageDir of getPublishablePackageDirs(startDir)) {
 }
 
 function publishPackage(packageDir) {
-	const packageJson = JSON.parse(readFileSync(join(packageDir, 'package.json'), 'utf8'));
-	const jsrJson = JSON.parse(readFileSync(join(packageDir, 'jsr.json'), 'utf8'));
+	const packageJson = JSON.parse(readFileSync(join(packageDir, PACKAGE_JSON_FILENAME), 'utf8'));
+	const jsrJson = JSON.parse(readFileSync(join(packageDir, JSR_JSON_FILENAME), 'utf8'));
 	const stageDir = mkdtempSync(join(tmpdir(), `${packageJson.name.replaceAll('/', '__')}-jsr-`));
 
 	try {
 		writeFileSync(
-			join(stageDir, 'jsr.json'),
+			join(stageDir, JSR_JSON_FILENAME),
 			`${JSON.stringify(createJsrJson(jsrJson), null, '\t')}\n`,
 		);
 
@@ -44,19 +47,19 @@ function publishPackage(packageDir) {
 		}
 
 		writeFileSync(
-			join(stageDir, 'package.json'),
+			join(stageDir, PACKAGE_JSON_FILENAME),
 			`${JSON.stringify(createJsrPackageJson(packageJson), null, '\t')}\n`,
 		);
 
-		const nodeModulesPath = join(packageDir, 'node_modules');
+		const nodeModulesPath = join(packageDir, NODE_MODULES_DIRECTORY);
 		if (existsSync(nodeModulesPath)) {
-			symlinkSync(nodeModulesPath, join(stageDir, 'node_modules'), 'dir');
+			symlinkSync(nodeModulesPath, join(stageDir, NODE_MODULES_DIRECTORY), 'dir');
 		}
 
 		const jsrBin = resolve(
 			dirname(fileURLToPath(import.meta.url)),
 			'..',
-			'node_modules',
+			NODE_MODULES_DIRECTORY,
 			'.bin',
 			'jsr',
 		);
@@ -152,7 +155,10 @@ function resolveDependencies(dependencies = {}) {
 }
 
 function getPublishablePackageDirs(start) {
-	if (existsSync(join(start, 'package.json')) && existsSync(join(start, 'jsr.json'))) {
+	if (
+		existsSync(join(start, PACKAGE_JSON_FILENAME)) &&
+		existsSync(join(start, JSR_JSON_FILENAME))
+	) {
 		return [start];
 	}
 
@@ -166,8 +172,11 @@ function getPublishablePackageDirs(start) {
 
 		const packageDir = join(packagesDir, directory.name);
 
-		if (existsSync(join(packageDir, 'package.json')) && existsSync(join(packageDir, 'jsr.json'))) {
-			const packageJson = JSON.parse(readFileSync(join(packageDir, 'package.json'), 'utf8'));
+		if (
+			existsSync(join(packageDir, PACKAGE_JSON_FILENAME)) &&
+			existsSync(join(packageDir, JSR_JSON_FILENAME))
+		) {
+			const packageJson = JSON.parse(readFileSync(join(packageDir, PACKAGE_JSON_FILENAME), 'utf8'));
 			packageDirsByName.set(packageJson.name, packageDir);
 		}
 	}
@@ -212,7 +221,7 @@ function sortPackageDirsByWorkspaceDependencies(packageDirsByName) {
 
 		visiting.add(name);
 
-		const packageJson = JSON.parse(readFileSync(join(packageDir, 'package.json'), 'utf8'));
+		const packageJson = JSON.parse(readFileSync(join(packageDir, PACKAGE_JSON_FILENAME), 'utf8'));
 		const dependencyNames = [
 			...Object.keys(packageJson.dependencies ?? {}),
 			...Object.keys(packageJson.peerDependencies ?? {}),
@@ -280,7 +289,7 @@ function readWorkspacePackages(root) {
 			continue;
 		}
 
-		const packageJsonPath = join(packagesDir, directory.name, 'package.json');
+		const packageJsonPath = join(packagesDir, directory.name, PACKAGE_JSON_FILENAME);
 
 		if (!existsSync(packageJsonPath)) {
 			continue;

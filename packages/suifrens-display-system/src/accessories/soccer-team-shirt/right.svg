@@ -1,0 +1,22 @@
+<svg version="1.1" id="shirt_x5F_soccerteam" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 3000 3000" xml:space="preserve">
+  <g id="shirt_x5F_soccerteam_x5F_frontarm" transform="matrix(2.9166107177734375, 0, 0, 2.9166107177734375, 1002.9,1719.3)">
+    <g>
+      <clipPath id="soccer-team-shirt-{{id}}-shirt-sleeve-{{code}}">
+        <path d="M15.6,43.5c-.7,1.9-1.4,3.7-2,5.6c25.3,1.4,47.2,7.3,65.9,17.8c4.5-12.3,12.4-25.5,23.6-39.7L49.7,0C33.7,10.8,22.4,25.3,15.6,43.5z">
+        </path>
+      </clipPath>
+      <g clip-path="url(#soccer-team-shirt-{{id}}-shirt-sleeve-{{code}})">
+        <path d="M15.6,43.5c-.7,1.9-1.4,3.7-2,5.6c25.3,1.4,47.2,7.3,65.9,17.8c4.5-12.3,12.4-25.5,23.6-39.7L49.7,0C33.7,10.8,22.4,25.3,15.6,43.5z" fill="{{primary}}">
+        </path>
+        <path d="M27 11 L96 45 L88 62 L17 27Z" fill="{{secondary}}" opacity="0.95">
+        </path>
+        <path d="M13 45 C35 46 58 52 80 64" fill="none" stroke="{{accent}}" stroke-linecap="round" stroke-width="8">
+        </path>
+      </g>
+      <path d="M79.6,71.9c.6,0,1.2-.1,1.7-.3c1.4-.5,2.5-1.6,3-3c4.3-11.7,12-24.6,22.8-38.4c1.7-2.2,1.3-5.3-.8-7c-2.2-1.7-5.3-1.3-7,.8C89.3,36.7,81.9,48.7,77,59.9c-16.5-8.3-35.4-13.5-56.5-15.4c6.4-16.8,17.2-30.3,32-40.4c2.3-1.5,2.9-4.7,1.3-6.9c-1.5-2.3-4.7-2.9-6.9-1.3C30.1,7.2,18,22.7,10.9,41.7c-.7,1.9-1.4,3.8-2,5.7c-.5,1.5-.3,3.1,.6,4.4c.9,1.3,2.3,2.1,3.9,2.2c24.4,1.3,45.8,7.2,63.8,17.2C77.9,71.7,78.7,71.9,79.6,71.9z" fill="#050916">
+      </path>
+      <path d="M29 18 L86 46" fill="none" stroke="{{primaryContrast}}" stroke-linecap="round" stroke-width="4" opacity="0.72">
+      </path>
+    </g>
+  </g>
+</svg>
