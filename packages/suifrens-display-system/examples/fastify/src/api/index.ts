@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { buildServer } from './app.js';
+import { NETWORK } from './lib/config.js';
 
 const fastify = buildServer();
 // Start the server:
@@ -11,5 +12,5 @@ fastify.listen({ port: 3000, host: '0.0.0.0' }, (err) => {
 		fastify.log.error(err);
 		process.exit(1);
 	}
-	fastify.log.info(`SuiFrens image rendering server started successfully!`);
+	fastify.log.info(`SuiFrens image rendering server started successfully on ${NETWORK}!`);
 });

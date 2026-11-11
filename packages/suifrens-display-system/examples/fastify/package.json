@@ -4,7 +4,7 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"dev": "tsdown src/api/index.ts --watch --on-success \"node dist/index.mjs\"",
+		"dev": "node scripts/dev.ts",
 		"test": "vitest run",
 		"typecheck": "tsc"
 	},
@@ -19,6 +19,7 @@
 		"pino-pretty": "^13.2.0",
 		"react": "catalog:frontend",
 		"react-dom": "catalog:frontend",
+		"sharp": "^0.35.5",
 		"typebox": "^1.4.6"
 	},
 	"devDependencies": {
