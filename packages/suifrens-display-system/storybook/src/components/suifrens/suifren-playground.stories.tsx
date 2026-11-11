@@ -124,7 +124,8 @@ function updateSprite(el: HTMLDivElement | null, pose: SuiFrenActorPose) {
 	}
 	const x = (pose.position.x / SPRITE_SIZE - 0.5) * 100;
 	const y = ((pose.position.y - pose.elevation) / SPRITE_SIZE - 1) * 100;
-	el.style.transform = `translate3d(${x}%, ${y}%, 0) scaleX(${pose.facing === 'left' ? -1 : 1})`;
+	el.style.transform = `translate3d(${x}%, ${y}%, 0)`;
+	el.style.setProperty('--sprite-facing', pose.facing === 'left' ? '-1' : '1');
 }
 
 function SuiFrenStage({ state, spriteRef, title, note }: StageProps) {
@@ -155,12 +156,14 @@ function SuiFrenStage({ state, spriteRef, title, note }: StageProps) {
 								{state.expression}
 							</div>
 						) : null}
-						<SuiFrenImageInline
-							attributes={{ ...baseAttributes, expression: state.expression }}
-							shadow
-							style={{ width: '100%', height: '100%' }}
-							animation={state.animation}
-						/>
+						<div className="h-full w-full" style={{ transform: 'scaleX(var(--sprite-facing, 1))' }}>
+							<SuiFrenImageInline
+								attributes={{ ...baseAttributes, expression: state.expression }}
+								shadow
+								style={{ width: '100%', height: '100%' }}
+								animation={state.animation}
+							/>
+						</div>
 					</div>
 				</div>
 
