@@ -4,7 +4,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ACCESSORIES } from '@suigar/suifrens-display-system/accessories';
 import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
-import { SOCCER_TEAM_KITS } from '@suigar/suifrens-display-system/kits';
+import { resolveSoccerCountryCode, SOCCER_TEAM_KITS } from '@suigar/suifrens-display-system/kits';
 import type {
 	AccessoryKit,
 	SoccerTeamCountryCode,
@@ -33,9 +33,9 @@ const teamTrunks = ACCESSORIES.find((accessory) => accessory.name === 'soccer te
 const leftGothBoot = ACCESSORIES.find((accessory) => accessory.name === 'left goth boot')!;
 const rightGothBoot = ACCESSORIES.find((accessory) => accessory.name === 'right goth boot')!;
 
-const countries = Object.keys(SOCCER_TEAM_KITS).filter(
-	(code) => code !== 'GLOBAL',
-) as Array<SoccerTeamCountryCode>;
+const countries = Object.keys(SOCCER_TEAM_KITS)
+	.filter((code) => code !== 'GLOBAL')
+	.map((code) => resolveSoccerCountryCode(code));
 
 function buildTeamGear(country: SoccerTeamCountryCode, side: SoccerTeamSide = 'home') {
 	const kit: AccessoryKit = { type: 'soccer', country, side };

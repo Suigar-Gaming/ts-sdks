@@ -495,11 +495,11 @@ export const Duel: Story = {
 
 		useEffect(() => {
 			if (typeof window === 'undefined') {
-				return;
+				return undefined;
 			}
 			const stage = stageRef.current;
 			if (!stage) {
-				return;
+				return undefined;
 			}
 			const update = () => setStageWidth(stage.clientWidth);
 			update();
@@ -587,7 +587,7 @@ export const Duel: Story = {
 
 		useEffect(() => {
 			if (mode !== 'fight') {
-				return;
+				return undefined;
 			}
 			restart();
 			return stop;
@@ -595,7 +595,7 @@ export const Duel: Story = {
 
 		useEffect(() => {
 			if (typeof window === 'undefined' || isDocs || mode !== 'roam' || !stageWidth) {
-				return;
+				return undefined;
 			}
 
 			let frameId = 0;
@@ -868,11 +868,11 @@ export const Ring: Story = {
 
 		useEffect(() => {
 			if (typeof window === 'undefined') {
-				return;
+				return undefined;
 			}
 			const ring = ringRef.current;
 			if (!ring) {
-				return;
+				return undefined;
 			}
 			const update = () => setRingSize(ring.clientWidth);
 			update();
@@ -957,7 +957,7 @@ export const Ring: Story = {
 
 		useEffect(() => {
 			if (typeof window === 'undefined' || session !== 'running' || ringWinnerId || !ringSize) {
-				return;
+				return undefined;
 			}
 
 			let frameId = 0;
@@ -1409,7 +1409,7 @@ export const Ring: Story = {
 			}
 			return fighter.power > best.power ? fighter : best;
 		}, null);
-		const sortedActiveFights = [...activeFights].sort((a, b) => a.id - b.id);
+		const sortedActiveFights = activeFights.toSorted((a, b) => a.id - b.id);
 		const firstFight = sortedActiveFights[0];
 		const firstPredictedWinner = firstFight
 			? (fightersById.get(firstFight.winnerId) ?? null)

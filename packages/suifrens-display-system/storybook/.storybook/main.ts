@@ -12,7 +12,10 @@ const releases = [
 	'1.0.0',
 	'1.0.1',
 	'1.0.2',
-	...Array.from(changelog.matchAll(/^## (\d+\.\d+\.\d+)$/gm), ([, version]) => version!).reverse(),
+	...Array.from(
+		changelog.matchAll(/^## (\d+\.\d+\.\d+)$/gm),
+		([, version]) => version!,
+	).toReversed(),
 ];
 
 const config: StorybookConfig = {
