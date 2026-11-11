@@ -16,6 +16,15 @@ type EventWithBcsPayload = {
 
 const textDecoder = new TextDecoder();
 
+function formatCoinType(value: unknown): string {
+	return value !== null &&
+		typeof value === 'object' &&
+		'name' in value &&
+		typeof value.name === 'string'
+		? value.name
+		: 'unknown';
+}
+
 function bytesFromEvent(event: unknown) {
 	if (typeof event !== 'object' || event === null) {
 		return undefined;
@@ -40,7 +49,9 @@ function decodeByteArray(value: unknown) {
 	}
 
 	try {
-		return textDecoder.decode(new Uint8Array(value as Array<number>));
+		return textDecoder.decode(
+			new Uint8Array(value.filter((item): item is number => typeof item === 'number')),
+		);
 	} catch {
 		return JSON.stringify(value);
 	}
@@ -120,7 +131,7 @@ function createEventRow(digest: string, event: SuiClientTypes.Event): EventLogRo
 		`game: ${suigarEvent.game}`,
 		...(eventType === 'BetResultEvent'
 			? [
-					`coin: ${String((payload['coin_type'] as { name?: string | undefined })?.name ?? 'unknown')}`,
+					`coin: ${formatCoinType(payload['coin_type'])}`,
 					`stake: ${bigintToString(payload['stake_amount'])}`,
 					`outcome: ${bigintToString(payload['outcome_amount'])}`,
 					`unsafe oracle price: ${formatOraclePrice(payload['unsafe_oracle_usd_coin_price'])}`,

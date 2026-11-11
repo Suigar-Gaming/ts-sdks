@@ -1,22 +1,13 @@
 import type { SuigarClient } from '@suigar/sdk';
+import { COIN_SIDES } from '@suigar/sdk/games';
 import { parseOptionalNumber, toAtomicAmount } from '@/lib/suigar-app';
 import type {
-	CoinflipFormValues,
-	KenoFormValues,
-	LimboFormValues,
-	PlinkoFormValues,
 	PvPAction,
-	PvPCoinflipCancelFormValues,
-	PvPCoinflipCreateFormValues,
 	PvPCoinflipForms,
-	PvPCoinflipJoinFormValues,
-	RangeFormValues,
 	SharedFields,
-	SoccerFormValues,
 	StandardForms,
 	StandardGameId,
 	StandardSharedFields,
-	WheelFormValues,
 } from '@/lib/suigar-types';
 import { NON_NEGATIVE_INTEGER_PATTERN } from '@/lib/validation';
 
@@ -48,7 +39,7 @@ function buildSharedOptions(
 	fields: SharedFields,
 ) {
 	const atomicStake = toAtomicAmount(fields.stake, coinDecimals);
-	const baseOptions: Record<string, unknown> = {
+	const baseOptions = {
 		owner,
 		coinType,
 		stake: atomicStake,
@@ -75,12 +66,11 @@ function buildStandardSharedOptions(
 	const rawBetCount = getBetCountInput(fields);
 
 	if (rawBetCount) {
-		baseOptions['betCount'] = parseBetCount(rawBetCount);
 		codeLines.push(`betCount: ${rawBetCount}n,`);
 	}
 
 	return {
-		baseOptions,
+		baseOptions: { ...baseOptions, betCount: rawBetCount ? parseBetCount(rawBetCount) : undefined },
 		codeLines,
 	};
 }
@@ -123,10 +113,10 @@ export function buildPvPPreviewFallback(
 	]);
 }
 
-export function buildStandardTransaction<K extends StandardGameId>(
+export function buildStandardTransaction(
 	client: { suigar: SuigarClient },
-	gameId: K,
-	form: StandardForms[K],
+	gameId: StandardGameId,
+	form: StandardForms[StandardGameId],
 	owner: string,
 	coinDecimals: number,
 	coinType: string,
@@ -138,75 +128,122 @@ export function buildStandardTransaction<K extends StandardGameId>(
 		form,
 	);
 	const txApi: TxApi = client.suigar.tx;
+	let transaction: ReturnType<TxApi['createGameBet']>;
 
 	switch (gameId) {
 		case 'coinflip': {
-			const typedForm = form as CoinflipFormValues;
-			baseOptions['side'] = typedForm.side;
-			codeLines.push(`side: '${typedForm.side}',`);
+			const side =
+				'side' in form ? COIN_SIDES.find((candidate) => candidate === form.side) : undefined;
+			if (!side) {
+				throw new TypeError('Form does not match the selected game.');
+			}
+			codeLines.push(`side: '${side}',`);
+			transaction = txApi.createGameBet({ game: 'coinflip', ...baseOptions, side });
 			break;
 		}
 		case 'keno': {
-			const typedForm = form as KenoFormValues;
+			if (!('picks' in form)) {
+				throw new TypeError('Form does not match the selected game.');
+			}
+			const typedForm = form;
 			const picks = parseKenoPicks(typedForm.picks);
-			baseOptions['configId'] = Number(typedForm.configId);
-			baseOptions['picks'] = picks;
 			codeLines.push(`configId: ${Number(typedForm.configId)},`);
 			codeLines.push(`picks: [${picks.join(', ')}],`);
+			transaction = txApi.createGameBet({
+				game: 'keno',
+				...baseOptions,
+				configId: Number(typedForm.configId),
+				picks,
+			});
 			break;
 		}
 		case 'limbo': {
-			const typedForm = form as LimboFormValues;
-			baseOptions['targetMultiplier'] = Number(typedForm.targetMultiplier);
+			if (!('targetMultiplier' in form)) {
+				throw new TypeError('Form does not match the selected game.');
+			}
+			const typedForm = form;
 			codeLines.push(`targetMultiplier: ${Number(typedForm.targetMultiplier)},`);
 			const scale = parseOptionalNumber(typedForm.scale);
 			if (scale !== undefined) {
-				baseOptions['scale'] = scale;
 				codeLines.push(`scale: ${scale},`);
 			}
+			transaction = txApi.createGameBet({
+				game: 'limbo',
+				...baseOptions,
+				targetMultiplier: Number(typedForm.targetMultiplier),
+				scale,
+			});
 			break;
 		}
 		case 'plinko': {
-			const typedForm = form as PlinkoFormValues;
-			baseOptions['configId'] = Number(typedForm.configId);
+			if (!('configId' in form)) {
+				throw new TypeError('Form does not match the selected game.');
+			}
+			const typedForm = form;
 			codeLines.push(`configId: ${Number(typedForm.configId)},`);
+			transaction = txApi.createGameBet({
+				game: 'plinko',
+				...baseOptions,
+				configId: Number(typedForm.configId),
+			});
 			break;
 		}
 		case 'range': {
-			const typedForm = form as RangeFormValues;
-			baseOptions['leftPoint'] = Number(typedForm.leftPoint);
-			baseOptions['rightPoint'] = Number(typedForm.rightPoint);
-			baseOptions['outOfRange'] = typedForm.outOfRange;
+			if (!('leftPoint' in form)) {
+				throw new TypeError('Form does not match the selected game.');
+			}
+			const typedForm = form;
 			codeLines.push(`leftPoint: ${Number(typedForm.leftPoint)},`);
 			codeLines.push(`rightPoint: ${Number(typedForm.rightPoint)},`);
 			codeLines.push(`outOfRange: ${typedForm.outOfRange},`);
 			const scale = parseOptionalNumber(typedForm.scale);
 			if (scale !== undefined) {
-				baseOptions['scale'] = scale;
 				codeLines.push(`scale: ${scale},`);
 			}
+			transaction = txApi.createGameBet({
+				game: 'range',
+				...baseOptions,
+				leftPoint: Number(typedForm.leftPoint),
+				rightPoint: Number(typedForm.rightPoint),
+				outOfRange: typedForm.outOfRange,
+				scale,
+			});
 			break;
 		}
 		case 'soccer': {
-			const typedForm = form as SoccerFormValues;
-			baseOptions['configId'] = Number(typedForm.configId);
-			baseOptions['countryId'] = Number(typedForm.countryId);
-			baseOptions['shotZoneId'] = Number(typedForm.shotZoneId);
+			if (!('countryId' in form)) {
+				throw new TypeError('Form does not match the selected game.');
+			}
+			const typedForm = form;
 			codeLines.push(`configId: ${Number(typedForm.configId)},`);
 			codeLines.push(`countryId: ${Number(typedForm.countryId)},`);
 			codeLines.push(`shotZoneId: ${Number(typedForm.shotZoneId)},`);
+			transaction = txApi.createGameBet({
+				game: 'soccer',
+				...baseOptions,
+				configId: Number(typedForm.configId),
+				countryId: Number(typedForm.countryId),
+				shotZoneId: Number(typedForm.shotZoneId),
+			});
 			break;
 		}
 		case 'wheel': {
-			const typedForm = form as WheelFormValues;
-			baseOptions['configId'] = Number(typedForm.configId);
+			if (!('configId' in form)) {
+				throw new TypeError('Form does not match the selected game.');
+			}
+			const typedForm = form;
 			codeLines.push(`configId: ${Number(typedForm.configId)},`);
+			transaction = txApi.createGameBet({
+				game: 'wheel',
+				...baseOptions,
+				configId: Number(typedForm.configId),
+			});
 			break;
 		}
 	}
 
 	return {
-		transaction: txApi.createGameBet({ game: gameId, ...baseOptions } as never),
+		transaction,
 		code: toCodeBlock(`const tx = client.suigar.tx.createGameBet({`, [
 			`game: '${gameId}',`,
 			...codeLines,
@@ -214,68 +251,51 @@ export function buildStandardTransaction<K extends StandardGameId>(
 	};
 }
 
-export function buildPvPTransaction<K extends PvPAction>(
+export function buildPvPTransaction(
 	client: { suigar: SuigarClient },
-	action: K,
-	form: PvPCoinflipForms[K],
+	action: PvPAction,
+	form: PvPCoinflipForms[PvPAction],
 	owner: string,
 	coinDecimals: number,
 	coinType: string,
 ) {
-	const txApi: TxApi = client.suigar.tx;
-
-	let baseOptions: Record<string, unknown> = {};
-	let codeLines: Array<string> = [];
-
+	const txApi = client.suigar.tx.pvpCoinflip;
 	switch (action) {
 		case 'create': {
-			const typedForm = form as PvPCoinflipCreateFormValues;
-			({ baseOptions, codeLines } = buildSharedOptions(owner, coinType, coinDecimals, typedForm));
-			baseOptions['side'] = typedForm.side;
-			baseOptions['isPrivate'] = typedForm.isPrivate;
-			codeLines.push(`side: '${typedForm.side}',`);
-			codeLines.push(`isPrivate: ${typedForm.isPrivate},`);
-			break;
-		}
-		case 'join': {
-			const typedForm = form as PvPCoinflipJoinFormValues;
-			const gameId = typedForm.gameId?.trim() ?? '';
-			baseOptions = {
-				owner,
-				coinType,
-				gameId,
-			};
-			codeLines = [`owner: '${owner}',`, `coinType: '${coinType}',`, `gameId: '${gameId}',`];
-			break;
-		}
-		case 'cancel': {
-			const typedForm = form as PvPCoinflipCancelFormValues;
-			const gameId = typedForm.gameId?.trim() ?? '';
-			baseOptions = {
-				owner,
-				coinType,
-				gameId,
-			};
-			codeLines = [`owner: '${owner}',`, `coinType: '${coinType}',`, `gameId: '${gameId}',`];
-			break;
-		}
-	}
-
-	switch (action) {
-		case 'create':
+			if (!('side' in form)) {
+				throw new TypeError('Form does not match the selected game.');
+			}
+			const { baseOptions, codeLines } = buildSharedOptions(owner, coinType, coinDecimals, form);
+			codeLines.push(`side: '${form.side}',`, `isPrivate: ${form.isPrivate},`);
 			return {
-				transaction: txApi.pvpCoinflip.createGame(baseOptions as never),
+				transaction: txApi.createGame({
+					...baseOptions,
+					side: form.side,
+					isPrivate: form.isPrivate,
+				}),
 				code: toCodeBlock('const tx = client.suigar.tx.pvpCoinflip.createGame(', codeLines),
 			};
+		}
 		case 'join':
+		case 'cancel': {
+			if (!('gameId' in form)) {
+				throw new TypeError('Form does not match the selected game.');
+			}
+			const gameId = form.gameId?.trim() ?? '';
+			const options = { owner, coinType, gameId };
 			return {
-				transaction: txApi.pvpCoinflip.joinGame(baseOptions as never),
-				code: toCodeBlock('const tx = client.suigar.tx.pvpCoinflip.joinGame(', codeLines),
+				transaction: action === 'join' ? txApi.joinGame(options) : txApi.cancelGame(options),
+				code: toCodeBlock(`const tx = client.suigar.tx.pvpCoinflip.${action}Game(`, [
+					`owner: '${owner}',`,
+					`coinType: '${coinType}',`,
+					`gameId: '${gameId}',`,
+				]),
 			};
-		case 'cancel':
-			return {
-				transaction: txApi.pvpCoinflip.cancelGame(baseOptions as never),
-				code: toCodeBlock('const tx = client.suigar.tx.pvpCoinflip.cancelGame(', codeLines),
-			};
+		}
+		default:
+			throw new RangeError(
+				'Invalid PvP Coinflip action. Choose an available action and try again.',
+				{ cause: action satisfies never },
+			);
 	}
 }

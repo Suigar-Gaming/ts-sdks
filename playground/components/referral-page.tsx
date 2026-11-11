@@ -112,7 +112,7 @@ export function ReferralPage() {
 
 	React.useEffect(() => {
 		if (!owner) {
-			return;
+			return undefined;
 		}
 
 		let cancelled = false;
@@ -120,6 +120,8 @@ export function ReferralPage() {
 			if (!cancelled) {
 				setClaimResult({ owner, claims });
 			}
+
+			return undefined;
 		});
 
 		return () => {

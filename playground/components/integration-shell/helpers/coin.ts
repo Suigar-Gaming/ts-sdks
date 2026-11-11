@@ -1,4 +1,5 @@
 import { normalizeStructTag, parseStructTag } from '@mysten/sui/utils';
+import { SUIGAR_COINS } from '@suigar/sdk';
 import type { SupportedCoinKey } from '@/lib/suigar-types';
 
 export type CoinBalanceState = {
@@ -25,7 +26,7 @@ export function resolveCoinKeyForType(
 	const normalizedCoinType = normalizeStructTag(coinType);
 
 	return (
-		(Object.entries(coinTypes) as Array<[SupportedCoinKey, string]>).find(
+		SUIGAR_COINS.map((key) => [key, coinTypes[key]] as const).find(
 			([, configuredCoinType]) => normalizeStructTag(configuredCoinType) === normalizedCoinType,
 		)?.[0] ?? null
 	);

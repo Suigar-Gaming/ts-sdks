@@ -1,7 +1,6 @@
 'use client';
 
-import * as React from 'react';
-import { create, type StoreApi, type UseBoundStore } from 'zustand';
+import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
 type PersistentFormsStore<T> = {
@@ -9,29 +8,15 @@ type PersistentFormsStore<T> = {
 	setValue: (nextValue: T | ((currentValue: T) => T)) => void;
 };
 
-const persistentFormStores = new Map<
-	string,
-	UseBoundStore<StoreApi<PersistentFormsStore<unknown>>>
->();
-
-function getPersistentFormsStore<T>(key: string, initialValue: T) {
-	const existingStore = persistentFormStores.get(key) as
-		| UseBoundStore<StoreApi<PersistentFormsStore<T>>>
-		| undefined;
-	if (existingStore) {
-		return existingStore;
-	}
-
+/** Declare once at module scope to share one typed store between route mounts. */
+export function createPersistentForms<T extends object>(key: string, initialValue: T) {
 	const store = create<PersistentFormsStore<T>>()(
 		persist(
 			(set) => ({
 				value: initialValue,
 				setValue: (nextValue) =>
 					set((current) => ({
-						value:
-							typeof nextValue === 'function'
-								? (nextValue as (currentValue: T) => T)(current.value)
-								: nextValue,
+						value: typeof nextValue === 'function' ? nextValue(current.value) : nextValue,
 					})),
 			}),
 			{
@@ -40,20 +25,9 @@ function getPersistentFormsStore<T>(key: string, initialValue: T) {
 			},
 		),
 	);
-
-	persistentFormStores.set(key, store as UseBoundStore<StoreApi<PersistentFormsStore<unknown>>>);
-
-	return store;
-}
-
-export function usePersistentForms<T>(key: string, initialValue: T) {
-	const store = React.useMemo(
-		() => getPersistentFormsStore(key, initialValue),
-		[key, initialValue],
-	);
-
-	const value = store((state) => state.value);
-	const setValue = store((state) => state.setValue);
-
-	return [value, setValue] as const;
+	return function usePersistentForms() {
+		const value = store((state) => state.value);
+		const setValue = store((state) => state.setValue);
+		return [value, setValue] as const;
+	};
 }

@@ -4,11 +4,11 @@ import * as React from 'react';
 import { Field, FieldCode, FieldDescription, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Spinner } from '@/components/ui/spinner';
-import type { BetCountLimitSummary, SharedFields, StandardSharedFields } from '@/lib/suigar-types';
+import type { BetCountLimitSummary, SharedFields } from '@/lib/suigar-types';
 
-type SharedGameFieldsProps<T extends SharedFields> = {
-	value: T;
-	onChange: (patch: Partial<T>) => void;
+type SharedGameFieldsProps = {
+	value: SharedFields;
+	onChange: (patch: Partial<SharedFields>) => void;
 	onStakeBlur?: (() => void) | undefined;
 	description?: React.ReactNode | undefined;
 };
@@ -31,17 +31,17 @@ export function StandardGameBetCountProvider({
 	);
 }
 
-export function SharedGameFields<T extends SharedFields>({
+export function SharedGameFields({
 	value,
 	onChange,
 	onStakeBlur,
 	description,
-}: SharedGameFieldsProps<T>) {
+}: SharedGameFieldsProps) {
 	return (
 		<div className="grid gap-4 md:grid-cols-2">
 			<StakeField
 				value={value.stake}
-				onChange={(stake) => onChange({ stake } as Partial<T>)}
+				onChange={(stake) => onChange({ stake })}
 				onBlur={onStakeBlur}
 				description={description}
 				className="md:col-span-2"
@@ -50,21 +50,21 @@ export function SharedGameFields<T extends SharedFields>({
 	);
 }
 
-type StandardGameFieldsProps<T extends StandardSharedFields> = SharedGameFieldsProps<T>;
+type StandardGameFieldsProps = SharedGameFieldsProps;
 
-export function StandardGameFields<T extends StandardSharedFields>({
+export function StandardGameFields({
 	value,
 	onChange,
 	onStakeBlur,
 	description,
-}: StandardGameFieldsProps<T>) {
+}: StandardGameFieldsProps) {
 	const betCountControl = React.useContext(BetCountControlContext);
 
 	return (
 		<div className="grid gap-4 md:grid-cols-2">
 			<StakeField
 				value={value.stake}
-				onChange={(stake) => onChange({ stake } as Partial<T>)}
+				onChange={(stake) => onChange({ stake })}
 				onBlur={onStakeBlur}
 				description={description}
 			/>

@@ -140,8 +140,8 @@ const ownedNfts = page.objects.map(({ content }) =>
 					name: value.name,
 					description: value.description,
 					imageUrl: toSafeImageUrl(value.url.url),
-					available: value.available.toString(),
-					supply: value.supply.toString(),
+					available: value.available,
+					supply: value.supply,
 				}));
 				if (nextSpecs.length === 0) {
 					throw new Error('The NFT factory did not return any readable specs.');
@@ -165,8 +165,8 @@ const ownedNfts = page.objects.map(({ content }) =>
 				}
 			} finally {
 				if (!cancelled) {
-					setActiveRequestId((activeRequestId) =>
-						activeRequestId === requestId ? null : activeRequestId,
+					setActiveRequestId((currentRequestId) =>
+						currentRequestId === requestId ? null : currentRequestId,
 					);
 				}
 			}

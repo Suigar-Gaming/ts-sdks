@@ -7,6 +7,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import * as React from 'react';
+import { SUIGAR_COINS } from '@suigar/sdk';
 import { CoinSelectLabel } from '@/components/integration-shell/components/coin-select-label';
 import {
 	type CoinBalanceState,
@@ -69,16 +70,7 @@ export function AppHeader({
 	const account = useCurrentAccount();
 	const activePathname = pathname.replace(/\/+$/, '');
 	const coinEntries = React.useMemo(
-		() =>
-			Object.entries(client.suigar.getConfig().coins) as Array<
-				[
-					SupportedCoinKey,
-					{
-						coinType: string;
-						decimals: number;
-					},
-				]
-			>,
+		() => SUIGAR_COINS.map((coin) => [coin, client.suigar.getConfig().coins[coin]] as const),
 		[client],
 	);
 	const [localSelectedCoin, setLocalSelectedCoin] = React.useState<SupportedCoinKey>(
@@ -93,7 +85,7 @@ export function AppHeader({
 
 	React.useEffect(() => {
 		if (coinBalances || !account) {
-			return;
+			return undefined;
 		}
 
 		let cancelled = false;
@@ -127,6 +119,8 @@ export function AppHeader({
 			if (!cancelled) {
 				setLocalBalances(Object.fromEntries(entries));
 			}
+
+			return undefined;
 		});
 
 		return () => {

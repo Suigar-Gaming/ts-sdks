@@ -13,11 +13,6 @@ import type {
 
 type StandardGameParametersResult = Awaited<ReturnType<SuigarClient['getGameParameters']>>;
 
-type StakeParameters = {
-	min_stake: bigint | string | number;
-	max_stake: bigint | string | number;
-};
-
 type ConfigEntry = {
 	key: number;
 	value: {
@@ -128,7 +123,10 @@ export function summarizeStandardGameParameters(
 ): StandardGameParametersSummary {
 	switch (game) {
 		case 'coinflip': {
-			const stakeParameters = parameters as StakeParameters;
+			if (!('max_stake' in parameters)) {
+				throw new TypeError('Game settings do not match the selected game.');
+			}
+			const stakeParameters = parameters;
 			const stakeRange = toStakeRange(
 				toBigInt(stakeParameters.min_stake),
 				toBigInt(stakeParameters.max_stake),
@@ -138,11 +136,10 @@ export function summarizeStandardGameParameters(
 			return { stakeRange };
 		}
 		case 'limbo': {
-			const limboParameters = parameters as StakeParameters & {
-				min_target_multiplier: number;
-				max_target_multiplier: number;
-				max_number_of_games: bigint | string | number;
-			};
+			if (!('min_target_multiplier' in parameters)) {
+				throw new TypeError('Game settings do not match the selected game.');
+			}
+			const limboParameters = parameters;
 			const stakeRange = toStakeRange(
 				toBigInt(limboParameters.min_stake),
 				toBigInt(limboParameters.max_stake),
@@ -162,24 +159,19 @@ export function summarizeStandardGameParameters(
 			};
 		}
 		case 'keno': {
-			const kenoParameters = parameters as StakeParameters & {
-				configs: {
-					contents: Array<
-						ConfigEntry & {
-							value: ConfigEntry['value'] & {
-								board_size: number;
-								draw_count: number;
-								min_picks: number;
-								max_picks: number;
-								paytable: Array<number>;
-								max_number_of_games: bigint | string | number;
-								min_rtp: number;
-								max_rtp: number;
-							};
-						}
-					>;
-				};
-			};
+			if (!('configs' in parameters)) {
+				throw new TypeError('Game settings do not match the selected game.');
+			}
+			const entries = parameters.configs.contents;
+			if (
+				!entries.every(
+					(entry): entry is Extract<typeof entry, { value: { board_size: number } }> =>
+						'board_size' in entry.value,
+				)
+			) {
+				throw new TypeError('Game settings do not match the selected game.');
+			}
+			const kenoParameters = { ...parameters, configs: { contents: entries } };
 			const stakeRange = toStakeRange(
 				toBigInt(kenoParameters.min_stake),
 				toBigInt(kenoParameters.max_stake),
@@ -237,13 +229,10 @@ export function summarizeStandardGameParameters(
 			};
 		}
 		case 'range': {
-			const rangeParameters = parameters as StakeParameters & {
-				min_zone_size: bigint | string | number;
-				max_zone_size: bigint | string | number;
-				min_rtp: number;
-				max_rtp: number;
-				max_number_of_games: bigint | string | number;
-			};
+			if (!('min_zone_size' in parameters)) {
+				throw new TypeError('Game settings do not match the selected game.');
+			}
+			const rangeParameters = parameters;
 			const stakeRange = toStakeRange(
 				toBigInt(rangeParameters.min_stake),
 				toBigInt(rangeParameters.max_stake),
@@ -265,19 +254,10 @@ export function summarizeStandardGameParameters(
 			};
 		}
 		case 'plinko': {
-			const plinkoParameters = parameters as StakeParameters & {
-				max_number_of_balls: bigint | string | number;
-				configs: {
-					contents: Array<
-						ConfigEntry & {
-							value: ConfigEntry['value'] & {
-								num_rows: number;
-								multipliers: Array<number>;
-							};
-						}
-					>;
-				};
-			};
+			if (!('max_number_of_balls' in parameters)) {
+				throw new TypeError('Game settings do not match the selected game.');
+			}
+			const plinkoParameters = parameters;
 			const stakeRange = toStakeRange(
 				toBigInt(plinkoParameters.min_stake),
 				toBigInt(plinkoParameters.max_stake),
@@ -305,19 +285,10 @@ export function summarizeStandardGameParameters(
 			};
 		}
 		case 'wheel': {
-			const wheelParameters = parameters as StakeParameters & {
-				max_number_of_spins: bigint | string | number;
-				configs: {
-					contents: Array<
-						ConfigEntry & {
-							value: ConfigEntry['value'] & {
-								num_cases: number;
-								multipliers: Array<number>;
-							};
-						}
-					>;
-				};
-			};
+			if (!('max_number_of_spins' in parameters)) {
+				throw new TypeError('Game settings do not match the selected game.');
+			}
+			const wheelParameters = parameters;
 			const stakeRange = toStakeRange(
 				toBigInt(wheelParameters.min_stake),
 				toBigInt(wheelParameters.max_stake),
@@ -348,22 +319,10 @@ export function summarizeStandardGameParameters(
 			};
 		}
 		case 'soccer': {
-			const soccerParameters = parameters as StakeParameters & {
-				max_number_of_shots: bigint | string | number;
-				configs: {
-					contents: Array<
-						ConfigEntry & {
-							value: ConfigEntry['value'] & {
-								shot_zone_ids: Array<number>;
-								shot_zone_multipliers: Array<number>;
-							};
-						}
-					>;
-				};
-				countries: {
-					contents: Array<{ key: number; value: string }>;
-				};
-			};
+			if (!('max_number_of_shots' in parameters)) {
+				throw new TypeError('Game settings do not match the selected game.');
+			}
+			const soccerParameters = parameters;
 			const stakeRange = toStakeRange(
 				toBigInt(soccerParameters.min_stake),
 				toBigInt(soccerParameters.max_stake),
@@ -425,17 +384,17 @@ export function summarizePvPGameParameters(
 ): PvPGameParametersSummary {
 	switch (game) {
 		case 'pvp-coinflip': {
-			const pvpCoinflipParameters = parameters as {
-				house_edge_bps: bigint | string | number;
-				min_stake: bigint | string | number;
-			};
+			if (!('house_edge_bps' in parameters)) {
+				throw new TypeError('Game settings do not match the selected game.');
+			}
+			const pvpCoinflipParameters = parameters;
 
 			return {
 				stakeRange: toStakeMinimum(toBigInt(pvpCoinflipParameters.min_stake), decimals),
 				topLevelDetails: [
 					{
 						label: 'House edge (bps)',
-						value: String(pvpCoinflipParameters.house_edge_bps),
+						value: pvpCoinflipParameters.house_edge_bps,
 					},
 				],
 			};

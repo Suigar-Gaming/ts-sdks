@@ -65,7 +65,7 @@ export function KenoForm({
 		}
 
 		onChange({
-			picks: [...selectedPicks, pick].sort((left, right) => Number(left) - Number(right)),
+			picks: [...selectedPicks, pick].toSorted((left, right) => Number(left) - Number(right)),
 		});
 	}
 

@@ -6,7 +6,7 @@ import { BookOpenText, Cog, Gamepad2, Swords } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import * as React from 'react';
-import type { SuigarClient } from '@suigar/sdk';
+import { SUIGAR_COINS, type SuigarClient } from '@suigar/sdk';
 import { DEFAULT_RANGE_SCALE } from '@suigar/sdk/utils';
 import { AppHeader } from '@/components/app-header';
 import { EventsTable } from '@/components/events-table';
@@ -68,7 +68,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { Switch } from '@/components/ui/switch';
 import { useEventLog } from '@/hooks/use-event-log';
-import { usePersistentForms } from '@/hooks/use-persistent-forms';
+import { createPersistentForms } from '@/hooks/use-persistent-forms';
 import { parseSuigarEvents } from '@/lib/event-parsing';
 import {
 	findGameConfigOption,
@@ -146,7 +146,7 @@ function normalizeKenoPickValues(value: unknown): Array<string> {
 		}
 	}
 
-	return [...picks].sort((left, right) => Number(left) - Number(right));
+	return [...picks].toSorted((left, right) => Number(left) - Number(right));
 }
 
 function clampKenoPicks(picks: Array<string>, configOption: GameConfigOption | null) {
@@ -263,6 +263,10 @@ function uiReducer(state: UiState, action: UiAction): UiState {
 			return { ...state, isGameSettingsDialogOpen: action.value };
 		case 'clear-feedback':
 			return { ...state, status: null, error: null };
+		default:
+			throw new Error('Unable to update the game controls. Refresh the page and try again.', {
+				cause: action satisfies never,
+			});
 	}
 }
 
@@ -294,6 +298,10 @@ function coinBalancesReducer(
 				coinBalances: nextBalances,
 			};
 		}
+		default:
+			throw new Error('Unable to update your balances. Refresh the page and try again.', {
+				cause: action satisfies never,
+			});
 	}
 }
 
@@ -305,6 +313,10 @@ function lobbyReducer(state: LobbyState, action: LobbyAction): LobbyState {
 			return { games: action.games, error: null, isLoading: false };
 		case 'error':
 			return { games: [], error: action.error, isLoading: false };
+		default:
+			throw new Error('Unable to update the game lobbies. Refresh the page and try again.', {
+				cause: action satisfies never,
+			});
 	}
 }
 
@@ -327,6 +339,10 @@ function standardParametersReducer(
 			};
 		case 'error':
 			return { ...initialStandardParametersState, error: action.error };
+		default:
+			throw new Error('Unable to update the game settings. Refresh the page and try again.', {
+				cause: action satisfies never,
+			});
 	}
 }
 
@@ -351,6 +367,10 @@ function pvpParametersReducer(
 			return { ...initialPvPParametersState, error: action.error };
 		case 'reset':
 			return initialPvPParametersState;
+		default:
+			throw new Error('Unable to update the PvP game settings. Refresh the page and try again.', {
+				cause: action satisfies never,
+			});
 	}
 }
 
@@ -885,23 +905,21 @@ function IntegrationControls({
 	);
 }
 
-const projectCoinMetadata = <TCoin extends string>(
-	coinMetadata: Record<TCoin, { coinType: string; decimals: number }>,
-) => {
-	const coinTypes: Record<TCoin, string> = {} as Record<TCoin, string>;
-	const coinDecimals: Record<TCoin, number> = {} as Record<TCoin, number>;
+const useStandardForms = createPersistentForms<StandardForms>(
+	'suigar-playground:standard-game:forms',
+	DEFAULT_STANDARD_FORMS,
+);
+const usePvPForms = createPersistentForms<PvPCoinflipForms>(
+	'suigar-playground:pvp-game:forms',
+	DEFAULT_PVP_FORMS,
+);
 
-	for (const key in coinMetadata) {
-		if (Object.hasOwn(coinMetadata, key)) {
-			const coinKey = key as TCoin;
-			const metadata = coinMetadata[coinKey];
-			coinTypes[coinKey] = metadata.coinType;
-			coinDecimals[coinKey] = metadata.decimals;
-		}
-	}
-
-	return { coinTypes, coinDecimals };
-};
+const projectCoinMetadata = (
+	coinMetadata: Record<SupportedCoinKey, { coinType: string; decimals: number }>,
+) => ({
+	coinTypes: { sui: coinMetadata.sui.coinType, usdc: coinMetadata.usdc.coinType },
+	coinDecimals: { sui: coinMetadata.sui.decimals, usdc: coinMetadata.usdc.decimals },
+});
 
 async function executeIntegrationTransaction({
 	addRows,
@@ -1074,14 +1092,8 @@ function createIntegrationState({
 	const pvpAction = getPvPActionFromParams(routeParams);
 	const pvpGame = getPvPGameFromParams(routeParams);
 
-	const [standardForms, setStandardForms] = usePersistentForms<StandardForms>(
-		'suigar-playground:standard-game:forms',
-		DEFAULT_STANDARD_FORMS,
-	);
-	const [pvpForms, setPvpForms] = usePersistentForms<PvPCoinflipForms>(
-		'suigar-playground:pvp-game:forms',
-		DEFAULT_PVP_FORMS,
-	);
+	const [standardForms, setStandardForms] = useStandardForms();
+	const [pvpForms, setPvpForms] = usePvPForms();
 	const [uiState, dispatchUi] = React.useReducer(uiReducer, initialUiState);
 	const [coinBalancesState, dispatchCoinBalances] = React.useReducer(
 		coinBalancesReducer,
@@ -1103,7 +1115,7 @@ function createIntegrationState({
 		[coinMetadata],
 	);
 	const coinOptions = React.useMemo(
-		() => Object.entries(coinTypes) as Array<[SupportedCoinKey, string]>,
+		() => SUIGAR_COINS.map((key) => [key, coinTypes[key]] as [SupportedCoinKey, string]),
 		[coinTypes],
 	);
 	const {
@@ -1299,7 +1311,7 @@ function createIntegrationState({
 		standardGame === 'soccer' ||
 		standardGame === 'wheel'
 			? resolvePlayableConfigId(
-					(selectedStandardForm as { configId: string }).configId,
+					'configId' in selectedStandardForm ? selectedStandardForm.configId : '',
 					standardGameParameters?.configOptions,
 				)
 			: undefined;
@@ -1910,7 +1922,7 @@ function IntegrationContent({ mode }: { mode: Mode }) {
 
 	React.useEffect(() => {
 		if (!isMounted) {
-			return;
+			return undefined;
 		}
 
 		const syncRouteSearch = () => {

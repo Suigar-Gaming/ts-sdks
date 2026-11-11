@@ -1,8 +1,5 @@
-import {
-	PVP_ACTION_OPTIONS,
-	PVP_GAME_OPTIONS,
-	STANDARD_GAME_OPTIONS,
-} from '@/components/integration-shell/options';
+import { PVP_COINFLIP_ACTIONS } from '@suigar/sdk/games';
+import { PVP_GAME_OPTIONS, STANDARD_GAME_OPTIONS } from '@/components/integration-shell/options';
 import type { PvPAction, PvPGameId, StandardGameId } from '@/lib/suigar-types';
 
 export function isStandardGame(value: string | null): value is StandardGameId {
@@ -10,7 +7,7 @@ export function isStandardGame(value: string | null): value is StandardGameId {
 }
 
 export function isPvPAction(value: string | null): value is PvPAction {
-	return PVP_ACTION_OPTIONS.some((option) => option.value === value);
+	return PVP_COINFLIP_ACTIONS.some((action) => action === value);
 }
 
 export function isPvPGame(value: string | null): value is PvPGameId {
