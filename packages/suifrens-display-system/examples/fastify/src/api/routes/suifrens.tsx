@@ -8,8 +8,8 @@ import type { FastifyPluginAsync } from 'fastify';
 import { renderToStaticMarkup } from 'react-dom/server';
 import Type from 'typebox';
 import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
-import { SuiLogo } from '../../components/logos/SuiLogo.js';
 import { getSuiFrenAttributesAndAccessories } from '../client/sui-client.js';
+import { IMAGE_LOGO_SCHEMA, renderImageLogo } from '../lib/image-logo.js';
 import { renderImage } from '../lib/render-image.js';
 
 export const suifrens: FastifyPluginAsync = async (fastify) => {
@@ -25,11 +25,11 @@ export const suifrens: FastifyPluginAsync = async (fastify) => {
 						format === 'png'
 							? Type.Object({
 									width: Type.Optional(Type.Integer({ minimum: 1, maximum: 4096 })),
-									logo: Type.Optional(Type.Boolean({ default: false })),
+									logo: IMAGE_LOGO_SCHEMA,
 									shadow: Type.Optional(Type.Boolean({ default: true })),
 								})
 							: Type.Object({
-									logo: Type.Optional(Type.Boolean({ default: false })),
+									logo: IMAGE_LOGO_SCHEMA,
 									shadow: Type.Optional(Type.Boolean({ default: true })),
 								}),
 					response: {
@@ -51,7 +51,7 @@ export const suifrens: FastifyPluginAsync = async (fastify) => {
 						<SuiFrenImageInline
 							attributes={attributes}
 							accessories={equippedAccessories}
-							logo={request.query.logo ? <SuiLogo /> : null}
+							logo={renderImageLogo(request.query.logo)}
 							shadow={request.query.shadow ?? true}
 						/>,
 					);

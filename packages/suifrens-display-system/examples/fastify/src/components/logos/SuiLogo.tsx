@@ -4,7 +4,7 @@
 
 export function SuiLogo() {
 	return (
-		<svg viewBox="0 0 3000 3000">
+		<svg viewBox="0 0 3000 3000" data-image-logo="sui">
 			<path
 				fillRule="evenodd"
 				clipRule="evenodd"

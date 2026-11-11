@@ -53,21 +53,21 @@ Set the PNG width in pixels with `?width=512`. Use a whole number from 1 to 4096
 /suifrens/OBJECT_ID/png?width=512
 ```
 
-Use `?logo=true` to show the Sui logo in the bottom-right corner, or `?logo=false` to hide it. The logo is off by default for accessories and Suifrens in both formats. Other values return `400`.
+Use `?logo=sui` for the Sui mark or `?logo=suigar` for the native Suigar cane without the wordmark. Both appear in the bottom-right corner. Omit `logo` for no logo, which is the default for both routes and formats. Boolean values such as `true` and `false`, unknown names and repeated selections return `400`.
 
 ```text
-/accessories/soccer%20team%20shirt/svg?logo=false
-/accessories/soccer%20team%20shirt/png?width=512&logo=false
-/suifrens/OBJECT_ID/svg?logo=true
-/suifrens/OBJECT_ID/png?width=512&logo=true
+/accessories/soccer%20team%20shirt/svg?logo=sui
+/accessories/soccer%20team%20shirt/png?width=512&logo=suigar
+/suifrens/OBJECT_ID/svg?logo=suigar
+/suifrens/OBJECT_ID/png?width=512&logo=sui
 ```
 
 All image routes show a shadow by default. Turn it off with `?shadow=false` or on with `?shadow=true`. Other values return `400`. Combine these options with the logo setting and PNG width as needed:
 
 ```text
 /accessories/soccer%20team%20shirt/svg?shadow=false
-/accessories/soccer%20team%20shirt/png?width=512&logo=false&shadow=false
-/suifrens/OBJECT_ID/svg?logo=true&shadow=false
+/accessories/soccer%20team%20shirt/png?width=512&shadow=false
+/suifrens/OBJECT_ID/svg?logo=suigar&shadow=false
 /suifrens/OBJECT_ID/png?width=512&shadow=true
 ```
 

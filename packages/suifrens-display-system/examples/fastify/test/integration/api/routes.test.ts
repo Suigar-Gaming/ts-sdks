@@ -86,7 +86,7 @@ test.each([
 		} else {
 			expectSvgResponse(image);
 		}
-		await expectOptionVariants(app, `/suifrens/0x1/${format}`, 'logo', false);
+		await expectLogoVariants(app, `/suifrens/0x1/${format}`);
 		await expectOptionVariants(app, `/suifrens/0x1/${format}`, 'shadow', true);
 		expect(client.getObject).toHaveBeenCalledWith({ objectId: '0x1', include: { content: true } });
 		if (format === 'png') {
@@ -222,7 +222,7 @@ test.each(['0', '-1', '4097', '1.5', 'abc', '', '512&width=256'])(
 async function expectOptionVariants(
 	app: FastifyInstance,
 	url: string,
-	option: 'logo' | 'shadow',
+	option: 'shadow',
 	defaultValue: boolean,
 ) {
 	const original = await app.inject(url);
@@ -235,8 +235,6 @@ async function expectOptionVariants(
 }
 
 test.each([
-	['svg', 'logo', false],
-	['png', 'logo', false],
 	['svg', 'shadow', true],
 	['png', 'shadow', true],
 ] as const)('toggles accessory %s %s', async (format, option, defaultValue) => {
@@ -259,10 +257,10 @@ test('combines PNG width, logo and shadow selection', async () => {
 	const app = buildServer({ logger: false });
 	try {
 		const withLogo = await app.inject(
-			'/accessories/soccer%20team%20shirt/png?width=256&logo=true&shadow=false',
+			'/accessories/soccer%20team%20shirt/png?width=256&logo=suigar&shadow=false',
 		);
 		const withoutLogo = await app.inject(
-			'/accessories/soccer%20team%20shirt/png?width=256&logo=false&shadow=false',
+			'/accessories/soccer%20team%20shirt/png?width=256&shadow=false',
 		);
 		expect(withLogo.statusCode).toBe(200);
 		expect(withoutLogo.statusCode).toBe(200);
@@ -276,7 +274,14 @@ test('combines PNG width, logo and shadow selection', async () => {
 
 test.each(
 	['logo', 'shadow'].flatMap((option) =>
-		['invalid', '', '0', '1', `true&${option}=false`].map((value) => [option, value]),
+		[
+			...(option === 'logo' ? ['true', 'false', 'sui&logo=suigar'] : []),
+			'invalid',
+			'',
+			'0',
+			'1',
+			`true&${option}=false`,
+		].map((value) => [option, value]),
 	),
 )('rejects invalid %s value %s before reading or rendering', async (option, value) => {
 	const app = buildServer({ logger: false });
@@ -296,3 +301,48 @@ test.each(
 		await app.close();
 	}
 });
+
+async function expectLogoVariants(app: FastifyInstance, url: string) {
+	const original = await app.inject(url);
+	const sui = await app.inject(`${url}?logo=sui`);
+	const suigar = await app.inject(`${url}?logo=suigar`);
+	expect(original.statusCode).toBe(200);
+	expect(sui.statusCode).toBe(200);
+	expect(suigar.statusCode).toBe(200);
+	expect(original.rawPayload.equals(sui.rawPayload)).toBe(false);
+	expect(original.rawPayload.equals(suigar.rawPayload)).toBe(false);
+	expect(sui.rawPayload.equals(suigar.rawPayload)).toBe(false);
+	const expectImageResponse = url.endsWith('/svg') ? expectSvgResponse : expectPngResponse;
+	await expectImageResponse(sui);
+	await expectImageResponse(suigar);
+}
+
+test.each(['svg', 'png'])(
+	'selects a Sui or Suigar logo for accessory %s output',
+	async (format) => {
+		const app = buildServer({ logger: false });
+		try {
+			await expectLogoVariants(app, `/accessories/soccer%20team%20shirt/${format}`);
+			expect(client.getObject).not.toHaveBeenCalled();
+		} finally {
+			await app.close();
+		}
+	},
+);
+
+test.each(['sui', 'suigar'] as const)(
+	'embeds the selected %s mark in standalone SVG output',
+	async (logo) => {
+		const app = buildServer({ logger: false });
+		try {
+			const original = await app.inject('/accessories/soccer%20team%20shirt/svg');
+			const selected = await app.inject(`/accessories/soccer%20team%20shirt/svg?logo=${logo}`);
+			expect(original.body).not.toContain('data-image-logo');
+			expect(selected.body).toContain(`data-image-logo="${logo}"`);
+			expect(selected.body).not.toContain('data:image/svg+xml;base64,');
+			expect(selected.body.includes('viewBox="0 0 210 211"')).toBe(logo === 'suigar');
+		} finally {
+			await app.close();
+		}
+	},
+);
