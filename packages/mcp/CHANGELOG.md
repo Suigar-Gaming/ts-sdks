@@ -4,7 +4,7 @@
 
 ### Patch Changes
 
-- [#185](https://github.com/Suigar-Gaming/ts-sdks/pull/185) [`77ca0c3`](https://github.com/Suigar-Gaming/ts-sdks/commit/77ca0c38aa93642ff512f3488d453a78df3d145a) - Refresh the MCP server and bundled inspector App build with updated tsdown and Tailwind CSS tooling.
+- [#185](https://github.com/Suigar-Gaming/ts-sdks/pull/185) [`77ca0c3`](https://github.com/Suigar-Gaming/ts-sdks/commit/77ca0c38aa93642ff512f3488d453a78df3d145a) - Update tsdown and Tailwind CSS tooling for the MCP server and bundled inspector App build.
 - Updated dependencies [[`77ca0c3`](https://github.com/Suigar-Gaming/ts-sdks/commit/77ca0c38aa93642ff512f3488d453a78df3d145a)]:
   - @suigar/sdk@2.0.0-beta.47
 
@@ -14,7 +14,7 @@
 
 - [#183](https://github.com/Suigar-Gaming/ts-sdks/pull/183) [`5b4f2e3`](https://github.com/Suigar-Gaming/ts-sdks/commit/5b4f2e328a1d2234f0f37e170b25f8387a8c4042) - Clarify how MCP tools report errors and how the wallet CLI handles status, logout, and local credential cleanup.
 
-- [#181](https://github.com/Suigar-Gaming/ts-sdks/pull/181) [`4a70497`](https://github.com/Suigar-Gaming/ts-sdks/commit/4a7049763b4fe614193fb6235ca60d4adc372d99) - Correct MCP optional-field and indexed-access typing while retaining precise tool schemas, and omit undefined nested tool configuration overrides before forwarding them to the SDK. Preserve UUID v4 fallback generation with strict indexed access enabled.
+- [#181](https://github.com/Suigar-Gaming/ts-sdks/pull/181) [`4a70497`](https://github.com/Suigar-Gaming/ts-sdks/commit/4a7049763b4fe614193fb6235ca60d4adc372d99) - Fix MCP optional-field and indexed-access types without loosening tool schemas. Omit undefined nested tool configuration overrides before forwarding them to the SDK. Keep UUID v4 fallback generation working with strict indexed access enabled.
 
 - [#184](https://github.com/Suigar-Gaming/ts-sdks/pull/184) [`3d254d1`](https://github.com/Suigar-Gaming/ts-sdks/commit/3d254d116ef8c26aac18f6ce2b50e3026290aff6) - Update the `@mysten/sui` dependency requirement to `^2.39.0`.
 
@@ -40,11 +40,11 @@
 
 ### Patch Changes
 
-- [#176](https://github.com/Suigar-Gaming/ts-sdks/pull/176) [`bf55617`](https://github.com/Suigar-Gaming/ts-sdks/commit/bf55617bcd9cc9fdbb2ceb29aced889208974ff1) - Normalize helper signatures to accept a single object when multiple values are required.
+- [#176](https://github.com/Suigar-Gaming/ts-sdks/pull/176) [`bf55617`](https://github.com/Suigar-Gaming/ts-sdks/commit/bf55617bcd9cc9fdbb2ceb29aced889208974ff1) - Use a single options object for helpers that take multiple values.
 
 - [#173](https://github.com/Suigar-Gaming/ts-sdks/pull/173) [`76ef9f6`](https://github.com/Suigar-Gaming/ts-sdks/commit/76ef9f63169029daded89276c20dac2327029bb8) - Update dependencies.
 
-- [#175](https://github.com/Suigar-Gaming/ts-sdks/pull/175) [`95f7802`](https://github.com/Suigar-Gaming/ts-sdks/commit/95f78026c860191b9a98cafb719cf3189d64593c) - Allow session-wallet game execution to use a custom provider URL and partner attribution while continuing to reject custom SDK config overrides. Verify that the transaction contains exactly one MoveCall targeting the selected game's package and module before signing.
+- [#175](https://github.com/Suigar-Gaming/ts-sdks/pull/175) [`95f7802`](https://github.com/Suigar-Gaming/ts-sdks/commit/95f78026c860191b9a98cafb719cf3189d64593c) - Allow custom provider URLs and partner attribution for session-wallet game execution. Continue to reject custom SDK config overrides. Verify that the transaction contains exactly one MoveCall targeting the selected game's package and module before signing.
 - Updated dependencies [[`bf55617`](https://github.com/Suigar-Gaming/ts-sdks/commit/bf55617bcd9cc9fdbb2ceb29aced889208974ff1), [`76ef9f6`](https://github.com/Suigar-Gaming/ts-sdks/commit/76ef9f63169029daded89276c20dac2327029bb8)]:
   - @suigar/sdk@2.0.0-beta.44
 
@@ -66,11 +66,11 @@
 
   Use an internal type assertion for SDK package and object IDs. Invalid configuration or missing price-info object IDs throw `TypeError`.
 
-  Classify MCP wallet recovery phrase validation as `TypeError`, and unsupported private-key schemes and oversized wallet bridge requests as `RangeError`. Operational failures retain generic errors.
+  Use `TypeError` for invalid MCP wallet recovery phrases and `RangeError` for unsupported private-key schemes or oversized wallet bridge requests. Keep generic errors for operational failures.
 
 ### Patch Changes
 
-- [#170](https://github.com/Suigar-Gaming/ts-sdks/pull/170) [`14e3d43`](https://github.com/Suigar-Gaming/ts-sdks/commit/14e3d4305e4ed644e6b72a0264c76c2040263220) - Improve MCP App table rendering consistency for NFT and wallet inspection.
+- [#170](https://github.com/Suigar-Gaming/ts-sdks/pull/170) [`14e3d43`](https://github.com/Suigar-Gaming/ts-sdks/commit/14e3d4305e4ed644e6b72a0264c76c2040263220) - Make MCP App tables render consistently for NFT and wallet inspection.
 - Updated dependencies [[`895e939`](https://github.com/Suigar-Gaming/ts-sdks/commit/895e939b786951bb62589dac0c0057dfaed5f337)]:
   - @suigar/sdk@2.0.0-beta.43
 
@@ -80,7 +80,7 @@
 
 - [#167](https://github.com/Suigar-Gaming/ts-sdks/pull/167) [`a414044`](https://github.com/Suigar-Gaming/ts-sdks/commit/a4140441566f317ed1ec313a7007f324dd86fe76) - Center session wallet App action links and render funding QR code data URLs at a sharper resolution.
 
-- [#167](https://github.com/Suigar-Gaming/ts-sdks/pull/167) [`a414044`](https://github.com/Suigar-Gaming/ts-sdks/commit/a4140441566f317ed1ec313a7007f324dd86fe76) - Refresh MCP runtime dependencies for keychain storage, QR generation, and Zod schemas. Session wallet keyring access now loads lazily with an actionable unavailable-storage error, and funding QR codes use the QR encoder's native GIF data URL output.
+- [#167](https://github.com/Suigar-Gaming/ts-sdks/pull/167) [`a414044`](https://github.com/Suigar-Gaming/ts-sdks/commit/a4140441566f317ed1ec313a7007f324dd86fe76) - Refresh MCP runtime dependencies for keychain storage, QR generation, and Zod schemas. Load session wallet keyring access lazily and explain how to recover when storage is unavailable. Use the QR encoder's native GIF data URL output for funding QR codes.
 
 - [#121](https://github.com/Suigar-Gaming/ts-sdks/pull/121) [`d32fc51`](https://github.com/Suigar-Gaming/ts-sdks/commit/d32fc51636720bb4bf8c86f7e6e2ae6c83e2fe04) - Refresh the shared Mysten runtime dependencies.
 - Updated dependencies [[`d32fc51`](https://github.com/Suigar-Gaming/ts-sdks/commit/d32fc51636720bb4bf8c86f7e6e2ae6c83e2fe04)]:
@@ -100,7 +100,7 @@
 
 - [#163](https://github.com/Suigar-Gaming/ts-sdks/pull/163) [`2897773`](https://github.com/Suigar-Gaming/ts-sdks/commit/28977730f01b8df72bced4c9ea4177c4dc420182) - Rename normalized event fields from `gameId` and `eventName` to `game` and `event`, add `parseSuigarEvent` for decoded event payloads and game details, expose `toU32` from SDK numeric utilities, and update MCP dry-run event summaries to expose `event`.
 
-- [#159](https://github.com/Suigar-Gaming/ts-sdks/pull/159) [`e3c787b`](https://github.com/Suigar-Gaming/ts-sdks/commit/e3c787bf028c5f0bcce051077e8506d6605a16a6) - Narrow PvP Coinflip cancel transaction inputs so `cancelGame` no longer accepts `metadata` or `useGasCoin`, since cancellation does not create a bet coin or write metadata on-chain. The MCP cancel transaction tool schema now follows the same narrower shape.
+- [#159](https://github.com/Suigar-Gaming/ts-sdks/pull/159) [`e3c787b`](https://github.com/Suigar-Gaming/ts-sdks/commit/e3c787bf028c5f0bcce051077e8506d6605a16a6) - Remove `metadata` and `useGasCoin` from PvP Coinflip `cancelGame` inputs because cancellation neither creates a bet coin nor writes on-chain metadata. Apply the same inputs to the MCP cancel tool schema.
 
 ### Minor Changes
 
@@ -146,7 +146,7 @@
 
 ### Patch Changes
 
-- [#147](https://github.com/Suigar-Gaming/ts-sdks/pull/147) [`0444640`](https://github.com/Suigar-Gaming/ts-sdks/commit/0444640b69aa7f3efa8e75adf90387ed181f8d68) - Convert public SDK helpers, including `createGameBet`, to single options object signatures for Mysten-style calls.
+- [#147](https://github.com/Suigar-Gaming/ts-sdks/pull/147) [`0444640`](https://github.com/Suigar-Gaming/ts-sdks/commit/0444640b69aa7f3efa8e75adf90387ed181f8d68) - Change public SDK helpers, including `createGameBet`, to take a single options object, following Mysten conventions.
 
   Update MCP transaction and read tooling to call the new SDK object signatures.
 
@@ -157,7 +157,7 @@
 
 ### Patch Changes
 
-- 0ef83b8: Refresh SDK and MCP discovery text with Suigar casino, AI agent, Sui, NFT, and referral keywords.
+- 0ef83b8: Update SDK and MCP discovery text with Suigar casino, AI agent, Sui, NFT and referral keywords.
 - Updated dependencies [0ef83b8]
   - @suigar/sdk@2.0.0-beta.36
 
@@ -165,7 +165,7 @@
 
 ### Minor Changes
 
-- 39ba3db: Add named local session wallet support across MCP wallet, balance, coin, and execute-mode game tools, including wallet IDs in session-wallet setup, lookup, funding, and transaction execution flows.
+- 39ba3db: Support named local session wallets in MCP wallet, balance, coin and execute-mode game tools. Include wallet IDs in session-wallet setup, lookup, funding and transaction execution.
 
   Start paired-wallet login and logout from MCP tools through the local `npx -y @suigar/mcp` CLI flows so browser-mediated wallet pairing opens the selected network automatically.
 
@@ -201,7 +201,7 @@
 
 ### Minor Changes
 
-- 53f4f3b: Add a persistent local session wallet shared by mainnet and testnet, with setup, recovery, direct import of standard `suiprivkey...` exports, and direct game-transaction execution backed by the operating system keychain. Private-key imports remain on the localhost-only setup page and are never included in MCP output or the session-wallet JSON file. Setup guidance and local pages identify it as a cross-network wallet rather than a network-specific wallet. `get_session_wallet` now includes complete formatted balances for the selected network and a prefilled paired-wallet funding URL when available, rendered in its dedicated Session Wallet view. When no wallet exists, that view provides the local setup link. Add `fund_session_wallet` to return a paired-wallet funding URL prefilled with the local session wallet address.
+- 53f4f3b: Add a persistent local session wallet shared by mainnet and testnet, with setup, recovery, direct import of standard `suiprivkey...` exports, and direct game-transaction execution backed by the operating system keychain. Private-key imports remain on the localhost-only setup page and are never included in MCP output or the session-wallet JSON file. Setup guidance and local pages explain that the wallet is shared across networks. `get_session_wallet` now includes complete formatted balances for the selected network and a prefilled paired-wallet funding URL when available, rendered in its dedicated Session Wallet view. When no wallet exists, that view provides the local setup link. Add `fund_session_wallet` to return a paired-wallet funding URL prefilled with the local session wallet address.
 
 ### Patch Changes
 
@@ -235,11 +235,11 @@
 
 ### Minor Changes
 
-- 3335aa7: Add composable and complete referrer commission and level-up USD reward claim transactions.
+- 3335aa7: Add referrer commission and level-up USD reward claim transactions, both composable and complete.
 
   Add referral commission and level-up USD reward reads plus unsigned claim transaction builders.
 
-- e029500: Refresh compatibility with the latest supported Mysten Sui libraries.
+- e029500: Update compatibility with the latest supported Mysten Sui libraries.
 
 ### Patch Changes
 
@@ -343,7 +343,7 @@
 ### Patch Changes
 
 - 444436a: Update package compatibility with the latest supported Mysten libraries.
-- a36cf76: Improve MCP transaction and dry-run summaries so structured values are formatted safely, and align inspector host-context handling with type-aware linting.
+- a36cf76: Format structured values safely in MCP transaction and dry-run summaries. Update inspector host-context handling to pass type-aware linting.
 - Updated dependencies [444436a]
 - Updated dependencies [a36cf76]
   - @suigar/sdk@2.0.0-beta.25
@@ -358,8 +358,8 @@
 
 ### Patch Changes
 
-- 3c342f7: Ensure MCP tool handlers default omitted network inputs to testnet unless mainnet is explicitly requested.
-- f1c285f: Align package compatibility with the latest supported Mysten libraries.
+- 3c342f7: Default MCP tool handlers to testnet when the network input is omitted; use mainnet only when explicitly requested.
+- f1c285f: Update package compatibility with the latest supported Mysten libraries.
 - Updated dependencies [f1c285f]
   - @suigar/sdk@2.0.0-beta.24
 
@@ -375,7 +375,7 @@
 
 ### Patch Changes
 
-- 9cc0a51: Update the MCP App build tooling to use the refreshed Vite dependency set.
+- 9cc0a51: Update the MCP App build tooling to use the updated Vite dependency set.
 
 ## 0.2.0-beta.2
 
@@ -386,7 +386,7 @@
 
   The bundled MCP App now uses React, Tailwind theme tokens, and smaller inspector components for context, transaction, gas, dry-run, notes, errors, targets, and raw payload views. The app also uses package-version injection from `package.json`, renders status labels consistently, shows compact status and coin-symbol badges, removes decorative shadows, shows a compact connection state before host context is available, and keeps tool results visible when they arrive before host context.
 
-  The MCP server source is split into runtime, server, and tool modules while keeping the published entrypoints unchanged. Tool handlers, schemas, app resource registration, dry-run helpers, formatting helpers, and runtime client helpers now live in focused files with tests organized to match.
+  Split the MCP server source into runtime, server and tool modules without changing published entrypoints. Tool handlers, schemas, app resource registration, dry-run helpers, formatting helpers, and runtime client helpers now live in focused files with tests organized to match.
 
 ## 0.2.0-beta.1
 
@@ -424,7 +424,7 @@
 
 ### Minor Changes
 
-- dca5598: Initial release of `@suigar/mcp`, a lightweight MCP server and library for Suigar game tooling.
+- dca5598: Initial release of `@suigar/mcp`, an MCP server and library for Suigar game tooling.
   - Add config and metadata read helpers backed by released `@suigar/sdk` defaults.
   - Add MCP tools for building and dry-running on-chain transactions for coinflip, limbo, plinko, range, wheel, and PvP Coinflip.
   - Add shared MCP support metadata so clients can distinguish on-chain games from unsupported backend-driven games such as slots.

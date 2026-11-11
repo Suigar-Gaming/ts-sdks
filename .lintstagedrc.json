@@ -1,11 +1,4 @@
 {
-	"packages/*/{src,test,scripts}/**/*.{ts,tsx,js,mjs,cjs}": [
-		"oxlint --fix",
-		"oxfmt --no-error-on-unmatched-pattern"
-	],
-	"packages/*/*.{ts,tsx,js,mjs,cjs}": ["oxlint --fix", "oxfmt --no-error-on-unmatched-pattern"],
-	"./*.{ts,tsx,js,mjs,cjs}": ["oxlint --fix", "oxfmt --no-error-on-unmatched-pattern"],
-	"playground/**/*.{ts,tsx,js,mjs,cjs}": ["oxlint --fix", "oxfmt --no-error-on-unmatched-pattern"],
-	".changeset/*.md": "oxfmt --no-error-on-unmatched-pattern",
+	"*.{ts,tsx,mts,cts,js,jsx,mjs,cjs}": ["oxlint --fix", "oxfmt --no-error-on-unmatched-pattern"],
 	"*.{json,md,yml,yaml}": "oxfmt --no-error-on-unmatched-pattern"
 }

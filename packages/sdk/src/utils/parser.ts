@@ -238,7 +238,8 @@ function parseGameDetail<TValueType extends GameDetailSchemaValueType>({
  * `SuiClientTypes.Event` before decoding `decoded.game_details`.
  *
  * @param options Game and game details from a decoded `BetResultEvent`.
- * @returns A plain object with decoded values for the known keys of the selected game.
+ * @returns An object with a null prototype containing decoded detail values. Use `Object.hasOwn` to
+ *   check keys; unknown keys are decoded as strings, including names such as `__proto__`.
  */
 export function parseGameDetails<TGame extends Game>({
 	game,
@@ -251,13 +252,13 @@ export function parseGameDetails<TGame extends Game>({
 >): GameDetails<TGame> {
 	const schema: Record<string, GameDetailSchemaValueType> = GAME_DETAILS_SCHEMAS[game];
 	const details = gameDetails.contents.reduce<Record<string, unknown>>((parsedDetails, entry) => {
-		const valueType = schema[entry.key] ?? 'string';
+		const valueType = Object.hasOwn(schema, entry.key) ? (schema[entry.key] ?? 'string') : 'string';
 		parsedDetails[entry.key] = parseGameDetail({
 			valueType,
 			value: entry.value,
 		});
 		return parsedDetails;
-	}, {});
+	}, Object.create(null));
 
 	return details as GameDetails<TGame>;
 }

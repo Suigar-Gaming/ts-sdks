@@ -17,6 +17,7 @@
 		"promise"
 	],
 	"rules": {
+		"curly": ["warn", "all"],
 		"import/extensions": [
 			"error",
 			"always",
@@ -59,6 +60,7 @@
 		{
 			"files": ["packages/*/src/contracts/**/*.ts"],
 			"rules": {
+				"curly": "off",
 				"import/consistent-type-specifier-style": "off",
 				"sort-imports": "off",
 				"typescript/no-base-to-string": "off",
