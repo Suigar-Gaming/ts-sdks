@@ -2,11 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import {
-	type ElementType,
 	isValidElement,
 	type ReactElement,
 	type Ref,
-	type RefObject,
 	useEffect,
 	useImperativeHandle,
 	useRef,
@@ -58,9 +56,9 @@ function getElementRef(element: ReactElement): Ref<SVGElement> | undefined {
 
 export function AnimatedAccessory({ children, fallbackPart }: AnimatedAccessoryProps) {
 	const store = useAnimationStore();
-	const localRef = useRef<SVGElement | null>(null);
+	const localRef = useRef<SVGGraphicsElement | null>(null);
 	const childRef =
-		isValidElement(children) && canAttachRefToType(children.type)
+		isValidElement<Record<string, unknown>>(children) && canAttachRefToType(children.type)
 			? getElementRef(children)
 			: undefined;
 	// Update external refs after every commit, including child key/type changes.
@@ -68,16 +66,16 @@ export function AnimatedAccessory({ children, fallbackPart }: AnimatedAccessoryP
 
 	useEffect(() => {
 		if (!store) {
-			return;
+			return undefined;
 		}
 		const svgElement = localRef.current;
 		if (!svgElement) {
-			return;
+			return undefined;
 		}
 
 		const registrations: Array<() => void> = [];
 		const targets = [
-			...(svgElement.matches('g[transform]') ? [svgElement as SVGGraphicsElement] : []),
+			...(svgElement.matches('g[transform]') ? [svgElement] : []),
 			...svgElement.querySelectorAll<SVGGraphicsElement>('g[transform]'),
 		];
 		let matchedTarget = false;
@@ -92,7 +90,7 @@ export function AnimatedAccessory({ children, fallbackPart }: AnimatedAccessoryP
 		});
 
 		if (!matchedTarget && fallbackPart) {
-			registrations.push(store.registerElement(fallbackPart, svgElement as SVGGraphicsElement));
+			registrations.push(store.registerElement(fallbackPart, svgElement));
 		}
 
 		return () => {
@@ -100,15 +98,15 @@ export function AnimatedAccessory({ children, fallbackPart }: AnimatedAccessoryP
 		};
 	}, [store, fallbackPart]);
 
-	if (!isValidElement(children)) {
+	if (!isValidElement<Record<string, unknown>>(children)) {
 		return children;
 	}
 
 	if (canAttachRefToType(children.type)) {
-		const Child = children.type as ElementType;
+		const Child = children.type;
 		return (
 			<Child
-				{...(children.props as Record<string, unknown>)}
+				{...children.props}
 				key={children.key}
 				ref={localRef}
 				data-suifren-animation-part={fallbackPart}
@@ -117,7 +115,12 @@ export function AnimatedAccessory({ children, fallbackPart }: AnimatedAccessoryP
 	}
 
 	return (
-		<g ref={localRef as RefObject<SVGGElement | null>} data-suifren-animation-part={fallbackPart}>
+		<g
+			ref={(element) => {
+				localRef.current = element;
+			}}
+			data-suifren-animation-part={fallbackPart}
+		>
 			{children}
 		</g>
 	);

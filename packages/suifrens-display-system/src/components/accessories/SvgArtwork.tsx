@@ -11,7 +11,7 @@ const SVG_ATTRIBUTE_PATTERN: RegExp = / ([\w:-]+)="([^"]*)"/g;
 // Only package-owned SVG files reach this renderer. Keep the original viewport and
 // expose the groups to the animation store, including during server-side rendering.
 function ArtworkElement({ source }: { source: string }) {
-	const { attributes, content } = useMemo(() => {
+	const { attributes: svgAttributes, content } = useMemo(() => {
 		const svg = source.trim().replace(BETWEEN_TAGS_WHITESPACE_PATTERN, '><');
 		const end = svg.indexOf('>');
 		const attributes: Record<string, string> = {};
@@ -24,7 +24,7 @@ function ArtworkElement({ source }: { source: string }) {
 		}
 		return { attributes, content: { __html: svg.slice(end + 1, -'</svg>'.length) } };
 	}, [source]);
-	return <svg {...attributes} dangerouslySetInnerHTML={content} />;
+	return <svg {...svgAttributes} dangerouslySetInnerHTML={content} />;
 }
 
 // A new SVG subtree needs fresh limb registrations when the outfit or its colors change.

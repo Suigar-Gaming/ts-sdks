@@ -104,7 +104,7 @@ async function readLayers(
 	const layers: Record<string, string> = {};
 	const fields: Array<string> = [];
 	const singleFile = SVG_EXTENSION_PATTERN.test(source);
-	const files = singleFile ? [source] : (await readdir(join(SOURCE_DIR, source))).sort();
+	const files = singleFile ? [source] : (await readdir(join(SOURCE_DIR, source))).toSorted();
 	for (const file of files) {
 		const relativePath = singleFile ? file : source + '/' + file;
 		const layer = singleFile ? 'default' : file.replace(SVG_EXTENSION_PATTERN, '');
@@ -124,7 +124,7 @@ const sources = (await readdir(SOURCE_DIR, { withFileTypes: true }))
 		(entry) => entry.isDirectory() || (entry.isFile() && SVG_EXTENSION_PATTERN.test(entry.name)),
 	)
 	.map((entry) => entry.name)
-	.sort();
+	.toSorted();
 
 for (const source of sources) {
 	const dir = source.replace(SVG_EXTENSION_PATTERN, '');
@@ -132,7 +132,7 @@ for (const source of sources) {
 		const entries: Array<string> = [];
 		for (const file of (await readdir(join(SOURCE_DIR, dir)))
 			.filter((name) => SVG_EXTENSION_PATTERN.test(name))
-			.sort()) {
+			.toSorted()) {
 			const svg = await readFile(join(SOURCE_DIR, dir, file));
 			const key = JSON.stringify(file.replace(SVG_EXTENSION_PATTERN, ''));
 			entries.push(`${key}: "data:image/svg+xml;base64,${svg.toString('base64')}"`);
@@ -147,7 +147,7 @@ ${entries.join(',\n')}
 		continue;
 	}
 	if (dir === 'patterns') {
-		for (const pattern of (await readdir(join(SOURCE_DIR, dir))).sort()) {
+		for (const pattern of (await readdir(join(SOURCE_DIR, dir))).toSorted()) {
 			await readLayers('patterns/' + pattern, KIT_IMPORTS, KIT_ENTRIES);
 		}
 		continue;

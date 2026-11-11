@@ -28,7 +28,7 @@ export function useAnimatedPartTransform(
 
 	useEffect(() => {
 		if (!store || directDomTransforms) {
-			return;
+			return undefined;
 		}
 		const registration = {
 			getBaseTransform: () => baseRef.current,

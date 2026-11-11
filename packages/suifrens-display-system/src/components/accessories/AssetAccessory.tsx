@@ -22,8 +22,8 @@ function resolveAssetSrc(
 		return { assetSrc: explicitAsset };
 	}
 
-	const assetSrc =
-		ACCESSORY_ASSET_MANIFEST[props.accessory.name as keyof typeof ACCESSORY_ASSET_MANIFEST];
+	const assets: Readonly<Record<string, string>> = ACCESSORY_ASSET_MANIFEST;
+	const assetSrc = assets[props.accessory.name];
 	return assetSrc ? { assetSrc, symbolId: props.layer ?? 'default' } : undefined;
 }
 

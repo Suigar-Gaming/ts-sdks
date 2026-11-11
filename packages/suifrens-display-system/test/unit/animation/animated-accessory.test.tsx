@@ -27,6 +27,10 @@ function Part({ base }: { base: string }) {
 	return <g data-part transform={transform} />;
 }
 
+function RefPropShape({ ref: elementRef }: { ref: Ref<SVGGElement> }) {
+	return <g ref={elementRef} data-inner />;
+}
+
 test('base transforms update without a provider and after leaving a legacy animation store', async () => {
 	const store = new AnimationStore();
 	Object.defineProperty(store, 'usesDirectDomTransforms', { value: false });
@@ -189,13 +193,11 @@ test('an unchanged object ref follows replacement of the child key', async () =>
 
 test('a function component receiving a React 19 ref prop keeps its own ref target', async () => {
 	const ref = createRef<SVGGElement>();
-	function Shape({ ref: elementRef }: { ref: Ref<SVGGElement> }) {
-		return <g ref={elementRef} data-inner />;
-	}
+
 	await view.render(
 		<svg>
 			<AnimatedAccessory fallbackPart="head">
-				<Shape ref={ref} />
+				<RefPropShape ref={ref} />
 			</AnimatedAccessory>
 		</svg>,
 	);

@@ -273,9 +273,44 @@ export const SOCCER_TEAM_ACCESSORY_NAMES = new Set([
 	'soccer team swim trunks',
 ]);
 
+function isSoccerCountryCode(value: string): value is SoccerTeamCountryCode {
+	return Object.hasOwn(SOCCER_TEAM_KITS, value);
+}
+
+function isSoccerTeamKit(value: unknown): value is SoccerTeamKit {
+	if (!value || typeof value !== 'object') {
+		return false;
+	}
+	return (
+		'code' in value &&
+		typeof value.code === 'string' &&
+		TEAM_CODE_PATTERN.test(value.code) &&
+		'primary' in value &&
+		typeof value.primary === 'string' &&
+		HEX_COLOR_PATTERN.test(value.primary) &&
+		'secondary' in value &&
+		typeof value.secondary === 'string' &&
+		HEX_COLOR_PATTERN.test(value.secondary) &&
+		'accent' in value &&
+		typeof value.accent === 'string' &&
+		HEX_COLOR_PATTERN.test(value.accent) &&
+		'pattern' in value &&
+		(value.pattern === 'vertical' ||
+			value.pattern === 'horizontal' ||
+			value.pattern === 'cross' ||
+			value.pattern === 'diagonal' ||
+			value.pattern === 'sash' ||
+			value.pattern === 'quarters' ||
+			value.pattern === 'hoops' ||
+			value.pattern === 'canton' ||
+			value.pattern === 'sun' ||
+			value.pattern === 'chevron')
+	);
+}
+
 export function resolveSoccerCountryCode(country?: unknown): SoccerTeamCountryCode {
 	const normalized = typeof country === 'string' ? country.trim().toUpperCase() : 'US';
-	return Object.hasOwn(SOCCER_TEAM_KITS, normalized) ? (normalized as SoccerTeamCountryCode) : 'US';
+	return isSoccerCountryCode(normalized) ? normalized : 'US';
 }
 
 export function resolveSoccerTeamSide(side?: unknown): SoccerTeamSide {
@@ -283,30 +318,9 @@ export function resolveSoccerTeamSide(side?: unknown): SoccerTeamSide {
 }
 
 export function resolveSoccerTeamKit(country?: unknown, side?: unknown): SoccerTeamKit {
-	const candidate = country as Partial<SoccerTeamKit> | null;
-	const patterns: ReadonlyArray<string> = [
-		'vertical',
-		'horizontal',
-		'cross',
-		'diagonal',
-		'sash',
-		'quarters',
-		'hoops',
-		'canton',
-		'sun',
-		'chevron',
-	];
-	const custom =
-		candidate &&
-		typeof candidate === 'object' &&
-		typeof candidate.code === 'string' &&
-		TEAM_CODE_PATTERN.test(candidate.code) &&
-		[candidate.primary, candidate.secondary, candidate.accent].every(
-			(value) => typeof value === 'string' && HEX_COLOR_PATTERN.test(value),
-		) &&
-		patterns.includes(candidate.pattern ?? '');
-	const kit: SoccerTeamKit = custom
-		? (candidate as SoccerTeamKit)
+	const candidate = country;
+	const kit = isSoccerTeamKit(candidate)
+		? candidate
 		: SOCCER_TEAM_KITS[resolveSoccerCountryCode(country)];
 	if (resolveSoccerTeamSide(side) === 'away') {
 		return {

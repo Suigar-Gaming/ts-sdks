@@ -31,7 +31,7 @@ export function parseMatrix(transform: string | undefined | null): Matrix | null
 		return null;
 	}
 	const [, a, b, c, d, e, f] = match;
-	return [a, b, c, d, e, f].map((value) => Number(value)) as Matrix;
+	return [Number(a), Number(b), Number(c), Number(d), Number(e), Number(f)];
 }
 
 export function matrixToString(matrix: Matrix): string {

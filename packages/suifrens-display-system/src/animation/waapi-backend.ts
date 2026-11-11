@@ -73,7 +73,7 @@ function buildOffsets(sequence: AnimationSequence): Array<number> {
 			offsets.add(Math.min(Math.max(frame.at, 0), sequence.duration));
 		}
 	}
-	return Array.from(offsets).sort((a, b) => a - b);
+	return Array.from(offsets).toSorted((a, b) => a - b);
 }
 
 function buildTargetKeyframes(

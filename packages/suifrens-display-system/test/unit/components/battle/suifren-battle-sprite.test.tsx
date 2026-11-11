@@ -8,16 +8,18 @@ import { SuiFrenBattleSprite } from '../../../../src/components/battle/SuiFrenBa
 import { createTestRoot } from '../../../helpers/react-dom.js';
 
 const image = vi.hoisted(() => ({ mounted: vi.fn<() => void>(), unmounted: vi.fn<() => void>() }));
+function MockSuiFrenImage() {
+	useEffect(() => {
+		image.mounted();
+		return () => {
+			image.unmounted();
+		};
+	}, []);
+	return <svg data-character />;
+}
+
 vi.mock('../../../../src/image-inline/index.js', () => ({
-	SuiFrenImageInline: function Image() {
-		useEffect(() => {
-			image.mounted();
-			return () => {
-				image.unmounted();
-			};
-		}, []);
-		return <svg data-character />;
-	},
+	SuiFrenImageInline: MockSuiFrenImage,
 }));
 let view: ReturnType<typeof createTestRoot>;
 beforeEach(() => {

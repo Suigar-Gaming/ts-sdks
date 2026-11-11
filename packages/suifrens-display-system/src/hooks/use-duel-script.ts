@@ -338,7 +338,7 @@ export function useDuelScript<TExpression extends string = string>({
 				setPhase('Complete');
 			}
 		} catch (error) {
-			if ((error as Error)?.name !== 'AbortError') {
+			if (!(error instanceof Error && error.name === 'AbortError')) {
 				setPhase('Error');
 				// Swallow errors to keep the hook safe in Storybook / long-lived UIs.
 				// Consumers can introspect `phase` or fork the hook for stricter handling.
@@ -378,7 +378,7 @@ export function useDuelScript<TExpression extends string = string>({
 
 	useEffect(() => {
 		if (disabled || !autoStart) {
-			return;
+			return undefined;
 		}
 		void start();
 		return () => abortRun();

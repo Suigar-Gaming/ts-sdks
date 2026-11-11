@@ -44,7 +44,7 @@ function useResolvedAnimationConfig(animation: AnimationConfig | null): Animatio
 
 	useEffect(() => {
 		if (!presetName || immediateSequence || !isDeferredPreset(presetName)) {
-			return;
+			return undefined;
 		}
 
 		let cancelled = false;
@@ -54,6 +54,8 @@ function useResolvedAnimationConfig(animation: AnimationConfig | null): Animatio
 				if (!cancelled) {
 					setDeferred({ preset: presetName, sequence });
 				}
+
+				return undefined;
 			})
 			.catch(() => {
 				if (!cancelled) {
@@ -98,7 +100,7 @@ export function AnimationProvider({ animation = null, children }: AnimationProvi
 	useEffect(() => {
 		const root = rootRef.current;
 		if (!root) {
-			return;
+			return undefined;
 		}
 
 		const unregister: Array<() => void> = [];
@@ -126,7 +128,7 @@ export function AnimationProvider({ animation = null, children }: AnimationProvi
 
 		controller.applyConfig(resolvedAnimation);
 		if (!controller.needsAnimationFrame()) {
-			return;
+			return undefined;
 		}
 
 		let raf: number | null = null;

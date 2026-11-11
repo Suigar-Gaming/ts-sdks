@@ -75,8 +75,8 @@ test('shoe details keep local, distinct clip targets for every racer and limb', 
 	const accessory = buildRunnerAccessories().find((item) => item.name === 'runner shoes')!;
 	await view.render(
 		<svg>
-			{['capy', 'bullshark'].map((species) => (
-				<KitArtwork key={species} accessory={accessory} species={species as 'capy' | 'bullshark'} />
+			{(['capy', 'bullshark'] as const).map((species) => (
+				<KitArtwork key={species} accessory={accessory} species={species} />
 			))}
 		</svg>,
 	);
@@ -141,12 +141,13 @@ test.each(['full', 'head'] as const)(
 test('changing shoe color registers the replacement SVG legs for animation', async () => {
 	view = createTestRoot();
 	context.store = new AnimationStore();
-	const shoes = (color: string) =>
-		buildRunnerAccessories({ color }).find((item) => item.name === 'runner shoes')!;
+
 	for (const color of ['#123456', '#654321']) {
+		const shoes = buildRunnerAccessories({ color }).find((item) => item.name === 'runner shoes');
+		expect.assert(shoes);
 		await view.render(
 			<svg>
-				<KitArtwork accessory={shoes(color)} species="capy" fallbackPart="rightLeg" />
+				<KitArtwork accessory={shoes} species="capy" fallbackPart="rightLeg" />
 			</svg>,
 		);
 		const front = view.container.querySelector('#runner-shoes-frontleg')!;

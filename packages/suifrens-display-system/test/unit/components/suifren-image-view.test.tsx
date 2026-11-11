@@ -19,9 +19,9 @@ const attributes = {
 	secondaryColor: 'e6fbff',
 	skin: 'basic',
 	expression: 'happy',
-};
-const capy = { ...attributes, earShape: 'default' } as SuiFrenAttributes;
-const bullshark = { ...attributes, finStyle: 'classic' } as SuiFrenAttributes;
+} as const;
+const capy = { ...attributes, earShape: 'default' } satisfies SuiFrenAttributes;
+const bullshark = { ...attributes, finStyle: 'classic' } satisfies SuiFrenAttributes;
 let view: ReturnType<typeof createTestRoot> | undefined;
 afterEach(async () => {
 	await view?.unmount();
@@ -37,16 +37,17 @@ test.each([
 	await view.render(
 		<Renderer attributes={capy} animation={{ preset: 'idle', playState: 'idle' }} />,
 	);
-	const capyStore = register.mock.contexts[0] as AnimationStore;
+	const capyStore = register.mock.contexts[0];
+	expect.assert(capyStore instanceof AnimationStore);
 	register.mockClear();
 	await view.render(
 		<Renderer attributes={bullshark} animation={{ preset: 'idle', playState: 'idle' }} />,
 	);
 	expect(register.mock.calls.length).toBeGreaterThan(0);
 	expect(register.mock.contexts[0]).not.toBe(capyStore);
-	const finTargets = (register.mock.contexts[0] as AnimationStore)
-		.getAnimationTargets()
-		.filter(({ part }) => part === 'fin');
+	const bullsharkStore = register.mock.contexts[0];
+	expect.assert(bullsharkStore instanceof AnimationStore);
+	const finTargets = bullsharkStore.getAnimationTargets().filter(({ part }) => part === 'fin');
 	expect(finTargets.length).toBeGreaterThan(0);
 	for (const { element } of finTargets) {
 		expect(element?.isConnected).toBe(true);
@@ -57,11 +58,9 @@ test.each([
 		<Renderer attributes={capy} animation={{ preset: 'idle', playState: 'idle' }} />,
 	);
 	expect(register.mock.calls.length).toBeGreaterThan(0);
-	expect(
-		(register.mock.contexts[0] as AnimationStore)
-			.getAnimationTargets()
-			.some(({ part }) => part === 'fin'),
-	).toBe(false);
+	const restoredStore = register.mock.contexts[0];
+	expect.assert(restoredStore instanceof AnimationStore);
+	expect(restoredStore.getAnimationTargets().some(({ part }) => part === 'fin')).toBe(false);
 });
 
 test.each([

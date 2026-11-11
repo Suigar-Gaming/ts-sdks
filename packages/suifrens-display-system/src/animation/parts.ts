@@ -73,9 +73,11 @@ const PART_DEFINITIONS: Record<AnimationPart, PartDefinition> = {
 };
 
 const TRANSFORM_LOOKUP = new Map<string, AnimationPart>();
-for (const [part, definition] of Object.entries(PART_DEFINITIONS)) {
-	for (const entry of definition.autoDetectTransforms) {
-		TRANSFORM_LOOKUP.set(normalizeTransform(entry), part as AnimationPart);
+for (const part of Object.keys(PART_DEFINITIONS).filter((key): key is AnimationPart =>
+	Object.hasOwn(PART_DEFINITIONS, key),
+)) {
+	for (const entry of PART_DEFINITIONS[part].autoDetectTransforms) {
+		TRANSFORM_LOOKUP.set(normalizeTransform(entry), part);
 	}
 }
 
