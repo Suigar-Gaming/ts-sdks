@@ -103,7 +103,7 @@ async function readLayers(
 ): Promise<Record<string, string>> {
 	const layers: Record<string, string> = {};
 	const fields: Array<string> = [];
-	const singleFile = source.endsWith('.svg');
+	const singleFile = SVG_EXTENSION_PATTERN.test(source);
 	const files = singleFile ? [source] : (await readdir(join(SOURCE_DIR, source))).sort();
 	for (const file of files) {
 		const relativePath = singleFile ? file : source + '/' + file;
@@ -120,7 +120,9 @@ async function readLayers(
 }
 
 const sources = (await readdir(SOURCE_DIR, { withFileTypes: true }))
-	.filter((entry) => entry.isDirectory() || (entry.isFile() && entry.name.endsWith('.svg')))
+	.filter(
+		(entry) => entry.isDirectory() || (entry.isFile() && SVG_EXTENSION_PATTERN.test(entry.name)),
+	)
 	.map((entry) => entry.name)
 	.sort();
 
@@ -129,7 +131,7 @@ for (const source of sources) {
 	if (dir === 'crowns') {
 		const entries: Array<string> = [];
 		for (const file of (await readdir(join(SOURCE_DIR, dir)))
-			.filter((name) => name.endsWith('.svg'))
+			.filter((name) => SVG_EXTENSION_PATTERN.test(name))
 			.sort()) {
 			const svg = await readFile(join(SOURCE_DIR, dir, file));
 			const key = JSON.stringify(file.replace(SVG_EXTENSION_PATTERN, ''));
