@@ -35,7 +35,7 @@ Documentation-only edits need formatting and diff checks.
 - Put shared types in `src/types/*.type.ts` and public exports in `src/types/index.ts`. Keep types used by one component below its imports.
 - Keep character patterns and gestures in `src/components/shared/`; species shapes and pattern selection belong in `src/components/capy/` and `src/components/bullshark/`.
 - Edit accessory artwork in `src/accessories/artwork/`. Single-layer assets use one SVG; layered assets use a folder with `default.svg` and optional `body.svg`, `left.svg` and `right.svg`. Crowns have their own viewport; kits use SVG templates. Regenerate `src/generated/` with `codegen` after artwork changes.
-- Accessory codegen runs directly with Node and uses SVGO. Preserve IDs and group boundaries until limb extraction; plugins such as `cleanupIds` and `collapseGroups` can break that step. Use SVGO visitors to select groups and create symbols, and `prefixIds` for IDs, CSS and references. Keep SVG processing in the generator rather than importing runtime helpers from `src/` or manipulating XML with regular expressions.
+- Accessory codegen runs directly with Node and uses [SVGO](https://github.com/svg/svgo). Preserve IDs and group boundaries until limb extraction; plugins such as `cleanupIds` and `collapseGroups` can break that step. Use SVGO visitors to select groups and create symbols, and `prefixIds` for IDs, CSS and references. Keep SVG processing in the generator rather than importing runtime helpers from `src/` or manipulating XML with regular expressions.
 
 ## Tests and visual review
 

@@ -2,7 +2,7 @@
 
 React components for rendering and animating Suifrens capys and bullsharks with accessories and outfits.
 
-Mysten Labs created the original [SuiFrens Display System](https://github.com/MystenLabs/suifrens-display-system), including the original capy and bullshark renderers and their accessory artwork. Suigar adapted it in the [Suigar fork](https://github.com/Suigar-Gaming/suifrens-display-system) and now maintains this package in the SDK monorepo. Suigar added character gestures, animation playback, VIP crowns, and the runner and football kits. The original project and this adaptation use the [Apache License 2.0](LICENSE).
+The capy and bullshark renderers and their accessory artwork come from Mysten Labs' [SuiFrens Display System](https://github.com/MystenLabs/suifrens-display-system). Suigar extended it in the [Suigar fork](https://github.com/Suigar-Gaming/suifrens-display-system) with gestures, animation playback, VIP crowns, and runner and football kits. The package now lives in this SDK monorepo. Both the original project and Suigar's adaptation use the [Apache License 2.0](LICENSE).
 
 ## Installation
 
@@ -12,7 +12,7 @@ After the npm beta is published:
 pnpm add @suigar/suifrens-display-system@beta
 ```
 
-Requires ESM imports and React and React DOM `^18.2.0 || ^19.0.0` as peer dependencies. Suigar uses the historical GitHub archive during the beta.
+Use ESM imports and install React and React DOM `^18.2.0 || ^19.0.0` as peer dependencies. During the beta, Suigar still uses the historical GitHub archive.
 
 ## Quick start
 
@@ -35,7 +35,7 @@ export function CapyAvatar() {
 }
 ```
 
-Color values are palette keys without a leading `#`. Use `BullsharkAttributes` with `finStyle: 'classic'` for a bullshark, keeping the shared color, skin and expression fields.
+Colors are palette keys without a leading `#`. For a bullshark, use `BullsharkAttributes` with `finStyle: 'classic'`. The color, skin and expression fields stay the same.
 
 ## Rendering and animation
 
@@ -47,9 +47,9 @@ import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline
 <SuiFrenImageInline attributes={attributes} renderSize={240} />;
 ```
 
-Both renderers accept the same props. Use `detail="head"` for portraits, `accessories` for catalogue entries or custom `SuiFrenAccessory` objects, and `gesture` for `thumbs_up`, `thumbs_down` or `point`. Held objects take precedence over gestures; portraits are unchanged.
+Both renderers accept the same props. Set `detail="head"` for a portrait and pass catalogue entries or custom `SuiFrenAccessory` objects through `accessories`. The `gesture` prop accepts `thumbs_up`, `thumbs_down` or `point`. Held objects take precedence over gestures, and gestures don't affect portraits.
 
-For ordinary accessories, `renderOptions.assetSrc` overrides catalogue artwork. The inline renderer references that source directly; use an SVG data URL for a standalone export.
+For ordinary accessories, set `renderOptions.assetSrc` to replace the catalogue artwork. The inline renderer uses that source directly, so use an SVG data URL when the export needs to stand alone.
 
 Choose one animation source, `preset` or `sequence`:
 
@@ -61,7 +61,7 @@ Choose one animation source, `preset` or `sequence`:
 />
 ```
 
-Omit `animation` or pass `null` for a static image. Playback defaults to one iteration at the authored speed. Set `playState` to control playback and change `trigger` to restart it. Import `AnimationConfig` and component props from `/types` for the remaining options.
+Omit `animation` or pass `null` for a static image. Animations play once at their original speed by default. Set `playState` to control playback and change `trigger` to restart it. The types for the other options, including `AnimationConfig` and component props, are available from `/types`.
 
 ## Public exports
 
@@ -87,7 +87,7 @@ The root exports `SuiFrenImage`, `CapyImage` and `BullsharkImage`. Import other 
 - [Rendering and accessories skill](https://github.com/Suigar-Gaming/agent-skills/tree/main/skills/suifrens-display)
 - [Animation and duels skill](https://raw.githubusercontent.com/Suigar-Gaming/agent-skills/main/skills/suifrens-animation/SKILL.md)
 
-The package includes [an agent skill](skills/suifrens-display-system/SKILL.md) that loads the full instructions from `main` in [Suigar-Gaming/agent-skills](https://github.com/Suigar-Gaming/agent-skills). Install the full skills with `npx skills add Suigar-Gaming/agent-skills`.
+The included [agent skill](skills/suifrens-display-system/SKILL.md) loads its instructions from the `main` branch of [Suigar-Gaming/agent-skills](https://github.com/Suigar-Gaming/agent-skills). To install the full skills, run `npx skills add Suigar-Gaming/agent-skills`.
 
 ## Development
 
@@ -100,5 +100,3 @@ pnpm --dir packages/suifrens-display-system run test
 pnpm --dir packages/suifrens-display-system run typecheck
 pnpm --dir packages/suifrens-display-system run lint
 ```
-
-The build regenerates accessory assets with SVGO. Its plugins select the groups used for limb animation, prefix IDs and CSS references, and serialize each part as a symbol.

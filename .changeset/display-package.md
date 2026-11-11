@@ -23,3 +23,5 @@ Use the new `SuiFrenAccessory` type for custom accessories with only visual fiel
 Use numeric tiers in VIP crown names and spell the platinum rank `platinum`: for example, rename `bronze-iii` to `bronze-3` and `platinium-ii` to `platinum-2`. The inline renderer embeds built-in VIP crowns in standalone SVG exports.
 
 Pause JavaScript animations immediately when a character mounts outside the viewport margin, matching native playback. Move the microphone arm higher during speaking animations for both species. Share identical arm, body, head and left-leg SVG patterns without changing their rendering.
+
+Reduce generated accessory SVG sizes while preserving animation groups and references. Fix path distortion caused by rounding SVG numbers with text replacements. Scope accessory IDs and references through SVGO, including CSS rules, quoted URLs, XLink and animation start/end references.

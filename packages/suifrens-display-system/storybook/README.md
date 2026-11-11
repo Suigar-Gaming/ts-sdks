@@ -1,10 +1,10 @@
 # Suifrens Storybook
 
-Use Storybook to try characters, accessories and outfits, and adjust gestures and animations with the story controls.
+Try characters, accessories and outfits in Storybook. The story controls let you change gestures and animations.
 
 ## Setup
 
-From the repository root, using the Node.js version in `.node-version` and pnpm version in the root `package.json`:
+Run these commands from the repository root with the Node.js version in `.node-version` and the pnpm version in the root `package.json`:
 
 ```bash
 pnpm install
@@ -14,7 +14,7 @@ pnpm --filter @suigar/suifrens-storybook dev
 
 Open [http://localhost:6006](http://localhost:6006). If Storybook is already running there, use that instance.
 
-Storybook loads the library through its public exports from the build output. Rebuild the library after editing its source to see your changes.
+Storybook uses the library's built public exports. Rebuild the library after editing its source to update the preview.
 
 ## Static build
 
@@ -41,7 +41,7 @@ pnpm --filter @suigar/suifrens-storybook test:stories
 pnpm --filter @suigar/suifrens-storybook test:visual
 ```
 
-To run all test projects and collect coverage:
+Run every test project with coverage:
 
 ```bash
 pnpm --filter @suigar/suifrens-storybook test:coverage
