@@ -1,24 +1,24 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import bronze1Url from '../../accessories/artwork/crowns/bronze-1.svg?url';
-import bronze2Url from '../../accessories/artwork/crowns/bronze-2.svg?url';
-import bronze3Url from '../../accessories/artwork/crowns/bronze-3.svg?url';
-import diamond1Url from '../../accessories/artwork/crowns/diamond-1.svg?url';
-import diamond2Url from '../../accessories/artwork/crowns/diamond-2.svg?url';
-import diamond3Url from '../../accessories/artwork/crowns/diamond-3.svg?url';
-import gold1Url from '../../accessories/artwork/crowns/gold-1.svg?url';
-import gold2Url from '../../accessories/artwork/crowns/gold-2.svg?url';
-import gold3Url from '../../accessories/artwork/crowns/gold-3.svg?url';
-import legendUrl from '../../accessories/artwork/crowns/legend.svg?url';
-import master1Url from '../../accessories/artwork/crowns/master-1.svg?url';
-import master2Url from '../../accessories/artwork/crowns/master-2.svg?url';
-import platinum1Url from '../../accessories/artwork/crowns/platinum-1.svg?url';
-import platinum2Url from '../../accessories/artwork/crowns/platinum-2.svg?url';
-import platinum3Url from '../../accessories/artwork/crowns/platinum-3.svg?url';
-import silver1Url from '../../accessories/artwork/crowns/silver-1.svg?url';
-import silver2Url from '../../accessories/artwork/crowns/silver-2.svg?url';
-import silver3Url from '../../accessories/artwork/crowns/silver-3.svg?url';
+import bronze1Url from '../../accessories/crowns/bronze-1.svg?url';
+import bronze2Url from '../../accessories/crowns/bronze-2.svg?url';
+import bronze3Url from '../../accessories/crowns/bronze-3.svg?url';
+import diamond1Url from '../../accessories/crowns/diamond-1.svg?url';
+import diamond2Url from '../../accessories/crowns/diamond-2.svg?url';
+import diamond3Url from '../../accessories/crowns/diamond-3.svg?url';
+import gold1Url from '../../accessories/crowns/gold-1.svg?url';
+import gold2Url from '../../accessories/crowns/gold-2.svg?url';
+import gold3Url from '../../accessories/crowns/gold-3.svg?url';
+import legendUrl from '../../accessories/crowns/legend.svg?url';
+import master1Url from '../../accessories/crowns/master-1.svg?url';
+import master2Url from '../../accessories/crowns/master-2.svg?url';
+import platinum1Url from '../../accessories/crowns/platinum-1.svg?url';
+import platinum2Url from '../../accessories/crowns/platinum-2.svg?url';
+import platinum3Url from '../../accessories/crowns/platinum-3.svg?url';
+import silver1Url from '../../accessories/crowns/silver-1.svg?url';
+import silver2Url from '../../accessories/crowns/silver-2.svg?url';
+import silver3Url from '../../accessories/crowns/silver-3.svg?url';
 import { VIP_CROWN_IMAGE_VIEWPORT } from '../../constants/crown-viewport.js';
 
 const VIP_CROWN_ASSET_BY_NAME: Record<string, string> = {

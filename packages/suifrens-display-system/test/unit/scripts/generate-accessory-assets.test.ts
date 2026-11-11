@@ -14,8 +14,9 @@ const script = fileURLToPath(
 );
 
 beforeAll(() => {
-	const artwork = join(directory, 'src/accessories/artwork');
+	const artwork = join(directory, 'src/accessories');
 	mkdirSync(artwork, { recursive: true });
+	writeFileSync(join(artwork, 'index.ts'), 'export {};\n');
 	writeFileSync(
 		join(artwork, 'fixture.svg'),
 		`<?xml version="1.0"?>
@@ -79,4 +80,11 @@ test('preserves nested role groups for independently animated body and legs', ()
 	expect(
 		readFileSync(join(directory, 'src/generated/accessory-asset-manifest.ts'), 'utf8'),
 	).toContain('"limbs"');
+});
+
+test('ignores colocated TypeScript and imports SVG sources directly from accessories', () => {
+	const inline = readFileSync(join(directory, 'src/generated/inline-artwork.ts'), 'utf8');
+	expect(inline).toContain("from '../accessories/fixture.svg'");
+	expect(inline).not.toContain('index.ts');
+	expect(inline).not.toContain('artwork/');
 });

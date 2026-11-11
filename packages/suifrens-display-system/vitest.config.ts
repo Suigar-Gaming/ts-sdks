@@ -3,7 +3,7 @@
 
 import { defineConfig } from 'vitest/config';
 
-const ACCESSORY_SVG_IMPORT_PATTERN: RegExp = /^(\.\.\/accessories\/artwork\/.+\.svg)$/;
+const ACCESSORY_SVG_IMPORT_PATTERN: RegExp = /^(\.\.\/accessories\/.+\.svg)$/;
 
 export default defineConfig({
 	// Vite serves plain SVG imports as URLs. Match Rolldown's text imports for artwork.

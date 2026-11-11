@@ -25,7 +25,7 @@ const species = [
 ] as const;
 
 test.each(vipCrownAccessories)('$name artwork has room for its tips and ornaments', (accessory) => {
-	const source = readFileSync(`src/accessories/artwork/crowns/${accessory.name}.svg`, 'utf8');
+	const source = readFileSync(`src/accessories/crowns/${accessory.name}.svg`, 'utf8');
 	const container = document.createElement('div');
 	container.innerHTML = source;
 	expect(container.querySelector('svg')?.getAttribute('viewBox')).toBe('-200 -600 3209 3609');
@@ -56,9 +56,7 @@ test.each([
 				const expectedHref =
 					mode === 'inline'
 						? 'data:image/svg+xml;base64,' +
-							readFileSync(`src/accessories/artwork/crowns/${accessory.name}.svg`).toString(
-								'base64',
-							)
+							readFileSync(`src/accessories/crowns/${accessory.name}.svg`).toString('base64')
 						: asset;
 				expect(image.getAttribute('href')).toBe(expectedHref);
 				const viewport = getVipCrownAssetViewport(asset)!;

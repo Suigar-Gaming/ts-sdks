@@ -84,7 +84,7 @@ const MANIFEST_ENTRIES: Array<string> = [];
 const SPLIT_LIMB_ASSET_NAMES: Array<string> = [];
 
 // Inline imports stay separate so external-SVG consumers only bundle kit templates.
-const SOURCE_DIR = 'src/accessories/artwork';
+const SOURCE_DIR = 'src/accessories';
 const INLINE_IMPORTS: Array<string> = [];
 const KIT_IMPORTS: Array<string> = [];
 const INLINE_ENTRIES: Array<string> = [];
@@ -103,7 +103,7 @@ async function readLayers(
 		const relativePath = singleFile ? file : source + '/' + file;
 		const layer = singleFile ? 'default' : file.replace(SVG_EXTENSION_PATTERN, '');
 		const id = 'layer' + imports.length;
-		imports.push(`import ${id} from '../accessories/artwork/${relativePath}';`);
+		imports.push(`import ${id} from '../accessories/${relativePath}';`);
 		fields.push(`${JSON.stringify(layer)}: ${id}`);
 		layers[layer] = await readFile(join(SOURCE_DIR, relativePath), 'utf8');
 	}
@@ -113,7 +113,12 @@ async function readLayers(
 	return layers;
 }
 
-for (const source of (await readdir(SOURCE_DIR)).sort()) {
+const sources = (await readdir(SOURCE_DIR, { withFileTypes: true }))
+	.filter((entry) => entry.isDirectory() || (entry.isFile() && entry.name.endsWith('.svg')))
+	.map((entry) => entry.name)
+	.sort();
+
+for (const source of sources) {
 	const dir = source.replace(SVG_EXTENSION_PATTERN, '');
 	if (dir === 'crowns') {
 		const entries: Array<string> = [];
