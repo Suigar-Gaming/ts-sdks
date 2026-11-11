@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 // @vitest-environment happy-dom
-import { act, createRef, forwardRef, type ReactElement, type Ref } from 'react';
+import { act, createRef, forwardRef, memo, type ReactElement, type Ref } from 'react';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { AnimatedAccessory } from '../../../src/animation/AnimatedAccessory.js';
 import { AnimationStore } from '../../../src/animation/animation-store.js';
@@ -128,6 +128,24 @@ test('object refs and forwarded refs still reach the SVG element', async () => {
 		</svg>,
 	);
 	expect(ref.current).toBe(view.container.querySelector('[data-forwarded]'));
+	await view.render(null);
+	expect(ref.current).toBeNull();
+});
+
+test('nested memo wrappers preserve forwarded SVG refs without an extra group', async () => {
+	const ref = createRef<SVGGElement>();
+	const Shape = memo(
+		memo(forwardRef<SVGGElement>((_props, forwardedRef) => <g ref={forwardedRef} data-memo />)),
+	);
+	await view.render(
+		<svg>
+			<AnimatedAccessory fallbackPart="head">
+				<Shape ref={ref} />
+			</AnimatedAccessory>
+		</svg>,
+	);
+	expect(ref.current).toBe(view.container.querySelector('[data-memo]'));
+	expect(ref.current?.parentElement?.tagName).toBe('svg');
 	await view.render(null);
 	expect(ref.current).toBeNull();
 });

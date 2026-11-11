@@ -24,25 +24,25 @@ const REACT_FORWARD_REF_TYPE = Symbol.for('react.forward_ref');
 const REACT_MEMO_TYPE = Symbol.for('react.memo');
 
 function canAttachRefToType(type: unknown): boolean {
-	if (!type) {
-		return false;
-	}
 	if (typeof type === 'string') {
 		return true;
 	}
 	if (typeof type === 'function') {
-		return Boolean((type as any).prototype?.isReactComponent);
+		const prototype: unknown = type.prototype;
+		return (
+			typeof prototype === 'object' &&
+			prototype !== null &&
+			'isReactComponent' in prototype &&
+			Boolean(prototype.isReactComponent)
+		);
 	}
-	if (typeof type === 'object') {
-		const $$typeof = (type as { $$typeof?: symbol }).$$typeof;
-		if ($$typeof === REACT_FORWARD_REF_TYPE) {
-			return true;
-		}
-		if ($$typeof === REACT_MEMO_TYPE) {
-			return canAttachRefToType((type as { type?: unknown }).type);
-		}
+	if (typeof type !== 'object' || type === null || !('$$typeof' in type)) {
+		return false;
 	}
-	return false;
+	return (
+		type.$$typeof === REACT_FORWARD_REF_TYPE ||
+		(type.$$typeof === REACT_MEMO_TYPE && 'type' in type && canAttachRefToType(type.type))
+	);
 }
 
 function getElementRef(element: ReactElement): Ref<SVGElement> | undefined {
