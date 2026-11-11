@@ -15,14 +15,17 @@ const PATH_ELEMENT_PATTERN: RegExp = /<path\b/g;
 const root = new URL('../../', import.meta.url);
 const manifest = JSON.parse(readFileSync(new URL('package.json', root), 'utf8'));
 
-test('all published entry points and declaration files resolve', async () => {
-	for (const [entry, paths] of Object.entries(manifest.exports) as Array<
-		[string, { import: string; types: string }]
-	>) {
+const publishedEntries = Object.entries(manifest.exports) as Array<
+	[string, { import: string; types: string }]
+>;
+
+test.each(publishedEntries)(
+	'published entry %s and its declaration file resolve',
+	async (entry, paths) => {
 		assert.ok(existsSync(new URL(paths.types, root)), `${entry}: missing declarations`);
 		await import(`${manifest.name}${entry === '.' ? '' : entry.slice(1)}`);
-	}
-});
+	},
+);
 
 test('built inline and asset renderers preserve custom kits for both species and sides', async () => {
 	const { ACCESSORIES: accessories } = await import(manifest.name + '/accessories');

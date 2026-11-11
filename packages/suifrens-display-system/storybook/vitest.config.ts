@@ -5,12 +5,13 @@ import { resolve } from 'node:path';
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 import { playwright } from '@vitest/browser-playwright';
 import { defineConfig } from 'vitest/config';
+import type { BrowserConfigOptions } from 'vitest/node';
 
-const chromium = () => ({
+const chromium = (): BrowserConfigOptions => ({
 	enabled: true,
 	headless: true,
 	provider: playwright(),
-	instances: [{ browser: 'chromium' as const }],
+	instances: [{ browser: 'chromium' }],
 });
 
 export default defineConfig({
@@ -25,7 +26,6 @@ export default defineConfig({
 			{
 				test: {
 					name: 'unit',
-					environment: 'node',
 					include: ['test/unit/**/*.test.{ts,tsx}'],
 					restoreMocks: true,
 				},

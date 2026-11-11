@@ -44,7 +44,7 @@ Documentation-only edits need formatting and diff checks.
 
 ## Tests and visual review
 
-Keep behavior tests in `test/unit/` and compiled export, declaration and asset checks in `test/distribution/`. The package typecheck covers source, scripts and tests. Run the checks above for implementation changes, including Storybook and examples.
+Keep behavior tests in `test/unit/` and compiled export, declaration and asset checks in `test/distribution/`. Treat `dist/` as a dependency in Vitest so compiled modules are loaded natively by Node. Check each published entry point in its own test to isolate import failures and timeout budgets. Keep the benchmarked `threads` pool with per-file isolation enabled. The package typecheck covers source, scripts and tests. Run the checks above for implementation changes, including Storybook and examples.
 
 Show visual changes enlarged and at the size consumers will display them.
 
