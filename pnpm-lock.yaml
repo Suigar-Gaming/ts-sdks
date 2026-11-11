@@ -485,10 +485,6 @@ importers:
         version: 5.1.0(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(@vitest/browser-playwright@5.1.0)(@vitest/coverage-v8@5.1.0)(@vitest/ui@5.1.0)(happy-dom@21.0.4)(vite@8.3.6(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
 
   packages/suifrens-display-system/storybook:
-    dependencies:
-      '@suigar/suifrens-display-system':
-        specifier: workspace:*
-        version: link:..
     devDependencies:
       '@storybook/addon-a11y':
         specifier: ^10.6.6
@@ -508,6 +504,9 @@ importers:
       '@storybook/react-vite':
         specifier: ^10.6.6
         version: 10.6.6(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(storybook@10.6.6(@types/react@19.3.0)(prettier@3.9.6)(react@19.3.1))(typescript@7.0.2)(vite@8.3.6(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
+      '@suigar/suifrens-display-system':
+        specifier: workspace:*
+        version: link:..
       '@tailwindcss/postcss':
         specifier: catalog:tooling
         version: 4.3.5
