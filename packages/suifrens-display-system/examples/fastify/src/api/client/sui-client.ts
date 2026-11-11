@@ -4,7 +4,7 @@
 
 import type { SuiClientTypes } from '@mysten/sui/client';
 import { SuiGrpcClient } from '@mysten/sui/grpc';
-import { accessories } from '@suigar/suifrens-display-system/accessories';
+import { ACCESSORIES } from '@suigar/suifrens-display-system/accessories';
 import type { AccessoryMetadata, SuiFrenSpecies } from '@suigar/suifrens-display-system/types';
 import { parseSuiFrenAttributes } from '../../utils/attribute-utils.js';
 import {
@@ -59,7 +59,7 @@ export async function getSuiFrenAccessories(suiFrenId: string) {
 				continue;
 			}
 			const { name } = Accessory.parse(object.content);
-			const accessory = accessories.find((item) => item.name === name);
+			const accessory = ACCESSORIES.find((item) => item.name === name);
 			if (accessory) {
 				equipped.push(accessory);
 			}

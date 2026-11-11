@@ -3,15 +3,15 @@
 
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, test } from 'vitest';
-import { accessories } from '../../../../src/constants/accessories.js';
+import { ACCESSORIES } from '../../../../src/constants/accessories.js';
 import { SuiFrenImageInline } from '../../../../src/image-inline/index.js';
 import { SuiFrenImage } from '../../../../src/index.js';
 import type { AnimationConfig } from '../../../../src/types/animation.type.js';
 import { parseMatrix } from '../../../../src/utils/matrix.js';
 
 const shark = {
-	mainColor: '6FBBEE',
-	secondaryColor: 'E6FBFF',
+	mainColor: '6fbbee',
+	secondaryColor: 'e6fbff',
 	skin: 'basic',
 	expression: 'happy',
 	finStyle: 'classic',
@@ -28,7 +28,7 @@ describe.each([
 		);
 		const props = {
 			attributes: shark,
-			accessories: [accessories.find((item) => item.name === 'microphone')!],
+			accessories: [ACCESSORIES.find((item) => item.name === 'microphone')!],
 		};
 		expect(renderToStaticMarkup(<Image {...props} gesture="point" />)).toBe(
 			renderToStaticMarkup(<Image {...props} />),
@@ -53,7 +53,7 @@ describe.each([
 		expect(raised).not.toContain('1002.9,1719.3');
 		expect(raised.match(/data-suifren-gesture="thumbs-up"/g)).toHaveLength(1);
 		const gesture = raised.slice(raised.indexOf('data-suifren-gesture'));
-		expect(gesture).toContain('fill="#6FBBEE"');
+		expect(gesture).toContain('fill="#6fbbee"');
 		expect(gesture).not.toContain('#4e4943');
 		expect(raised.indexOf('data-suifren-gesture')).toBeGreaterThan(
 			raised.indexOf('data-suifren-animation-part="head"'),
@@ -69,7 +69,7 @@ describe.each([
 		},
 	);
 
-	test.each(accessories.filter((accessory) => accessory.type === 'object'))(
+	test.each(ACCESSORIES.filter((accessory) => accessory.type === 'object'))(
 		'preserves the native grip for $name',
 		(object) => {
 			const props = { attributes: shark, accessories: [object] };
@@ -82,7 +82,7 @@ describe.each([
 	test.each([null, { preset: 'talkMicrophone' }] satisfies Array<AnimationConfig | null>)(
 		'preserves foreground held objects with animation %j',
 		(animation) => {
-			const microphone = accessories.find((accessory) => accessory.name === 'microphone')!;
+			const microphone = ACCESSORIES.find((accessory) => accessory.name === 'microphone')!;
 			const object = {
 				...microphone,
 				renderOptions: {

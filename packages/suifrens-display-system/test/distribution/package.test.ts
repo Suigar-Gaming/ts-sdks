@@ -25,13 +25,13 @@ test('all published entry points and declaration files resolve', async () => {
 });
 
 test('built inline and asset renderers preserve custom kits for both species and sides', async () => {
-	const { accessories } = await import(manifest.name + '/accessories');
+	const { ACCESSORIES: accessories } = await import(manifest.name + '/accessories');
 	const { resolveSoccerTeamKit } = await import(manifest.name + '/kits');
 	const kit = {
 		code: 'CLUB',
 		primary: '#123456',
-		secondary: '#FEDCBA',
-		accent: '#ABCDEF',
+		secondary: '#fedcba',
+		accent: '#abcdef',
 		pattern: 'vertical',
 	};
 	for (const [entry, name] of [
@@ -52,8 +52,8 @@ test('built inline and asset renderers preserve custom kits for both species and
 				const svg = renderToStaticMarkup(
 					createElement(SuiFrenImage, {
 						attributes: {
-							mainColor: '6FBBEE',
-							secondaryColor: 'E6FBFF',
+							mainColor: '6fbbee',
+							secondaryColor: 'e6fbff',
 							skin: 'basic',
 							expression: 'happy',
 							...(species === 'capy' ? { earShape: 'default' } : { finStyle: 'classic' }),
@@ -88,14 +88,14 @@ test('historical root species renderers remain exported', async () => {
 });
 
 test('built goth boot assets contain only the selected boot without clipping', async () => {
-	const { accessories } = await import(manifest.name + '/accessories');
+	const { ACCESSORIES: accessories } = await import(manifest.name + '/accessories');
 	const { SuiFrenImage } = await import(manifest.name);
 	for (const side of ['left', 'right']) {
 		const svg = renderToStaticMarkup(
 			createElement(SuiFrenImage, {
 				attributes: {
-					mainColor: '6FBBEE',
-					secondaryColor: 'E6FBFF',
+					mainColor: '6fbbee',
+					secondaryColor: 'e6fbff',
 					skin: 'basic',
 					expression: 'happy',
 					earShape: 'default',
@@ -128,8 +128,8 @@ test('built runner kits preserve configurable bibs and native limbs in every ren
 			const svg = renderToStaticMarkup(
 				createElement(SuiFrenImage, {
 					attributes: {
-						mainColor: '6FBBEE',
-						secondaryColor: 'E6FBFF',
+						mainColor: '6fbbee',
+						secondaryColor: 'e6fbff',
 						skin: 'basic',
 						expression: 'happy',
 						...(species === 'capy' ? { earShape: 'default' } : { finStyle: 'classic' }),
@@ -145,4 +145,18 @@ test('built runner kits preserve configurable bibs and native limbs in every ren
 			assert.ok(svg.includes('translate(393 0) scale(-1 1)'));
 		}
 	}
+});
+
+test('published data catalogues use uppercase export names', async () => {
+	const catalogue = await import('@suigar/suifrens-display-system/accessories');
+	const palette = await import('@suigar/suifrens-display-system/colors');
+	const attributes = await import('@suigar/suifrens-display-system/attributes');
+	assert.ok(catalogue.ACCESSORIES.length > 0);
+	assert.ok(catalogue.VIP_CROWN_ACCESSORIES.length > 0);
+	assert.equal(palette.COLORS.ffffff, 'White');
+	assert.equal(attributes.EAR_GENE_TO_EAR_SHAPE['ear1'], 'default');
+	assert.ok(!('accessories' in catalogue));
+	assert.ok(!('vipCrownAccessories' in catalogue));
+	assert.ok(!('colors' in palette));
+	assert.ok(!('earGeneToEarShape' in attributes));
 });

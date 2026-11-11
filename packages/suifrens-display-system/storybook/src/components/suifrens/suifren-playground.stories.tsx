@@ -20,8 +20,8 @@ const bounds = { width: PLAYGROUND_WIDTH, height: PLAYGROUND_HEIGHT, padding: SP
 const initialPosition = { x: PLAYGROUND_WIDTH / 2, y: PLAYGROUND_HEIGHT - bounds.padding };
 
 const baseAttributes = {
-	mainColor: '6FBBEE',
-	secondaryColor: 'E6FBFF',
+	mainColor: '6fbbee',
+	secondaryColor: 'e6fbff',
 	skin: 'basic',
 	finStyle: 'classic',
 	expression: 'happy',

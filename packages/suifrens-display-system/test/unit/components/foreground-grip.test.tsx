@@ -27,8 +27,8 @@ const cup: AccessoryMetadata = {
 	renderOptions: { animationPart: 'leftArm', foreground: true },
 };
 const attributes = {
-	mainColor: 'A87C4C' as const,
-	secondaryColor: 'D5CBB1' as const,
+	mainColor: 'a87c4c' as const,
+	secondaryColor: 'd5cbb1' as const,
 	skin: 'basic' as const,
 	expression: 'happy' as const,
 };

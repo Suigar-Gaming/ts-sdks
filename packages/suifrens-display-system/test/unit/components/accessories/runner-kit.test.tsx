@@ -30,8 +30,8 @@ test('validates kit inputs and keeps fins and ears visible', () => {
 		number: 1,
 		mirrorBib: false,
 	});
-	expect(resolveRunnerKit({ color: '#12ABef', number: 99, mirrorBib: true })).toEqual({
-		color: '#12ABef',
+	expect(resolveRunnerKit({ color: '#12abef', number: 99, mirrorBib: true })).toEqual({
+		color: '#12abef',
 		number: 99,
 		mirrorBib: true,
 	});
@@ -103,8 +103,8 @@ test.each(['full', 'head'] as const)(
 					<CapyImage
 						detail={detail}
 						attributes={{
-							mainColor: 'A87C4C',
-							secondaryColor: 'D5CBB1',
+							mainColor: 'a87c4c',
+							secondaryColor: 'd5cbb1',
 							skin: 'basic',
 							expression: 'happy',
 							earShape: 'default',

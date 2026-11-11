@@ -4,14 +4,14 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, test } from 'vitest';
 import { getPartDefinition } from '../../../../src/animation/parts.js';
-import { accessories } from '../../../../src/constants/accessories.js';
+import { ACCESSORIES } from '../../../../src/constants/accessories.js';
 import { SuiFrenImageInline } from '../../../../src/image-inline/index.js';
 import { SuiFrenImage } from '../../../../src/index.js';
 import { parseMatrix } from '../../../../src/utils/matrix.js';
 
 const capy = {
-	mainColor: 'A87C4C',
-	secondaryColor: 'D5CBB1',
+	mainColor: 'a87c4c',
+	secondaryColor: 'd5cbb1',
 	skin: 'basic',
 	expression: 'bigSmile',
 	earShape: 'default',
@@ -29,7 +29,7 @@ describe.each([
 		);
 		const props = {
 			attributes: capy,
-			accessories: [accessories.find((item) => item.name === 'microphone')!],
+			accessories: [ACCESSORIES.find((item) => item.name === 'microphone')!],
 		};
 		expect(renderToStaticMarkup(<Image {...props} gesture="point" />)).toBe(
 			renderToStaticMarkup(<Image {...props} />),
@@ -98,7 +98,7 @@ describe.each([
 	test.each(['thumbs_up', 'thumbs_down', 'point'] as const)(
 		'preserves the grip when holding an object with %s',
 		(gesture) => {
-			const object = accessories.find((accessory) => accessory.name === 'microphone')!;
+			const object = ACCESSORIES.find((accessory) => accessory.name === 'microphone')!;
 			const props = { attributes: capy, accessories: [object] };
 			expect(renderToStaticMarkup(<Image {...props} gesture={gesture} />)).toBe(
 				renderToStaticMarkup(<Image {...props} />),

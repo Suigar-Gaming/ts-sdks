@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { accessories } from '@suigar/suifrens-display-system/accessories';
+import { ACCESSORIES } from '@suigar/suifrens-display-system/accessories';
 import { accessoryLabel } from '../../utils/accessory-label.js';
 import { CatalogueDocs } from '../CatalogueDocs.js';
 import { CataloguePreview } from './CataloguePreview.js';
@@ -21,7 +21,7 @@ export const AllAccessories: Story = {
 	tags: ['!1.0.0', '1.0.2'],
 	render: () => (
 		<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-			{accessories.map((accessory) => (
+			{ACCESSORIES.map((accessory) => (
 				<CataloguePreview
 					key={accessory.name}
 					title={accessoryLabel(accessory)}
@@ -34,7 +34,7 @@ export const AllAccessories: Story = {
 };
 
 function accessoryStory(name: string): Story {
-	const accessory = accessories.find((entry) => entry.name === name);
+	const accessory = ACCESSORIES.find((entry) => entry.name === name);
 	if (!accessory) {
 		throw new Error(`Unknown accessory: ${name}`);
 	}

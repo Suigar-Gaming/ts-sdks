@@ -27,3 +27,5 @@ Pause JavaScript animations immediately when a character mounts outside the view
 Reduce generated accessory SVG sizes while preserving animation groups and references. Fix path distortion caused by rounding SVG numbers with text replacements. Scope accessory IDs and references through SVGO, including CSS rules, quoted URLs, XLink and animation start/end references.
 
 Export `SuiFrenAppearance` for shared species appearance fields and `AnimationPresetName` for the built-in core and battle preset names. Derive preset names from the catalogues while preserving dynamic string lookup APIs.
+
+Rename data exports to `COLORS`, `ACCESSORIES`, `VIP_CROWN_ACCESSORIES` and `EAR_GENE_TO_EAR_SHAPE`. Functions, hooks, components and prop names retain their existing casing. Use lowercase hexadecimal colors and palette keys; normalize existing external keys before validating against `COLORS`.

@@ -24,8 +24,8 @@ for (const theme of ['light', 'dark']) {
 							finStyle: 'classic',
 							skin: 'basic',
 							expression: 'happy',
-							mainColor: '6FBBEE',
-							secondaryColor: 'E6FBFF',
+							mainColor: '6fbbee',
+							secondaryColor: 'e6fbff',
 						}}
 					/>,
 				),

@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { SUIFREN_SKINS } from '@suigar/suifrens-display-system/attributes';
-import { colors } from '@suigar/suifrens-display-system/colors';
+import { COLORS } from '@suigar/suifrens-display-system/colors';
 import { ALL_EXPRESSIONS } from '@suigar/suifrens-display-system/expressions';
 import type { SuiFrenGesture } from '@suigar/suifrens-display-system/types';
 
@@ -22,8 +22,8 @@ export const imageControls = {
 } as const;
 
 const paletteControl = {
-	control: { type: 'select', labels: colors },
-	options: Object.keys(colors),
+	control: { type: 'select', labels: COLORS },
+	options: Object.keys(COLORS),
 } as const;
 
 export const characterControls = {

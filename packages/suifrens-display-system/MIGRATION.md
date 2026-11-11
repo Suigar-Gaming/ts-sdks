@@ -26,8 +26,8 @@ After:
 
 ```ts
 import { SuiFrenImage } from '@suigar/suifrens-display-system';
-import { accessories } from '@suigar/suifrens-display-system/accessories';
-import { colors } from '@suigar/suifrens-display-system/colors';
+import { ACCESSORIES } from '@suigar/suifrens-display-system/accessories';
+import { COLORS } from '@suigar/suifrens-display-system/colors';
 import type { SuiFrenImageProps } from '@suigar/suifrens-display-system/types';
 ```
 
@@ -46,6 +46,19 @@ import type { SuiFrenImageProps } from '@suigar/suifrens-display-system/types';
 
 The former `/vip-crowns` entry point is replaced by `/accessories`. The `/battle` and `/expressions` entry points remain available for runtime exports; import their types from `/types`.
 
+## Export naming
+
+Data constants and catalogues use `UPPER_SNAKE_CASE`. Functions and hooks use `camelCase`; components and types use `PascalCase`.
+
+| Previous export       | Replacement             | Entry point    |
+| --------------------- | ----------------------- | -------------- |
+| `colors`              | `COLORS`                | `/colors`      |
+| `accessories`         | `ACCESSORIES`           | `/accessories` |
+| `vipCrownAccessories` | `VIP_CROWN_ACCESSORIES` | `/accessories` |
+| `earGeneToEarShape`   | `EAR_GENE_TO_EAR_SHAPE` | `/attributes`  |
+
+Component prop names such as `accessories` remain unchanged.
+
 ## External and inline SVG renderers
 
 The root `SuiFrenImage` now uses cacheable external SVG accessories. Replace imports of `SuiFrenImage` from `/image-assets` with `SuiFrenImage` from the root:
@@ -59,6 +72,10 @@ If you used the previous root renderer for self-contained SVG markup, switch to 
 ```ts
 import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
 ```
+
+## Color literals and palette keys
+
+Use lowercase hexadecimal colors, with or without a leading `#`. Palette keys and typed appearance colors are lowercase: for example, replace `'6FBBEE'` with `'6fbbee'` and `'E6FBFF'` with `'e6fbff'`. Normalize stored or external palette keys before validating against `COLORS`. The Fastify example accepts either case and normalizes appearance colors to lowercase. Data export names such as `COLORS` remain uppercase.
 
 ## Species, skins and expression types
 

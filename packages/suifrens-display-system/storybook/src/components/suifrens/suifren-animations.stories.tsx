@@ -2,12 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { accessories } from '@suigar/suifrens-display-system/accessories';
+import { ACCESSORIES } from '@suigar/suifrens-display-system/accessories';
 import { PRESET_CATALOG, type PresetCatalogEntry } from '../../animation/preset-catalog.js';
 import { CatalogueDocs } from '../CatalogueDocs.js';
 import { CataloguePreview } from './CataloguePreview.js';
 
-const microphoneAccessory = accessories.find((accessory) => accessory.name === 'microphone');
+const microphoneAccessory = ACCESSORIES.find((accessory) => accessory.name === 'microphone');
 
 function getPreviewAccessories(presetName: string) {
 	return presetName === 'talkMicrophone' && microphoneAccessory ? [microphoneAccessory] : [];

@@ -3,7 +3,7 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { SuiFrenImage } from '@suigar/suifrens-display-system';
-import { vipCrownAccessories } from '@suigar/suifrens-display-system/accessories';
+import { VIP_CROWN_ACCESSORIES } from '@suigar/suifrens-display-system/accessories';
 import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
 import { accessoryLabel } from '../../utils/accessory-label.js';
 
@@ -18,8 +18,8 @@ const STATIC_VARIANTS = [
 	{
 		label: 'Capy · Soft',
 		attributes: {
-			mainColor: '6FBBEE',
-			secondaryColor: 'E6FBFF',
+			mainColor: '6fbbee',
+			secondaryColor: 'e6fbff',
 			skin: 'basic',
 			earShape: 'default',
 			expression: 'happy',
@@ -28,8 +28,8 @@ const STATIC_VARIANTS = [
 	{
 		label: 'Capy · Wild',
 		attributes: {
-			mainColor: 'FB825C',
-			secondaryColor: 'FFF1D6',
+			mainColor: 'fb825c',
+			secondaryColor: 'fff1d6',
 			skin: 'cheetah',
 			earShape: 'wild',
 			expression: 'bigSmile',
@@ -38,8 +38,8 @@ const STATIC_VARIANTS = [
 	{
 		label: 'Bullshark · Classic',
 		attributes: {
-			mainColor: '6FBBEE',
-			secondaryColor: 'E6FBFF',
+			mainColor: '6fbbee',
+			secondaryColor: 'e6fbff',
 			skin: 'basic',
 			finStyle: 'classic',
 			expression: 'happy',
@@ -48,8 +48,8 @@ const STATIC_VARIANTS = [
 	{
 		label: 'Bullshark · Alt',
 		attributes: {
-			mainColor: 'DA8E2F',
-			secondaryColor: 'FCCD31',
+			mainColor: 'da8e2f',
+			secondaryColor: 'fccd31',
 			skin: 'fox',
 			finStyle: 'classic',
 			expression: 'goofy',
@@ -61,8 +61,8 @@ const MOTION_VARIANTS = [
 	{
 		label: 'Capy · Celebrate',
 		attributes: {
-			mainColor: 'E991AB',
-			secondaryColor: 'FF5C00',
+			mainColor: 'e991ab',
+			secondaryColor: 'ff5c00',
 			skin: 'lizard',
 			earShape: 'quiet',
 			expression: 'laughing',
@@ -72,7 +72,7 @@ const MOTION_VARIANTS = [
 	{
 		label: 'Bullshark · Walk',
 		attributes: {
-			mainColor: 'FFF1D6',
+			mainColor: 'fff1d6',
 			secondaryColor: '707070',
 			skin: 'stripes',
 			finStyle: 'classic',
@@ -96,7 +96,7 @@ export const ClippingCheck: Story = {
 	tags: ['!1.0.3', '1.0.6'],
 	render: () => (
 		<div className="flex flex-col gap-10">
-			{vipCrownAccessories.map((accessory) => (
+			{VIP_CROWN_ACCESSORIES.map((accessory) => (
 				<section key={accessory.name} className="story-panel">
 					<h2 className="story-heading">{accessoryLabel(accessory)}</h2>
 					<div className="mt-5 grid grid-cols-[repeat(auto-fit,minmax(min(100%,10rem),1fr))] gap-4">
@@ -138,7 +138,7 @@ export const ClippingCheck: Story = {
 export const Gallery: Story = {
 	render: () => (
 		<div className="flex flex-col gap-10">
-			{vipCrownAccessories.map((accessory) => (
+			{VIP_CROWN_ACCESSORIES.map((accessory) => (
 				<section key={accessory.name} className="story-panel">
 					<div className="flex flex-wrap items-baseline justify-between gap-3">
 						<div>
@@ -177,7 +177,7 @@ export const Gallery: Story = {
 export const MotionCheck: Story = {
 	render: () => (
 		<div className="flex flex-col gap-10">
-			{vipCrownAccessories.map((accessory) => (
+			{VIP_CROWN_ACCESSORIES.map((accessory) => (
 				<section key={accessory.name} className="story-panel">
 					<div className="flex flex-wrap items-baseline justify-between gap-3">
 						<div>

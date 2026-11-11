@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { earGeneToEarShape } from '@suigar/suifrens-display-system/attributes';
+import { EAR_GENE_TO_EAR_SHAPE } from '@suigar/suifrens-display-system/attributes';
 import type { CapyAttributes } from '@suigar/suifrens-display-system/types';
 import { SuiLogo } from '../logos/SuiLogo.js';
 import { characterControls } from './character-controls.js';
@@ -21,7 +21,7 @@ const meta = {
 	render: (args) => <CharacterPreview {...args} />,
 	argTypes: {
 		...characterControls,
-		earShape: { control: 'select', options: Object.values(earGeneToEarShape) },
+		earShape: { control: 'select', options: Object.values(EAR_GENE_TO_EAR_SHAPE) },
 	},
 	tags: ['1.0.0'],
 } satisfies Meta<Args>;
@@ -34,8 +34,8 @@ export const Basic: Story = {
 	argTypes: { expression: { table: { disable: true } } },
 	render: (props) => <CharacterPreview {...props} preview={ExpressionGallery} />,
 	args: {
-		mainColor: '6FBBEE',
-		secondaryColor: 'E6FBFF',
+		mainColor: '6fbbee',
+		secondaryColor: 'e6fbff',
 		skin: 'basic',
 		earShape: 'default',
 	},
@@ -49,8 +49,8 @@ export const ExpressionTransition: Story = {
 export const Cheetah: Story = {
 	...Basic,
 	args: {
-		mainColor: 'FB825C',
-		secondaryColor: 'FFF1D6',
+		mainColor: 'fb825c',
+		secondaryColor: 'fff1d6',
 		skin: 'cheetah',
 		earShape: 'quiet',
 	},
@@ -59,8 +59,8 @@ export const Cheetah: Story = {
 export const Fox: Story = {
 	...Basic,
 	args: {
-		mainColor: 'DA8E2F',
-		secondaryColor: 'FCCD31',
+		mainColor: 'da8e2f',
+		secondaryColor: 'fccd31',
 		skin: 'fox',
 		earShape: 'wild',
 	},
@@ -70,7 +70,7 @@ export const Panda: Story = {
 	...Basic,
 	args: {
 		mainColor: '707070',
-		secondaryColor: 'FCCD31',
+		secondaryColor: 'fccd31',
 		skin: 'panda',
 		earShape: 'mischievous',
 	},
@@ -79,7 +79,7 @@ export const Panda: Story = {
 export const Stripes: Story = {
 	...Basic,
 	args: {
-		mainColor: 'FFF1D6',
+		mainColor: 'fff1d6',
 		secondaryColor: '707070',
 		skin: 'stripes',
 		earShape: 'default',
@@ -89,8 +89,8 @@ export const Stripes: Story = {
 export const Dalmation: Story = {
 	...Basic,
 	args: {
-		mainColor: 'FFF1D6',
-		secondaryColor: '4E494E',
+		mainColor: 'fff1d6',
+		secondaryColor: '4e494e',
 		skin: 'dalmation',
 		earShape: 'default',
 	},
@@ -99,8 +99,8 @@ export const Dalmation: Story = {
 export const Lizard: Story = {
 	...Basic,
 	args: {
-		mainColor: '43426F',
-		secondaryColor: '3F97FF',
+		mainColor: '43426f',
+		secondaryColor: '3f97ff',
 		skin: 'lizard',
 		earShape: 'default',
 	},
@@ -109,8 +109,8 @@ export const Lizard: Story = {
 export const Snake: Story = {
 	...Basic,
 	args: {
-		mainColor: 'A17E52',
-		secondaryColor: 'A87C4C',
+		mainColor: 'a17e52',
+		secondaryColor: 'a87c4c',
 		skin: 'snake',
 		earShape: 'default',
 	},
@@ -118,8 +118,8 @@ export const Snake: Story = {
 
 export const WithShadow: Story = {
 	args: {
-		mainColor: '6FBBEE',
-		secondaryColor: 'E6FBFF',
+		mainColor: '6fbbee',
+		secondaryColor: 'e6fbff',
 		skin: 'basic',
 		earShape: 'wild',
 		expression: 'bigSmile',
@@ -130,8 +130,8 @@ export const WithShadow: Story = {
 export const WithLogo: Story = {
 	...WithShadow,
 	args: {
-		mainColor: '6FBBEE',
-		secondaryColor: 'E6FBFF',
+		mainColor: '6fbbee',
+		secondaryColor: 'e6fbff',
 		skin: 'basic',
 		earShape: 'wild',
 		expression: 'bigSmile',
@@ -142,8 +142,8 @@ export const WithLogo: Story = {
 export const Incognito: Story = {
 	...WithShadow,
 	args: {
-		mainColor: 'FFFFFF',
-		secondaryColor: 'FFFFFF',
+		mainColor: 'ffffff',
+		secondaryColor: 'ffffff',
 		skin: 'basic',
 		earShape: 'wild',
 		expression: 'happy',

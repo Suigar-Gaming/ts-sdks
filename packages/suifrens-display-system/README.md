@@ -23,8 +23,8 @@ import { SuiFrenImage } from '@suigar/suifrens-display-system';
 import type { CapyAttributes } from '@suigar/suifrens-display-system/types';
 
 const attributes = {
-	mainColor: '6FBBEE',
-	secondaryColor: 'E6FBFF',
+	mainColor: '6fbbee',
+	secondaryColor: 'e6fbff',
 	skin: 'basic',
 	expression: 'happy',
 	earShape: 'default',
@@ -35,7 +35,7 @@ export function CapyAvatar() {
 }
 ```
 
-Colors are palette keys without a leading `#`. For a bullshark, use `BullsharkAttributes` with `finStyle: 'classic'`. The color, skin and expression fields stay the same. Import `SuiFrenAppearance` from `/types` to share those fields between species.
+Colors are lowercase palette keys without a leading `#`. For a bullshark, use `BullsharkAttributes` with `finStyle: 'classic'`. The color, skin and expression fields stay the same. Import `SuiFrenAppearance` from `/types` to share those fields between species.
 
 ## Rendering and animation
 
@@ -67,7 +67,7 @@ Omit `animation` or pass `null` for a static image. Animations play once at thei
 
 ## Public exports
 
-The root exports `SuiFrenImage`, `CapyImage` and `BullsharkImage`. Import other features from their subpaths and all public types from `/types`.
+The root exports `SuiFrenImage`, `CapyImage` and `BullsharkImage`. Import other features from their subpaths and all public types from `/types`. Data constants and catalogues use uppercase names: `COLORS`, `ACCESSORIES`, `VIP_CROWN_ACCESSORIES` and `EAR_GENE_TO_EAR_SHAPE`. Functions and hooks use camelCase; components and types use PascalCase.
 
 | Entry point | Exports |
 | --- | --- |

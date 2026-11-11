@@ -30,8 +30,8 @@ export const Basic: Story = {
 	argTypes: { expression: { table: { disable: true } } },
 	render: (props) => <CharacterPreview {...props} preview={ExpressionGallery} />,
 	args: {
-		mainColor: '6FBBEE',
-		secondaryColor: 'E6FBFF',
+		mainColor: '6fbbee',
+		secondaryColor: 'e6fbff',
 		skin: 'basic',
 		finStyle: 'classic',
 	},
@@ -45,8 +45,8 @@ export const ExpressionTransition: Story = {
 export const Cheetah: Story = {
 	...Basic,
 	args: {
-		mainColor: 'FB825C',
-		secondaryColor: 'FFF1D6',
+		mainColor: 'fb825c',
+		secondaryColor: 'fff1d6',
 		skin: 'cheetah',
 		finStyle: 'classic',
 	},
@@ -55,8 +55,8 @@ export const Cheetah: Story = {
 export const Fox: Story = {
 	...Basic,
 	args: {
-		mainColor: 'DA8E2F',
-		secondaryColor: 'FCCD31',
+		mainColor: 'da8e2f',
+		secondaryColor: 'fccd31',
 		skin: 'fox',
 		finStyle: 'classic',
 	},
@@ -66,7 +66,7 @@ export const Panda: Story = {
 	...Basic,
 	args: {
 		mainColor: '707070',
-		secondaryColor: 'FCCD31',
+		secondaryColor: 'fccd31',
 		skin: 'panda',
 		finStyle: 'classic',
 	},
@@ -75,7 +75,7 @@ export const Panda: Story = {
 export const Stripes: Story = {
 	...Basic,
 	args: {
-		mainColor: 'FFF1D6',
+		mainColor: 'fff1d6',
 		secondaryColor: '707070',
 		skin: 'stripes',
 		finStyle: 'classic',
@@ -85,8 +85,8 @@ export const Stripes: Story = {
 export const Dalmation: Story = {
 	...Basic,
 	args: {
-		mainColor: 'FFF1D6',
-		secondaryColor: 'EAB244',
+		mainColor: 'fff1d6',
+		secondaryColor: 'eab244',
 		skin: 'dalmation',
 		finStyle: 'classic',
 	},
@@ -95,8 +95,8 @@ export const Dalmation: Story = {
 export const Lizard: Story = {
 	...Basic,
 	args: {
-		mainColor: 'E991AB',
-		secondaryColor: 'FF5C00',
+		mainColor: 'e991ab',
+		secondaryColor: 'ff5c00',
 		skin: 'lizard',
 		finStyle: 'classic',
 	},
@@ -106,7 +106,7 @@ export const Snake: Story = {
 	...Basic,
 	args: {
 		mainColor: '066011',
-		secondaryColor: '469DFD',
+		secondaryColor: '469dfd',
 		skin: 'snake',
 		finStyle: 'classic',
 	},
@@ -114,8 +114,8 @@ export const Snake: Story = {
 
 export const WithShadow: Story = {
 	args: {
-		mainColor: '6FBBEE',
-		secondaryColor: 'E6FBFF',
+		mainColor: '6fbbee',
+		secondaryColor: 'e6fbff',
 		skin: 'basic',
 		finStyle: 'classic',
 		expression: 'grimace',
@@ -126,8 +126,8 @@ export const WithShadow: Story = {
 export const WithLogo: Story = {
 	...WithShadow,
 	args: {
-		mainColor: '6FBBEE',
-		secondaryColor: 'E6FBFF',
+		mainColor: '6fbbee',
+		secondaryColor: 'e6fbff',
 		skin: 'basic',
 		finStyle: 'classic',
 		expression: 'bigSmile',
@@ -138,8 +138,8 @@ export const WithLogo: Story = {
 export const Incognito: Story = {
 	...WithShadow,
 	args: {
-		mainColor: 'FFFFFF',
-		secondaryColor: 'FFFFFF',
+		mainColor: 'ffffff',
+		secondaryColor: 'ffffff',
 		skin: 'basic',
 		finStyle: 'classic',
 		expression: 'happy',

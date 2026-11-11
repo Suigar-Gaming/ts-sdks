@@ -20,8 +20,8 @@ const runners = [
 	{
 		label: 'Capy',
 		attributes: {
-			mainColor: 'A87C4C',
-			secondaryColor: 'D5CBB1',
+			mainColor: 'a87c4c',
+			secondaryColor: 'd5cbb1',
 			skin: 'basic',
 			expression: 'bigSmile',
 			earShape: 'default',
@@ -31,8 +31,8 @@ const runners = [
 	{
 		label: 'Bullshark',
 		attributes: {
-			mainColor: '469DFD',
-			secondaryColor: 'E6FBFF',
+			mainColor: '469dfd',
+			secondaryColor: 'e6fbff',
 			skin: 'basic',
 			expression: 'happy',
 			finStyle: 'classic',

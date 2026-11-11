@@ -6,7 +6,7 @@ import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import type { FastifyPluginAsync } from 'fastify';
 import { renderToStaticMarkup } from 'react-dom/server';
 import Type from 'typebox';
-import { accessories as suiFrensAccessories } from '@suigar/suifrens-display-system/accessories';
+import { ACCESSORIES as suiFrensAccessories } from '@suigar/suifrens-display-system/accessories';
 import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
 import { SuiLogo } from '../../components/logos/SuiLogo.js';
 import { renderImage } from '../lib/render-image.js';
@@ -53,8 +53,8 @@ export const accessories: FastifyPluginAsync = async (fastify) => {
 					const renderedSvg = renderToStaticMarkup(
 						<SuiFrenImageInline
 							attributes={{
-								mainColor: 'FFFFFF',
-								secondaryColor: 'FFFFFF',
+								mainColor: 'ffffff',
+								secondaryColor: 'ffffff',
 								expression: 'bigSmile',
 								skin: 'basic',
 								earShape: 'default',

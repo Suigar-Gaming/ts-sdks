@@ -32,6 +32,8 @@ Documentation-only edits need formatting and diff checks.
 - Edit authored sources and regenerate assets with the package scripts. Do not hand-edit `dist/` or copy compiled files into consumers.
 - Keep Storybook and the Fastify example using built public exports.
 - Use PascalCase for React component filenames and kebab-case for other modules.
+- Use `UPPER_SNAKE_CASE` for exported data constants and catalogues, `camelCase` for functions and hooks, and `PascalCase` for components and types.
+- Write hexadecimal color literals in lowercase, including palette keys without `#`, in source, SVGs, tests and examples.
 - Put shared types in `src/types/*.type.ts` and public exports in `src/types/index.ts`. Keep types used by one component below its imports.
 - Group pure domain helpers under `src/helpers/animation/`, `accessories/`, `appearance/` and `kits/`. Keep generic utilities in `src/utils/` and animation state/playback in `src/animation/`.
 - Keep animation preset catalogues and their resolver in `src/animation/presets/`. Preserve deferred loading for battle presets.

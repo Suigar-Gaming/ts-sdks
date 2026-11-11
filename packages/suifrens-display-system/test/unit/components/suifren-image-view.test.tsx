@@ -3,7 +3,7 @@
 
 // @vitest-environment happy-dom
 import { afterEach, expect, test, vi } from 'vitest';
-import { accessories, getAccessoriesByType } from '../../../src/accessories/index.js';
+import { ACCESSORIES, getAccessoriesByType } from '../../../src/accessories/index.js';
 import { AnimationStore } from '../../../src/animation/animation-store.js';
 import { SuiFrenImageInline } from '../../../src/image-inline/index.js';
 import { SuiFrenImage } from '../../../src/index.js';
@@ -15,8 +15,8 @@ vi.mock('../../../src/animation/waapi-backend.js', () => ({
 }));
 
 const attributes = {
-	mainColor: '6FBBEE',
-	secondaryColor: 'E6FBFF',
+	mainColor: '6fbbee',
+	secondaryColor: 'e6fbff',
 	skin: 'basic',
 	expression: 'happy',
 };
@@ -68,7 +68,7 @@ test.each([
 	['inline', SuiFrenImageInline],
 	['assets', SuiFrenImage],
 ] as const)('%s uses an explicit SVG instead of the catalogue cap', async (_name, Renderer) => {
-	const cap = accessories.find((item) => item.name === 'baseball cap');
+	const cap = ACCESSORIES.find((item) => item.name === 'baseball cap');
 	expect.assert(cap);
 	const assetSrc = '/custom-cap.svg';
 	view = createTestRoot();
@@ -97,7 +97,7 @@ test.each([SuiFrenImage, SuiFrenImageInline])(
 );
 
 test('slot lookup preserves catalogue metadata and returns undefined for empty slots', () => {
-	const slots = getAccessoriesByType(accessories.filter((item) => item.name === 'baseball cap'));
+	const slots = getAccessoriesByType(ACCESSORIES.filter((item) => item.name === 'baseball cap'));
 	expect(slots['head']?.price).toBe(2000000000);
 	expect(slots['feet']).toBeUndefined();
 	expect(slots['constructor']).toBeUndefined();

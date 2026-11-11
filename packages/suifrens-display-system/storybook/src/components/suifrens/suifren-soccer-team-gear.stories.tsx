@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { accessories } from '@suigar/suifrens-display-system/accessories';
+import { ACCESSORIES } from '@suigar/suifrens-display-system/accessories';
 import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
 import { SOCCER_TEAM_KITS } from '@suigar/suifrens-display-system/kits';
 import type {
@@ -13,25 +13,25 @@ import type {
 import { KitRendererComparison } from './KitRendererComparison.js';
 
 const capyAttributes = {
-	mainColor: '6FBBEE',
-	secondaryColor: 'E6FBFF',
+	mainColor: '6fbbee',
+	secondaryColor: 'e6fbff',
 	skin: 'basic',
 	earShape: 'default',
 	expression: 'happy',
 } as const;
 
 const bullsharkAttributes = {
-	mainColor: '6FBBEE',
-	secondaryColor: 'E6FBFF',
+	mainColor: '6fbbee',
+	secondaryColor: 'e6fbff',
 	skin: 'basic',
 	finStyle: 'classic',
 	expression: 'happy',
 } as const;
 
-const teamShirt = accessories.find((accessory) => accessory.name === 'soccer team shirt')!;
-const teamTrunks = accessories.find((accessory) => accessory.name === 'soccer team swim trunks')!;
-const leftGothBoot = accessories.find((accessory) => accessory.name === 'left goth boot')!;
-const rightGothBoot = accessories.find((accessory) => accessory.name === 'right goth boot')!;
+const teamShirt = ACCESSORIES.find((accessory) => accessory.name === 'soccer team shirt')!;
+const teamTrunks = ACCESSORIES.find((accessory) => accessory.name === 'soccer team swim trunks')!;
+const leftGothBoot = ACCESSORIES.find((accessory) => accessory.name === 'left goth boot')!;
+const rightGothBoot = ACCESSORIES.find((accessory) => accessory.name === 'right goth boot')!;
 
 const countries = Object.keys(SOCCER_TEAM_KITS).filter(
 	(code) => code !== 'GLOBAL',

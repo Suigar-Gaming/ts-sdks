@@ -31,8 +31,8 @@ afterEach(async () => {
 	vi.useRealTimers();
 });
 const attributes = {
-	mainColor: '6FBBEE',
-	secondaryColor: 'E6FBFF',
+	mainColor: '6fbbee',
+	secondaryColor: 'e6fbff',
 	skin: 'basic',
 	expression: 'happy',
 	earShape: 'default',

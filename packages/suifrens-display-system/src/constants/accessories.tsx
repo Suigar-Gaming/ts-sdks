@@ -4,9 +4,9 @@
 
 import { buildRunnerAccessories } from '../helpers/kits/runner-kit.js';
 import type { AccessoryMetadata } from '../types/accessory.type.js';
-import { vipCrownAccessories } from './vip-crowns.js';
+import { VIP_CROWN_ACCESSORIES } from './vip-crowns.js';
 
-export const accessories: Array<AccessoryMetadata> = [
+export const ACCESSORIES: Array<AccessoryMetadata> = [
 	...buildRunnerAccessories(),
 	{
 		type: 'head',
@@ -598,5 +598,5 @@ export const accessories: Array<AccessoryMetadata> = [
 		description: '',
 		collection: '',
 	},
-	...vipCrownAccessories,
+	...VIP_CROWN_ACCESSORIES,
 ];

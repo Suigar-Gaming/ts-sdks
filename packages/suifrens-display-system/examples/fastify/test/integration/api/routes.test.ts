@@ -68,7 +68,7 @@ test.each([
 				birthdate: 1700000000000,
 				cohort: 42,
 				genes: [24, 8],
-				attributes: ['basic', '6FBBEE', 'E6FBFF', 'happy', trait],
+				attributes: ['basic', '6fbbee', 'e6fbff', 'happy', trait],
 				birth_location: 'Sui',
 			}).toBytes(),
 		},

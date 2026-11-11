@@ -34,8 +34,8 @@ export function CataloguePreview({ title, subtitle, expression = 'happy', ...pro
 								{...props}
 								attributes={{
 									...traits,
-									mainColor: '6FBBEE',
-									secondaryColor: 'E6FBFF',
+									mainColor: '6fbbee',
+									secondaryColor: 'e6fbff',
 									skin: 'basic',
 									expression,
 								}}

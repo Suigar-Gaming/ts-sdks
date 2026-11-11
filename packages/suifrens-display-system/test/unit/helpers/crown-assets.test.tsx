@@ -5,7 +5,7 @@
 import { readFileSync } from 'node:fs';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { expect, test } from 'vitest';
-import { vipCrownAccessories } from '../../../src/constants/vip-crowns.js';
+import { VIP_CROWN_ACCESSORIES } from '../../../src/constants/vip-crowns.js';
 import {
 	getVipCrownAssetSrc,
 	getVipCrownAssetViewport,
@@ -14,8 +14,8 @@ import { SuiFrenImageInline } from '../../../src/image-inline/index.js';
 import { SuiFrenImage } from '../../../src/index.js';
 
 const common = {
-	mainColor: '6FBBEE',
-	secondaryColor: 'E6FBFF',
+	mainColor: '6fbbee',
+	secondaryColor: 'e6fbff',
 	skin: 'basic',
 	expression: 'happy',
 } as const;
@@ -24,13 +24,16 @@ const species = [
 	{ ...common, finStyle: 'classic' },
 ] as const;
 
-test.each(vipCrownAccessories)('$name artwork has room for its tips and ornaments', (accessory) => {
-	const source = readFileSync(`src/accessories/crowns/${accessory.name}.svg`, 'utf8');
-	const container = document.createElement('div');
-	container.innerHTML = source;
-	expect(container.querySelector('svg')?.getAttribute('viewBox')).toBe('-200 -600 3209 3609');
-	expect(container.querySelector('clipPath, [clip-path]')).toBeNull();
-});
+test.each(VIP_CROWN_ACCESSORIES)(
+	'$name artwork has room for its tips and ornaments',
+	(accessory) => {
+		const source = readFileSync(`src/accessories/crowns/${accessory.name}.svg`, 'utf8');
+		const container = document.createElement('div');
+		container.innerHTML = source;
+		expect(container.querySelector('svg')?.getAttribute('viewBox')).toBe('-200 -600 3209 3609');
+		expect(container.querySelector('clipPath, [clip-path]')).toBeNull();
+	},
+);
 
 test.each([
 	['inline', SuiFrenImageInline],
@@ -39,7 +42,7 @@ test.each([
 	'%s preserves avatar framing and crown scale while letting unframed crowns overflow',
 	(mode, Renderer) => {
 		for (const attributes of species) {
-			for (const accessory of vipCrownAccessories) {
+			for (const accessory of VIP_CROWN_ACCESSORIES) {
 				const container = document.createElement('div');
 				container.innerHTML = renderToStaticMarkup(
 					<Renderer attributes={attributes} accessories={[accessory]} renderSize={64} />,
@@ -97,7 +100,7 @@ test.each([SuiFrenImageInline, SuiFrenImage])(
 			crowned.innerHTML = renderToStaticMarkup(
 				<Renderer
 					attributes={attributes}
-					accessories={[vipCrownAccessories.at(-1)!]}
+					accessories={[VIP_CROWN_ACCESSORIES.at(-1)!]}
 					renderSize={64}
 				/>,
 			);

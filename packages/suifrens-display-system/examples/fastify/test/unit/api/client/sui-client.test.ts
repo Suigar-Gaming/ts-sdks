@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { beforeEach, expect, test, vi } from 'vitest';
-import { accessories } from '@suigar/suifrens-display-system/accessories';
+import { ACCESSORIES } from '@suigar/suifrens-display-system/accessories';
 import { getSuiFrenAccessories } from '../../../../src/api/client/sui-client.js';
 import { ACCESSORIES_KEY_TYPE, ACCESSORY_TYPE } from '../../../../src/api/lib/config.js';
 import { Accessory } from '../../../../src/api/lib/suifren-bcs.js';
@@ -33,7 +33,7 @@ test('gRPC accessory lookup follows pagination and dynamic-object names', async 
 		},
 	});
 	expect(await getSuiFrenAccessories('0x1')).toEqual(
-		accessories.filter((item) => item.name === 'baseball cap'),
+		ACCESSORIES.filter((item) => item.name === 'baseball cap'),
 	);
 	expect(client.listDynamicFields).toHaveBeenCalledTimes(2);
 	expect(client.listDynamicFields).toHaveBeenNthCalledWith(2, { parentId: '0x1', cursor: 'next' });

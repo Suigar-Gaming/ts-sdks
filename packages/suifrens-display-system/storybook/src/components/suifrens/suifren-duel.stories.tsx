@@ -314,16 +314,16 @@ const leftWinFightScript = stripVictorySteps(leftWinScript);
 const rightWinFightScript = mirrorScript(leftWinFightScript);
 
 const bullsharkBase: BullsharkAttributes = {
-	mainColor: '6FBBEE',
-	secondaryColor: 'E6FBFF',
+	mainColor: '6fbbee',
+	secondaryColor: 'e6fbff',
 	skin: 'basic',
 	finStyle: 'classic',
 	expression: 'happy',
 };
 
 const capyBase: CapyAttributes = {
-	mainColor: 'FB825C',
-	secondaryColor: 'FFF1D6',
+	mainColor: 'fb825c',
+	secondaryColor: 'fff1d6',
 	skin: 'fox',
 	earShape: 'wild',
 	expression: 'happy',
@@ -336,8 +336,8 @@ const RING_FIGHTERS: Array<FighterSeed> = [
 		kind: 'bullshark',
 		power: 5,
 		attributes: {
-			mainColor: '6FBBEE',
-			secondaryColor: 'E6FBFF',
+			mainColor: '6fbbee',
+			secondaryColor: 'e6fbff',
 			skin: 'basic',
 			finStyle: 'classic',
 			expression: 'happy',
@@ -349,8 +349,8 @@ const RING_FIGHTERS: Array<FighterSeed> = [
 		kind: 'capy',
 		power: 4,
 		attributes: {
-			mainColor: 'FB825C',
-			secondaryColor: 'FFF1D6',
+			mainColor: 'fb825c',
+			secondaryColor: 'fff1d6',
 			skin: 'fox',
 			earShape: 'wild',
 			expression: 'happy',
@@ -362,8 +362,8 @@ const RING_FIGHTERS: Array<FighterSeed> = [
 		kind: 'bullshark',
 		power: 3,
 		attributes: {
-			mainColor: '469DFD',
-			secondaryColor: 'E6FBFF',
+			mainColor: '469dfd',
+			secondaryColor: 'e6fbff',
 			skin: 'panda',
 			finStyle: 'classic',
 			expression: 'happy',
@@ -375,8 +375,8 @@ const RING_FIGHTERS: Array<FighterSeed> = [
 		kind: 'capy',
 		power: 2,
 		attributes: {
-			mainColor: '9DE284',
-			secondaryColor: 'FFF1D6',
+			mainColor: '9de284',
+			secondaryColor: 'fff1d6',
 			skin: 'basic',
 			earShape: 'mischievous',
 			expression: 'happy',
@@ -388,8 +388,8 @@ const RING_FIGHTERS: Array<FighterSeed> = [
 		kind: 'bullshark',
 		power: 1,
 		attributes: {
-			mainColor: 'D85A58',
-			secondaryColor: 'F4F4F1',
+			mainColor: 'd85a58',
+			secondaryColor: 'f4f4f1',
 			skin: 'stripes',
 			finStyle: 'classic',
 			expression: 'happy',
@@ -401,8 +401,8 @@ const RING_FIGHTERS: Array<FighterSeed> = [
 		kind: 'capy',
 		power: 0,
 		attributes: {
-			mainColor: 'FCFF73',
-			secondaryColor: 'FFF1D6',
+			mainColor: 'fcff73',
+			secondaryColor: 'fff1d6',
 			skin: 'panda',
 			earShape: 'quiet',
 			expression: 'happy',

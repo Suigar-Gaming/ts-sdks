@@ -5,7 +5,7 @@
 import { readFileSync } from 'node:fs';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { expect, test } from 'vitest';
-import { accessories } from '../../../../src/accessories/index.js';
+import { ACCESSORIES } from '../../../../src/accessories/index.js';
 import { InlineAccessory } from '../../../../src/components/accessories/index.js';
 
 test('individual goth boots contain only the requested geometry, without clipping', () => {
@@ -13,7 +13,7 @@ test('individual goth boots contain only the requested geometry, without clippin
 	both.innerHTML = renderToStaticMarkup(
 		<InlineAccessory
 			species="capy"
-			accessory={accessories.find((item) => item.name === 'goth boots')!}
+			accessory={ACCESSORIES.find((item) => item.name === 'goth boots')!}
 		/>,
 	);
 	const paths = [...both.querySelectorAll('path')];
@@ -23,7 +23,7 @@ test('individual goth boots contain only the requested geometry, without clippin
 		container.innerHTML = renderToStaticMarkup(
 			<InlineAccessory
 				species="capy"
-				accessory={accessories.find((item) => item.name === side + ' goth boot')!}
+				accessory={ACCESSORIES.find((item) => item.name === side + ' goth boot')!}
 			/>,
 		);
 		expect(container.querySelector('clipPath')).toBeNull();
