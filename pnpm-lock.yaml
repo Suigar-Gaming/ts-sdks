@@ -529,12 +529,12 @@ importers:
       happy-dom:
         specifier: catalog:tooling
         version: 21.0.4
+      lucide-react:
+        specifier: ^1.70.0
+        version: 1.70.0(@types/react@19.3.0)(react@19.3.1)
       playwright:
         specifier: ^1.65.0
         version: 1.65.0
-      postcss:
-        specifier: ^8.5.32
-        version: 8.5.32
       react:
         specifier: catalog:frontend
         version: 19.3.1

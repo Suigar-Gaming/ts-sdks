@@ -2,6 +2,17 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import {
+	Angry,
+	ArrowDown,
+	ArrowLeft,
+	ArrowRight,
+	ArrowUp,
+	Glasses,
+	Heart,
+	Laugh,
+	type LucideIcon,
+} from 'lucide-react';
 import { type PointerEvent, type RefObject, useEffect, useRef, useState } from 'react';
 import { expect } from 'storybook/test';
 import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
@@ -41,6 +52,7 @@ type DirectionKey = 'up' | 'down' | 'left' | 'right';
 
 type ControlButtonProps = {
 	label: string;
+	icon?: LucideIcon;
 	ariaLabel?: string;
 	active?: boolean;
 	onPress: () => void;
@@ -50,6 +62,7 @@ type ControlButtonProps = {
 
 function ControlButton({
 	label,
+	icon: Icon,
 	ariaLabel,
 	active,
 	onPress,
@@ -93,7 +106,7 @@ function ControlButton({
 				.filter(Boolean)
 				.join(' ')}
 		>
-			{label}
+			{Icon ? <Icon size={20} aria-hidden="true" /> : label}
 		</button>
 	);
 }
@@ -356,7 +369,8 @@ export const ControlPadPlayground: Story = {
 						<div className="mt-3 grid grid-cols-3 gap-2">
 							<div />
 							<ControlButton
-								label="↑"
+								label="Move up"
+								icon={ArrowUp}
 								ariaLabel="Move up"
 								active={activeDirections.includes('up')}
 								onPress={() => pressDirection('up')}
@@ -364,7 +378,8 @@ export const ControlPadPlayground: Story = {
 							/>
 							<div />
 							<ControlButton
-								label="←"
+								label="Move left"
+								icon={ArrowLeft}
 								ariaLabel="Move left"
 								active={activeDirections.includes('left')}
 								onPress={() => pressDirection('left')}
@@ -372,7 +387,8 @@ export const ControlPadPlayground: Story = {
 							/>
 							<div />
 							<ControlButton
-								label="→"
+								label="Move right"
+								icon={ArrowRight}
 								ariaLabel="Move right"
 								active={activeDirections.includes('right')}
 								onPress={() => pressDirection('right')}
@@ -380,7 +396,8 @@ export const ControlPadPlayground: Story = {
 							/>
 							<div />
 							<ControlButton
-								label="↓"
+								label="Move down"
+								icon={ArrowDown}
 								ariaLabel="Move down"
 								active={activeDirections.includes('down')}
 								onPress={() => pressDirection('down')}
@@ -416,22 +433,26 @@ export const ControlPadPlayground: Story = {
 						<h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200">Emotes</h3>
 						<div className="mt-2 grid grid-cols-2 gap-2">
 							<ControlButton
-								label="❤️"
+								label="Heart eyes"
+								icon={Heart}
 								ariaLabel="Heart eyes"
 								onPress={() => controls.triggerEmote('heartEyes', 1600)}
 							/>
 							<ControlButton
-								label="😂"
+								label="Laughing"
+								icon={Laugh}
 								ariaLabel="Laughing"
 								onPress={() => controls.triggerEmote('laughing', 1600)}
 							/>
 							<ControlButton
-								label="😡"
+								label="Angry"
+								icon={Angry}
 								ariaLabel="Angry"
 								onPress={() => controls.triggerEmote('angry', 1600)}
 							/>
 							<ControlButton
-								label="😎"
+								label="Cool"
+								icon={Glasses}
 								ariaLabel="Cool"
 								onPress={() => controls.triggerEmote('cool', 1600)}
 							/>
