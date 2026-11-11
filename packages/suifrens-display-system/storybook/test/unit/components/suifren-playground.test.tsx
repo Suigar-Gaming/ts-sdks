@@ -2,8 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 // @vitest-environment happy-dom
+import { composeStory } from '@storybook/react-vite';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { ControlPadPlayground } from '../../../src/components/suifrens/suifren-playground.stories.js';
+import meta, {
+	ControlPadPlayground,
+} from '../../../src/components/suifrens/suifren-playground.stories.js';
 import type { SuiFrenActorPose } from '../../../src/utils/use-suifren-actor.js';
 import { createTestRoot } from '../../helpers/react-dom.js';
 
@@ -33,7 +36,7 @@ vi.mock('../../../src/utils/use-suifren-actor.js', () => ({ useSuiFrenActor: use
 vi.mock('@suigar/suifrens-display-system/image-inline', () => ({
 	SuiFrenImageInline: () => <svg />,
 }));
-const Playground = ControlPadPlayground.render;
+const Playground = composeStory(ControlPadPlayground, meta);
 let view: ReturnType<typeof createTestRoot>;
 beforeEach(() => {
 	view = createTestRoot();

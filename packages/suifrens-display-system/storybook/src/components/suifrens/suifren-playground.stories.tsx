@@ -184,7 +184,7 @@ function SuiFrenStage({ state, spriteRef, title, note }: StageProps) {
 	);
 }
 
-export const ControlPadPlayground = {
+export const ControlPadPlayground: Story = {
 	play: async ({ canvas, userEvent }) => {
 		await userEvent.click(canvas.getByRole('button', { name: 'Heart eyes' }));
 		await expect(canvas.getByText('Expression: heartEyes', { exact: false })).toBeVisible();
@@ -465,4 +465,4 @@ export const ControlPadPlayground = {
 			</div>
 		);
 	},
-} satisfies Story;
+};

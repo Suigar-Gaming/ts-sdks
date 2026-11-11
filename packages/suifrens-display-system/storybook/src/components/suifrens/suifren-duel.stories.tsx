@@ -119,10 +119,8 @@ const mirrorScript = (script: DuelScript<SuiFrenExpression>): DuelScript<SuiFren
 				return { ...step, side: mirrorSide(step.side) };
 			case 'wait':
 				return step;
-			default: {
-				const exhaustive: never = step;
-				return exhaustive;
-			}
+			default:
+				return step satisfies never;
 		}
 	}),
 });
