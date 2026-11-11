@@ -2,8 +2,8 @@
 // Copyright (c) Suigar (modifications)
 // SPDX-License-Identifier: Apache-2.0
 
-import type { SuiFrenSkin } from '../types/appearance.type.js';
-import { assertUnreachable } from '../utils/assert-unreachable.js';
+import type { SuiFrenSkin } from '../../types/appearance.type.js';
+import { assertUnreachable } from '../../utils/assert-unreachable.js';
 
 export function getSkinColors(skin: SuiFrenSkin, mainColor: string, secondaryColor: string) {
 	switch (skin) {

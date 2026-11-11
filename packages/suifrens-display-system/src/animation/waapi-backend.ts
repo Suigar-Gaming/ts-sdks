@@ -1,13 +1,14 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
+import { composePartTransform } from '../helpers/animation/compose-part-transform.js';
 import type {
 	AnimationConfig,
 	AnimationSequence,
 	AnimationTarget,
 } from '../types/animation.type.js';
 import { matrixToAnimationTransform, parseMatrix } from '../utils/matrix.js';
-import { type AnimationStore, composePartTransform } from './animation-store.js';
+import type { AnimationStore } from './animation-store.js';
 import { interpolateSequencePoses, normalizePlayback } from './sequence-player.js';
 
 type BackendPreference = 'auto' | 'waapi' | 'fallback';

@@ -9,7 +9,7 @@ import { vipCrownAccessories } from '../../../src/constants/vip-crowns.js';
 import {
 	getVipCrownAssetSrc,
 	getVipCrownAssetViewport,
-} from '../../../src/helpers/crown-assets.js';
+} from '../../../src/helpers/accessories/crown-assets.js';
 import { SuiFrenImageInline } from '../../../src/image-inline/index.js';
 import { SuiFrenImage } from '../../../src/index.js';
 

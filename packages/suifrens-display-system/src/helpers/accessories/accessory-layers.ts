@@ -1,7 +1,7 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import type { AccessorySlots, SuiFrenAccessory } from '../types/accessory.type.js';
+import type { AccessorySlots, SuiFrenAccessory } from '../../types/accessory.type.js';
 
 // Wings straddle the body. Individual shoes take precedence over a paired accessory.
 export function getAccessoryLayers(

@@ -8,7 +8,10 @@ import { AnimationStore } from '../../../../src/animation/animation-store.js';
 import { AccessoryRendererProvider } from '../../../../src/components/accessories/AccessorySlot.js';
 import { KitArtwork } from '../../../../src/components/accessories/KitArtwork.js';
 import { CapyImage } from '../../../../src/components/capy/CapyImage.js';
-import { buildRunnerAccessories, resolveRunnerKit } from '../../../../src/helpers/runner-kit.js';
+import {
+	buildRunnerAccessories,
+	resolveRunnerKit,
+} from '../../../../src/helpers/kits/runner-kit.js';
 import { createTestRoot } from '../../../helpers/react-dom.js';
 
 const context = vi.hoisted(() => ({ store: null as AnimationStore | null }));

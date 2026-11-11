@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { expect, test } from 'vitest';
-import { composePartTransform } from '../../../src/animation/animation-store.js';
+import { composePartTransform } from '../../../src/helpers/animation/compose-part-transform.js';
 import type { AnimationPart, PartPose } from '../../../src/types/animation.type.js';
 import { parseMatrix } from '../../../src/utils/matrix.js';
 

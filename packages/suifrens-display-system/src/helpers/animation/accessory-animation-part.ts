@@ -1,8 +1,8 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import type { AccessoryRendererProps } from '../types/accessory.type.js';
-import type { AnimationPart } from '../types/animation.type.js';
+import type { AccessoryRendererProps } from '../../types/accessory.type.js';
+import type { AnimationPart } from '../../types/animation.type.js';
 
 const TYPE_FALLBACK: Partial<Record<string, AnimationPart>> = {
 	head: 'head',

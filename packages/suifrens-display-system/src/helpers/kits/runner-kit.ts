@@ -1,9 +1,9 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import { HEX_COLOR_PATTERN } from '../constants/hex-color.js';
-import type { AccessoryMetadata } from '../types/accessory.type.js';
-import type { RunnerKitOptions } from '../types/runner-kit.type.js';
+import { HEX_COLOR_PATTERN } from '../../constants/hex-color.js';
+import type { AccessoryMetadata } from '../../types/accessory.type.js';
+import type { RunnerKitOptions } from '../../types/runner-kit.type.js';
 
 export const RUNNER_ACCESSORY_NAMES = new Set([
 	'runner singlet',

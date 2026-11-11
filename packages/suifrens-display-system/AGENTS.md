@@ -33,6 +33,7 @@ Documentation-only edits need formatting and diff checks.
 - Keep Storybook and the Fastify example using built public exports.
 - Use PascalCase for React component filenames and kebab-case for other modules.
 - Put shared types in `src/types/*.type.ts` and public exports in `src/types/index.ts`. Keep types used by one component below its imports.
+- Group pure domain helpers under `src/helpers/animation/`, `accessories/`, `appearance/` and `kits/`. Keep generic utilities in `src/utils/` and animation state/playback in `src/animation/`.
 - Keep animation preset catalogues and their resolver in `src/animation/presets/`. Preserve deferred loading for battle presets.
 - Keep character patterns and gestures in `src/components/shared/`; species shapes and pattern selection belong in `src/components/capy/` and `src/components/bullshark/`.
 - Edit accessory artwork in `src/accessories/artwork/`. Single-layer assets use one SVG; layered assets use a folder with `default.svg` and optional `body.svg`, `left.svg` and `right.svg`. Crowns have their own viewport; kits use SVG templates. Regenerate `src/generated/` with `codegen` after artwork changes.

@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { AnimatedAccessory } from '../../animation/AnimatedAccessory.js';
-import { getAccessoryLayers } from '../../helpers/accessory-layers.js';
-import { getThemeFromSkin } from '../../helpers/capy-theme.js';
+import { getAccessoryLayers } from '../../helpers/accessories/accessory-layers.js';
+import { getThemeFromSkin } from '../../helpers/appearance/capy-theme.js';
 import type { CapyImageProps } from '../../types/capy.type.js';
 import { AccessorySlot } from '../accessories/AccessorySlot.js';
 import { GestureArm } from '../shared/arms/left/GestureArm.js';

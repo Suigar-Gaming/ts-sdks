@@ -1,12 +1,12 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import { HEX_COLOR_PATTERN } from '../constants/hex-color.js';
+import { HEX_COLOR_PATTERN } from '../../constants/hex-color.js';
 import type {
 	SoccerTeamCountryCode,
 	SoccerTeamKit,
 	SoccerTeamSide,
-} from '../types/soccer-kit.type.js';
+} from '../../types/soccer-kit.type.js';
 
 const TEAM_CODE_PATTERN: RegExp = /^[A-Z0-9]{1,4}$/;
 

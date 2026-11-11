@@ -4,8 +4,8 @@
 import { useId } from 'react';
 import { SVG_WRAPPER_PATTERN } from '../../constants/svg-patterns.js';
 import { ARTWORK } from '../../generated/kit-artwork.js';
-import { resolveRunnerKit, RUNNER_ACCESSORY_NAMES } from '../../helpers/runner-kit.js';
-import { contrastColor, resolveSoccerTeamKit } from '../../helpers/soccer-team-kit.js';
+import { resolveRunnerKit, RUNNER_ACCESSORY_NAMES } from '../../helpers/kits/runner-kit.js';
+import { contrastColor, resolveSoccerTeamKit } from '../../helpers/kits/soccer-team-kit.js';
 import type { AccessoryRendererProps } from '../../types/accessory.type.js';
 import type { AnimationPart } from '../../types/animation.type.js';
 import type { SoccerTeamKit } from '../../types/soccer-kit.type.js';

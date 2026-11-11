@@ -1,8 +1,8 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import type { AccessorySlots } from '../types/accessory.type.js';
-import type { AnimationConfig } from '../types/animation.type.js';
+import type { AccessorySlots } from '../../types/accessory.type.js';
+import type { AnimationConfig } from '../../types/animation.type.js';
 
 export function shouldRenderMicrophoneArmInForeground(
 	animation: AnimationConfig | null,
