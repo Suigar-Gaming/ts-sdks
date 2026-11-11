@@ -1,5 +1,15 @@
 # @suigar/mcp
 
+## 1.0.0-beta.34
+
+### Patch Changes
+
+- [#189](https://github.com/Suigar-Gaming/ts-sdks/pull/189) [`8afe73e`](https://github.com/Suigar-Gaming/ts-sdks/commit/8afe73ec253d08903e7c7583e215042ceafec46c) - Include an agent skill in each npm package that loads the relevant full Suigar skills, references and related skills from `main` in `Suigar-Gaming/agent-skills`.
+
+- [#187](https://github.com/Suigar-Gaming/ts-sdks/pull/187) [`d2e8463`](https://github.com/Suigar-Gaming/ts-sdks/commit/d2e8463a04e2d6eb16219861bbb942490a9e33c4) - Update Sui and BCS dependencies. BCS serialization now rejects `NaN` and fractional values for `u8`, `u16`, and `u32`, as well as negative ULEB128 values, instead of silently encoding them.
+- Updated dependencies [[`8afe73e`](https://github.com/Suigar-Gaming/ts-sdks/commit/8afe73ec253d08903e7c7583e215042ceafec46c), [`d2e8463`](https://github.com/Suigar-Gaming/ts-sdks/commit/d2e8463a04e2d6eb16219861bbb942490a9e33c4), [`5dbee96`](https://github.com/Suigar-Gaming/ts-sdks/commit/5dbee96fa533592ae7139576732068175da76443), [`8afe73e`](https://github.com/Suigar-Gaming/ts-sdks/commit/8afe73ec253d08903e7c7583e215042ceafec46c)]:
+  - @suigar/sdk@2.0.0-beta.48
+
 ## 1.0.0-beta.33
 
 ### Patch Changes
