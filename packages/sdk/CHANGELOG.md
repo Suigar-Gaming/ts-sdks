@@ -1,5 +1,19 @@
 # @suigar/sdk
 
+## 2.0.0-beta.48
+
+### Patch Changes
+
+- [#189](https://github.com/Suigar-Gaming/ts-sdks/pull/189) [`8afe73e`](https://github.com/Suigar-Gaming/ts-sdks/commit/8afe73ec253d08903e7c7583e215042ceafec46c) - Include an agent skill in each npm package that loads the relevant full Suigar skills, references and related skills from `main` in `Suigar-Gaming/agent-skills`.
+
+- [#187](https://github.com/Suigar-Gaming/ts-sdks/pull/187) [`d2e8463`](https://github.com/Suigar-Gaming/ts-sdks/commit/d2e8463a04e2d6eb16219861bbb942490a9e33c4) - Update Sui and BCS dependencies. BCS serialization now rejects `NaN` and fractional values for `u8`, `u16`, and `u32`, as well as negative ULEB128 values, instead of silently encoding them.
+
+- [#190](https://github.com/Suigar-Gaming/ts-sdks/pull/190) [`5dbee96`](https://github.com/Suigar-Gaming/ts-sdks/commit/5dbee96fa533592ae7139576732068175da76443) - Remove the trailing period from the npm package description.
+
+- [#189](https://github.com/Suigar-Gaming/ts-sdks/pull/189) [`8afe73e`](https://github.com/Suigar-Gaming/ts-sdks/commit/8afe73ec253d08903e7c7583e215042ceafec46c) - Decode game details into an object with a null prototype and read only own schema properties. Preserve unknown keys such as `__proto__`, `constructor` and `toString` as string details instead of treating inherited properties as decoders. Use `Object.hasOwn(details, key)` to check returned keys; this also applies to `gameDetails` from `parseSuigarEvent`.
+
+  Return resolved coin metadata in a null-prototype dictionary too. Supported coin entries and overrides are unchanged; use `Object.hasOwn(config.coins, key)` for own-key checks.
+
 ## 2.0.0-beta.47
 
 ### Patch Changes
