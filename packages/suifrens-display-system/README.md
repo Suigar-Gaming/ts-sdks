@@ -100,3 +100,5 @@ pnpm --dir packages/suifrens-display-system run test
 pnpm --dir packages/suifrens-display-system run typecheck
 pnpm --dir packages/suifrens-display-system run lint
 ```
+
+The build regenerates accessory assets with SVGO. Its plugins select the groups used for limb animation, prefix IDs and CSS references, and serialize each part as a symbol.

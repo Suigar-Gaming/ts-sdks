@@ -1,7 +1,6 @@
 {
 	"extends": "../../tsconfig.shared.json",
 	"compilerOptions": {
-		"rewriteRelativeImportExtensions": true,
 		"rootDir": ".",
 		"types": ["node", "vite/client"]
 	},

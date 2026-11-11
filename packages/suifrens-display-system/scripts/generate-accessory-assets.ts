@@ -3,23 +3,8 @@
 
 import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import {
-	BETWEEN_TAGS_WHITESPACE_PATTERN,
-	SVG_WRAPPER_PATTERN,
-	WHITESPACE_PATTERN,
-} from '../src/constants/svg-patterns.ts';
+import { optimize, type XastElement } from 'svgo';
 
-const DECIMAL_NUMBER_PATTERN: RegExp = /-?\d+\.\d+/g;
-const EMPTY_REACT_ROOT_PATTERN: RegExp = /\s?data-reactroot=""/g;
-const ZERO_FRACTION_PATTERN: RegExp = /\.0+$/;
-const TRAILING_FRACTION_ZEROS_PATTERN: RegExp = /(\.\d*?)0+$/;
-const NEGATIVE_ZERO_PATTERN: RegExp = /^-0$/;
-const NEGATIVE_FRACTION_PREFIX_PATTERN: RegExp = /^-0\./;
-const FRACTION_PREFIX_PATTERN: RegExp = /^0\./;
-const SVG_ID_PATTERN: RegExp = /id="([^"]+)"/g;
-const SVG_URL_REFERENCE_PATTERN: RegExp = /url\(#([^)]+)\)/g;
-const SVG_HREF_REFERENCE_PATTERN: RegExp = /(href|xlink:href)="#([^"]+)"/g;
-const GROUP_TAG_PATTERN: RegExp = /<\/?g\b[^>]*>/g;
 const SVG_EXTENSION_PATTERN: RegExp = /\.svg$/;
 const ARTWORK_NOTICE =
 	'<!-- Adapted by Suigar from the SuiFrens Display System by Mysten Labs. -->';
@@ -28,73 +13,66 @@ const GENERATED_DIR = 'src/generated';
 const OUTPUT_DIR = join(GENERATED_DIR, 'accessory-assets');
 const MANIFEST_PATH = join(GENERATED_DIR, 'accessory-asset-manifest.ts');
 
-function minifySvg(markup: string): string {
-	let svg = markup
-		.replace(ARTWORK_NOTICE, '')
-		.replace(WHITESPACE_PATTERN, ' ')
-		.replace(BETWEEN_TAGS_WHITESPACE_PATTERN, '><')
-		.replace(DECIMAL_NUMBER_PATTERN, (match) => formatSvgNumber(Number(match)))
-		.replace(EMPTY_REACT_ROOT_PATTERN, '')
-		.trim();
-
-	if (svg.startsWith('<svg') && !svg.includes('xmlns=')) {
-		svg = svg.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
-	}
-
-	return svg;
-}
-
-function formatSvgNumber(value: number): string {
-	if (!Number.isFinite(value)) {
-		return String(value);
-	}
-
-	const rounded = value.toFixed(2);
-	return rounded
-		.replace(ZERO_FRACTION_PATTERN, '')
-		.replace(TRAILING_FRACTION_ZEROS_PATTERN, '$1')
-		.replace(NEGATIVE_ZERO_PATTERN, '0')
-		.replace(NEGATIVE_FRACTION_PREFIX_PATTERN, '-.')
-		.replace(FRACTION_PREFIX_PATTERN, '.');
-}
-
-function extractSvgContent(markup: string): string {
-	return markup.replace(SVG_WRAPPER_PATTERN, '');
-}
-
-function scopeSvgReferences(markup: string, prefix: string): string {
-	return markup
-		.replace(SVG_ID_PATTERN, `id="${prefix}-$1"`)
-		.replace(SVG_URL_REFERENCE_PATTERN, `url(#${prefix}-$1)`)
-		.replace(SVG_HREF_REFERENCE_PATTERN, `$1="#${prefix}-$2"`);
-}
-
-function extractGroupByRole(markup: string, role: string): string | undefined {
-	const idMatch = markup.matchAll(SVG_ID_PATTERN).find((match) => match[1]?.includes(role));
-	if (!idMatch) {
-		return undefined;
-	}
-
-	const start = markup.lastIndexOf('<g', idMatch.index);
-	if (start === -1) {
-		return undefined;
-	}
-
-	const tagMatcher = new RegExp(GROUP_TAG_PATTERN);
-	tagMatcher.lastIndex = start;
-	let depth = 0;
-	for (let match = tagMatcher.exec(markup); match; match = tagMatcher.exec(markup)) {
-		if (match[0].startsWith('</')) {
-			depth -= 1;
-			if (depth === 0) {
-				return markup.slice(start, tagMatcher.lastIndex);
-			}
-		} else {
-			depth += 1;
-		}
-	}
-
-	return undefined;
+function renderSymbol(markup: string, prefix: string, part: string, role?: string) {
+	const roles = new Set<string>();
+	let selectedGroup: XastElement | undefined;
+	const { data } = optimize(markup, {
+		floatPrecision: 2,
+		// Preserve group boundaries until the symbol's animated part is selected.
+		plugins: [
+			'removeDoctype',
+			'removeXMLProcInst',
+			{ name: 'removeComments', params: { preservePatterns: false } },
+			'cleanupAttrs',
+			'cleanupNumericValues',
+			{ name: 'convertPathData', params: { applyTransforms: false } },
+			{ name: 'removeAttrs', params: { attrs: 'data-reactroot' } },
+			'removeXlink',
+			{
+				name: 'collect-limb-groups',
+				fn: () => ({
+					element: {
+						enter: (node) => {
+							if (node.name !== 'g') return;
+							for (const candidate of ['body', 'backleg', 'frontleg']) {
+								if (node.attributes['id']?.includes(candidate)) roles.add(candidate);
+							}
+							if (role && !selectedGroup && node.attributes['id']?.includes(role)) {
+								selectedGroup = node;
+							}
+						},
+					},
+				}),
+			},
+			{
+				name: 'prefixIds',
+				params: { prefix: `${prefix}-${part}`, delim: '-' },
+			},
+			{
+				name: 'create-accessory-symbol',
+				fn: () => ({
+					root: {
+						exit: (root) => {
+							const svg = root.children.find(
+								(node) => node.type === 'element' && node.name === 'svg',
+							);
+							if (!svg || svg.type !== 'element') {
+								throw new Error('Expected an SVG root element');
+							}
+							if (role) {
+								if (!selectedGroup) throw new Error(`Missing ${role} group for ${prefix}`);
+								svg.children = [selectedGroup];
+							}
+							svg.name = 'symbol';
+							svg.attributes = { id: part, viewBox: '0 0 3000 3000' };
+							root.children = [svg];
+						},
+					},
+				}),
+			},
+		],
+	});
+	return { svg: data, roles };
 }
 
 await rm(OUTPUT_DIR, { recursive: true, force: true });
@@ -175,38 +153,32 @@ ${entries.join(',\n')}
 	const notice = Object.values(layers).some((layer) => layer.includes(ARTWORK_NOTICE))
 		? ARTWORK_NOTICE
 		: '';
-	const baseContent = extractSvgContent(minifySvg(baseLayer));
-	const bodyGroup = extractGroupByRole(baseContent, 'body');
-	const rightLegGroup = extractGroupByRole(baseContent, 'backleg');
-	const leftLegGroup = extractGroupByRole(baseContent, 'frontleg');
-	const canSplitLegs = bodyGroup && rightLegGroup && leftLegGroup;
-	const canSplitFeet = !bodyGroup && rightLegGroup && leftLegGroup;
+	const base = renderSymbol(baseLayer, dir, 'default');
+	const canSplitLegs =
+		base.roles.has('body') && base.roles.has('backleg') && base.roles.has('frontleg');
+	const canSplitFeet =
+		!base.roles.has('body') && base.roles.has('backleg') && base.roles.has('frontleg');
 
 	if (canSplitLegs || canSplitFeet) {
 		SPLIT_LIMB_ASSET_NAMES.push(name);
 		const parts = canSplitLegs
 			? ([
-					['body', bodyGroup],
-					['rightLeg', rightLegGroup],
-					['leftLeg', leftLegGroup],
+					['body', 'body'],
+					['rightLeg', 'backleg'],
+					['leftLeg', 'frontleg'],
 				] as const)
 			: ([
-					['rightLeg', rightLegGroup],
-					['leftLeg', leftLegGroup],
+					['rightLeg', 'backleg'],
+					['leftLeg', 'frontleg'],
 				] as const);
-		for (const [part, group] of parts) {
-			symbols.push(
-				`<symbol id="${part}" viewBox="0 0 3000 3000">${scopeSvgReferences(
-					group,
-					`${dir}-${part}`,
-				)}</symbol>`,
-			);
+		for (const [part, role] of parts) {
+			symbols.push(renderSymbol(baseLayer, dir, part, role).svg);
 		}
 	} else {
 		for (const key of ['default', 'body', 'left', 'right']) {
-			const svg = minifySvg(layers[key] ?? baseLayer);
-			const content = scopeSvgReferences(extractSvgContent(svg), `${dir}-${key}`);
-			symbols.push(`<symbol id="${key}" viewBox="0 0 3000 3000">${content}</symbol>`);
+			symbols.push(
+				key === 'default' ? base.svg : renderSymbol(layers[key] ?? baseLayer, dir, key).svg,
+			);
 		}
 	}
 

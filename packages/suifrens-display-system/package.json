@@ -115,6 +115,7 @@
 		"react": "catalog:frontend",
 		"react-doctor": "catalog:tooling",
 		"react-dom": "catalog:frontend",
+		"svgo": "^4.1.0",
 		"tsdown": "catalog:tooling",
 		"typescript": "catalog:typescript",
 		"vite": "catalog:tooling",
