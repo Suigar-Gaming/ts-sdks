@@ -6,6 +6,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { test } from 'vitest';
+import manifest from '../../package.json' with { type: 'json' };
 
 const EXTERNAL_SVG_URL_PATTERN: RegExp = /file:.*\.svg/;
 const EXTERNAL_SVG_FRAGMENT_PATTERN: RegExp = /(?:href|xlink:href)="(file:[^"#]+\.svg)#([^"]+)"/gi;
@@ -13,13 +14,8 @@ const CLIP_PATH_PATTERN: RegExp = /clipPath|clip-path/;
 const PATH_ELEMENT_PATTERN: RegExp = /<path\b/g;
 
 const root = new URL('../../', import.meta.url);
-const manifest = JSON.parse(readFileSync(new URL('package.json', root), 'utf8'));
 
-const publishedEntries = Object.entries(manifest.exports) as Array<
-	[string, { import: string; types: string }]
->;
-
-test.each(publishedEntries)(
+test.each(Object.entries(manifest.exports))(
 	'published entry %s and its declaration file resolve',
 	async (entry, paths) => {
 		assert.ok(existsSync(new URL(paths.types, root)), `${entry}: missing declarations`);
