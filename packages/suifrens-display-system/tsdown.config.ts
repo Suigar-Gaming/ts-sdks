@@ -26,7 +26,9 @@ export default defineConfig({
 		{
 			name: 'external-svg-urls',
 			async load(id) {
-				if (!id.endsWith('.svg?url')) return;
+				if (!id.endsWith('.svg?url')) {
+					return;
+				}
 				const path = id.slice(0, -'?url'.length);
 				const ref = this.emitFile({
 					type: 'asset',

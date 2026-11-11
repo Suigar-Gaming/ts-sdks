@@ -33,9 +33,13 @@ function renderSymbol(markup: string, prefix: string, part: string, role?: strin
 				fn: () => ({
 					element: {
 						enter: (node) => {
-							if (node.name !== 'g') return;
+							if (node.name !== 'g') {
+								return;
+							}
 							for (const candidate of ['body', 'backleg', 'frontleg']) {
-								if (node.attributes['id']?.includes(candidate)) roles.add(candidate);
+								if (node.attributes['id']?.includes(candidate)) {
+									roles.add(candidate);
+								}
 							}
 							if (role && !selectedGroup && node.attributes['id']?.includes(role)) {
 								selectedGroup = node;
@@ -60,7 +64,9 @@ function renderSymbol(markup: string, prefix: string, part: string, role?: strin
 								throw new Error('Expected an SVG root element');
 							}
 							if (role) {
-								if (!selectedGroup) throw new Error(`Missing ${role} group for ${prefix}`);
+								if (!selectedGroup) {
+									throw new Error(`Missing ${role} group for ${prefix}`);
+								}
 								svg.children = [selectedGroup];
 							}
 							svg.name = 'symbol';
