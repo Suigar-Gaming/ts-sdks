@@ -4,6 +4,9 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import deno from '../deno.json' with { type: 'json' };
 
+const PACKAGE_JSON_FILENAME = 'package.json';
+const JSR_JSON_FILENAME = 'jsr.json';
+
 function hasErrorCode(error, code) {
 	return error instanceof Error && 'code' in error && error.code === code;
 }
@@ -28,8 +31,8 @@ async function replaceVersionInFile(path, version) {
 
 for (const member of deno.workspace) {
 	const packageDir = new URL(`../${member}/`, import.meta.url);
-	const packageJsonPath = new URL('package.json', packageDir);
-	const jsrJsonPath = new URL('jsr.json', packageDir);
+	const packageJsonPath = new URL(PACKAGE_JSON_FILENAME, packageDir);
+	const jsrJsonPath = new URL(JSR_JSON_FILENAME, packageDir);
 	const packageJson = await readJson(packageJsonPath);
 
 	if (packageJson.private === true) {
@@ -41,7 +44,7 @@ for (const member of deno.workspace) {
 		jsrJson = await readJson(jsrJsonPath);
 	} catch (error) {
 		if (hasErrorCode(error, 'ENOENT')) {
-			throw new Error(`Missing jsr.json for public package ${packageJson.name}`);
+			throw new Error(`Missing ${JSR_JSON_FILENAME} for public package ${packageJson.name}`);
 		}
 
 		throw error;
@@ -49,7 +52,7 @@ for (const member of deno.workspace) {
 
 	if (jsrJson.name !== packageJson.name) {
 		throw new Error(
-			`JSR package name ${jsrJson.name} does not match package.json name ${packageJson.name}`,
+			`JSR package name ${jsrJson.name} does not match ${PACKAGE_JSON_FILENAME} name ${packageJson.name}`,
 		);
 	}
 
