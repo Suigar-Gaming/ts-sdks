@@ -9,7 +9,7 @@ const MANIFEST_DESCRIPTION_LIMIT = 100;
 
 describe('package exports', () => {
 	it('exposes only the package root as the public import path', () => {
-		expect(Object.keys(packageJson.exports).sort()).toEqual(['.']);
+		expect(Object.keys(packageJson.exports).toSorted()).toEqual(['.']);
 		expect(packageJson.exports['.']).toEqual({
 			types: './dist/index.d.mts',
 			import: './dist/index.mjs',

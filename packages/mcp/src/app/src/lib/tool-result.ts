@@ -1,24 +1,28 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import type { CallToolResult } from '@modelcontextprotocol/server';
 import { asRecord } from './format.js';
 import type { AnyRecord } from './types.js';
 
-export function getToolResultPayload(result: CallToolResult): AnyRecord {
-	const direct = asRecord(result.structuredContent);
+export function getToolResultPayload(result: unknown): AnyRecord {
+	const envelope = asRecord(result);
+	const direct = asRecord(envelope['structuredContent']);
 	if (Object.keys(direct).length > 0) {
 		return direct;
 	}
 
-	const wrapped = asRecord(asRecord(result)['result']);
+	const wrapped = asRecord(envelope['result']);
 	const wrappedPayload = asRecord(wrapped['structuredContent']);
 	if (Object.keys(wrappedPayload).length > 0) {
 		return wrappedPayload;
 	}
 
-	const text = result.content?.find((item) => item.type === 'text')?.text;
-	if (!text) {
+	const content = envelope['content'];
+	const textItem = Array.isArray(content)
+		? content.find((item) => asRecord(item)['type'] === 'text')
+		: undefined;
+	const text = asRecord(textItem)['text'];
+	if (typeof text !== 'string' || !text) {
 		return {};
 	}
 	try {

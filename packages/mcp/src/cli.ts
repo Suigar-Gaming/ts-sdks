@@ -4,6 +4,7 @@
 import yargs, { type ArgumentsCamelCase, type Argv, type Options } from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { type SuigarNetwork, SUPPORTED_SUI_NETWORKS } from '@suigar/sdk';
+import { normalizeNetwork } from './runtime/client.js';
 import { startSuigarMcpServer } from './server/index.js';
 import { VERSION } from './version.js';
 import {
@@ -37,7 +38,7 @@ const JSON_OPTION = {
 	description: 'Output machine-readable JSON instead of human-readable text',
 } satisfies Options;
 
-function addBridgeOptions(command: Argv): Argv {
+function addBridgeOptions<T>(command: Argv<T>) {
 	return command
 		.option('timeout-ms', {
 			type: 'number',
@@ -83,8 +84,8 @@ export async function runSuigarCli(argv: Array<string> = hideBin(process.argv)):
 					})
 					.option('json', JSON_OPTION),
 			async (args) => {
-				const bridgeArgs = args as unknown as BridgeArgs;
-				const network = args.network as SuigarNetwork;
+				const bridgeArgs = args;
+				const network = normalizeNetwork(args.network);
 				const bridge = await createLoginBridge({
 					network,
 					webOrigin: resolveWebOrigin({ network, webUrl: bridgeArgs.webUrl }),
@@ -118,7 +119,7 @@ export async function runSuigarCli(argv: Array<string> = hideBin(process.argv)):
 					})
 					.option('json', JSON_OPTION),
 			async (args) => {
-				const bridgeArgs = args as unknown as BridgeArgs;
+				const bridgeArgs = args;
 				const credentials = await loadCredentials();
 				const network = args.network ?? credentials.defaultNetwork;
 				const bridgeOptions = getBridgeOptions(bridgeArgs);

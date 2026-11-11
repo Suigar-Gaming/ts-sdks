@@ -1,7 +1,7 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import encodeQR, { type QrOpts } from 'qr';
+import { encodeQR, type QrOpts } from 'qr';
 
 export function createQrCodeDataUrl({
 	text,

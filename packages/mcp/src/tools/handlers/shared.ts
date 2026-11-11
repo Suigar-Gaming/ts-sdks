@@ -13,7 +13,7 @@ import {
 	type SuigarMcpConfigInput,
 	type ToolTextResult,
 } from '../../runtime/index.js';
-import { formatBaseUnitAmount, isAmountFieldName } from '../../utils/index.js';
+import { formatBaseUnitAmount, isAmountFieldName, isRecord } from '../../utils/index.js';
 import { optionalOptions } from '../../utils/options.js';
 import { loadCredentials, loadSessionWallet } from '../../wallet/index.js';
 import type { ReadConfigInput } from '../schemas/index.js';
@@ -82,8 +82,8 @@ function json(value: unknown): string {
 	);
 }
 
-export function asTextResponse<T extends ToolTextResult['structuredContent']>(
-	structuredContent: T,
+export function asTextResponse(
+	structuredContent: ToolTextResult['structuredContent'],
 ): ToolTextResult {
 	return {
 		content: [{ type: 'text', text: json(structuredContent) }],
@@ -125,8 +125,9 @@ export function requireString({ value, fieldName }: { value: unknown; fieldName:
 
 export function requireGame(value: unknown): Game {
 	const game = requireString({ value, fieldName: 'game' });
-	if (GAMES.includes(game as Game)) {
-		return game as Game;
+	const supported = GAMES.find((candidate) => candidate === game);
+	if (supported) {
+		return supported;
 	}
 	throw new RangeError(`Unsupported game: ${game}. Use one of: ${GAMES.join(', ')}.`);
 }
@@ -143,8 +144,11 @@ function formatGameParameterValue({
 	if (Array.isArray(value)) {
 		return value.map((item) => formatGameParameterValue({ key, value: item, decimals }));
 	}
-	if (value && typeof value === 'object') {
-		return formatGameParameters({ parameters: value as Record<string, unknown>, decimals });
+	if (isRecord(value)) {
+		return formatGameParameters({
+			parameters: value,
+			decimals,
+		});
 	}
 	return isAmountFieldName(key) &&
 		(typeof value === 'string' || typeof value === 'number' || typeof value === 'bigint')

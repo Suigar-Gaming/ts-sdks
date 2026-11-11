@@ -1,7 +1,6 @@
+import { Client } from '@modelcontextprotocol/client';
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
-
-import { Client } from '@modelcontextprotocol/client';
 import {
 	InMemoryTransport,
 	type JSONRPCMessage,
@@ -9,6 +8,7 @@ import {
 	ProtocolErrorCode,
 } from '@modelcontextprotocol/server';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { z } from 'zod/v4';
 import {
 	NFT_IMAGE_RESOURCE_DOMAINS,
 	SUIGAR_MCP_APP_RESOURCE_URI,
@@ -48,14 +48,16 @@ const publicToolNames = [
 	'list_nfts',
 ];
 
-const sorted = (values: Array<string>) => [...values].sort();
+const sorted = (values: Array<string>) => values.toSorted();
 
 describe('MCP server registration', () => {
 	it('wires the root config tool, inspector tools, and app resource', () => {
-		const server = createSuigarMcpServer() as unknown as {
-			_registeredTools: Record<string, unknown>;
-			_registeredResources: Record<string, unknown>;
-		};
+		const server = z
+			.object({
+				_registeredTools: z.record(z.string(), z.unknown()),
+				_registeredResources: z.record(z.string(), z.unknown()),
+			})
+			.parse(createSuigarMcpServer());
 
 		expect(sorted(Object.keys(server._registeredTools))).toEqual(sorted(publicToolNames));
 		expect(Object.keys(server._registeredResources)).toContain(SUIGAR_MCP_APP_RESOURCE_URI);
@@ -251,6 +253,8 @@ describe('MCP 2026-07-28 stdio protocol', () => {
 	) {
 		const id = ++requestId;
 		const response = new Promise<JSONRPCMessage>((resolve) => {
+			// MCP Transport exposes onmessage callbacks, not an EventTarget API.
+			// oxlint-disable-next-line unicorn/prefer-add-event-listener
 			clientTransport.onmessage = (message) => {
 				if ('id' in message && message.id === id) {
 					resolve(message);

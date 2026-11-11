@@ -43,8 +43,7 @@ describe('dry-run errors', () => {
 				},
 			},
 		};
-
-		expect(extractDryRunErrors(dryRun as never)).toEqual(['MoveAbort in coinflip::play']);
+		expect(extractDryRunErrors(dryRun)).toEqual(['MoveAbort in coinflip::play']);
 	});
 
 	it('deduplicates errors found on multiple dry-run branches', () => {
@@ -59,8 +58,7 @@ describe('dry-run errors', () => {
 				},
 			},
 		};
-
-		expect(extractDryRunErrors(dryRun as never)).toEqual(['same error']);
+		expect(extractDryRunErrors(dryRun)).toEqual(['same error']);
 	});
 });
 
@@ -100,7 +98,7 @@ describe('dry-run summaries', () => {
 		};
 
 		const summary = summarizeDryRun({
-			dryRun: dryRun as never,
+			dryRun: dryRun,
 			context: {
 				coinDecimals: 9,
 			},
@@ -182,7 +180,7 @@ describe('dry-run summaries', () => {
 		};
 
 		const summary = summarizeDryRun({
-			dryRun: dryRun as never,
+			dryRun: dryRun,
 			context: {
 				coinDecimals: 9,
 			},
@@ -227,7 +225,7 @@ describe('dry-run summaries', () => {
 						},
 					},
 				},
-			} as never,
+			},
 			context: { coinDecimals: 9 },
 		});
 

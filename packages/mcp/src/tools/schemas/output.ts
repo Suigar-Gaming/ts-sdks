@@ -5,7 +5,7 @@ import { z } from 'zod/v4';
 import { SUPPORTED_SUI_NETWORKS } from '@suigar/sdk';
 import { BUILDER_MODES } from './shared.js';
 
-const unknownJsonSchema: z.ZodType<unknown> = z.lazy(() =>
+const unknownJsonSchema: z.ZodType = z.lazy(() =>
 	z.union([
 		z.string(),
 		z.number(),

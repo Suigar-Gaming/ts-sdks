@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from 'node:http';
-import type { AddressInfo } from 'node:net';
 import open from 'open';
 import type { SuigarNetwork } from '@suigar/sdk';
 import { randomHex, sameState } from '../utils/crypto.js';
+import { isNonArrayRecord } from '../utils/object.js';
 import {
 	clearCredentials,
 	loadCredentials,
@@ -13,7 +13,12 @@ import {
 	saveProfile,
 	type WalletProfile,
 } from './credentials.js';
-import { LOCALHOST_HOST, LOOPBACK_HOST, loopbackOrigin } from './loopback.js';
+import {
+	getLoopbackServerPort,
+	LOCALHOST_HOST,
+	LOOPBACK_HOST,
+	loopbackOrigin,
+} from './loopback.js';
 import { resolvePositiveInteger } from './utils.js';
 
 export const DEFAULT_TIMEOUT_MS: number = 5 * 60_000;
@@ -130,7 +135,7 @@ async function createLoopbackServer(webOrigin: string): Promise<{
 }> {
 	const server = createServer();
 	await new Promise<void>((resolve) => server.listen(0, LOOPBACK_HOST, resolve));
-	const { port } = server.address() as AddressInfo;
+	const port = getLoopbackServerPort(server);
 	const allowedHosts = new Set([`${LOOPBACK_HOST}:${port}`, `${LOCALHOST_HOST}:${port}`]);
 	const authorize = ({
 		request,
@@ -204,9 +209,12 @@ export async function createLoginBridge({
 			return;
 		}
 		try {
-			const payload = JSON.parse(
+			const payload: unknown = JSON.parse(
 				await readBody({ request, maxBodyBytes: options.maxBodyBytes }),
-			) as Record<string, unknown>;
+			);
+			if (!isNonArrayRecord(payload)) {
+				throw new TypeError('Expected a JSON object.');
+			}
 			if (typeof payload['state'] !== 'string' || !(await sameState(payload['state'], state))) {
 				respond({ response, status: 403, body: { error: 'Invalid pairing state' } });
 				return;
@@ -307,9 +315,12 @@ export async function createExecutionBridge({
 			return;
 		}
 		try {
-			const payload = JSON.parse(
+			const payload: unknown = JSON.parse(
 				await readBody({ request, maxBodyBytes: options.maxBodyBytes }),
-			) as Record<string, unknown>;
+			);
+			if (!isNonArrayRecord(payload)) {
+				throw new TypeError('Expected a JSON object.');
+			}
 			if (
 				typeof payload['state'] !== 'string' ||
 				!(await sameState(payload['state'], state)) ||
@@ -396,9 +407,12 @@ export async function createLogoutBridge({
 			return;
 		}
 		try {
-			const payload = JSON.parse(
+			const payload: unknown = JSON.parse(
 				await readBody({ request, maxBodyBytes: options.maxBodyBytes }),
-			) as Record<string, unknown>;
+			);
+			if (!isNonArrayRecord(payload)) {
+				throw new TypeError('Expected a JSON object.');
+			}
 			if (typeof payload['state'] !== 'string' || !(await sameState(payload['state'], state))) {
 				respond({ response, status: 403, body: { error: 'Invalid logout callback' } });
 				return;

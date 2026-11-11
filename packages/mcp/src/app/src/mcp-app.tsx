@@ -85,6 +85,10 @@ function reducer(state: AppViewState, action: AppViewAction): AppViewState {
 					errors: action.errors,
 				},
 			};
+		default:
+			throw new Error('Unable to update the inspector. Refresh the page and try again.', {
+				cause: action satisfies never,
+			});
 	}
 }
 
@@ -103,6 +107,39 @@ export function SuigarInspectorApp(): JSX.Element | null {
 		[],
 	);
 
+	const onToolInput = () => {
+		dispatch({ type: 'tool-input' });
+	};
+
+	const onToolResult = (result: CallToolResult) => {
+		if (result.isError) {
+			const errors = textErrors(result);
+			dispatch({
+				type: 'tool-error',
+				payload: result,
+				errors: errors.length > 0 ? errors : ['Tool call failed.'],
+			});
+			return;
+		}
+
+		const payload = getToolResultPayload(result);
+		const execution = asRecord(payload['execution']);
+		dispatch({
+			type: 'tool-result',
+			status:
+				typeof payload['mode'] === 'string'
+					? payload['mode']
+					: typeof execution['status'] === 'string'
+						? execution['status']
+						: 'read',
+			payload,
+		});
+	};
+
+	const onHostContextChanged = (context: McpUiHostContext) => {
+		dispatch({ type: 'host-context', context });
+	};
+
 	const { app, error, isConnected } = useApp({
 		appInfo: {
 			name: 'suigar-mcp-app',
@@ -111,38 +148,6 @@ export function SuigarInspectorApp(): JSX.Element | null {
 		capabilities: {},
 		onAppCreated: (createdApp) => {
 			removeAppListeners.current?.();
-			const onToolInput = () => {
-				dispatch({ type: 'tool-input' });
-			};
-
-			const onToolResult = (result: CallToolResult) => {
-				if (result.isError) {
-					const errors = textErrors(result);
-					dispatch({
-						type: 'tool-error',
-						payload: result,
-						errors: errors.length > 0 ? errors : ['Tool call failed.'],
-					});
-					return;
-				}
-
-				const payload = getToolResultPayload(result);
-				const execution = asRecord(payload['execution']);
-				dispatch({
-					type: 'tool-result',
-					status:
-						typeof payload['mode'] === 'string'
-							? payload['mode']
-							: typeof execution['status'] === 'string'
-								? execution['status']
-								: 'read',
-					payload,
-				});
-			};
-
-			const onHostContextChanged = (context: McpUiHostContext) => {
-				dispatch({ type: 'host-context', context });
-			};
 
 			createdApp.addEventListener('toolinput', onToolInput);
 			createdApp.addEventListener('toolresult', onToolResult);

@@ -57,6 +57,8 @@ export async function startSuigarMcpServer(): Promise<void> {
 export function serveSuigarMcpStdio(transport: Transport = new StdioServerTransport()) {
 	const handle = serveStdio(createSuigarMcpServer, { transport });
 	const onmessage = transport.onmessage;
+	// MCP Transport exposes onmessage callbacks, not an EventTarget API.
+	// oxlint-disable-next-line unicorn/prefer-add-event-listener
 	transport.onmessage = (message, extra) => {
 		if ('method' in message && 'id' in message) {
 			const requested = message.params?._meta?.['io.modelcontextprotocol/protocolVersion'];

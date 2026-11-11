@@ -3,10 +3,6 @@
 
 import { readFile, writeFile } from 'node:fs/promises';
 
-interface PackageJson {
-	version: string;
-}
-
 const packageJsonPath = new URL('./package.json', import.meta.url);
 const mcpConfigPath = new URL('./plugin/.mcp.json', import.meta.url);
 const serverManifestPath = new URL('./server.json', import.meta.url);
@@ -18,7 +14,15 @@ const pluginManifestPaths = [
 	new URL('./plugin/.cursor-plugin/plugin.json', import.meta.url),
 ];
 
-const packageJson = JSON.parse(await readFile(packageJsonPath, 'utf8')) as PackageJson;
+const packageJson: unknown = JSON.parse(await readFile(packageJsonPath, 'utf8'));
+if (
+	!packageJson ||
+	typeof packageJson !== 'object' ||
+	!('version' in packageJson) ||
+	typeof packageJson.version !== 'string'
+) {
+	throw new TypeError('Missing package version.');
+}
 const versionPattern = /^(\s*"version"\s*:\s*")[^"]+(")/m;
 const mcpPackagePattern = /("@suigar\/mcp)(?:@[^"]+)?(")/;
 const serverPackageVersionPattern =

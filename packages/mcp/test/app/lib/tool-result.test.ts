@@ -14,9 +14,9 @@ describe('getToolResultPayload', () => {
 	});
 
 	it('supports a wrapped result envelope', () => {
-		expect(
-			getToolResultPayload({ result: { structuredContent: { network: 'testnet' } } } as never),
-		).toEqual({ network: 'testnet' });
+		expect(getToolResultPayload({ result: { structuredContent: { network: 'testnet' } } })).toEqual(
+			{ network: 'testnet' },
+		);
 	});
 
 	it('parses JSON text content', () => {

@@ -4,41 +4,13 @@
 import { describe, expect, it } from 'vitest';
 import {
 	amountText,
-	asRecord,
 	dynamicEntries,
 	formatValue,
-	isRecord,
 	labelFor,
 	stringify,
 	valueTone,
 	visibleDefinitionEntries,
 } from '../../../src/app/src/lib/format.js';
-
-describe('asRecord', () => {
-	it('returns objects unchanged', () => {
-		const value = { network: 'testnet' };
-
-		expect(asRecord(value)).toBe(value);
-	});
-
-	it('returns an empty object for non-object values', () => {
-		expect(asRecord(null)).toEqual({});
-		expect(asRecord('value')).toEqual({});
-	});
-});
-
-describe('isRecord', () => {
-	it('recognizes objects and arrays', () => {
-		expect(isRecord({})).toBe(true);
-		expect(isRecord([])).toBe(true);
-	});
-
-	it('rejects null and primitive values', () => {
-		expect(isRecord(null)).toBe(false);
-		expect(isRecord('value')).toBe(false);
-		expect(isRecord(1)).toBe(false);
-	});
-});
 
 describe('stringify', () => {
 	it('serializes bigint values as strings', () => {

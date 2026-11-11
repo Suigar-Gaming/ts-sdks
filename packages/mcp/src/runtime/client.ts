@@ -13,14 +13,14 @@ import {
 	normalizeSuiNSName,
 	SUI_DECIMALS,
 } from '@mysten/sui/utils';
-import { suigar, type SuigarClient, type SuigarNetwork } from '@suigar/sdk';
+import { suigar, type SuigarClient, type SuigarNetwork, SUPPORTED_SUI_NETWORKS } from '@suigar/sdk';
 import { formatBaseUnitAmount } from '../utils/index.js';
+import { isNonArrayRecord } from '../utils/object.js';
 import { readPersistedDefaultNetwork } from '../wallet/credentials.js';
 import { extractDryRunErrors, summarizeDryRun, toJsonValue } from './dry-run.js';
 import type {
 	BuilderMode,
 	BuildTransactionResult,
-	DryRunResult,
 	McpConfig,
 	RawDryRunResult,
 	SuigarMcpConfigInput,
@@ -37,11 +37,16 @@ export const DEFAULT_NETWORK: SuigarNetwork = 'testnet';
 
 export function normalizeNetwork(network?: string): SuigarNetwork {
 	const resolvedNetwork = network ?? readPersistedDefaultNetwork();
-	if (resolvedNetwork === 'mainnet' || resolvedNetwork === 'testnet') {
-		return resolvedNetwork;
+	const supportedNetwork = SUPPORTED_SUI_NETWORKS.find(
+		(supported) => supported === resolvedNetwork,
+	);
+	if (supportedNetwork) {
+		return supportedNetwork;
 	}
 
-	throw new RangeError(`Unsupported network: ${resolvedNetwork}. Use "mainnet" or "testnet".`);
+	throw new RangeError(
+		`Unsupported network: ${resolvedNetwork}. Use one of: ${SUPPORTED_SUI_NETWORKS.join(', ')}.`,
+	);
 }
 
 export function getProviderUrl({
@@ -183,7 +188,7 @@ function summarizeTransaction({
 	}
 
 	const commands = (data.commands ?? []).map((command) => {
-		const kind = String(command.$kind ?? Object.keys(command)[0] ?? 'Unknown');
+		const kind = command.$kind ?? Object.keys(command)[0] ?? 'Unknown';
 		const moveCall = command.MoveCall;
 		const target =
 			moveCall?.package && moveCall?.module && moveCall?.function
@@ -241,7 +246,10 @@ export async function buildTransactionResult({
 	const summary = summarizeTransaction({ transaction, context });
 	if (mode === 'dry-run') {
 		const rawDryRun = await dryRunTransaction({ transaction, client });
-		const dryRun = toJsonValue(rawDryRun) as DryRunResult;
+		const dryRun = toJsonValue(rawDryRun);
+		if (!isNonArrayRecord(dryRun)) {
+			throw new TypeError('Expected a dry-run result object.');
+		}
 		const dryRunSummary = summarizeDryRun({ dryRun: rawDryRun, context });
 		const errors = extractDryRunErrors(rawDryRun);
 		return {

@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { z } from 'zod';
 import { toolOutputSchema } from '../../../src/tools/schemas/output.js';
 import type * as McpUtils from '../../../src/utils/index.js';
 import { loopbackOrigin } from '../../../src/wallet/loopback.js';
@@ -17,7 +18,7 @@ const mocks = vi.hoisted(() => ({
 }));
 
 vi.mock('qr', () => ({
-	default: mocks.encodeQR,
+	encodeQR: mocks.encodeQR,
 }));
 
 vi.mock('../../../src/runtime/index.js', () => ({
@@ -110,9 +111,11 @@ describe('wallet tools', () => {
 			});
 
 			const result = await suigarLoginTool({ network: 'mainnet' });
-			const content = result.structuredContent as unknown as {
-				connection: { command: string; pid: number; status: string };
-			};
+			const content = z
+				.object({
+					connection: z.object({ command: z.string(), pid: z.number(), status: z.string() }),
+				})
+				.parse(result.structuredContent);
 
 			expect(mocks.runSuigarCommand).toHaveBeenCalledWith('login', '--network', 'mainnet');
 			expect(content.connection).toMatchObject({
@@ -183,9 +186,11 @@ describe('wallet tools', () => {
 			});
 
 			const result = await suigarLogoutTool({ network: 'testnet' });
-			const content = result.structuredContent as unknown as {
-				connection: { command: string; pid: number; status: string };
-			};
+			const content = z
+				.object({
+					connection: z.object({ command: z.string(), pid: z.number(), status: z.string() }),
+				})
+				.parse(result.structuredContent);
 
 			expect(mocks.runSuigarCommand).toHaveBeenCalledWith('logout', '--network', 'testnet');
 			expect(content.connection).toMatchObject({
@@ -233,15 +238,20 @@ describe('wallet tools', () => {
 			});
 
 			const result = await getSessionWalletTool({ network: 'testnet' });
-			const content = result.structuredContent as unknown as {
-				sessionWallet: {
-					status: string;
-					selectedSessionWalletId: string;
-					name: string;
-					balances: Array<{ balanceDisplay: string; symbol: string }>;
-					funding: { addressQrCodeDataUrl: string; fundingUrl?: string | undefined };
-				};
-			};
+			const content = z
+				.object({
+					sessionWallet: z.object({
+						status: z.string(),
+						selectedSessionWalletId: z.string(),
+						name: z.string(),
+						balances: z.array(z.object({ balanceDisplay: z.string(), symbol: z.string() })),
+						funding: z.object({
+							addressQrCodeDataUrl: z.string(),
+							fundingUrl: z.string().optional().optional(),
+						}),
+					}),
+				})
+				.parse(result.structuredContent);
 			const fundingUrl = new URL(content.sessionWallet.funding.fundingUrl!);
 
 			expect(content.sessionWallet.status).toBe('ready');
@@ -298,9 +308,11 @@ describe('wallet tools', () => {
 				});
 
 			const result = await getSessionWalletTool({ network: 'testnet' });
-			const content = result.structuredContent as unknown as {
-				sessionWallet: { balances: Array<{ coinType: string }> };
-			};
+			const content = z
+				.object({
+					sessionWallet: z.object({ balances: z.array(z.object({ coinType: z.string() })) }),
+				})
+				.parse(result.structuredContent);
 
 			expect(mocks.listBalances).toHaveBeenNthCalledWith(1, {
 				owner: sessionAddress,
@@ -318,9 +330,13 @@ describe('wallet tools', () => {
 			mocks.loadCredentials.mockResolvedValue({ profiles: {} });
 
 			const result = await getSessionWalletTool({ network: 'testnet' });
-			const content = result.structuredContent as unknown as {
-				sessionWallet: { funding: { fundingUrl?: string | undefined; note: string } };
-			};
+			const content = z
+				.object({
+					sessionWallet: z.object({
+						funding: z.object({ fundingUrl: z.string().optional().optional(), note: z.string() }),
+					}),
+				})
+				.parse(result.structuredContent);
 
 			expect(content.sessionWallet.funding).not.toHaveProperty('fundingUrl');
 			expect(content.sessionWallet.funding.note).toContain('suigar_login');
@@ -344,9 +360,9 @@ describe('wallet tools', () => {
 			mocks.loadSessionWallet.mockResolvedValue(sessionWallet);
 
 			const result = await fundSessionWalletTool({ network: 'testnet' });
-			const content = result.structuredContent as unknown as {
-				sessionWallet: { fundingUrl: string };
-			};
+			const content = z
+				.object({ sessionWallet: z.object({ fundingUrl: z.string() }) })
+				.parse(result.structuredContent);
 			const url = new URL(content.sessionWallet.fundingUrl);
 
 			expect(url.pathname).toBe('/fund-session-wallet');

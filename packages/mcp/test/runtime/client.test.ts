@@ -1,9 +1,11 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
+import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 import { Transaction } from '@mysten/sui/transactions';
 import { describe, expect, it, vi } from 'vitest';
 import {
+	createSuigarClient,
 	executeSessionTransaction,
 	getProviderUrl,
 	normalizeNetwork,
@@ -11,7 +13,6 @@ import {
 	resolveOwnerAddress,
 	type SuigarClientBundle,
 } from '../../src/runtime/client.js';
-import type { McpConfig } from '../../src/runtime/types.js';
 
 const testAddress = (fill: string) => `0x${fill.repeat(64)}`;
 const owner = testAddress('a');
@@ -20,14 +21,13 @@ const customCoinType = `${testAddress('c')}::coin::COIN`;
 
 type ResolveNameServiceAddress = SuigarClientBundle['client']['core']['resolveNameServiceAddress'];
 
-const createResolverBundle = (resolveNameServiceAddress: ResolveNameServiceAddress) =>
-	({
-		client: {
-			core: {
-				resolveNameServiceAddress,
-			},
-		},
-	}) as SuigarClientBundle;
+function createResolverBundle(resolveNameServiceAddress: ResolveNameServiceAddress) {
+	const bundle = createSuigarClient({ network: 'testnet' });
+	vi.spyOn(bundle.client.core, 'resolveNameServiceAddress').mockImplementation(
+		resolveNameServiceAddress,
+	);
+	return bundle;
+}
 
 describe('network resolution', () => {
 	it('defaults to testnet and accepts supported networks', () => {
@@ -50,17 +50,10 @@ describe('network resolution', () => {
 
 describe('coin type resolution', () => {
 	it('normalizes explicit and configured default coin types', () => {
-		const config = {
+		const { config } = createSuigarClient({
 			network: 'testnet',
-			providerUrl: 'https://example.com',
-			sdk: {
-				coins: {
-					sui: {
-						coinType: '0x2::sui::SUI',
-					},
-				},
-			},
-		} as McpConfig;
+			config: { coins: { sui: { coinType: '0x2::sui::SUI' } } },
+		});
 
 		expect(resolveDefaultCoinType({ config })).toBe(
 			'0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI',
@@ -111,28 +104,41 @@ describe('owner resolution', () => {
 });
 
 describe('session execution', () => {
+	const transactionFields = {
+		signatures: [],
+		epoch: null,
+		timestampMs: null,
+		checkpoint: null,
+		balanceChanges: undefined,
+		effects: undefined,
+		events: undefined,
+		objectTypes: undefined,
+		transaction: undefined,
+		bcs: undefined,
+	};
+
 	it('signs and submits with the supplied session signer', async () => {
-		const signer = {
-			toSuiAddress: () => owner,
-		} as never;
+		const signer = Ed25519Keypair.generate();
+		vi.spyOn(signer, 'toSuiAddress').mockReturnValue(owner);
 		const signAndExecuteTransaction = vi
-			.fn<(input: unknown) => Promise<unknown>>()
+			.fn<SuigarClientBundle['client']['signAndExecuteTransaction']>()
 			.mockResolvedValue({
 				$kind: 'Transaction',
+				protoJson: undefined,
 				Transaction: {
 					digest: 'session-digest',
+					...transactionFields,
 					status: { success: true, error: null },
 				},
 			});
-		const client = {
-			signAndExecuteTransaction,
-		};
+		const { client } = createSuigarClient({ network: 'testnet' });
+		vi.spyOn(client, 'signAndExecuteTransaction').mockImplementation(signAndExecuteTransaction);
 		const transaction = new Transaction();
 
 		await expect(
 			executeSessionTransaction({
 				transaction,
-				client: client as never,
+				client,
 				signer,
 			}),
 		).resolves.toEqual({
@@ -140,7 +146,7 @@ describe('session execution', () => {
 			digest: 'session-digest',
 			status: 'success',
 		});
-		expect(client.signAndExecuteTransaction).toHaveBeenCalledWith({
+		expect(signAndExecuteTransaction).toHaveBeenCalledWith({
 			transaction,
 			signer,
 			include: { effects: true },
@@ -148,24 +154,29 @@ describe('session execution', () => {
 	});
 
 	it('reports an on-chain failed session execution without an approval flow', async () => {
-		const signer = { toSuiAddress: () => owner } as never;
+		const signer = Ed25519Keypair.generate();
+		vi.spyOn(signer, 'toSuiAddress').mockReturnValue(owner);
 		const signAndExecuteTransaction = vi
-			.fn<(input: unknown) => Promise<unknown>>()
+			.fn<SuigarClientBundle['client']['signAndExecuteTransaction']>()
 			.mockResolvedValue({
 				$kind: 'FailedTransaction',
+				protoJson: undefined,
 				FailedTransaction: {
 					digest: 'failed-digest',
-					status: { success: false, error: { message: 'Insufficient gas' } },
+					...transactionFields,
+					status: {
+						success: false,
+						error: { $kind: 'Unknown', Unknown: null, message: 'Insufficient gas' },
+					},
 				},
 			});
-		const client = {
-			signAndExecuteTransaction,
-		};
+		const { client } = createSuigarClient({ network: 'testnet' });
+		vi.spyOn(client, 'signAndExecuteTransaction').mockImplementation(signAndExecuteTransaction);
 
 		await expect(
 			executeSessionTransaction({
 				transaction: new Transaction(),
-				client: client as never,
+				client,
 				signer,
 			}),
 		).resolves.toEqual({

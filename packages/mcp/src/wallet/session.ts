@@ -3,7 +3,6 @@
 
 import { chmod, readFile, writeFile } from 'node:fs/promises';
 import { createServer, type IncomingMessage } from 'node:http';
-import type { AddressInfo } from 'node:net';
 import { homedir } from 'node:os';
 import { join, relative } from 'node:path';
 import { decodeSuiPrivateKey, type Keypair } from '@mysten/sui/cryptography';
@@ -14,7 +13,13 @@ import type { Entry } from '@napi-rs/keyring';
 import { generateMnemonic, validateMnemonic } from '@scure/bip39';
 import { wordlist } from '@scure/bip39/wordlists/english.js';
 import { randomHex, randomUuid, sameState } from '../utils/crypto.js';
-import { LOOPBACK_HOST, LOOPBACK_ORIGIN, loopbackOrigin } from './loopback.js';
+import { isNonArrayRecord } from '../utils/object.js';
+import {
+	getLoopbackServerPort,
+	LOOPBACK_HOST,
+	LOOPBACK_ORIGIN,
+	loopbackOrigin,
+} from './loopback.js';
 import { ensureSuigarMcpDataDirectory, SUIGAR_MCP_DATA_DIRECTORY } from './storage.js';
 import { resolvePositiveInteger } from './utils.js';
 
@@ -57,10 +62,10 @@ async function saveWalletFile(wallets: Array<SessionWallet>): Promise<void> {
 
 export async function listSessionWallets(): Promise<Array<SessionWallet>> {
 	try {
-		const stored = JSON.parse(await readFile(SESSION_WALLETS_FILE, 'utf8')) as Array<SessionWallet>;
-		return Array.isArray(stored) ? stored : [];
+		const stored: unknown = JSON.parse(await readFile(SESSION_WALLETS_FILE, 'utf8'));
+		return Array.isArray(stored) ? stored.filter(isSessionWallet) : [];
 	} catch (error) {
-		if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+		if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
 			return [];
 		}
 		throw error;
@@ -323,8 +328,21 @@ export async function createSessionWalletSetup({
 		}
 	});
 	await new Promise<void>((resolve) => server.listen(0, LOOPBACK_HOST, resolve));
-	const { port } = server.address() as AddressInfo;
+	const port = getLoopbackServerPort(server);
 	const timeout = setTimeout(() => server.close(), resolvedTimeoutMs).unref();
 	server.once('close', () => clearTimeout(timeout));
 	return { setupUrl: `${loopbackOrigin(port)}/` };
+}
+
+function isSessionWallet(value: unknown): value is SessionWallet {
+	return (
+		isNonArrayRecord(value) &&
+		typeof value['id'] === 'string' &&
+		typeof value['name'] === 'string' &&
+		typeof value['address'] === 'string' &&
+		typeof value['createdAt'] === 'string' &&
+		(value['source'] === 'created' ||
+			value['source'] === 'imported' ||
+			value['source'] === 'private-key')
+	);
 }

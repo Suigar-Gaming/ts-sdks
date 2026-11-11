@@ -2,7 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import type { Transaction } from '@mysten/sui/transactions';
-import type { CoinSide, Game, PvPCoinflipAction, StandardGame } from '@suigar/sdk/games';
+import {
+	COIN_SIDES,
+	type Game,
+	type PvPCoinflipAction,
+	type StandardGame,
+} from '@suigar/sdk/games';
 import {
 	buildTransactionResult,
 	createSuigarClient,
@@ -71,7 +76,10 @@ export async function buildCoinflipTransactionTool(
 		);
 	}
 
-	const side = requireString({ value: input.side, fieldName: 'side' }) as CoinSide;
+	const side = COIN_SIDES.find((candidate) => candidate === input.side);
+	if (!side) {
+		throw new TypeError('Choose heads or tails.');
+	}
 	return buildTransactionTool({
 		input,
 		game: 'coinflip',
@@ -267,10 +275,10 @@ export async function buildPvpCoinflipCreateTransactionTool(
 		);
 	}
 
-	const creatorSide = requireString({
-		value: input.creatorSide,
-		fieldName: 'creatorSide',
-	}) as CoinSide;
+	const creatorSide = COIN_SIDES.find((candidate) => candidate === input.creatorSide);
+	if (!creatorSide) {
+		throw new TypeError('Choose heads or tails.');
+	}
 	return buildTransactionTool({
 		input,
 		game: 'pvp-coinflip',

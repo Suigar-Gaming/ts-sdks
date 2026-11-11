@@ -8,7 +8,7 @@ const mocks = vi.hoisted(() => ({
 }));
 
 vi.mock('qr', () => ({
-	default: mocks.encodeQR,
+	encodeQR: mocks.encodeQR,
 }));
 
 const { createQrCodeDataUrl } = await import('../../src/utils/qr-code.js');

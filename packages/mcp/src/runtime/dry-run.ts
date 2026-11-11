@@ -1,28 +1,22 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import type { SuiClientTypes } from '@mysten/sui/client';
 import { SUI_DECIMALS } from '@mysten/sui/utils';
-import { type Game, GAMES } from '@suigar/sdk/games';
+import { GAMES } from '@suigar/sdk/games';
 import { parseGameEvent, parseSuigarEvent } from '@suigar/sdk/utils';
-import { formatAmount, isAmountFieldName } from '../utils/index.js';
+import { formatAmount, isAmountFieldName, isRecord } from '../utils/index.js';
 import type {
 	DryRunEventSummary,
 	DryRunSummary,
 	JsonValue,
-	RawDryRunResult,
 	TransactionSummaryFormattingContext,
 } from './types.js';
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-	return value !== null && typeof value === 'object';
-}
-
-function getDryRunTransaction(dryRun: RawDryRunResult): RawDryRunResult['Transaction'] | undefined {
+function getDryRunTransaction(dryRun: unknown): unknown {
 	if (!isRecord(dryRun)) {
 		return undefined;
 	}
-	return dryRun.FailedTransaction ?? dryRun.Transaction;
+	return dryRun['FailedTransaction'] ?? dryRun['Transaction'];
 }
 
 export function toJsonValue(value: unknown): JsonValue | undefined {
@@ -83,7 +77,7 @@ function collectStrings({ value, path }: { value: unknown; path: Array<string> }
 	});
 }
 
-export function extractDryRunErrors(dryRun: RawDryRunResult): Array<string> {
+export function extractDryRunErrors(dryRun: unknown): Array<string> {
 	const source: unknown = getDryRunTransaction(dryRun) ?? dryRun;
 	const effects = isRecord(source) ? source['effects'] : undefined;
 	const status = isRecord(effects) ? effects['status'] : undefined;
@@ -199,7 +193,7 @@ function parseDryRunEvent({
 			...event,
 			eventType,
 			module,
-		} as never);
+		});
 		if (gameEvent) {
 			return gameEvent;
 		}
@@ -208,10 +202,10 @@ function parseDryRunEvent({
 	}
 
 	const standardBetResult = /::BetResultEvent<[^>]+::([^:<>,]+)::Game>/u.exec(eventType);
-	const game = standardBetResult?.[1]?.replaceAll('_', '-');
-	return game && GAMES.includes(game as Game)
+	const game = GAMES.find((known) => known === standardBetResult?.[1]?.replaceAll('_', '-'));
+	return game
 		? {
-				game: game as Game,
+				game,
 				event: 'BetResultEvent',
 			}
 		: null;
@@ -254,7 +248,9 @@ function summarizeDryRunEvent({
 				...event,
 				eventType,
 				module,
-			} as SuiClientTypes.Event);
+
+				bcs: event['bcs'],
+			});
 			if (!suigarEvent) {
 				return null;
 			}
@@ -297,7 +293,7 @@ export function summarizeDryRun({
 	dryRun,
 	context = {},
 }: {
-	dryRun: RawDryRunResult;
+	dryRun: unknown;
 	context?: TransactionSummaryFormattingContext | undefined;
 }): DryRunSummary {
 	const transaction = getDryRunTransaction(dryRun);

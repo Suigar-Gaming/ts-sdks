@@ -3,14 +3,14 @@
 
 import type * as SuiTransactions from '@mysten/sui/transactions';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { BuildTransactionResult, ReadOnlyPlan } from '../../../src/runtime/types.js';
 import {
 	buildReferralCommissionClaimTransactionTool,
 	buildReferralLevelUpUsdRewardsClaimTransactionTool,
 } from '../../../src/tools/handlers/index.js';
+import { getBuildResult, getReadOnlyPlan } from '../../result-assertions.js';
 
 const mocks = vi.hoisted(() => ({
-	buildTransactionBytes: vi.fn<(...args: Array<unknown>) => Promise<Uint8Array>>(),
+	buildTransactionBytes: vi.fn<SuiTransactions.Transaction['build']>(),
 }));
 
 vi.mock('@mysten/sui/transactions', async (importOriginal) => {
@@ -19,7 +19,7 @@ vi.mock('@mysten/sui/transactions', async (importOriginal) => {
 	return {
 		...actual,
 		Transaction: class MockTransaction extends actual.Transaction {
-			override build = mocks.buildTransactionBytes as SuiTransactions.Transaction['build'];
+			override build = mocks.buildTransactionBytes;
 		},
 	};
 });
@@ -46,7 +46,7 @@ describe('referral transaction tools', () => {
 		],
 	])('returns a read-only plan for %s', async (_name, run) => {
 		const result = await run();
-		const content = result.structuredContent as ReadOnlyPlan;
+		const content = getReadOnlyPlan(result.structuredContent);
 
 		expect(content.mode).toBe('read-only');
 		expect(content.network).toBe('testnet');
@@ -58,7 +58,7 @@ describe('referral transaction tools', () => {
 		const result = await buildReferralCommissionClaimTransactionTool({
 			mode: 'read-only',
 		});
-		const content = result.structuredContent as ReadOnlyPlan;
+		const content = getReadOnlyPlan(result.structuredContent);
 
 		expect(content.plan.target).toContain('::claim_commission_balance');
 	});
@@ -67,7 +67,7 @@ describe('referral transaction tools', () => {
 		const result = await buildReferralLevelUpUsdRewardsClaimTransactionTool({
 			mode: 'read-only',
 		});
-		const content = result.structuredContent as ReadOnlyPlan;
+		const content = getReadOnlyPlan(result.structuredContent);
 
 		expect(content.plan.target).toContain('::claim_referrer_level_up_usd_rewards');
 	});
@@ -80,8 +80,8 @@ describe('referral transaction tools', () => {
 				owner,
 			}),
 		]);
-		const commissionSummary = (commission.structuredContent as BuildTransactionResult).summary;
-		const levelUpSummary = (levelUp.structuredContent as BuildTransactionResult).summary;
+		const commissionSummary = getBuildResult(commission.structuredContent).summary;
+		const levelUpSummary = getBuildResult(levelUp.structuredContent).summary;
 
 		expect(commissionSummary.gameInputs).toEqual({
 			referralClaim: 'commission',

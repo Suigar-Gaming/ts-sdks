@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { z } from 'zod/v4';
+import { COIN_SIDES } from '@suigar/sdk/games';
 import { POSITIVE_INTEGER_PATTERN } from '../../utils/index.js';
 import { configInputSchema } from './config.js';
 import {
@@ -65,7 +66,7 @@ const stakeBuildInputSchema = commonBuildInputSchema
 
 export const coinflipInputSchema = stakeBuildInputSchema
 	.extend({
-		side: z.enum(['heads', 'tails']).optional().describe('Selected coinflip side.'),
+		side: z.enum(COIN_SIDES).optional().describe('Selected coinflip side.'),
 	})
 	.strict()
 	.superRefine((input, context) =>
@@ -153,7 +154,7 @@ export const pvpCoinflipCreateInputSchema = commonBuildInputSchema
 		stake: currencyAmountSchema
 			.optional()
 			.describe(`Stake per player. ${CURRENCY_AMOUNT_DESCRIPTION}`),
-		creatorSide: z.enum(['heads', 'tails']).optional().describe('Creator side.'),
+		creatorSide: z.enum(COIN_SIDES).optional().describe('Creator side.'),
 		isPrivate: z.boolean().optional().describe('Whether the PvP lobby is private.'),
 	})
 	.strict()

@@ -24,12 +24,8 @@ describe('read_config', () => {
 
 	it('defaults to testnet and returns SDK-shaped config', async () => {
 		const result = await readConfigTool({});
-		const content = result.structuredContent as Awaited<
-			ReturnType<typeof readConfigTool>
-		>['structuredContent'] & {
-			supportedGames: Array<{ id: string }>;
-			supportedFeatures: Array<{ id: string; tools: Array<string> }>;
-		};
+		const content = result.structuredContent;
+		expect.assert('supportedGames' in content);
 
 		expect(content.network).toBe('testnet');
 		expect(content.config.sdk.packageIds).toEqual(

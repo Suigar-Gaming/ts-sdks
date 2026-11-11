@@ -2,8 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { describe, expect, it } from 'vitest';
-import type { ReadOnlyPlan } from '../../../src/runtime/types.js';
+import { z } from 'zod';
 import { buildNftV1MintTransactionTool, listNftsTool } from '../../../src/tools/handlers/index.js';
+import { getReadOnlyPlan } from '../../result-assertions.js';
 
 describe('list_nfts', () => {
 	it('requires an owner when listing NFTs', async () => {
@@ -14,7 +15,7 @@ describe('list_nfts', () => {
 describe('build_nft_v1_mint_transaction', () => {
 	it('returns a read-only plan', async () => {
 		const result = await buildNftV1MintTransactionTool({ mode: 'read-only' });
-		const content = result.structuredContent as ReadOnlyPlan;
+		const content = getReadOnlyPlan(result.structuredContent);
 
 		expect(content.mode).toBe('read-only');
 		expect(content.network).toBe('testnet');
@@ -26,10 +27,12 @@ describe('build_nft_v1_mint_transaction', () => {
 		const result = await buildNftV1MintTransactionTool({
 			mode: 'read-only',
 		});
-		const content = result.structuredContent as {
-			plan: { target: string; requiredInputs: Array<string> };
-			nft: { packageId: string; factoryId: string };
-		};
+		const content = z
+			.object({
+				plan: z.object({ target: z.string(), requiredInputs: z.array(z.string()) }),
+				nft: z.object({ packageId: z.string(), factoryId: z.string() }),
+			})
+			.parse(result.structuredContent);
 
 		expect(content.plan.target).toMatch(/::nft::mint_to_sender$/u);
 		expect(content.plan.requiredInputs).toEqual(['owner', 'specId']);

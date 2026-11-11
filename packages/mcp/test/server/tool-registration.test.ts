@@ -3,7 +3,7 @@
 
 import { McpServer } from '@modelcontextprotocol/server';
 import { describe, expect, it } from 'vitest';
-import type { ToolTextResult } from '../../src/runtime/types.js';
+import { z } from 'zod';
 import { SUIGAR_MCP_APP_RESOURCE_URI } from '../../src/server/app-resource.js';
 import {
 	readOnlyToolAnnotations,
@@ -99,23 +99,25 @@ describe('MCP tool registration', () => {
 
 		registerSuigarTools({ server, appToolMeta });
 
-		const registeredTools = (
-			server as unknown as {
-				_registeredTools: Record<
-					string,
-					{
-						title?: string | undefined;
-						inputSchema?: unknown;
-						outputSchema?: unknown;
-						annotations?: unknown;
-						_meta?: unknown;
-					}
-				>;
-			}
-		)._registeredTools;
+		const registeredTools = z
+			.object({
+				_registeredTools: z.record(
+					z.string(),
+					z.object({
+						title: z.string().optional(),
+						inputSchema: z.unknown().optional(),
+						outputSchema: z.unknown().optional(),
+						annotations: z.unknown().optional(),
+						_meta: z.unknown().optional(),
+					}),
+				),
+			})
+			.parse(server)._registeredTools;
 
-		expect(Object.keys(registeredTools).sort()).toEqual(registeredToolNames.sort());
-		expect([...appToolNames, ...nonAppToolNames].sort()).toEqual(registeredToolNames.sort());
+		expect(Object.keys(registeredTools).toSorted()).toEqual(registeredToolNames.toSorted());
+		expect([...appToolNames, ...nonAppToolNames].toSorted()).toEqual(
+			registeredToolNames.toSorted(),
+		);
 		expect(registeredTools['read_config']).toMatchObject({
 			title: 'Read Suigar Config',
 			annotations: readOnlyToolAnnotations,
@@ -160,11 +162,9 @@ describe('MCP tool registration', () => {
 	});
 
 	it('wraps thrown handler failures as MCP tool errors', async () => {
-		const failingHandler = async (): Promise<ToolTextResult> => {
+		const result = await withToolErrors(async () => {
 			throw new TypeError('bad input');
-		};
-
-		const result = await withToolErrors(failingHandler)({});
+		})({});
 
 		expect(result).toMatchObject({
 			isError: true,

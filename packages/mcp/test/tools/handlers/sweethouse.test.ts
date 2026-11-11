@@ -3,15 +3,16 @@
 
 import type * as SuiTransactions from '@mysten/sui/transactions';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { BuildTransactionResult } from '../../../src/runtime/types.js';
+import { z } from 'zod';
 import {
 	buildSweetHouseClaimOwnRedeemRequestAfterDelayTransactionTool,
 	buildSweetHouseDepositTransactionTool,
 	buildSweetHouseRedeemRequestTransactionTool,
 } from '../../../src/tools/handlers/index.js';
+import { getBuildResult } from '../../result-assertions.js';
 
 const mocks = vi.hoisted(() => ({
-	buildTransactionBytes: vi.fn<(...args: Array<unknown>) => Promise<Uint8Array>>(),
+	buildTransactionBytes: vi.fn<SuiTransactions.Transaction['build']>(),
 }));
 
 vi.mock('@mysten/sui/transactions', async (importOriginal) => {
@@ -20,7 +21,7 @@ vi.mock('@mysten/sui/transactions', async (importOriginal) => {
 	return {
 		...actual,
 		Transaction: class MockTransaction extends actual.Transaction {
-			override build = mocks.buildTransactionBytes as SuiTransactions.Transaction['build'];
+			override build = mocks.buildTransactionBytes;
 		},
 	};
 });
@@ -62,11 +63,13 @@ describe('SweetHouse transaction tools', () => {
 		],
 	])('returns a read-only plan for %s', async (_name, run, functionName, requiredInputs) => {
 		const result = await run();
-		const content = result.structuredContent as {
-			mode: 'read-only';
-			plan: { target: string; requiredInputs: Array<string> };
-			sweethouse: { packageId: string; sweetHouseId: string };
-		};
+		const content = z
+			.object({
+				mode: z.literal('read-only'),
+				plan: z.object({ target: z.string(), requiredInputs: z.array(z.string()) }),
+				sweethouse: z.object({ packageId: z.string(), sweetHouseId: z.string() }),
+			})
+			.parse(result.structuredContent);
 
 		expect(content.mode).toBe('read-only');
 		expect(content.plan.target).toContain(`::sweethouse::${functionName}`);
@@ -94,9 +97,9 @@ describe('SweetHouse transaction tools', () => {
 			}),
 		]);
 
-		const depositSummary = (deposit.structuredContent as BuildTransactionResult).summary;
-		const redeemSummary = (redeem.structuredContent as BuildTransactionResult).summary;
-		const claimSummary = (claim.structuredContent as BuildTransactionResult).summary;
+		const depositSummary = getBuildResult(deposit.structuredContent).summary;
+		const redeemSummary = getBuildResult(redeem.structuredContent).summary;
+		const claimSummary = getBuildResult(claim.structuredContent).summary;
 
 		expect(depositSummary.gameInputs).toEqual({ sweetHouseAction: 'deposit' });
 		expect(redeemSummary.gameInputs).toEqual({ sweetHouseAction: 'redeem-request' });

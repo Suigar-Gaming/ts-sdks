@@ -11,7 +11,7 @@ MCP server for agents working with Suigar's provably fair casino games on Sui, S
 
 Transactions are unsigned by default. With `mode: "execute"`, the paired Suigar browser wallet asks the user to approve the transaction. Selecting `executionWallet: "session"` signs and submits with the local session-wallet key stored in the operating-system keychain. Session execution returns the final transaction digest without an approval URL. Balance reads combine all result pages and format amounts using configured or on-chain coin metadata.
 
-Malformed recovery phrases raise `TypeError`. Unsupported private-key schemes and oversized bridge requests raise `RangeError`. Wallet bridges and session setup validate 32-byte hexadecimal state tokens, then compare the decoded bytes with timing-safe equality. Setup pages display the error message. Operational failures, such as expired sessions or unavailable keychain storage, remain generic errors.
+Malformed entries in the local session-wallet metadata file are ignored. Malformed recovery phrases raise `TypeError`. Unsupported private-key schemes and oversized bridge requests raise `RangeError`. Wallet bridges and session setup validate 32-byte hexadecimal state tokens, then compare the decoded bytes with timing-safe equality. Setup pages display the error message. Operational failures, such as expired sessions or unavailable keychain storage, remain generic errors.
 
 ## Agent skills
 
