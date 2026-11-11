@@ -2,15 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { HEX_COLOR_PATTERN } from '../../constants/hex-color.js';
+import { RUNNER_ACCESSORY_NAMES } from '../../constants/runner-kit.js';
 import type { AccessoryMetadata } from '../../types/accessory.type.js';
 import type { RunnerKitOptions } from '../../types/runner-kit.type.js';
 
-export const RUNNER_ACCESSORY_NAMES = new Set([
-	'runner singlet',
-	'runner shorts',
-	'runner headband',
-	'runner shoes',
-]);
 export function resolveRunnerKit(value: unknown): Required<RunnerKitOptions> {
 	const options = value && typeof value === 'object' ? (value as RunnerKitOptions) : {};
 	return {

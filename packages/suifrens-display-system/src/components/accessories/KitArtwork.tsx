@@ -2,9 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { useId } from 'react';
+import { RUNNER_ACCESSORY_NAMES } from '../../constants/runner-kit.js';
 import { SVG_WRAPPER_PATTERN } from '../../constants/svg-patterns.js';
 import { ARTWORK } from '../../generated/kit-artwork.js';
-import { resolveRunnerKit, RUNNER_ACCESSORY_NAMES } from '../../helpers/kits/runner-kit.js';
+import { resolveRunnerKit } from '../../helpers/kits/runner-kit.js';
 import { contrastColor, resolveSoccerTeamKit } from '../../helpers/kits/soccer-team-kit.js';
 import type { AccessoryRendererProps } from '../../types/accessory.type.js';
 import type { AnimationPart } from '../../types/animation.type.js';
