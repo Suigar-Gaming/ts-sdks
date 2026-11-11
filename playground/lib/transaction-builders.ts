@@ -145,14 +145,13 @@ export function buildStandardTransaction(
 			if (!('picks' in form)) {
 				throw new TypeError('Form does not match the selected game.');
 			}
-			const typedForm = form;
-			const picks = parseKenoPicks(typedForm.picks);
-			codeLines.push(`configId: ${Number(typedForm.configId)},`);
+			const picks = parseKenoPicks(form.picks);
+			codeLines.push(`configId: ${Number(form.configId)},`);
 			codeLines.push(`picks: [${picks.join(', ')}],`);
 			transaction = txApi.createGameBet({
 				game: 'keno',
 				...baseOptions,
-				configId: Number(typedForm.configId),
+				configId: Number(form.configId),
 				picks,
 			});
 			break;
@@ -161,16 +160,15 @@ export function buildStandardTransaction(
 			if (!('targetMultiplier' in form)) {
 				throw new TypeError('Form does not match the selected game.');
 			}
-			const typedForm = form;
-			codeLines.push(`targetMultiplier: ${Number(typedForm.targetMultiplier)},`);
-			const scale = parseOptionalNumber(typedForm.scale);
+			codeLines.push(`targetMultiplier: ${Number(form.targetMultiplier)},`);
+			const scale = parseOptionalNumber(form.scale);
 			if (scale !== undefined) {
 				codeLines.push(`scale: ${scale},`);
 			}
 			transaction = txApi.createGameBet({
 				game: 'limbo',
 				...baseOptions,
-				targetMultiplier: Number(typedForm.targetMultiplier),
+				targetMultiplier: Number(form.targetMultiplier),
 				scale,
 			});
 			break;
@@ -179,12 +177,11 @@ export function buildStandardTransaction(
 			if (!('configId' in form)) {
 				throw new TypeError('Form does not match the selected game.');
 			}
-			const typedForm = form;
-			codeLines.push(`configId: ${Number(typedForm.configId)},`);
+			codeLines.push(`configId: ${Number(form.configId)},`);
 			transaction = txApi.createGameBet({
 				game: 'plinko',
 				...baseOptions,
-				configId: Number(typedForm.configId),
+				configId: Number(form.configId),
 			});
 			break;
 		}
@@ -192,20 +189,19 @@ export function buildStandardTransaction(
 			if (!('leftPoint' in form)) {
 				throw new TypeError('Form does not match the selected game.');
 			}
-			const typedForm = form;
-			codeLines.push(`leftPoint: ${Number(typedForm.leftPoint)},`);
-			codeLines.push(`rightPoint: ${Number(typedForm.rightPoint)},`);
-			codeLines.push(`outOfRange: ${typedForm.outOfRange},`);
-			const scale = parseOptionalNumber(typedForm.scale);
+			codeLines.push(`leftPoint: ${Number(form.leftPoint)},`);
+			codeLines.push(`rightPoint: ${Number(form.rightPoint)},`);
+			codeLines.push(`outOfRange: ${form.outOfRange},`);
+			const scale = parseOptionalNumber(form.scale);
 			if (scale !== undefined) {
 				codeLines.push(`scale: ${scale},`);
 			}
 			transaction = txApi.createGameBet({
 				game: 'range',
 				...baseOptions,
-				leftPoint: Number(typedForm.leftPoint),
-				rightPoint: Number(typedForm.rightPoint),
-				outOfRange: typedForm.outOfRange,
+				leftPoint: Number(form.leftPoint),
+				rightPoint: Number(form.rightPoint),
+				outOfRange: form.outOfRange,
 				scale,
 			});
 			break;
@@ -214,16 +210,15 @@ export function buildStandardTransaction(
 			if (!('countryId' in form)) {
 				throw new TypeError('Form does not match the selected game.');
 			}
-			const typedForm = form;
-			codeLines.push(`configId: ${Number(typedForm.configId)},`);
-			codeLines.push(`countryId: ${Number(typedForm.countryId)},`);
-			codeLines.push(`shotZoneId: ${Number(typedForm.shotZoneId)},`);
+			codeLines.push(`configId: ${Number(form.configId)},`);
+			codeLines.push(`countryId: ${Number(form.countryId)},`);
+			codeLines.push(`shotZoneId: ${Number(form.shotZoneId)},`);
 			transaction = txApi.createGameBet({
 				game: 'soccer',
 				...baseOptions,
-				configId: Number(typedForm.configId),
-				countryId: Number(typedForm.countryId),
-				shotZoneId: Number(typedForm.shotZoneId),
+				configId: Number(form.configId),
+				countryId: Number(form.countryId),
+				shotZoneId: Number(form.shotZoneId),
 			});
 			break;
 		}
@@ -231,12 +226,11 @@ export function buildStandardTransaction(
 			if (!('configId' in form)) {
 				throw new TypeError('Form does not match the selected game.');
 			}
-			const typedForm = form;
-			codeLines.push(`configId: ${Number(typedForm.configId)},`);
+			codeLines.push(`configId: ${Number(form.configId)},`);
 			transaction = txApi.createGameBet({
 				game: 'wheel',
 				...baseOptions,
-				configId: Number(typedForm.configId),
+				configId: Number(form.configId),
 			});
 			break;
 		}

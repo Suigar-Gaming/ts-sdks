@@ -126,10 +126,9 @@ export function summarizeStandardGameParameters(
 			if (!('max_stake' in parameters)) {
 				throw new TypeError('Game settings do not match the selected game.');
 			}
-			const stakeParameters = parameters;
 			const stakeRange = toStakeRange(
-				toBigInt(stakeParameters.min_stake),
-				toBigInt(stakeParameters.max_stake),
+				toBigInt(parameters.min_stake),
+				toBigInt(parameters.max_stake),
 				decimals,
 			);
 
@@ -139,22 +138,21 @@ export function summarizeStandardGameParameters(
 			if (!('min_target_multiplier' in parameters)) {
 				throw new TypeError('Game settings do not match the selected game.');
 			}
-			const limboParameters = parameters;
 			const stakeRange = toStakeRange(
-				toBigInt(limboParameters.min_stake),
-				toBigInt(limboParameters.max_stake),
+				toBigInt(parameters.min_stake),
+				toBigInt(parameters.max_stake),
 				decimals,
 			);
 
 			return {
 				stakeRange,
 				betCountLimit: {
-					max: toBigInt(limboParameters.max_number_of_games),
+					max: toBigInt(parameters.max_number_of_games),
 					label: 'games',
 				},
 				targetMultiplierRange: {
-					min: limboParameters.min_target_multiplier,
-					max: limboParameters.max_target_multiplier,
+					min: parameters.min_target_multiplier,
+					max: parameters.max_target_multiplier,
 				},
 			};
 		}
@@ -171,13 +169,12 @@ export function summarizeStandardGameParameters(
 			) {
 				throw new TypeError('Game settings do not match the selected game.');
 			}
-			const kenoParameters = { ...parameters, configs: { contents: entries } };
 			const stakeRange = toStakeRange(
-				toBigInt(kenoParameters.min_stake),
-				toBigInt(kenoParameters.max_stake),
+				toBigInt(parameters.min_stake),
+				toBigInt(parameters.max_stake),
 				decimals,
 			);
-			const configs = toConfigOptions(kenoParameters.configs.contents, decimals, (entry) => ({
+			const configs = toConfigOptions(entries, decimals, (entry) => ({
 				label: `Config ${entry.key}`,
 				details: [
 					{ label: 'Board size', value: String(entry.value.board_size) },
@@ -202,9 +199,7 @@ export function summarizeStandardGameParameters(
 			}));
 			const firstPlayableConfig = configs.find((config) => config.isPlayable) ?? configs[0];
 			const firstConfig = firstPlayableConfig
-				? kenoParameters.configs.contents.find(
-						(entry) => String(entry.key) === firstPlayableConfig.id,
-					)
+				? entries.find((entry) => String(entry.key) === firstPlayableConfig.id)
 				: undefined;
 
 			return {
@@ -232,24 +227,23 @@ export function summarizeStandardGameParameters(
 			if (!('min_zone_size' in parameters)) {
 				throw new TypeError('Game settings do not match the selected game.');
 			}
-			const rangeParameters = parameters;
 			const stakeRange = toStakeRange(
-				toBigInt(rangeParameters.min_stake),
-				toBigInt(rangeParameters.max_stake),
+				toBigInt(parameters.min_stake),
+				toBigInt(parameters.max_stake),
 				decimals,
 			);
 
 			return {
 				stakeRange,
 				betCountLimit: {
-					max: toBigInt(rangeParameters.max_number_of_games),
+					max: toBigInt(parameters.max_number_of_games),
 					label: 'games',
 				},
 				rangeBounds: {
-					minZoneSize: Number(rangeParameters.min_zone_size),
-					maxZoneSize: Number(rangeParameters.max_zone_size),
-					minRtp: rangeParameters.min_rtp,
-					maxRtp: rangeParameters.max_rtp,
+					minZoneSize: Number(parameters.min_zone_size),
+					maxZoneSize: Number(parameters.max_zone_size),
+					minRtp: parameters.min_rtp,
+					maxRtp: parameters.max_rtp,
 				},
 			};
 		}
@@ -257,13 +251,12 @@ export function summarizeStandardGameParameters(
 			if (!('max_number_of_balls' in parameters)) {
 				throw new TypeError('Game settings do not match the selected game.');
 			}
-			const plinkoParameters = parameters;
 			const stakeRange = toStakeRange(
-				toBigInt(plinkoParameters.min_stake),
-				toBigInt(plinkoParameters.max_stake),
+				toBigInt(parameters.min_stake),
+				toBigInt(parameters.max_stake),
 				decimals,
 			);
-			const configs = toConfigOptions(plinkoParameters.configs.contents, decimals, (entry) => ({
+			const configs = toConfigOptions(parameters.configs.contents, decimals, (entry) => ({
 				label: `Config ${entry.key}`,
 				details: [
 					{ label: 'Rows', value: String(entry.value.num_rows) },
@@ -278,7 +271,7 @@ export function summarizeStandardGameParameters(
 			return {
 				stakeRange,
 				betCountLimit: {
-					max: toBigInt(plinkoParameters.max_number_of_balls),
+					max: toBigInt(parameters.max_number_of_balls),
 					label: 'balls',
 				},
 				configOptions: configs,
@@ -288,13 +281,12 @@ export function summarizeStandardGameParameters(
 			if (!('max_number_of_spins' in parameters)) {
 				throw new TypeError('Game settings do not match the selected game.');
 			}
-			const wheelParameters = parameters;
 			const stakeRange = toStakeRange(
-				toBigInt(wheelParameters.min_stake),
-				toBigInt(wheelParameters.max_stake),
+				toBigInt(parameters.min_stake),
+				toBigInt(parameters.max_stake),
 				decimals,
 			);
-			const configs = toConfigOptions(wheelParameters.configs.contents, decimals, (entry) => ({
+			const configs = toConfigOptions(parameters.configs.contents, decimals, (entry) => ({
 				label: `Config ${entry.key}`,
 				details: [
 					{ label: 'Cases', value: String(entry.value.num_cases) },
@@ -312,7 +304,7 @@ export function summarizeStandardGameParameters(
 			return {
 				stakeRange,
 				betCountLimit: {
-					max: toBigInt(wheelParameters.max_number_of_spins),
+					max: toBigInt(parameters.max_number_of_spins),
 					label: 'spins',
 				},
 				configOptions: configs,
@@ -322,18 +314,17 @@ export function summarizeStandardGameParameters(
 			if (!('max_number_of_shots' in parameters)) {
 				throw new TypeError('Game settings do not match the selected game.');
 			}
-			const soccerParameters = parameters;
 			const stakeRange = toStakeRange(
-				toBigInt(soccerParameters.min_stake),
-				toBigInt(soccerParameters.max_stake),
+				toBigInt(parameters.min_stake),
+				toBigInt(parameters.max_stake),
 				decimals,
 			);
-			const configs = toConfigOptions(soccerParameters.configs.contents, decimals, (entry) => ({
+			const configs = toConfigOptions(parameters.configs.contents, decimals, (entry) => ({
 				label: `Config ${entry.key}`,
 				details: [
 					{
 						label: 'Countries',
-						value: String(soccerParameters.countries.contents.length),
+						value: String(parameters.countries.contents.length),
 					},
 					{
 						label: 'Shot zones',
@@ -353,15 +344,15 @@ export function summarizeStandardGameParameters(
 			return {
 				stakeRange,
 				betCountLimit: {
-					max: toBigInt(soccerParameters.max_number_of_shots),
+					max: toBigInt(parameters.max_number_of_shots),
 					label: 'shots',
 				},
 				configOptions: configs,
-				countryOptions: soccerParameters.countries.contents.map((country) => ({
+				countryOptions: parameters.countries.contents.map((country) => ({
 					id: String(country.key),
 					label: `${country.value} (${country.key})`,
 				})),
-				topLevelDetails: soccerParameters.countries.contents.map((country) => ({
+				topLevelDetails: parameters.countries.contents.map((country) => ({
 					label: `Country ${country.key}`,
 					value: country.value,
 				})),
@@ -387,14 +378,13 @@ export function summarizePvPGameParameters(
 			if (!('house_edge_bps' in parameters)) {
 				throw new TypeError('Game settings do not match the selected game.');
 			}
-			const pvpCoinflipParameters = parameters;
 
 			return {
-				stakeRange: toStakeMinimum(toBigInt(pvpCoinflipParameters.min_stake), decimals),
+				stakeRange: toStakeMinimum(toBigInt(parameters.min_stake), decimals),
 				topLevelDetails: [
 					{
 						label: 'House edge (bps)',
-						value: pvpCoinflipParameters.house_edge_bps,
+						value: parameters.house_edge_bps,
 					},
 				],
 			};

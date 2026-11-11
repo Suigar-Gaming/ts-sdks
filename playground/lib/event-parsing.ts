@@ -171,9 +171,7 @@ export function parseSuigarEvents(
 	digest: string,
 	events: Array<SuiClientTypes.Event> | undefined,
 ) {
-	const rows = (events ?? [])
+	return (events ?? [])
 		.map((event) => createEventRow(digest, event))
 		.filter((row): row is EventLogRow => row !== null);
-
-	return rows;
 }
