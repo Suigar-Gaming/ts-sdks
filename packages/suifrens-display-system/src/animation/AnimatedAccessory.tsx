@@ -58,7 +58,7 @@ export function AnimatedAccessory({ children, fallbackPart }: AnimatedAccessoryP
 	const store = useAnimationStore();
 	const localRef = useRef<SVGGraphicsElement | null>(null);
 	const childRef =
-		isValidElement<Record<string, unknown>>(children) && canAttachRefToType(children.type)
+		isValidElement(children) && canAttachRefToType(children.type)
 			? getElementRef(children)
 			: undefined;
 	// Update external refs after every commit, including child key/type changes.
@@ -115,12 +115,7 @@ export function AnimatedAccessory({ children, fallbackPart }: AnimatedAccessoryP
 	}
 
 	return (
-		<g
-			ref={(element) => {
-				localRef.current = element;
-			}}
-			data-suifren-animation-part={fallbackPart}
-		>
+		<g ref={localRef} data-suifren-animation-part={fallbackPart}>
 			{children}
 		</g>
 	);

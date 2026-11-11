@@ -1,6 +1,8 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
+import type { SOCCER_TEAM_PATTERNS, SOCCER_TEAM_SIDES } from '../constants/soccer-kit.js';
+
 export type SoccerTeamCountryCode =
 	| 'GLOBAL'
 	| 'AR'
@@ -52,19 +54,8 @@ export type SoccerTeamCountryCode =
 	| 'UZ'
 	| 'ZA';
 
-export type SoccerTeamSide = 'home' | 'away';
-
-export type SoccerTeamPattern =
-	| 'vertical'
-	| 'horizontal'
-	| 'cross'
-	| 'diagonal'
-	| 'sash'
-	| 'quarters'
-	| 'hoops'
-	| 'canton'
-	| 'sun'
-	| 'chevron';
+export type SoccerTeamSide = (typeof SOCCER_TEAM_SIDES)[number];
+export type SoccerTeamPattern = (typeof SOCCER_TEAM_PATTERNS)[number];
 
 export type SoccerTeamKit = {
 	code: string;

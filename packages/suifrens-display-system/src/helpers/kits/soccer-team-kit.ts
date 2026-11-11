@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { HEX_COLOR_PATTERN } from '../../constants/hex-color.js';
+import { SOCCER_TEAM_PATTERNS, SOCCER_TEAM_SIDES } from '../../constants/soccer-kit.js';
 import type {
 	SoccerTeamCountryCode,
 	SoccerTeamKit,
@@ -278,33 +279,25 @@ function isSoccerCountryCode(value: string): value is SoccerTeamCountryCode {
 }
 
 function isSoccerTeamKit(value: unknown): value is SoccerTeamKit {
-	if (!value || typeof value !== 'object') {
+	if (
+		!value ||
+		typeof value !== 'object' ||
+		!('code' in value) ||
+		!('primary' in value) ||
+		!('secondary' in value) ||
+		!('accent' in value) ||
+		!('pattern' in value)
+	) {
 		return false;
 	}
+
 	return (
-		'code' in value &&
 		typeof value.code === 'string' &&
 		TEAM_CODE_PATTERN.test(value.code) &&
-		'primary' in value &&
-		typeof value.primary === 'string' &&
-		HEX_COLOR_PATTERN.test(value.primary) &&
-		'secondary' in value &&
-		typeof value.secondary === 'string' &&
-		HEX_COLOR_PATTERN.test(value.secondary) &&
-		'accent' in value &&
-		typeof value.accent === 'string' &&
-		HEX_COLOR_PATTERN.test(value.accent) &&
-		'pattern' in value &&
-		(value.pattern === 'vertical' ||
-			value.pattern === 'horizontal' ||
-			value.pattern === 'cross' ||
-			value.pattern === 'diagonal' ||
-			value.pattern === 'sash' ||
-			value.pattern === 'quarters' ||
-			value.pattern === 'hoops' ||
-			value.pattern === 'canton' ||
-			value.pattern === 'sun' ||
-			value.pattern === 'chevron')
+		[value.primary, value.secondary, value.accent].every(
+			(color) => typeof color === 'string' && HEX_COLOR_PATTERN.test(color),
+		) &&
+		SOCCER_TEAM_PATTERNS.some((pattern) => pattern === value.pattern)
 	);
 }
 
@@ -314,13 +307,12 @@ export function resolveSoccerCountryCode(country?: unknown): SoccerTeamCountryCo
 }
 
 export function resolveSoccerTeamSide(side?: unknown): SoccerTeamSide {
-	return side === 'away' ? 'away' : 'home';
+	return SOCCER_TEAM_SIDES.find((candidate) => candidate === side) ?? 'home';
 }
 
 export function resolveSoccerTeamKit(country?: unknown, side?: unknown): SoccerTeamKit {
-	const candidate = country;
-	const kit = isSoccerTeamKit(candidate)
-		? candidate
+	const kit = isSoccerTeamKit(country)
+		? country
 		: SOCCER_TEAM_KITS[resolveSoccerCountryCode(country)];
 	if (resolveSoccerTeamSide(side) === 'away') {
 		return {

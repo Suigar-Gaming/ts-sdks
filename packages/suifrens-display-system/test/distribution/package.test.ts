@@ -19,7 +19,15 @@ test.each(Object.entries(manifest.exports))(
 	'published entry %s and its declaration file resolve',
 	async (entry, paths) => {
 		assert.ok(existsSync(new URL(paths.types, root)), `${entry}: missing declarations`);
-		await import(`${manifest.name}${entry === '.' ? '' : entry.slice(1)}`);
+		const exported = await import(`${manifest.name}${entry === '.' ? '' : entry.slice(1)}`);
+		assert.ok(
+			!Object.hasOwn(exported, 'SOCCER_TEAM_SIDES'),
+			`${entry}: internal soccer sides leaked`,
+		);
+		assert.ok(
+			!Object.hasOwn(exported, 'SOCCER_TEAM_PATTERNS'),
+			`${entry}: internal soccer patterns leaked`,
+		);
 	},
 );
 

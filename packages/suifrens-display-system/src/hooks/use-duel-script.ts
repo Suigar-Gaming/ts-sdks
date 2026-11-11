@@ -328,8 +328,7 @@ export function useDuelScript<TExpression extends string = string>({
 						break;
 					}
 					default: {
-						const exhaustive: never = step;
-						throw new Error(`Unknown duel step: ${JSON.stringify(exhaustive)}`);
+						throw new Error(`Unknown duel step: ${JSON.stringify(step satisfies never)}`);
 					}
 				}
 			}

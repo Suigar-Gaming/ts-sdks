@@ -18,6 +18,21 @@ function normalizeTransform(transform: string): string {
 	return transform.replace(WHITESPACE_PATTERN, '').toLowerCase();
 }
 
+function createTransformLookup<TPart extends AnimationPart>(
+	definitions: Record<TPart, PartDefinition>,
+): Map<string, TPart> {
+	const lookup = new Map<string, TPart>();
+	for (const part in definitions) {
+		if (!Object.hasOwn(definitions, part)) {
+			continue;
+		}
+		for (const transform of definitions[part].autoDetectTransforms) {
+			lookup.set(normalizeTransform(transform), part);
+		}
+	}
+	return lookup;
+}
+
 const PART_DEFINITIONS: Record<AnimationPart, PartDefinition> = {
 	body: {
 		pivot: { x: 1100, y: 1720 },
@@ -72,14 +87,7 @@ const PART_DEFINITIONS: Record<AnimationPart, PartDefinition> = {
 	},
 };
 
-const TRANSFORM_LOOKUP = new Map<string, AnimationPart>();
-for (const part of Object.keys(PART_DEFINITIONS).filter((key): key is AnimationPart =>
-	Object.hasOwn(PART_DEFINITIONS, key),
-)) {
-	for (const entry of PART_DEFINITIONS[part].autoDetectTransforms) {
-		TRANSFORM_LOOKUP.set(normalizeTransform(entry), part);
-	}
-}
+const TRANSFORM_LOOKUP = createTransformLookup(PART_DEFINITIONS);
 
 export function getPartDefinition(part: AnimationPart): PartDefinition {
 	return PART_DEFINITIONS[part];
