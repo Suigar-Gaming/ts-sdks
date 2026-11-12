@@ -9,12 +9,12 @@ export function SessionWalletView({ payload }: { payload: unknown }) {
 	const sessionWallet = asRecord(result['sessionWallet']);
 	const funding = asRecord(sessionWallet['funding']);
 	const qrCode =
-		typeof funding['addressQrCodeDataUrl'] === 'string' ? funding['addressQrCodeDataUrl'] : null;
+		typeof funding['addressQrCodeDataUrl'] === 'string' ? funding['addressQrCodeDataUrl'] : '';
 	const balances = Array.isArray(sessionWallet['balances']) ? sessionWallet['balances'] : [];
-	const fundingUrl = typeof funding['fundingUrl'] === 'string' ? funding['fundingUrl'] : null;
-	const setupUrl = typeof sessionWallet['setupUrl'] === 'string' ? sessionWallet['setupUrl'] : null;
+	const fundingUrl = typeof funding['fundingUrl'] === 'string' ? funding['fundingUrl'] : '';
+	const setupUrl = typeof sessionWallet['setupUrl'] === 'string' ? sessionWallet['setupUrl'] : '';
 
-	if (setupUrl != null && setupUrl !== '') {
+	if (setupUrl.length > 0) {
 		return (
 			<section className="grid grid-cols-1 gap-3.5">
 				<Panel title="Set up your session wallet">
@@ -74,7 +74,7 @@ export function SessionWalletView({ payload }: { payload: unknown }) {
 				)}
 			</Panel>
 			<Panel title="Fund this wallet">
-				{qrCode != null && qrCode !== '' ? (
+				{qrCode.length > 0 ? (
 					<div className="grid justify-items-center gap-3">
 						<img
 							alt="QR code for the session wallet address"
@@ -88,7 +88,7 @@ export function SessionWalletView({ payload }: { payload: unknown }) {
 								? funding['note']
 								: 'Scan this code in a Sui wallet to fund the session wallet.'}
 						</p>
-						{fundingUrl != null && fundingUrl !== '' ? (
+						{fundingUrl.length > 0 ? (
 							<ActionLink href={fundingUrl}>Fund from paired wallet</ActionLink>
 						) : null}
 					</div>
