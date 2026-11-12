@@ -15,8 +15,11 @@ import { AnimationController } from './animation-controller.js';
 import { AnimationStore } from './animation-store.js';
 import { matchPartByTransform } from './parts.js';
 import { observePlaybackVisibility } from './playback-visibility.js';
-import { getCorePresetSequence } from './presets/core.js';
-import { isDeferredPreset, loadDeferredPresetSequence } from './presets/resolver.js';
+import {
+	isDeferredPreset,
+	loadDeferredPresetSequence,
+	resolvePresetSequenceSync,
+} from './presets/resolver.js';
 import { startWaapiAnimation } from './waapi-backend.js';
 
 type AnimationContextValue = {
@@ -34,10 +37,10 @@ const AnimationContext = createContext<AnimationContextValue | null>(null);
 function useResolvedAnimationConfig(animation: AnimationConfig | null): AnimationConfig | null {
 	const presetName = animation && 'preset' in animation ? animation.preset : undefined;
 	const immediateSequence =
-		presetName != null && presetName !== '' ? getCorePresetSequence(presetName) : undefined;
+		presetName != null && presetName !== '' ? resolvePresetSequenceSync(presetName) : undefined;
 	const [deferred, setDeferred] = useState<{
 		preset: string;
-		sequence: ReturnType<typeof getCorePresetSequence> | null;
+		sequence: ReturnType<typeof resolvePresetSequenceSync> | null;
 	} | null>(null);
 
 	useEffect(() => {

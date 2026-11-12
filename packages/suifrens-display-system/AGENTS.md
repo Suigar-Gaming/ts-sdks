@@ -57,5 +57,3 @@ For browser tests, install Chromium with `pnpm --filter @suigar/suifrens-storybo
 Follow the workspace changeset and PR rules. Consumer-visible changes need an `@suigar/suifrens-display-system` changeset, with one topic per note. Version through the workspace Changesets workflow.
 
 Before committing, pushing or opening a PR, present the package contents, check results and relevant renders for explicit owner approval of the current revision and scope.
-
-To add a deferred animation catalogue, create its module under `src/animation/presets/` and register its relative path (without extension) and named preset-record export in `scripts/generate-preset-catalogues.ts`. Run `pnpm --dir packages/suifrens-display-system run codegen:presets`. The generator derives the routing names, static catalogue and public preset-name union from the same registration. Preset names must be unique across catalogues.

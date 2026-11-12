@@ -14,12 +14,9 @@ const resolver = vi.hoisted(() => ({
 	load: vi.fn<(name: string) => Promise<AnimationSequence | null>>(),
 	walk: { name: 'walk', duration: 100, tracks: [] },
 }));
-vi.mock('../../../src/animation/presets/core.js', () => ({
-	getCorePresetSequence: (name: string) => (name === 'walk' ? resolver.walk : undefined),
-}));
-
 vi.mock('../../../src/animation/presets/resolver.js', () => ({
 	isDeferredPreset: (name: string) => ['run', 'hit', 'death'].includes(name),
+	resolvePresetSequenceSync: (name: string) => (name === 'walk' ? resolver.walk : undefined),
 	loadDeferredPresetSequence: resolver.load,
 }));
 vi.mock('../../../src/animation/waapi-backend.js', () => ({
