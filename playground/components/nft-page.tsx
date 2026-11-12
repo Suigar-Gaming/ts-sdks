@@ -55,6 +55,7 @@ async function getOwnedNftsBySpec(
 
 	do {
 		const page: SuiClientTypes.ListOwnedObjectsResponse<{ content: true }> =
+			// oxlint-disable-next-line no-await-in-loop -- Each page needs the cursor returned by the previous page.
 			await client.core.listOwnedObjects({
 				owner,
 				type: nftType,
