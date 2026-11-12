@@ -10,5 +10,5 @@ export function formatInputNumber(value: number) {
 	const rounded = Math.round(value * 1_000_000) / 1_000_000;
 	return Number.isInteger(rounded)
 		? String(rounded)
-		: rounded.toString().replace(/0+$/, '').replace(/\.$/, '');
+		: rounded.toString().replace(/0+$/u, '').replace(/\.$/u, '');
 }

@@ -23,14 +23,14 @@ import { useEventLog } from '@/hooks/use-event-log';
 import { compactAddress } from '@/lib/suigar-app';
 
 function toTitleCase(value: string) {
-	return value.replace(/\b\w/g, (character) => character.toUpperCase());
+	return value.replaceAll(/\b\w/gu, (character) => character.toUpperCase());
 }
 
 const explorerBaseUrl = 'https://testnet.suivision.xyz';
 
 function toExplorerUrl(path: string, identifier: string, search?: string) {
 	const url = new URL(`${path}/${encodeURIComponent(identifier)}`, explorerBaseUrl);
-	if (search) {
+	if (search != null && search !== '') {
 		url.search = search;
 	}
 	return url.toString();
@@ -78,7 +78,7 @@ function CopyableValue({
 	explorerHref?: string | undefined;
 	onCopied: (label: string) => void;
 }) {
-	if (!value) {
+	if (value == null || value === '') {
 		return <span>{compactAddress(value)}</span>;
 	}
 
@@ -103,13 +103,15 @@ function CopyableValue({
 				variant="outline"
 				size="icon-sm"
 				className="text-muted-foreground size-7 rounded-full"
-				onClick={copyValue}
+				onClick={() => {
+					void copyValue();
+				}}
 				title={`Copy ${label}`}
 				aria-label={`Copy ${label}`}
 			>
 				<Copy className="size-3.5" />
 			</Button>
-			{explorerHref ? (
+			{explorerHref != null && explorerHref !== '' ? (
 				<Button
 					asChild
 					variant="outline"
@@ -197,7 +199,11 @@ export function EventsTable() {
 												<CopyableValue
 													label="player"
 													value={row.actor}
-													explorerHref={row.actor ? toAccountUrl(row.actor) : undefined}
+													explorerHref={
+														row.actor != null && row.actor !== ''
+															? toAccountUrl(row.actor)
+															: undefined
+													}
 													onCopied={handleCopied}
 												/>
 											</TableCell>

@@ -76,7 +76,9 @@ export function KenoForm({
 				{playableConfigOptions.length > 0 ? (
 					<Select
 						value={value.configId}
-						onValueChange={(configId: string) => onChange({ configId })}
+						onValueChange={(configId: string) => {
+							onChange({ configId });
+						}}
 					>
 						<SelectTrigger
 							id="kenoConfigId"
@@ -100,18 +102,20 @@ export function KenoForm({
 						step="1"
 						className="bg-background/55 h-11 rounded-2xl px-4"
 						value={value.configId}
-						onChange={(event) => onChange({ configId: event.target.value })}
+						onChange={(event) => {
+							onChange({ configId: event.target.value });
+						}}
 					/>
 				)}
 				<FieldDescription size="sm">
 					{selectedConfig ? (
 						selectedConfig.description
-					) : isConfigLoading ? (
+					) : isConfigLoading === true ? (
 						<span className="inline-flex items-center gap-1.5">
 							<Spinner className="size-3.5" />
 							Loading Keno configs from on-chain parameters
 						</span>
-					) : configError ? (
+					) : configError != null && configError !== '' ? (
 						`Unable to load on-chain Keno configs: ${configError}`
 					) : (
 						'Enter a Keno config id manually if on-chain configs are unavailable'
@@ -127,7 +131,9 @@ export function KenoForm({
 							variant="ghost"
 							size="xs"
 							disabled={selectedPicks.length === 0}
-							onClick={() => onChange({ picks: [] })}
+							onClick={() => {
+								onChange({ picks: [] });
+							}}
 						>
 							<Eraser className="size-3.5" aria-hidden />
 							Clear
@@ -150,7 +156,9 @@ export function KenoForm({
 								size="icon-sm"
 								aria-pressed={isSelected}
 								disabled={isDisabled}
-								onClick={() => togglePick(pick)}
+								onClick={() => {
+									togglePick(pick);
+								}}
 								className={cn('aspect-square h-auto min-h-8 w-full rounded-md p-0 text-xs')}
 							>
 								{pick}

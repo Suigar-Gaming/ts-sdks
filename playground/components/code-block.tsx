@@ -30,7 +30,7 @@ export function CodeBlock({
 
 	return (
 		<div className="border-border/70 relative rounded-2xl border bg-[linear-gradient(180deg,rgba(7,14,25,.92),rgba(11,21,37,.98))] p-4 pr-14 text-slate-100">
-			{copyMode !== 'none' ? (
+			{copyMode === 'none' ? null : (
 				<div className="absolute top-4 right-4">
 					{copyMode === 'icon' ? (
 						<Button
@@ -38,7 +38,9 @@ export function CodeBlock({
 							variant="outline"
 							size="icon-sm"
 							className="size-7 rounded-full border-white/12 bg-white/6 text-slate-300 hover:bg-white/10 hover:text-white"
-							onClick={handleCopy}
+							onClick={() => {
+								void handleCopy();
+							}}
 							title={copyTitle}
 							aria-label={copyTitle}
 						>
@@ -50,14 +52,16 @@ export function CodeBlock({
 							variant="outline"
 							size="sm"
 							className="border-white/12 bg-white/6 text-slate-200 hover:bg-white/10 hover:text-white"
-							onClick={handleCopy}
+							onClick={() => {
+								void handleCopy();
+							}}
 						>
 							<Copy className="size-4" />
 							Copy
 						</Button>
 					)}
 				</div>
-			) : null}
+			)}
 			<pre className="max-w-full font-mono text-sm leading-6 break-all whitespace-pre-wrap text-slate-100">
 				<code>{code}</code>
 			</pre>

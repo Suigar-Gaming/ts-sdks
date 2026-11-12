@@ -22,11 +22,14 @@ const useEventLogStore = create<EventLogStore>()(
 	persist(
 		(set) => ({
 			rows: [],
-			addRows: (incomingRows) =>
+			addRows: (incomingRows) => {
 				set((state) => ({
 					rows: [...incomingRows, ...state.rows],
-				})),
-			clearRows: () => set({ rows: [] }),
+				}));
+			},
+			clearRows: () => {
+				set({ rows: [] });
+			},
 		}),
 		{
 			name: STORAGE_KEY,

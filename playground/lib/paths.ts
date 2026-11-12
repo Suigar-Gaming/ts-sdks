@@ -1,5 +1,5 @@
-const TRAILING_SLASH_PATTERN = /\/+$/;
-const ABSOLUTE_URL_PATTERN = /^(?:[a-z]+:)?\/\//i;
+const TRAILING_SLASH_PATTERN = /\/+$/u;
+const ABSOLUTE_URL_PATTERN = /^(?:[a-z]+:)?\/\//iu;
 
 function normalizeBasePath(value: string): string {
 	const trimmedValue = value.trim().replace(TRAILING_SLASH_PATTERN, '');

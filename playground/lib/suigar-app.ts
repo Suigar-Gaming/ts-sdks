@@ -70,7 +70,8 @@ export function parseOptionalNumber(value?: string) {
 }
 
 export function getRangePointMax(scale?: number) {
-	const effectiveScale = scale && Number.isFinite(scale) && scale > 0 ? scale : DEFAULT_RANGE_SCALE;
+	const effectiveScale =
+		scale != null && Number.isFinite(scale) && scale > 0 ? scale : DEFAULT_RANGE_SCALE;
 	return RANGE_POINT_LIMIT / effectiveScale;
 }
 
@@ -95,7 +96,7 @@ export function toAtomicAmount(value: string | undefined, decimals: number) {
 }
 
 export function compactAddress(value?: string) {
-	if (!value) {
+	if (value == null || value === '') {
 		return 'N/A';
 	}
 

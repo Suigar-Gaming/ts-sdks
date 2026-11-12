@@ -31,7 +31,7 @@ function formatAtomicAmount(value: bigint, decimals: number) {
 		return whole.toString();
 	}
 
-	const trimmedFraction = fraction.toString().padStart(decimals, '0').replace(/0+$/, '');
+	const trimmedFraction = fraction.toString().padStart(decimals, '0').replace(/0+$/u, '');
 
 	return `${whole.toString()}.${trimmedFraction}`;
 }
@@ -416,7 +416,11 @@ export function resolveStakeRangeForGame(
 		return null;
 	}
 
-	if ((game === 'keno' || game === 'plinko' || game === 'wheel') && configId) {
+	if (
+		(game === 'keno' || game === 'plinko' || game === 'wheel') &&
+		configId != null &&
+		configId !== ''
+	) {
 		return findGameConfigOption(parameters, configId)?.stakeRange ?? parameters.stakeRange;
 	}
 

@@ -326,7 +326,7 @@ function standardParametersReducer(
 ): StandardParametersState {
 	switch (action.type) {
 		case 'loading':
-			if (action.preservePrevious) {
+			if (action.preservePrevious === true) {
 				return { ...state, error: null, isLoading: true };
 			}
 			return { ...initialStandardParametersState, isLoading: true };
@@ -352,7 +352,7 @@ function pvpParametersReducer(
 ): PvPParametersState {
 	switch (action.type) {
 		case 'loading':
-			if (action.preservePrevious) {
+			if (action.preservePrevious === true) {
 				return { ...state, error: null, isLoading: true };
 			}
 			return { ...initialPvPParametersState, isLoading: true };
@@ -383,7 +383,7 @@ function clampStakeValue(stake: string, stakeRange?: StakeRangeSummary) {
 	const minStake = parseOptionalNumber(stakeRange.min);
 	const maxStake = parseOptionalNumber(stakeRange.max);
 
-	if (currentStake === undefined || minStake === undefined || maxStake === undefined) {
+	if (currentStake == null || minStake == null || maxStake == null) {
 		return stake;
 	}
 
@@ -402,7 +402,7 @@ function resolvePlayableConfigId(
 	currentConfigId: string,
 	configOptions?: StandardGameParametersSummary['configOptions'],
 ) {
-	if (!configOptions?.length) {
+	if (!configOptions || configOptions.length === 0) {
 		return currentConfigId;
 	}
 
@@ -536,7 +536,9 @@ function IntegrationHero({
 												type="button"
 												size="sm"
 												variant={pvpAction === action.value ? 'control-active' : 'control'}
-												onClick={() => onPvPActionChange(action.value)}
+												onClick={() => {
+													onPvPActionChange(action.value);
+												}}
 												className={cn(
 													'h-10 justify-start rounded-full px-4',
 													pvpAction === action.value && 'shadow-none',
@@ -580,7 +582,9 @@ function IntegrationSidebar({
 		<div className="flex flex-col gap-6">
 			<CodeSample code={currentCode} />
 			<ExecuteTransactionCard
-				onExecute={handleExecute}
+				onExecute={() => {
+					void handleExecute();
+				}}
 				isExecuting={isExecuting}
 				status={status}
 				error={error}
@@ -740,16 +744,24 @@ function IntegrationControls({
 		coinflip: (
 			<CoinflipForm
 				value={effectiveStandardForms.coinflip}
-				onChange={(patch) => updateStandardForm('coinflip', patch)}
-				onStakeBlur={() => onStandardStakeBlur('coinflip')}
+				onChange={(patch) => {
+					updateStandardForm('coinflip', patch);
+				}}
+				onStakeBlur={() => {
+					onStandardStakeBlur('coinflip');
+				}}
 				stakeDescription={stakeDescription}
 			/>
 		),
 		limbo: (
 			<LimboForm
 				value={effectiveStandardForms.limbo}
-				onChange={(patch) => updateStandardForm('limbo', patch)}
-				onStakeBlur={() => onStandardStakeBlur('limbo')}
+				onChange={(patch) => {
+					updateStandardForm('limbo', patch);
+				}}
+				onStakeBlur={() => {
+					onStandardStakeBlur('limbo');
+				}}
 				stakeDescription={stakeDescription}
 				targetMultiplierDescription={limboTargetMultiplierDescription}
 			/>
@@ -757,8 +769,12 @@ function IntegrationControls({
 		keno: (
 			<KenoForm
 				value={effectiveStandardForms.keno}
-				onChange={(patch) => updateStandardForm('keno', patch)}
-				onStakeBlur={() => onStandardStakeBlur('keno')}
+				onChange={(patch) => {
+					updateStandardForm('keno', patch);
+				}}
+				onStakeBlur={() => {
+					onStandardStakeBlur('keno');
+				}}
 				configOptions={standardGameParameters?.configOptions}
 				isConfigLoading={isStandardGameParametersLoading}
 				configError={standardGameParametersError}
@@ -769,8 +785,12 @@ function IntegrationControls({
 		plinko: (
 			<PlinkoForm
 				value={effectiveStandardForms.plinko}
-				onChange={(patch) => updateStandardForm('plinko', patch)}
-				onStakeBlur={() => onStandardStakeBlur('plinko')}
+				onChange={(patch) => {
+					updateStandardForm('plinko', patch);
+				}}
+				onStakeBlur={() => {
+					onStandardStakeBlur('plinko');
+				}}
 				configOptions={standardGameParameters?.configOptions}
 				isConfigLoading={isStandardGameParametersLoading}
 				configError={standardGameParametersError}
@@ -780,8 +800,12 @@ function IntegrationControls({
 		range: (
 			<RangeForm
 				value={effectiveStandardForms.range}
-				onChange={(patch) => updateStandardForm('range', patch)}
-				onStakeBlur={() => onStandardStakeBlur('range')}
+				onChange={(patch) => {
+					updateStandardForm('range', patch);
+				}}
+				onStakeBlur={() => {
+					onStandardStakeBlur('range');
+				}}
 				stakeDescription={stakeDescription}
 				rangeBoundsDescription={rangeBoundsDescription}
 			/>
@@ -789,8 +813,12 @@ function IntegrationControls({
 		soccer: (
 			<SoccerForm
 				value={effectiveStandardForms.soccer}
-				onChange={(patch) => updateStandardForm('soccer', patch)}
-				onStakeBlur={() => onStandardStakeBlur('soccer')}
+				onChange={(patch) => {
+					updateStandardForm('soccer', patch);
+				}}
+				onStakeBlur={() => {
+					onStandardStakeBlur('soccer');
+				}}
 				configOptions={standardGameParameters?.configOptions}
 				countryOptions={standardGameParameters?.countryOptions}
 				isConfigLoading={isStandardGameParametersLoading}
@@ -801,8 +829,12 @@ function IntegrationControls({
 		wheel: (
 			<WheelForm
 				value={effectiveStandardForms.wheel}
-				onChange={(patch) => updateStandardForm('wheel', patch)}
-				onStakeBlur={() => onStandardStakeBlur('wheel')}
+				onChange={(patch) => {
+					updateStandardForm('wheel', patch);
+				}}
+				onStakeBlur={() => {
+					onStandardStakeBlur('wheel');
+				}}
 				configOptions={standardGameParameters?.configOptions}
 				isConfigLoading={isStandardGameParametersLoading}
 				configError={standardGameParametersError}
@@ -818,7 +850,9 @@ function IntegrationControls({
 		create: (
 			<PvPCoinflipCreateForm
 				value={pvpForms.create}
-				onChange={(patch) => updatePvPForm('create', patch)}
+				onChange={(patch) => {
+					updatePvPForm('create', patch);
+				}}
 				onStakeBlur={onPvPCreateStakeBlur}
 				stakeDescription={pvpStakeDescription}
 			/>
@@ -834,7 +868,9 @@ function IntegrationControls({
 				coinTypes={coinTypes}
 				getCoinDecimals={getCoinDecimals}
 				onRefresh={onRefreshPvPLobbies}
-				onSelectGame={(game) => onSelectPvPLobby('join', game)}
+				onSelectGame={(game) => {
+					onSelectPvPLobby('join', game);
+				}}
 				formValue={effectivePvpForms.join}
 			/>
 		),
@@ -848,7 +884,9 @@ function IntegrationControls({
 				coinTypes={coinTypes}
 				getCoinDecimals={getCoinDecimals}
 				onRefresh={onRefreshPvPLobbies}
-				onSelectGame={(game) => onSelectPvPLobby('cancel', game)}
+				onSelectGame={(game) => {
+					onSelectPvPLobby('cancel', game);
+				}}
 				formValue={effectivePvpForms.cancel}
 			/>
 		),
@@ -890,7 +928,9 @@ function IntegrationControls({
 					{mode === 'standard' ? (
 						<StandardGameBetCountProvider
 							value={effectiveStandardForms[standardGame].betCount}
-							onChange={(betCount) => updateStandardForm(standardGame, { betCount })}
+							onChange={(betCount) => {
+								updateStandardForm(standardGame, { betCount });
+							}}
 							betCountLimit={standardGameParameters?.betCountLimit}
 							isLoading={isStandardGameParametersLoading}
 						>
@@ -1057,8 +1097,9 @@ function deriveGameSettings({
 	const isStandard = mode === 'standard';
 	const settingsSummary = isStandard ? standardGameParameters : pvpGameParameters;
 	const settingsPayload = isStandard ? standardGameParametersPayload : pvpGameParametersPayload;
+	const hasSettingsPayload = Boolean(settingsPayload);
 	return {
-		serializedGameSettings: settingsPayload ? stringifyGameParameters(settingsPayload) : null,
+		serializedGameSettings: hasSettingsPayload ? stringifyGameParameters(settingsPayload) : null,
 		settingsCallPreview: `client.suigar.getGameParameters({ game: '${isStandard ? standardGame : pvpGame}', coinType: '${coinType}' })`,
 		settingsSummary,
 		settingsError: isStandard ? standardGameParametersError : pvpGameParametersError,
@@ -1071,7 +1112,7 @@ function deriveGameSettings({
 	};
 }
 
-function createIntegrationState({
+function useIntegrationState({
 	mode,
 	routeParams,
 	isRouteReady,
@@ -1306,17 +1347,17 @@ function createIntegrationState({
 	const normalizedCurrentAccount = currentAccount?.address.toLowerCase() ?? null;
 	const selectedStandardForm = standardForms[standardGame] ?? DEFAULT_STANDARD_FORMS[standardGame];
 	const activeConfigId =
-		standardGame === 'keno' ||
-		standardGame === 'plinko' ||
-		standardGame === 'soccer' ||
-		standardGame === 'wheel'
+		'configId' in selectedStandardForm
 			? resolvePlayableConfigId(
-					'configId' in selectedStandardForm ? selectedStandardForm.configId : '',
+					selectedStandardForm.configId,
 					standardGameParameters?.configOptions,
 				)
 			: undefined;
 	const activeConfigOption = React.useMemo(
-		() => (activeConfigId ? findGameConfigOption(standardGameParameters, activeConfigId) : null),
+		() =>
+			activeConfigId != null && activeConfigId !== ''
+				? findGameConfigOption(standardGameParameters, activeConfigId)
+				: null,
 		[activeConfigId, standardGameParameters],
 	);
 	const activeStakeRange = React.useMemo(
@@ -1414,7 +1455,7 @@ function createIntegrationState({
 
 		const configuredScale = parseOptionalNumber(standardForms.range.scale);
 		const effectiveScale =
-			configuredScale && Number.isFinite(configuredScale) && configuredScale > 0
+			configuredScale != null && Number.isFinite(configuredScale) && configuredScale > 0
 				? configuredScale
 				: DEFAULT_RANGE_SCALE;
 
@@ -1444,7 +1485,7 @@ function createIntegrationState({
 			(detail) => detail.label === 'Board size',
 		)?.value;
 
-		if (!picks || !boardSize) {
+		if (picks == null || picks === '' || boardSize == null || boardSize === '') {
 			return null;
 		}
 
@@ -1552,7 +1593,7 @@ function createIntegrationState({
 
 		if (standardGameParameters?.targetMultiplierRange) {
 			const targetMultiplier = parseOptionalNumber(standardForms.limbo.targetMultiplier);
-			if (targetMultiplier !== undefined) {
+			if (targetMultiplier != null) {
 				const clampedTargetMultiplier = clampNumber(
 					targetMultiplier,
 					standardGameParameters.targetMultiplierRange.min,
@@ -1565,7 +1606,7 @@ function createIntegrationState({
 		if (standardGameParameters?.rangeBounds) {
 			const configuredScale = parseOptionalNumber(standardForms.range.scale);
 			const effectiveScale =
-				configuredScale && Number.isFinite(configuredScale) && configuredScale > 0
+				configuredScale != null && Number.isFinite(configuredScale) && configuredScale > 0
 					? configuredScale
 					: DEFAULT_RANGE_SCALE;
 			const maxPoint = getRangePointMax(configuredScale);
@@ -1574,7 +1615,7 @@ function createIntegrationState({
 			const leftPoint = parseOptionalNumber(standardForms.range.leftPoint);
 			const rightPoint = parseOptionalNumber(standardForms.range.rightPoint);
 
-			if (leftPoint !== undefined && rightPoint !== undefined) {
+			if (leftPoint != null && rightPoint != null) {
 				let nextLeftPoint = clampNumber(leftPoint, 0, maxPoint);
 				let nextRightPoint = clampNumber(rightPoint, 0, maxPoint);
 
@@ -1619,7 +1660,7 @@ function createIntegrationState({
 					return false;
 				}
 
-				if (!normalizedCurrentAccount) {
+				if (normalizedCurrentAccount == null || normalizedCurrentAccount === '') {
 					return true;
 				}
 
@@ -1629,7 +1670,7 @@ function createIntegrationState({
 	);
 	const cancelLobbyGames = React.useMemo(
 		() =>
-			normalizedCurrentAccount
+			normalizedCurrentAccount != null && normalizedCurrentAccount !== ''
 				? pvpLobbyGames.filter((game) => game.creator.toLowerCase() === normalizedCurrentAccount)
 				: [],
 		[pvpLobbyGames, normalizedCurrentAccount],
@@ -1776,7 +1817,9 @@ function createIntegrationState({
 		() => (
 			<AppHeader
 				selectedCoin={effectiveSelectedCoin}
-				onSelectedCoinChange={(value) => dispatchUi({ type: 'set-selected-coin', value })}
+				onSelectedCoinChange={(value) => {
+					dispatchUi({ type: 'set-selected-coin', value });
+				}}
 				coinBalances={coinBalances}
 				balanceOwner={balanceOwner}
 			/>
@@ -1832,21 +1875,24 @@ function createIntegrationState({
 		handleRefreshGameSettings,
 		refreshPvPLobbies,
 		updateQuery,
-		setShowPrivateJoinLobbies: (value: boolean) =>
+		setShowPrivateJoinLobbies: (value: boolean) => {
 			dispatchUi({
 				type: 'set-show-private-join-lobbies',
 				value,
-			}),
-		openSettings: () =>
+			});
+		},
+		openSettings: () => {
 			dispatchUi({
 				type: 'set-is-game-settings-dialog-open',
 				value: true,
-			}),
-		closeSettings: () =>
+			});
+		},
+		closeSettings: () => {
 			dispatchUi({
 				type: 'set-is-game-settings-dialog-open',
 				value: false,
-			}),
+			});
+		},
 	};
 }
 
@@ -1922,7 +1968,7 @@ function IntegrationContent({ mode }: { mode: Mode }) {
 
 	React.useEffect(() => {
 		if (!isMounted) {
-			return undefined;
+			return;
 		}
 
 		const syncRouteSearch = () => {
@@ -1936,7 +1982,7 @@ function IntegrationContent({ mode }: { mode: Mode }) {
 	}, [isMounted]);
 
 	const routeParams = React.useMemo(() => new URLSearchParams(routeSearch), [routeSearch]);
-	const integration = createIntegrationState({
+	const integration = useIntegrationState({
 		mode,
 		routeParams,
 		isRouteReady: isMounted,
@@ -1956,8 +2002,12 @@ function IntegrationContent({ mode }: { mode: Mode }) {
 					standardGame={integration.standardGame}
 					pvpGame={integration.pvpGame}
 					pvpAction={integration.pvpAction}
-					onStandardGameChange={(value) => integration.updateQuery({ game: value })}
-					onPvPGameChange={(value) => integration.updateQuery({ game: value })}
+					onStandardGameChange={(value) => {
+						integration.updateQuery({ game: value });
+					}}
+					onPvPGameChange={(value) => {
+						integration.updateQuery({ game: value });
+					}}
 					onPvPActionChange={(value) => {
 						integration.updateQuery({
 							game: integration.pvpGame,

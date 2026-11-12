@@ -41,7 +41,9 @@ export function SharedGameFields({
 		<div className="grid gap-4 md:grid-cols-2">
 			<StakeField
 				value={value.stake}
-				onChange={(stake) => onChange({ stake })}
+				onChange={(stake) => {
+					onChange({ stake });
+				}}
 				onBlur={onStakeBlur}
 				description={description}
 				className="md:col-span-2"
@@ -64,7 +66,9 @@ export function StandardGameFields({
 		<div className="grid gap-4 md:grid-cols-2">
 			<StakeField
 				value={value.stake}
-				onChange={(stake) => onChange({ stake })}
+				onChange={(stake) => {
+					onChange({ stake });
+				}}
 				onBlur={onStakeBlur}
 				description={description}
 			/>
@@ -99,7 +103,9 @@ function BetCountField({
 				inputMode="numeric"
 				className="bg-background/55 h-11 rounded-2xl px-4"
 				value={value}
-				onChange={(event) => onChange(event.target.value)}
+				onChange={(event) => {
+					onChange(event.target.value);
+				}}
 				placeholder="defaults to 1"
 			/>
 			{isLoading ? (
@@ -146,7 +152,9 @@ function StakeField({
 				inputMode="decimal"
 				className="bg-background/55 h-11 rounded-2xl px-4"
 				value={value}
-				onChange={(event) => onChange(event.target.value)}
+				onChange={(event) => {
+					onChange(event.target.value);
+				}}
 				onBlur={onBlur}
 				placeholder="1"
 			/>

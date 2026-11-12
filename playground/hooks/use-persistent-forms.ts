@@ -14,10 +14,11 @@ export function createPersistentForms<T extends object>(key: string, initialValu
 		persist(
 			(set) => ({
 				value: initialValue,
-				setValue: (nextValue) =>
+				setValue: (nextValue) => {
 					set((current) => ({
 						value: typeof nextValue === 'function' ? nextValue(current.value) : nextValue,
-					})),
+					}));
+				},
 			}),
 			{
 				name: key,

@@ -68,7 +68,7 @@ export function AppHeader({
 	const pathname = usePathname();
 	const client = useCurrentClient();
 	const account = useCurrentAccount();
-	const activePathname = pathname.replace(/\/+$/, '');
+	const activePathname = pathname.replace(/\/+$/u, '');
 	const coinEntries = React.useMemo(
 		() => SUIGAR_COINS.map((coin) => [coin, client.suigar.getConfig().coins[coin]] as const),
 		[client],
@@ -85,7 +85,7 @@ export function AppHeader({
 
 	React.useEffect(() => {
 		if (coinBalances || !account) {
-			return undefined;
+			return;
 		}
 
 		let cancelled = false;
@@ -117,10 +117,8 @@ export function AppHeader({
 			}),
 		).then((entries) => {
 			if (!cancelled) {
-				setLocalBalances(Object.fromEntries(entries));
+				setLocalBalances(Object.fromEntries<CoinBalanceState>(entries));
 			}
-
-			return undefined;
 		});
 
 		return () => {

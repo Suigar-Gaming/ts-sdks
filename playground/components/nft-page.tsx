@@ -63,7 +63,7 @@ async function getOwnedNftsBySpec(
 				cursor,
 			});
 		for (const nft of page.objects) {
-			if (nft instanceof Error || !nft.content) {
+			if (nft instanceof Error || nft.content == null) {
 				continue;
 			}
 			const parsedNft = client.suigar.bcs.NftV1.parse(nft.content);
@@ -78,7 +78,7 @@ async function getOwnedNftsBySpec(
 			});
 		}
 		cursor = page.cursor;
-	} while (cursor);
+	} while (cursor != null && cursor !== '');
 
 	return ownedNftsBySpec;
 }
@@ -94,7 +94,7 @@ export function NftPage() {
 	const [error, setError] = React.useState<string | null>(null);
 	const [activeRequestId, setActiveRequestId] = React.useState<number | null>(0);
 	const requestIdRef = React.useRef(0);
-	const isLoading = activeRequestId !== null;
+	const isLoading = activeRequestId != null;
 	const nftCode = `const { nftV1: nftPackageId } = client.suigar.getConfig().packageIds;
 const { nftV1Factory: nftFactoryId } = client.suigar.getConfig().objectIds;
 
@@ -131,7 +131,7 @@ const ownedNfts = page.objects.map(({ content }) =>
 				if (object instanceof Error) {
 					throw object;
 				}
-				if (!object.content) {
+				if (object.content == null) {
 					throw new Error('The NFT factory did not return BCS content.');
 				}
 				const factory = client.suigar.bcs.NftV1Factory.parse(object.content);
@@ -146,15 +146,16 @@ const ownedNfts = page.objects.map(({ content }) =>
 				if (nextSpecs.length === 0) {
 					throw new Error('The NFT factory did not return any readable specs.');
 				}
-				const nextOwnedNftsBySpec = accountAddress
-					? await getOwnedNftsBySpec(
-							client,
-							accountAddress,
-							client.suigar.bcs.NftV1.typeTag({
-								package: nftPackageId,
-							}),
-						)
-					: new Map<string, OwnedNftDisplay>();
+				const nextOwnedNftsBySpec =
+					accountAddress != null && accountAddress !== ''
+						? await getOwnedNftsBySpec(
+								client,
+								accountAddress,
+								client.suigar.bcs.NftV1.typeTag({
+									package: nftPackageId,
+								}),
+							)
+						: new Map<string, OwnedNftDisplay>();
 				if (!cancelled) {
 					setSpecs(nextSpecs);
 					setOwnedNftsBySpec(nextOwnedNftsBySpec);
@@ -222,7 +223,7 @@ const ownedNfts = page.objects.map(({ content }) =>
 					</div>
 				</section>
 
-				{error ? (
+				{error != null && error !== '' ? (
 					<Card>
 						<CardHeader>
 							<CardTitle>Unable to load NFTs</CardTitle>
@@ -244,7 +245,7 @@ const ownedNfts = page.objects.map(({ content }) =>
 								return (
 									<Card key={spec.id} className="overflow-hidden">
 										<CardHeader className="p-4">
-											{imageUrl ? (
+											{imageUrl != null && imageUrl !== '' ? (
 												<div className="relative mx-auto mb-3 aspect-square w-full max-w-80 overflow-hidden rounded-2xl">
 													<Image
 														src={imageUrl}
@@ -279,7 +280,7 @@ const ownedNfts = page.objects.map(({ content }) =>
 												<span>Available</span>
 												<span className="text-foreground font-medium">
 													{spec.available ?? '—'}
-													{spec.supply ? ` / ${spec.supply}` : ''}
+													{spec.supply != null && spec.supply !== '' ? ` / ${spec.supply}` : ''}
 												</span>
 											</div>
 										</CardContent>

@@ -27,7 +27,7 @@ export function StakeDescription({
 		);
 	}
 
-	if (error) {
+	if (error != null && error !== '') {
 		return (
 			<FieldDescription size="sm" className="text-destructive">
 				Unable to load on-chain stake limits: {error}
@@ -89,7 +89,7 @@ export function PvPStakeDescription({
 		);
 	}
 
-	if (error) {
+	if (error != null && error !== '') {
 		return (
 			<FieldDescription size="sm">Unable to load on-chain stake minimum: {error}</FieldDescription>
 		);

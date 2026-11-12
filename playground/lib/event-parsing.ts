@@ -17,7 +17,7 @@ type EventWithBcsPayload = {
 const textDecoder = new TextDecoder();
 
 function formatCoinType(value: unknown): string {
-	return value !== null &&
+	return value != null &&
 		typeof value === 'object' &&
 		'name' in value &&
 		typeof value.name === 'string'
@@ -26,14 +26,14 @@ function formatCoinType(value: unknown): string {
 }
 
 function bytesFromEvent(event: unknown) {
-	if (typeof event !== 'object' || event === null) {
-		return undefined;
+	if (typeof event !== 'object' || event == null) {
+		return;
 	}
 
 	const eventWithBcsPayload = event as EventWithBcsPayload;
 	const value = eventWithBcsPayload.bcs ?? eventWithBcsPayload.contents?.value;
-	if (!value) {
-		return undefined;
+	if (value == null || value === '') {
+		return;
 	}
 
 	if (typeof value === 'string') {
@@ -60,7 +60,7 @@ function decodeByteArray(value: unknown) {
 function formatVecMap(value: unknown) {
 	if (
 		typeof value !== 'object' ||
-		value === null ||
+		value == null ||
 		!('contents' in value) ||
 		!Array.isArray(value.contents)
 	) {
@@ -127,6 +127,7 @@ function createEventRow(digest: string, event: SuiClientTypes.Event): EventLogRo
 	const payload = suigarEvent.event.data as Record<string, unknown>;
 	const gameDetails = 'gameDetails' in suigarEvent ? suigarEvent.gameDetails : undefined;
 	const eventType = suigarEvent.event.type;
+	const creatorIsTails = Boolean(payload['creator_is_tails']);
 	const details = [
 		`game: ${suigarEvent.game}`,
 		...(eventType === 'BetResultEvent'
@@ -141,7 +142,7 @@ function createEventRow(digest: string, event: SuiClientTypes.Event): EventLogRo
 				]
 			: eventType === 'GameCreatedEvent'
 				? [
-						`creator side: ${payload['creator_is_tails'] ? 'tails' : 'heads'}`,
+						`creator side: ${creatorIsTails ? 'tails' : 'heads'}`,
 						`stake: ${bigintToString(payload['stake_per_player'])}`,
 						`private: ${String(payload['is_private'])}`,
 					]
@@ -173,5 +174,5 @@ export function parseSuigarEvents(
 ) {
 	return (events ?? [])
 		.map((event) => createEventRow(digest, event))
-		.filter((row): row is EventLogRow => row !== null);
+		.filter((row): row is EventLogRow => row != null);
 }

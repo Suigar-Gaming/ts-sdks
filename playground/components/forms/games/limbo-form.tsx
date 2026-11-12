@@ -23,7 +23,7 @@ export function LimboForm({
 }) {
 	const configuredScale = parseOptionalNumber(value.scale);
 	const effectiveScale =
-		configuredScale && Number.isFinite(configuredScale) && configuredScale > 0
+		configuredScale != null && Number.isFinite(configuredScale) && configuredScale > 0
 			? configuredScale
 			: DEFAULT_LIMBO_MULTIPLIER_SCALE;
 
@@ -38,7 +38,9 @@ export function LimboForm({
 						step="any"
 						className="bg-background/55 h-11 rounded-2xl px-4"
 						value={value.targetMultiplier}
-						onChange={(event) => onChange({ targetMultiplier: event.target.value })}
+						onChange={(event) => {
+							onChange({ targetMultiplier: event.target.value });
+						}}
 					/>
 					<FieldDescription size="sm">
 						The SDK sends <FieldCode>Math.round(targetMultiplier * scale)</FieldCode>. With scale{' '}
@@ -57,7 +59,9 @@ export function LimboForm({
 						min="1"
 						className="bg-background/55 h-11 rounded-2xl px-4"
 						value={value.scale}
-						onChange={(event) => onChange({ scale: event.target.value })}
+						onChange={(event) => {
+							onChange({ scale: event.target.value });
+						}}
 						placeholder="defaults to SDK scale"
 					/>
 					<FieldDescription size="sm">

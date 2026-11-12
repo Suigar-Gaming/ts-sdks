@@ -42,6 +42,8 @@ function SettingsSummaryCard({
 	description: React.ReactNode;
 	isLoading?: boolean | undefined;
 }) {
+	const hasDescription = Boolean(description);
+
 	return (
 		<Card className="bg-background/40 rounded-2xl shadow-none">
 			<CardContent className="p-4">
@@ -52,7 +54,7 @@ function SettingsSummaryCard({
 				<div className="text-foreground mt-2 flex flex-wrap items-center gap-2 text-lg font-semibold">
 					{value}
 				</div>
-				{description ? (
+				{hasDescription ? (
 					<div className="text-muted-foreground mt-1 text-sm">{description}</div>
 				) : null}
 			</CardContent>
@@ -104,7 +106,7 @@ function GameSettingsDialogHeader({
 							{coinLabel}
 						</span>
 					</Badge>
-					{error ? (
+					{error != null && error !== '' ? (
 						<Badge variant="destructive" className="px-3 py-1">
 							Error
 						</Badge>
@@ -187,7 +189,7 @@ function ConfigSummaryValue({
 	configOptions?: Array<GameConfigOption> | undefined;
 	playableConfigCount: number;
 }) {
-	return configOptions?.length ? (
+	return configOptions && configOptions.length > 0 ? (
 		<>
 			<FieldCode>{configOptions.length}</FieldCode>
 			<Badge variant="success">{playableConfigCount} playable</Badge>
@@ -237,7 +239,7 @@ function ActiveConfigDetails({
 								</span>
 							</div>
 						</div>
-						{activeConfigDetails.length ? (
+						{activeConfigDetails.length > 0 ? (
 							<div className="space-y-1">
 								{activeConfigDetails.map((detail) => (
 									<div
@@ -250,7 +252,7 @@ function ActiveConfigDetails({
 								))}
 							</div>
 						) : null}
-						{activeMultiplierValues.length ? (
+						{activeMultiplierValues.length > 0 ? (
 							<>
 								<div className="text-foreground mb-2 flex items-center gap-1">
 									<span>Multipliers:</span>
@@ -259,7 +261,9 @@ function ActiveConfigDetails({
 								<div className="flex flex-wrap gap-1.5">
 									{activeMultiplierValues.map((multiplier) => (
 										<FieldCode key={multiplier.id} className="shrink-0 justify-center">
-											{multiplier.label ? `${multiplier.label}: ` : null}
+											{multiplier.label != null && multiplier.label !== ''
+												? `${multiplier.label}: `
+												: null}
 											{multiplier.value}
 										</FieldCode>
 									))}
@@ -299,7 +303,7 @@ function CurrentConfigValue({
 			/>
 		);
 	}
-	if (!summarizedTopLevelDetails.length) {
+	if (summarizedTopLevelDetails.length === 0) {
 		return <span className="text-base">N/A</span>;
 	}
 	return (
@@ -383,7 +387,7 @@ function GameSettingsOverview({
 					/>
 				}
 				description={
-					activeConfigOption || summarizedTopLevelDetails.length
+					activeConfigOption || summarizedTopLevelDetails.length > 0
 						? null
 						: 'No per-config selection for the current game.'
 				}
@@ -429,7 +433,7 @@ function GameSettingsPanels({
 				</AccordionContent>
 			</AccordionItem>
 
-			{configOptions?.length ? (
+			{configOptions && configOptions.length > 0 ? (
 				<AccordionItem value="configs" className="border-border/70 border-b px-5 last:border-b-0">
 					<AccordionTrigger className="rounded-none border-0 px-0 hover:no-underline">
 						Config options
@@ -452,18 +456,18 @@ function GameSettingsPanels({
 					Raw payload
 				</AccordionTrigger>
 				<AccordionContent>
-					{isLoading && !serializedGameSettings ? (
+					{isLoading && (serializedGameSettings == null || serializedGameSettings === '') ? (
 						<SettingsStateCard className="bg-background/40 text-muted-foreground inline-flex shadow-none">
 							<div className="flex items-center gap-1">
 								<Spinner />
 								Loading game settings from on-chain parameters.
 							</div>
 						</SettingsStateCard>
-					) : error ? (
+					) : error != null && error !== '' ? (
 						<SettingsStateCard className="border-destructive/40 bg-destructive/10 text-destructive shadow-none">
 							{error}
 						</SettingsStateCard>
-					) : serializedGameSettings ? (
+					) : serializedGameSettings != null && serializedGameSettings !== '' ? (
 						<CodeBlock
 							code={serializedGameSettings}
 							copyMode="icon"
@@ -522,7 +526,14 @@ export function GameSettingsDialog({
 		isLoading && !activeStakeRange ? 'Stake' : isStakeMinimum ? 'Stake minimum' : 'Stake range';
 
 	return (
-		<Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+		<Dialog
+			open={isOpen}
+			onOpenChange={(open) => {
+				if (!open) {
+					onClose();
+				}
+			}}
+		>
 			<DialogContent
 				size="xl"
 				showCloseButton={false}

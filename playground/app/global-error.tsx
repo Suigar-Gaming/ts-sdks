@@ -31,7 +31,7 @@ export default function GlobalError({
 
 								<div className="border-border/60 bg-background/60 rounded-2xl border p-4">
 									<p className="text-muted-foreground font-mono text-xs wrap-break-word">
-										{error.digest
+										{error.digest != null && error.digest !== ''
 											? `Error reference: ${error.digest}`
 											: error.message || 'Unknown error'}
 									</p>

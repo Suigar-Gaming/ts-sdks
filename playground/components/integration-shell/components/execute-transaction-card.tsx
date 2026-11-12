@@ -51,7 +51,7 @@ export function ExecuteTransactionCard({ onExecute, isExecuting, status, error }
 						)}
 						Sign and execute transaction
 					</Button>
-					{status ? (
+					{status != null && status !== '' ? (
 						<Alert variant="success" className="w-full">
 							<CheckCircle2 />
 							<AlertTitle>Executed</AlertTitle>
@@ -62,7 +62,7 @@ export function ExecuteTransactionCard({ onExecute, isExecuting, status, error }
 					) : null}
 				</div>
 
-				{error ? (
+				{error != null && error !== '' ? (
 					<div className="border-destructive/50 bg-destructive/10 text-destructive rounded-2xl border px-4 py-3 text-sm">
 						{error}
 					</div>

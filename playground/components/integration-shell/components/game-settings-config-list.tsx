@@ -20,7 +20,7 @@ export function GameSettingsConfigList({
 	coinKey: SupportedCoinKey;
 	configOptions: Array<GameConfigOption>;
 }) {
-	if (!configOptions.length) {
+	if (configOptions.length === 0) {
 		return null;
 	}
 
@@ -45,7 +45,7 @@ export function GameSettingsConfigList({
 									>
 										{option.label}
 									</Badge>
-									{option.description ? (
+									{option.description != null && option.description !== '' ? (
 										<p className="text-muted-foreground text-xs">{option.description}</p>
 									) : null}
 								</div>
@@ -62,7 +62,7 @@ export function GameSettingsConfigList({
 								</div>
 							</div>
 
-							{option.details?.length ? (
+							{option.details && option.details.length > 0 ? (
 								<div className="text-muted-foreground mt-2.5 flex flex-wrap gap-x-3 gap-y-1 text-sm">
 									{option.details.map((detail) => (
 										<div key={`${option.id}-${detail.label}`} className="shrink-0">
@@ -85,7 +85,7 @@ export function GameSettingsConfigList({
 							</div>
 
 							<AccordionContent className="border-border/60 mt-3 border-t pt-3 pb-0">
-								{option.multiplierValues?.length ? (
+								{option.multiplierValues && option.multiplierValues.length > 0 ? (
 									<>
 										<div className="text-muted-foreground mb-2 text-sm font-medium">
 											Multipliers: <FieldCode>{option.multiplierValues.length}</FieldCode>
@@ -93,7 +93,9 @@ export function GameSettingsConfigList({
 										<div className="flex flex-wrap gap-1.5">
 											{option.multiplierValues.map((multiplier) => (
 												<FieldCode key={multiplier.id} className="shrink-0">
-													{multiplier.label ? `${multiplier.label}: ` : null}
+													{multiplier.label != null && multiplier.label !== ''
+														? `${multiplier.label}: `
+														: null}
 													{multiplier.value}
 												</FieldCode>
 											))}

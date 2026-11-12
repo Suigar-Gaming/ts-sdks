@@ -146,8 +146,7 @@ export function buildStandardTransaction(
 				throw new TypeError('Form does not match the selected game.');
 			}
 			const picks = parseKenoPicks(form.picks);
-			codeLines.push(`configId: ${Number(form.configId)},`);
-			codeLines.push(`picks: [${picks.join(', ')}],`);
+			codeLines.push(`configId: ${Number(form.configId)},`, `picks: [${picks.join(', ')}],`);
 			transaction = txApi.createGameBet({
 				game: 'keno',
 				...baseOptions,
@@ -162,7 +161,7 @@ export function buildStandardTransaction(
 			}
 			codeLines.push(`targetMultiplier: ${Number(form.targetMultiplier)},`);
 			const scale = parseOptionalNumber(form.scale);
-			if (scale !== undefined) {
+			if (scale != null) {
 				codeLines.push(`scale: ${scale},`);
 			}
 			transaction = txApi.createGameBet({
@@ -189,11 +188,13 @@ export function buildStandardTransaction(
 			if (!('leftPoint' in form)) {
 				throw new TypeError('Form does not match the selected game.');
 			}
-			codeLines.push(`leftPoint: ${Number(form.leftPoint)},`);
-			codeLines.push(`rightPoint: ${Number(form.rightPoint)},`);
-			codeLines.push(`outOfRange: ${form.outOfRange},`);
+			codeLines.push(
+				`leftPoint: ${Number(form.leftPoint)},`,
+				`rightPoint: ${Number(form.rightPoint)},`,
+				`outOfRange: ${form.outOfRange},`,
+			);
 			const scale = parseOptionalNumber(form.scale);
-			if (scale !== undefined) {
+			if (scale != null) {
 				codeLines.push(`scale: ${scale},`);
 			}
 			transaction = txApi.createGameBet({
@@ -210,9 +211,11 @@ export function buildStandardTransaction(
 			if (!('countryId' in form)) {
 				throw new TypeError('Form does not match the selected game.');
 			}
-			codeLines.push(`configId: ${Number(form.configId)},`);
-			codeLines.push(`countryId: ${Number(form.countryId)},`);
-			codeLines.push(`shotZoneId: ${Number(form.shotZoneId)},`);
+			codeLines.push(
+				`configId: ${Number(form.configId)},`,
+				`countryId: ${Number(form.countryId)},`,
+				`shotZoneId: ${Number(form.shotZoneId)},`,
+			);
 			transaction = txApi.createGameBet({
 				game: 'soccer',
 				...baseOptions,

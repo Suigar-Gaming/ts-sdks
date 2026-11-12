@@ -23,6 +23,8 @@ export function SectionShell({
 	action?: React.ReactNode | undefined;
 	children: React.ReactNode;
 }) {
+	const hasAction = Boolean(action);
+
 	return (
 		<Card className="h-full shadow-[0_28px_80px_-48px_rgba(8,47,91,0.42)] dark:shadow-[0_28px_80px_-48px_rgba(0,0,0,0.6)]">
 			<CardHeader className="flex-row items-start justify-between gap-4">
@@ -33,7 +35,7 @@ export function SectionShell({
 					</CardTitle>
 					<CardDescription>{description}</CardDescription>
 				</div>
-				{action ? <CardAction className="shrink-0">{action}</CardAction> : null}
+				{hasAction ? <CardAction className="shrink-0">{action}</CardAction> : null}
 			</CardHeader>
 			<CardContent>{children}</CardContent>
 		</Card>

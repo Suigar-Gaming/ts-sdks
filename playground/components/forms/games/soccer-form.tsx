@@ -44,7 +44,9 @@ export function SoccerForm({
 				{playableConfigOptions.length > 0 ? (
 					<Select
 						value={value.configId}
-						onValueChange={(configId: string) => onChange({ configId })}
+						onValueChange={(configId: string) => {
+							onChange({ configId });
+						}}
 					>
 						<SelectTrigger
 							id="soccerConfigId"
@@ -70,18 +72,20 @@ export function SoccerForm({
 						step="1"
 						className="bg-background/55 h-11 rounded-2xl px-4"
 						value={value.configId}
-						onChange={(event) => onChange({ configId: event.target.value })}
+						onChange={(event) => {
+							onChange({ configId: event.target.value });
+						}}
 					/>
 				)}
 				<FieldDescription size="sm">
 					{selectedConfig ? (
 						selectedConfig.description
-					) : isConfigLoading ? (
+					) : isConfigLoading === true ? (
 						<span className="inline-flex items-center gap-1.5">
 							<Spinner className="size-3.5" />
 							Loading Soccer configs from on-chain parameters
 						</span>
-					) : configError ? (
+					) : configError != null && configError !== '' ? (
 						`Unable to load on-chain Soccer configs: ${configError}`
 					) : (
 						'Enter a Soccer config id manually if on-chain configs are unavailable'
@@ -95,7 +99,9 @@ export function SoccerForm({
 					{countryOptions && countryOptions.length > 0 ? (
 						<Select
 							value={value.countryId}
-							onValueChange={(countryId: string) => onChange({ countryId })}
+							onValueChange={(countryId: string) => {
+								onChange({ countryId });
+							}}
 						>
 							<SelectTrigger
 								id="soccerCountryId"
@@ -121,7 +127,9 @@ export function SoccerForm({
 							step="1"
 							className="bg-background/55 h-11 rounded-2xl px-4"
 							value={value.countryId}
-							onChange={(event) => onChange({ countryId: event.target.value })}
+							onChange={(event) => {
+								onChange({ countryId: event.target.value });
+							}}
 						/>
 					)}
 					<FieldDescription size="sm">
@@ -133,7 +141,9 @@ export function SoccerForm({
 					{shotZoneOptions.length > 0 ? (
 						<Select
 							value={value.shotZoneId}
-							onValueChange={(shotZoneId: string) => onChange({ shotZoneId })}
+							onValueChange={(shotZoneId: string) => {
+								onChange({ shotZoneId });
+							}}
 						>
 							<SelectTrigger
 								id="soccerShotZoneId"
@@ -159,7 +169,9 @@ export function SoccerForm({
 							step="1"
 							className="bg-background/55 h-11 rounded-2xl px-4"
 							value={value.shotZoneId}
-							onChange={(event) => onChange({ shotZoneId: event.target.value })}
+							onChange={(event) => {
+								onChange({ shotZoneId: event.target.value });
+							}}
 						/>
 					)}
 					<FieldDescription size="sm">

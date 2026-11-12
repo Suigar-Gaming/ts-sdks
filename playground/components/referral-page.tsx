@@ -96,7 +96,7 @@ export function ReferralPage() {
 	const [status, setStatus] = React.useState<{ owner: string; digest: string } | null>(null);
 
 	const refreshClaims = React.useCallback(async () => {
-		if (!owner) {
+		if (owner == null || owner === '') {
 			return;
 		}
 
@@ -111,8 +111,8 @@ export function ReferralPage() {
 	}, [client, owner]);
 
 	React.useEffect(() => {
-		if (!owner) {
-			return undefined;
+		if (owner == null || owner === '') {
+			return;
 		}
 
 		let cancelled = false;
@@ -120,8 +120,6 @@ export function ReferralPage() {
 			if (!cancelled) {
 				setClaimResult({ owner, claims });
 			}
-
-			return undefined;
 		});
 
 		return () => {
@@ -129,12 +127,16 @@ export function ReferralPage() {
 		};
 	}, [client, owner]);
 
-	const claims = owner && claimResult.owner === owner ? claimResult.claims : INITIAL_CLAIMS;
+	const claims =
+		owner != null && owner !== '' && claimResult.owner === owner
+			? claimResult.claims
+			: INITIAL_CLAIMS;
 	const isLoading = Boolean(owner) && (isRefreshing || claimResult.owner !== owner);
-	const submittedDigest = owner && status?.owner === owner ? status.digest : null;
+	const submittedDigest =
+		owner != null && owner !== '' && status?.owner === owner ? status.digest : null;
 
 	const executeClaim = async (kind: ClaimKind) => {
-		if (!owner) {
+		if (owner == null || owner === '') {
 			return;
 		}
 
@@ -278,7 +280,7 @@ await dAppKit.signAndExecuteTransaction({ transaction: commissionTx });`;
 							<Button
 								variant="outline"
 								onClick={() => void refreshClaims()}
-								disabled={!owner || isLoading}
+								disabled={owner == null || owner === '' || isLoading}
 							>
 								<RefreshCw className={isLoading ? 'animate-spin' : undefined} />
 								Refresh
@@ -287,7 +289,7 @@ await dAppKit.signAndExecuteTransaction({ transaction: commissionTx });`;
 					</div>
 				</section>
 
-				{submittedDigest ? (
+				{submittedDigest != null && submittedDigest !== '' ? (
 					<Alert variant="success" className="mb-6">
 						<SendHorizontal />
 						<AlertTitle>Claim submitted</AlertTitle>
@@ -300,7 +302,7 @@ await dAppKit.signAndExecuteTransaction({ transaction: commissionTx });`;
 				<div className="grid gap-4 md:grid-cols-3">
 					{claimCards.map((card) => {
 						const claim = claims[card.kind];
-						const amount = claim.amount === null ? '—' : formatBalance(claim.amount, card.decimals);
+						const amount = claim.amount == null ? '—' : formatBalance(claim.amount, card.decimals);
 						return (
 							<Card key={card.kind}>
 								<CardHeader>
@@ -324,14 +326,17 @@ await dAppKit.signAndExecuteTransaction({ transaction: commissionTx });`;
 											</p>
 										)}
 									</div>
-									{claim.error ? <p className="text-destructive text-sm">{claim.error}</p> : null}
+									{claim.error != null && claim.error !== '' ? (
+										<p className="text-destructive text-sm">{claim.error}</p>
+									) : null}
 									<Button
 										className="w-full"
 										disabled={
-											!owner ||
+											owner == null ||
+											owner === '' ||
 											isLoading ||
-											isExecuting !== null ||
-											claim.amount === null ||
+											isExecuting != null ||
+											claim.amount == null ||
 											claim.amount === BigInt(0)
 										}
 										onClick={() => void executeClaim(card.kind)}

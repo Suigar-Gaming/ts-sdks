@@ -66,13 +66,13 @@ export function PvPLobbyPicker({
 				</div>
 			</CardHeader>
 			<CardContent className="space-y-3">
-				{error ? (
+				{error != null && error !== '' ? (
 					<div className="border-destructive/40 bg-destructive/10 text-destructive rounded-2xl border px-4 py-3 text-sm">
 						{error}
 					</div>
 				) : null}
 
-				{!error && games.length === 0 && !isLoading ? (
+				{(error == null || error === '') && games.length === 0 && !isLoading ? (
 					<div className="border-border/70 bg-background/50 text-muted-foreground rounded-2xl border border-dashed px-4 py-5 text-sm">
 						{emptyMessage}
 					</div>
@@ -102,7 +102,9 @@ export function PvPLobbyPicker({
 									<Button
 										type="button"
 										variant="ghost"
-										onClick={() => onSelectGame(game)}
+										onClick={() => {
+											onSelectGame(game);
+										}}
 										className="focus-visible:ring-ring/50 absolute inset-0 z-0 h-auto w-auto rounded-2xl border-0 bg-transparent p-0 hover:bg-transparent focus-visible:ring-[3px] focus-visible:outline-none active:translate-y-0"
 										aria-label={`Select PvP lobby ${compactAddress(game.id)}`}
 									/>
