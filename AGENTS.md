@@ -28,6 +28,10 @@ pnpm run release
 
 Use each package's scoped instructions for build, code generation, tests, and typechecks.
 
+## Shared code conventions
+
+- Use `value == null` and `value != null` for missing-value checks. Keep strict comparisons when `null` and `undefined` have distinct meanings.
+
 ## Shared testing conventions
 
 - The packages use Vitest 5 in the Node.js environment. Run tests through the package scripts or from the package root so its Vitest config is loaded. For `-t` filters, match an individual test name or use `.*` between suite and test names.
