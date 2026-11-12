@@ -1,2 +1,2 @@
 packages/sdk/src/contracts/** linguist-generated=true
-packages/suifrens-display-system/src/generated/**/*.svg linguist-generated=true
+packages/suifrens-display-system/src/generated/** linguist-generated=true

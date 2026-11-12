@@ -34,3 +34,31 @@ test('a rejected catalogue load allows the next request to retry', async () => {
 	}));
 	expect(await loadDeferredPresetSequence('run')).toBe(run);
 });
+
+test('selects a catalogue by preset name and retries only the catalogue that failed', async () => {
+	const { createPresetResolver } = await import('../../../src/animation/presets/resolver.js');
+	const dance = { duration: 3, tracks: [] };
+	const hit = { duration: 1, tracks: [] };
+	const run = { duration: 2, tracks: [] };
+	const combatPresets = { run, hit };
+	const dancePresets = { dance };
+	const combat = vi.fn<() => Promise<typeof combatPresets>>().mockResolvedValue(combatPresets);
+	const dances = vi
+		.fn<() => Promise<typeof dancePresets>>()
+		.mockResolvedValue(dancePresets)
+		.mockRejectedValueOnce(new Error('offline'));
+	const resolver = createPresetResolver([
+		{ names: ['hit', 'run'], load: combat },
+		{ names: ['dance'], load: dances },
+	]);
+	expect(await resolver.loadDeferredPresetSequence('unknown')).toBeNull();
+	expect(
+		await Promise.all(['hit', 'run'].map((name) => resolver.loadDeferredPresetSequence(name))),
+	).toEqual([hit, run]);
+	expect(dances).not.toHaveBeenCalled();
+	await expect(resolver.loadDeferredPresetSequence('dance')).rejects.toThrow('offline');
+	expect(await resolver.loadDeferredPresetSequence('hit')).toBe(hit);
+	expect(await resolver.loadDeferredPresetSequence('dance')).toBe(dance);
+	expect(combat).toHaveBeenCalledOnce();
+	expect(dances).toHaveBeenCalledTimes(2);
+});

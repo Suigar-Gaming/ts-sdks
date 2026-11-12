@@ -51,7 +51,7 @@ Both renderers accept the same props. Set `detail="head"` for a portrait and pas
 
 For ordinary accessories, set `renderOptions.assetSrc` to replace the catalogue artwork. The inline renderer uses that source directly, so use an SVG data URL when the export needs to stand alone.
 
-Use `AnimationPresetName` from `/types` to validate built-in preset names, for example `const preset = 'walk' satisfies AnimationPresetName`. The type is derived from both preset catalogues. APIs accepting dynamic strings remain unchanged.
+Use `AnimationPresetName` from `/types` to validate built-in preset names, for example `const preset = 'walk' satisfies AnimationPresetName`. The type includes all registered preset catalogues. When rendering by preset name, core presets are available immediately and each deferred catalogue loads on first use. The synchronous helpers in `/animation` use the full catalogue.
 
 Choose one animation source, `preset` or `sequence`:
 

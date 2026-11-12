@@ -1,7 +1,7 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import type { AnimationSequence } from '../../types/animation.type.js';
+import type { AnimationPresetCatalogue, AnimationSequence } from '../../types/animation.type.js';
 
 const RUN_DURATION = 900;
 
@@ -3245,4 +3245,4 @@ export const BATTLE_ROYALE_PRESETS = {
 	death: DEATH_SEQUENCE,
 	death2: DEATH2_SEQUENCE,
 	death3: DEATH3_SEQUENCE,
-} satisfies Record<string, AnimationSequence>;
+} satisfies AnimationPresetCatalogue;

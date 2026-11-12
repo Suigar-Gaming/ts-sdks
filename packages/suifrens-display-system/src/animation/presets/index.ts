@@ -1,14 +1,18 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import type { AnimationSequence, PlaybackOptions } from '../../types/animation.type.js';
+import { DEFERRED_PRESETS } from '../../generated/presets/catalogues.js';
+import type {
+	AnimationPresetCatalogue,
+	AnimationSequence,
+	PlaybackOptions,
+} from '../../types/animation.type.js';
 import { normalizePlayback } from '../sequence-player.js';
-import { BATTLE_ROYALE_PRESETS } from './battle-royale.js';
 import { CORE_PRESET_SEQUENCES } from './core.js';
 
-const PRESETS: Record<string, AnimationSequence> = {
+const PRESETS: AnimationPresetCatalogue = {
 	...CORE_PRESET_SEQUENCES,
-	...BATTLE_ROYALE_PRESETS,
+	...DEFERRED_PRESETS,
 };
 
 export function getPresetSequence(name: string): AnimationSequence | undefined {

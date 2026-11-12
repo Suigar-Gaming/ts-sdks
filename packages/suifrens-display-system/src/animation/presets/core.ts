@@ -4,6 +4,7 @@
 import type {
 	AnimationKeyframe,
 	AnimationPart,
+	AnimationPresetCatalogue,
 	AnimationSequence,
 } from '../../types/animation.type.js';
 
@@ -1779,9 +1780,9 @@ export const CORE_PRESET_SEQUENCES = {
 	idle: IDLE_SEQUENCE,
 	talkMicrophone: TALK_MICROPHONE_SEQUENCE,
 	walkJumpSit: SHOWCASE_SEQUENCE,
-} satisfies Record<string, AnimationSequence>;
+} satisfies AnimationPresetCatalogue;
 
 export function getCorePresetSequence(name: string): AnimationSequence | undefined {
-	const presets: Record<string, AnimationSequence> = CORE_PRESET_SEQUENCES;
+	const presets: AnimationPresetCatalogue = CORE_PRESET_SEQUENCES;
 	return presets[name];
 }

@@ -7,12 +7,14 @@ Read the [workspace instructions](../../AGENTS.md) too. These rules apply to `pa
 `@suigar/suifrens-display-system` is an ESM-only React library. `tsdown` builds public entry points, declarations and SVG assets into `dist/`.
 
 ```bash
-# Regenerate accessory assets and build
+# Regenerate assets and presets, then build
 pnpm --dir packages/suifrens-display-system run build
 # Build without regeneration
 pnpm --dir packages/suifrens-display-system run build:ci
-# Regenerate accessory assets only
+# Regenerate both, or run one generator independently
 pnpm --dir packages/suifrens-display-system run codegen
+pnpm --dir packages/suifrens-display-system run codegen:assets
+pnpm --dir packages/suifrens-display-system run codegen:presets
 # Run after building: distribution tests import dist/
 pnpm --dir packages/suifrens-display-system run test
 pnpm --dir packages/suifrens-display-system run typecheck
@@ -39,7 +41,7 @@ Documentation-only edits need formatting and diff checks.
 - Group pure domain helpers under `src/helpers/animation/`, `accessories/`, `appearance/` and `kits/`. Keep generic utilities in `src/utils/` and animation state/playback in `src/animation/`.
 - Keep animation preset catalogues and their resolver in `src/animation/presets/`. Preserve deferred loading for battle presets.
 - Keep character patterns and gestures in `src/components/shared/`; species shapes and pattern selection belong in `src/components/capy/` and `src/components/bullshark/`.
-- Edit accessory artwork in `src/accessories/`. Single-layer assets use one SVG; layered assets use a folder with `default.svg` and optional `body.svg`, `left.svg` and `right.svg`. Crowns have their own viewport; kits use SVG templates. Regenerate `src/generated/` with `codegen` after artwork changes.
+- Edit accessory artwork in `src/accessories/`. Single-layer assets use one SVG; layered assets use a folder with `default.svg` and optional `body.svg`, `left.svg` and `right.svg`. Crowns have their own viewport; kits use SVG templates. Regenerate `src/generated/` with `codegen:assets` after artwork changes.
 - Accessory codegen runs directly with Node and uses [SVGO](https://github.com/svg/svgo). Preserve IDs and group boundaries until limb extraction; plugins such as `cleanupIds` and `collapseGroups` can break that step. Use SVGO visitors to select groups and create symbols, and `prefixIds` for IDs, CSS and references. Keep SVG processing in the generator rather than importing runtime helpers from `src/` or manipulating XML with regular expressions.
 
 ## Tests and visual review
@@ -57,3 +59,5 @@ For browser tests, install Chromium with `pnpm --filter @suigar/suifrens-storybo
 Follow the workspace changeset and PR rules. Consumer-visible changes need an `@suigar/suifrens-display-system` changeset, with one topic per note. Version through the workspace Changesets workflow.
 
 Before committing, pushing or opening a PR, present the package contents, check results and relevant renders for explicit owner approval of the current revision and scope.
+
+To add a deferred animation catalogue, create its module under `src/animation/presets/` and register its relative path (without extension) and named preset-record export in `scripts/generate-preset-catalogues.ts`. Run `pnpm --dir packages/suifrens-display-system run codegen:presets`. The generator derives the routing names, static catalogue and public preset-name union from the same registration. Preset names must be unique across catalogues.

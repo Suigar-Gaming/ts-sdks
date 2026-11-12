@@ -1,45 +1,43 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import type { AnimationSequence } from '../../types/animation.type.js';
+import { PRESET_LOADERS } from '../../generated/presets/loaders.js';
+import type { AnimationPresetCatalogue, AnimationSequence } from '../../types/animation.type.js';
 
-const DEFERRED_PRESET_NAMES = new Set([
-	'run',
-	'sprint',
-	'crouch',
-	'crouchWalk',
-	'slide',
-	'ourah',
-	'showing',
-	'punch',
-	'kick',
-	'melee',
-	'hit',
-	'knockdown',
-	'revive',
-	'death',
-	'death2',
-	'death3',
-	'victory',
-	'floss',
-]);
+type CatalogueLoader = () => Promise<AnimationPresetCatalogue>;
 
-let battleRoyalePresetsPromise: Promise<Record<string, AnimationSequence>> | undefined;
-
-export function isDeferredPreset(name: string): boolean {
-	return DEFERRED_PRESET_NAMES.has(name);
-}
-
-export async function loadDeferredPresetSequence(name: string): Promise<AnimationSequence | null> {
-	if (!isDeferredPreset(name)) {
-		return null;
+export function createPresetResolver(
+	catalogues: ReadonlyArray<{ names: ReadonlyArray<string>; load: CatalogueLoader }>,
+) {
+	const loaders = new Map<string, CatalogueLoader>();
+	const pending = new Map<CatalogueLoader, Promise<AnimationPresetCatalogue>>();
+	for (const { names, load } of catalogues) {
+		for (const name of names) {
+			loaders.set(name, load);
+		}
 	}
-	battleRoyalePresetsPromise ??= import('./battle-royale.js')
-		.then(({ BATTLE_ROYALE_PRESETS }) => BATTLE_ROYALE_PRESETS)
-		.catch((error: unknown) => {
-			battleRoyalePresetsPromise = undefined;
-			throw error;
-		});
-	const catalogue = await battleRoyalePresetsPromise;
-	return catalogue[name] ?? null;
+
+	return {
+		isDeferredPreset(this: void, name: string): boolean {
+			return loaders.has(name);
+		},
+		async loadDeferredPresetSequence(this: void, name: string): Promise<AnimationSequence | null> {
+			const load = loaders.get(name);
+			if (!load) {
+				return null;
+			}
+			let catalogue = pending.get(load);
+			if (!catalogue) {
+				catalogue = load().catch((error: unknown) => {
+					pending.delete(load);
+					throw error;
+				});
+				pending.set(load, catalogue);
+			}
+			return (await catalogue)[name] ?? null;
+		},
+	};
 }
+
+export const { isDeferredPreset, loadDeferredPresetSequence } =
+	createPresetResolver(PRESET_LOADERS);

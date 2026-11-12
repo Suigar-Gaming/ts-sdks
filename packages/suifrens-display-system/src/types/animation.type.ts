@@ -1,13 +1,13 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import type { BATTLE_ROYALE_PRESETS } from '../animation/presets/battle-royale.js';
 import type { CORE_PRESET_SEQUENCES } from '../animation/presets/core.js';
+import type { DEFERRED_PRESETS } from '../generated/presets/catalogues.js';
 
-/** Names of the built-in core and battle animation presets. */
+/** Names of the built-in core and deferred animation presets. */
 export type AnimationPresetName =
 	| keyof typeof CORE_PRESET_SEQUENCES
-	| keyof typeof BATTLE_ROYALE_PRESETS;
+	| keyof typeof DEFERRED_PRESETS;
 
 export type AnimationRegistration = {
 	getBaseTransform: () => string | undefined;
@@ -61,6 +61,8 @@ export type AnimationSequence = {
 	duration: number;
 	tracks: Array<AnimationTrack>;
 };
+
+export type AnimationPresetCatalogue = Record<string, AnimationSequence>;
 
 export type PlaybackOptions = {
 	/** Number of directional passes to execute. Defaults to 1. Use "infinite" to repeat forever. */
