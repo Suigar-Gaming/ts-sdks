@@ -16,6 +16,7 @@ import {
 import { suigar, type SuigarClient, type SuigarNetwork, SUPPORTED_SUI_NETWORKS } from '@suigar/sdk';
 import { formatBaseUnitAmount } from '../utils/index.js';
 import { isNonArrayRecord } from '../utils/record.js';
+import { requireChoice } from '../utils/validation.js';
 import { readPersistedDefaultNetwork } from '../wallet/credentials.js';
 import { extractDryRunErrors, summarizeDryRun, toJsonValue } from './dry-run.js';
 import type {
@@ -37,16 +38,15 @@ export const DEFAULT_NETWORK: SuigarNetwork = 'testnet';
 
 export function normalizeNetwork(network?: string): SuigarNetwork {
 	const resolvedNetwork = network ?? readPersistedDefaultNetwork();
-	const supportedNetwork = SUPPORTED_SUI_NETWORKS.find(
-		(supported) => supported === resolvedNetwork,
-	);
-	if (supportedNetwork) {
-		return supportedNetwork;
-	}
-
-	throw new RangeError(
-		`Unsupported network: ${resolvedNetwork}. Use one of: ${SUPPORTED_SUI_NETWORKS.join(', ')}.`,
-	);
+	return requireChoice({
+		value: resolvedNetwork,
+		choices: SUPPORTED_SUI_NETWORKS,
+		fieldName: 'network',
+		createError: () =>
+			new RangeError(
+				`Unsupported network: ${resolvedNetwork}. Use one of: ${SUPPORTED_SUI_NETWORKS.join(', ')}.`,
+			),
+	});
 }
 
 export function getProviderUrl({

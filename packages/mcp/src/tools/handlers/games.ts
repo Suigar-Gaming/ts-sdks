@@ -26,6 +26,7 @@ import {
 	toBaseUnits,
 	toCurrencyAmountText,
 } from '../../utils/index.js';
+import { requireChoice } from '../../utils/validation.js';
 import {
 	createExecutionBridge,
 	loadSessionSigner,
@@ -52,7 +53,6 @@ import {
 	getConfigInput,
 	getMode,
 	getSuigarPackageId,
-	requireChoice,
 	requireString,
 } from './shared.js';
 

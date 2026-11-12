@@ -37,7 +37,9 @@ describe('network resolution', () => {
 	});
 
 	it('rejects unsupported networks with an actionable error', () => {
-		expect(() => normalizeNetwork('devnet')).toThrow(/mainnet.*testnet/u);
+		expect(() => normalizeNetwork('devnet')).toThrow(
+			new RangeError('Unsupported network: devnet. Use one of: mainnet, testnet.'),
+		);
 	});
 
 	it('uses default provider URLs unless one is provided', () => {

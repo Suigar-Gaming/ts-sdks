@@ -15,6 +15,7 @@ import {
 } from '../../runtime/index.js';
 import { formatBaseUnitAmount, isAmountFieldName, isRecord } from '../../utils/index.js';
 import { optionalOptions } from '../../utils/options.js';
+import { requireChoice } from '../../utils/validation.js';
 import { loadCredentials, loadSessionWallet } from '../../wallet/index.js';
 import type { ReadConfigInput } from '../schemas/index.js';
 
@@ -123,29 +124,15 @@ export function requireString({ value, fieldName }: { value: unknown; fieldName:
 	throw new TypeError(`Missing required field: ${fieldName}.`);
 }
 
-export function requireChoice<T extends string>({
-	value,
-	choices,
-	fieldName,
-}: {
-	value: unknown;
-	choices: ReadonlyArray<T>;
-	fieldName: string;
-}): T {
-	const choice = choices.find((candidate) => candidate === value);
-	if (choice != null) {
-		return choice;
-	}
-	throw new TypeError(`Invalid ${fieldName}. Choose one of: ${choices.join(', ')}.`);
-}
-
 export function requireGame(value: unknown): Game {
 	const game = requireString({ value, fieldName: 'game' });
-	const supported = GAMES.find((candidate) => candidate === game);
-	if (supported) {
-		return supported;
-	}
-	throw new RangeError(`Unsupported game: ${game}. Use one of: ${GAMES.join(', ')}.`);
+	return requireChoice({
+		value: game,
+		choices: GAMES,
+		fieldName: 'game',
+		createError: () =>
+			new RangeError(`Unsupported game: ${game}. Use one of: ${GAMES.join(', ')}.`),
+	});
 }
 
 function formatGameParameterValue({
