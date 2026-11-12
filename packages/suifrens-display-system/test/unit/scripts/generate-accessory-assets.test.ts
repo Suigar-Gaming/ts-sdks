@@ -46,7 +46,10 @@ afterAll(() => {
 });
 
 test('optimizes SVG content without corrupting IDs, references or the artwork notice', () => {
-	const svg = readFileSync(join(directory, 'src/generated/accessory-assets/fixture.svg'), 'utf8');
+	const svg = readFileSync(
+		join(directory, 'src/generated/accessory-assets/svg/fixture.svg'),
+		'utf8',
+	);
 	expect(svg.match(/<svg\b/gu)).toHaveLength(1);
 	expect(svg).toContain('xmlns="http://www.w3.org/2000/svg"');
 	expect(svg).not.toContain('<?xml');
@@ -70,7 +73,7 @@ test('optimizes SVG content without corrupting IDs, references or the artwork no
 });
 
 test('preserves nested role groups for independently animated body and legs', () => {
-	const svg = readFileSync(join(directory, 'src/generated/accessory-assets/limbs.svg'), 'utf8');
+	const svg = readFileSync(join(directory, 'src/generated/accessory-assets/svg/limbs.svg'), 'utf8');
 	for (const part of ['body', 'rightLeg', 'leftLeg']) {
 		expect(svg).toContain(`<symbol id="${part}"`);
 	}
@@ -80,13 +83,16 @@ test('preserves nested role groups for independently animated body and legs', ()
 	expect(svg).toContain('<g><path');
 	expect(svg).not.toContain('<symbol id="default"');
 	expect(
-		readFileSync(join(directory, 'src/generated/accessory-asset-manifest.ts'), 'utf8'),
+		readFileSync(join(directory, 'src/generated/accessory-assets/manifest.ts'), 'utf8'),
 	).toContain('"limbs"');
 });
 
 test('ignores colocated TypeScript and imports SVG sources directly from accessories', () => {
-	const inline = readFileSync(join(directory, 'src/generated/inline-artwork.ts'), 'utf8');
-	expect(inline).toContain("from '../accessories/fixture.svg'");
+	const inline = readFileSync(
+		join(directory, 'src/generated/accessory-assets/inline-layers.ts'),
+		'utf8',
+	);
+	expect(inline).toContain("from '../../accessories/fixture.svg'");
 	expect(inline).not.toContain('index.ts');
 	expect(inline).not.toContain('artwork/');
 });

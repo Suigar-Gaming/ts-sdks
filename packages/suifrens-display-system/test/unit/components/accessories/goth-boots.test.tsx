@@ -39,7 +39,7 @@ test('individual goth boots contain only the requested geometry, without clippin
 });
 
 test.each(['left', 'right'])('generated %s goth boot symbols exclude the opposite boot', (side) => {
-	const svg = readFileSync(`src/generated/accessory-assets/${side}-goth-boot.svg`, 'utf8');
+	const svg = readFileSync(`src/generated/accessory-assets/svg/${side}-goth-boot.svg`, 'utf8');
 	const container = document.createElement('div');
 	container.innerHTML = svg;
 	for (const symbol of container.querySelectorAll('symbol')) {

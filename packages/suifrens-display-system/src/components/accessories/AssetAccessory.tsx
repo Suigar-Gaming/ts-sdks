@@ -5,7 +5,7 @@ import { AnimatedAccessory } from '../../animation/AnimatedAccessory.js';
 import {
 	ACCESSORY_ASSET_MANIFEST,
 	SPLIT_LIMB_ASSET_NAMES,
-} from '../../generated/accessory-asset-manifest.js';
+} from '../../generated/accessory-assets/manifest.js';
 import { resolveAccessoryAssetOverride } from '../../helpers/accessories/accessory-asset-override.js';
 import { getVipCrownAssetViewport } from '../../helpers/accessories/crown-assets.js';
 import { resolveAccessoryAnimationPart } from '../../helpers/animation/accessory-animation-part.js';
