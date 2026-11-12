@@ -14,6 +14,7 @@ import {
 	type TransactionSummaryContext,
 } from '../../runtime/index.js';
 import { toBaseUnits, toCurrencyAmountText } from '../../utils/index.js';
+import { requireString } from '../../utils/validation.js';
 import {
 	createExecutionBridge,
 	loadSessionSigner,
@@ -31,7 +32,6 @@ import {
 	getConfigInput,
 	getMode,
 	getSuigarPackageId,
-	requireString,
 } from './shared.js';
 
 type SweetHouseAction = 'deposit' | 'redeem-request' | 'claim-own-redeem-request-after-delay';

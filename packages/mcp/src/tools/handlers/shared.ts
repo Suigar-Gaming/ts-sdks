@@ -15,7 +15,6 @@ import {
 } from '../../runtime/index.js';
 import { formatBaseUnitAmount, isAmountFieldName, isRecord } from '../../utils/index.js';
 import { optionalOptions } from '../../utils/options.js';
-import { requireChoice } from '../../utils/validation.js';
 import { loadCredentials, loadSessionWallet } from '../../wallet/index.js';
 import type { ReadConfigInput } from '../schemas/index.js';
 
@@ -115,24 +114,6 @@ export function coinMetadataForAmount({
 		coinType: resolvedCoinType,
 		decimals: coin.decimals,
 	};
-}
-
-export function requireString({ value, fieldName }: { value: unknown; fieldName: string }): string {
-	if (typeof value === 'string' && value.trim()) {
-		return value.trim();
-	}
-	throw new TypeError(`Missing required field: ${fieldName}.`);
-}
-
-export function requireGame(value: unknown): Game {
-	const game = requireString({ value, fieldName: 'game' });
-	return requireChoice({
-		value: game,
-		choices: GAMES,
-		fieldName: 'game',
-		createError: () =>
-			new RangeError(`Unsupported game: ${game}. Use one of: ${GAMES.join(', ')}.`),
-	});
 }
 
 function formatGameParameterValue({

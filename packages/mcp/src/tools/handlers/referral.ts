@@ -12,6 +12,7 @@ import {
 	type ToolTextResult,
 } from '../../runtime/index.js';
 import { formatBaseUnitAmount } from '../../utils/index.js';
+import { requireString } from '../../utils/validation.js';
 import { createExecutionBridge, resolveWebOrigin } from '../../wallet/index.js';
 import type {
 	BuildReferralCommissionClaimTransactionInput,
@@ -25,7 +26,6 @@ import {
 	getConfigInput,
 	getMode,
 	getSuigarPackageId,
-	requireString,
 } from './shared.js';
 
 function referralClaimTarget({

@@ -8,15 +8,10 @@ import {
 	resolveOwnerAddress,
 	type ToolTextResult,
 } from '../../runtime/index.js';
+import { requireString } from '../../utils/validation.js';
 import { createExecutionBridge, resolveWebOrigin } from '../../wallet/index.js';
 import type { BuildNftV1MintTransactionInput } from '../schemas/index.js';
-import {
-	asTextResponse,
-	getConfigInput,
-	getMode,
-	getSuigarPackageId,
-	requireString,
-} from './shared.js';
+import { asTextResponse, getConfigInput, getMode, getSuigarPackageId } from './shared.js';
 
 export async function buildNftV1MintTransactionTool(
 	input: BuildNftV1MintTransactionInput = {},

@@ -26,7 +26,7 @@ import {
 	toBaseUnits,
 	toCurrencyAmountText,
 } from '../../utils/index.js';
-import { requireChoice } from '../../utils/validation.js';
+import { requireChoice, requireString } from '../../utils/validation.js';
 import {
 	createExecutionBridge,
 	loadSessionSigner,
@@ -53,7 +53,6 @@ import {
 	getConfigInput,
 	getMode,
 	getSuigarPackageId,
-	requireString,
 } from './shared.js';
 
 type BetTransactionToolInput =

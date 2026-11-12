@@ -11,6 +11,7 @@ import {
 } from '../../runtime/index.js';
 import { formatBaseUnitAmount } from '../../utils/index.js';
 import { optionalOptions } from '../../utils/options.js';
+import { requireGame, requireString } from '../../utils/validation.js';
 import type { ListNftsInput, ReadGameMetadataInput } from '../schemas/index.js';
 import {
 	asTextResponse,
@@ -19,8 +20,6 @@ import {
 	GAME_LABELS,
 	getConfigInput,
 	getSuigarPackageId,
-	requireGame,
-	requireString,
 	supportedFeatures,
 	supportedGames,
 } from './shared.js';
