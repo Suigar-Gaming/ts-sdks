@@ -39,7 +39,7 @@ describe.each([
 	test('points the thumb below the palm in the thumbs-down pose', () => {
 		const markup = renderToStaticMarkup(<Image attributes={capy} gesture="thumbs_down" />);
 		const transform = markup.match(
-			/data-suifren-gesture="thumbs-down"[^>]*><g transform="([^"]+)"/,
+			/data-suifren-gesture="thumbs-down"[^>]*><g transform="([^"]+)"/u,
 		);
 		const matrix = parseMatrix(transform?.[1]);
 		expect(matrix).not.toBeNull();
@@ -51,7 +51,7 @@ describe.each([
 		const raised = renderToStaticMarkup(<Image attributes={capy} gesture="thumbs_up" />);
 		expect(resting).not.toContain('data-suifren-gesture');
 		expect(resting).toContain(restingArm);
-		expect(raised.match(/data-suifren-gesture="thumbs-up"/g)).toHaveLength(1);
+		expect(raised.match(/data-suifren-gesture="thumbs-up"/gu)).toHaveLength(1);
 		expect(raised).not.toContain(restingArm);
 		expect(raised).toContain('viewBox="0 -200 3000 3000"');
 		expect(raised.indexOf('data-suifren-gesture')).toBeGreaterThan(
@@ -61,7 +61,7 @@ describe.each([
 	test('keeps the thumb up and the wrist toward the belly with the small down-left offset', () => {
 		const raised = renderToStaticMarkup(<Image attributes={capy} gesture="thumbs_up" />);
 		const transform = raised.match(
-			/data-suifren-gesture="thumbs-up"[\s\S]*?<g transform="([^"]+)"/,
+			/data-suifren-gesture="thumbs-up"[\s\S]*?<g transform="([^"]+)"/u,
 		);
 		expect(transform).not.toBeNull();
 		const matrix = parseMatrix(transform![1])!;
@@ -85,7 +85,7 @@ describe.each([
 		const gesture = raised.slice(raised.indexOf('data-suifren-gesture="thumbs-up"'));
 		expect(gesture).not.toContain('<ellipse');
 		expect(gesture).not.toContain('<clipPath');
-		expect(gesture.match(/stroke="#000"/g)).toHaveLength(1);
+		expect(gesture.match(/stroke="#000"/gu)).toHaveLength(1);
 	});
 	test.each(['thumbs_up', 'thumbs_down', 'point'] as const)(
 		'does not change a head portrait with %s',
@@ -109,7 +109,7 @@ describe.each([
 
 test('point preserves the native shoulder-to-wrist distance', () => {
 	const markup = renderToStaticMarkup(<SuiFrenImageInline attributes={capy} gesture="point" />);
-	const transform = markup.match(/data-suifren-gesture="[^"]+"[^>]*><g transform="([^"]+)"/);
+	const transform = markup.match(/data-suifren-gesture="[^"]+"[^>]*><g transform="([^"]+)"/u);
 	const matrix = parseMatrix(transform?.[1])!;
 	const point = (x: number, y: number) => ({
 		x: matrix[0] * x + matrix[2] * y + matrix[4],

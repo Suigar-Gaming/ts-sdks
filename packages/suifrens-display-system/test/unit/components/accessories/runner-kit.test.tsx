@@ -54,15 +54,19 @@ test.each(['runner shorts', 'runner shoes'])(
 		);
 		const front = view.container.querySelector('[id$="frontleg"]')!;
 		const back = view.container.querySelector('[id$="backleg"]')!;
-		const frontBefore = front.getAttribute('transform'),
-			backBefore = back.getAttribute('transform');
+		const frontBefore = front.getAttribute('transform');
+		const backBefore = back.getAttribute('transform');
 		await act(async () => {
 			context.store!.setPose('leftLeg', { rotate: 24 });
+
+			await Promise.resolve();
 		});
 		expect(front.getAttribute('transform')).not.toBe(frontBefore);
 		expect(back.getAttribute('transform')).toBe(backBefore);
 		await act(async () => {
 			context.store!.setPose('rightLeg', { rotate: -24 });
+
+			await Promise.resolve();
 		});
 		expect(back.getAttribute('transform')).not.toBe(backBefore);
 	},
@@ -117,12 +121,13 @@ test.each(['full', 'head'] as const)(
 		const bands = view.container.querySelectorAll('#runner-headband-head');
 		expect(bands).toHaveLength(1);
 		const band = bands.item(0);
-		const coordinates = (
+		const coordinates = Array.from(
 			band
 				.querySelector('path')!
 				.getAttribute('d')!
-				.match(/-?\d+(?:\.\d+)?/g) ?? []
-		).map(Number);
+				.matchAll(/-?\d+(?:\.\d+)?/gu),
+			([value]) => Number(value),
+		);
 		// The short wrap rises just beyond the far ear; the muzzle starts much farther right.
 		expect(Math.max(...coordinates)).toBeLessThan(250);
 		const ear = view.container.querySelector(

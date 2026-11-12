@@ -28,9 +28,11 @@ function buildPlacementTransform(placement?: AccessoryPlacement): string | undef
 		transforms.push(`rotate(${rotation} ${originX} ${originY})`);
 	}
 	if (Math.abs(scale - 1) > SCALE_EPSILON) {
-		transforms.push(`translate(${originX} ${originY})`);
-		transforms.push(`scale(${scale})`);
-		transforms.push(`translate(${-originX} ${-originY})`);
+		transforms.push(
+			`translate(${originX} ${originY})`,
+			`scale(${scale})`,
+			`translate(${-originX} ${-originY})`,
+		);
 	}
 
 	return transforms.length > 0 ? transforms.join(' ') : undefined;
@@ -38,7 +40,7 @@ function buildPlacementTransform(placement?: AccessoryPlacement): string | undef
 
 export function SvgAccessory({
 	assetSrc,
-	symbolId,
+	symbolId = '',
 	species,
 	placement,
 	viewport,
@@ -49,9 +51,8 @@ export function SvgAccessory({
 		() => (symbolId ? resolveEmbeddedSvgSymbolSource(assetSrc, symbolId) : undefined),
 		[assetSrc, symbolId],
 	);
-	const imageSrc = embeddedSymbolSrc ?? (!symbolId ? assetSrc : null);
-	const fragmentSrc =
-		symbolId && embeddedSymbolSrc === undefined ? `${assetSrc}#${symbolId}` : null;
+	const imageSrc = embeddedSymbolSrc ?? (symbolId ? '' : assetSrc);
+	const fragmentSrc = symbolId && embeddedSymbolSrc == null ? `${assetSrc}#${symbolId}` : '';
 
 	return (
 		<g transform={transform}>

@@ -16,11 +16,9 @@ test('loads the catalogue on demand and shares it across different presets', asy
 	const { loadDeferredPresetSequence } = await import('../../../src/animation/presets/resolver.js');
 	expect(await loadDeferredPresetSequence('unknown')).toBeNull();
 	expect(load).not.toHaveBeenCalled();
-	expect(await Promise.all(['run', 'hit', 'run'].map(loadDeferredPresetSequence))).toEqual([
-		catalogue.run,
-		catalogue.hit,
-		catalogue.run,
-	]);
+	expect(
+		await Promise.all(['run', 'hit', 'run'].map((preset) => loadDeferredPresetSequence(preset))),
+	).toEqual([catalogue.run, catalogue.hit, catalogue.run]);
 	expect(load).toHaveBeenCalledOnce();
 });
 
@@ -29,7 +27,7 @@ test('a rejected catalogue load allows the next request to retry', async () => {
 		throw new Error('unavailable');
 	});
 	const { loadDeferredPresetSequence } = await import('../../../src/animation/presets/resolver.js');
-	await expect(loadDeferredPresetSequence('run')).rejects.toThrow(/mocking a module|unavailable/i);
+	await expect(loadDeferredPresetSequence('run')).rejects.toThrow(/mocking a module|unavailable/iu);
 	const run = { duration: 1, tracks: [] };
 	vi.doMock('../../../src/animation/presets/battle-royale.js', () => ({
 		BATTLE_ROYALE_PRESETS: { run },

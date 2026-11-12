@@ -6,7 +6,7 @@ import { basename } from 'node:path';
 import { defineConfig } from 'tsdown';
 
 const URL_QUERY_SUFFIX = '?url';
-const SVG_URL_PATTERN = new RegExp(`\\.svg${RegExp.escape(URL_QUERY_SUFFIX)}$`);
+const SVG_URL_PATTERN = new RegExp(`\\.svg${RegExp.escape(URL_QUERY_SUFFIX)}$`, 'u');
 
 export default defineConfig({
 	entry: {

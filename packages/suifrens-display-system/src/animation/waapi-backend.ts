@@ -123,7 +123,7 @@ function getTargetKeyframes(
 
 function setBaseTransforms(targets: Array<WaapiTarget>): void {
 	for (const target of targets) {
-		if (target.baseTransform) {
+		if (target.baseTransform != null && target.baseTransform !== '') {
 			target.element.setAttribute('transform', target.baseTransform);
 		} else {
 			target.element.removeAttribute('transform');
@@ -144,9 +144,9 @@ export function startWaapiAnimation(
 		store.clear();
 		return {
 			handled: true,
-			cleanup: () => undefined,
-			pause: () => undefined,
-			play: () => undefined,
+			cleanup: () => {},
+			pause: () => {},
+			play: () => {},
 		};
 	}
 
@@ -158,9 +158,9 @@ export function startWaapiAnimation(
 		return preference === 'waapi'
 			? {
 					handled: true,
-					cleanup: () => undefined,
-					pause: () => undefined,
-					play: () => undefined,
+					cleanup: () => {},
+					pause: () => {},
+					play: () => {},
 				}
 			: { handled: false };
 	}
@@ -173,13 +173,13 @@ export function startWaapiAnimation(
 		setBaseTransforms(targets);
 		return {
 			handled: true,
-			cleanup: () => undefined,
-			pause: () => undefined,
-			play: () => undefined,
+			cleanup: () => {},
+			pause: () => {},
+			play: () => {},
 		};
 	}
 
-	if (!targets.length) {
+	if (targets.length === 0) {
 		return { handled: false };
 	}
 
@@ -201,7 +201,7 @@ export function startWaapiAnimation(
 			iterations,
 			direction,
 			easing: 'linear',
-			fill: config.holdOnComplete ? 'forwards' : 'none',
+			fill: config.holdOnComplete === true ? 'forwards' : 'none',
 		});
 
 		if (config.startAt === 'end') {
@@ -211,8 +211,12 @@ export function startWaapiAnimation(
 			animation.pause();
 		}
 
-		if (!config.holdOnComplete) {
-			animation.finished.then(() => animation.cancel()).catch(() => undefined);
+		if (config.holdOnComplete !== true) {
+			animation.finished
+				.then(() => {
+					animation.cancel();
+				})
+				.catch(() => {});
 		}
 
 		return animation;
@@ -230,7 +234,7 @@ export function startWaapiAnimation(
 				return;
 			}
 			for (const animation of animations) {
-				if (animation.currentTime !== null) {
+				if (animation.currentTime != null) {
 					animation.play();
 				}
 			}

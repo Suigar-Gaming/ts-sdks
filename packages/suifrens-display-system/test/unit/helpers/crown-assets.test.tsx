@@ -53,14 +53,14 @@ test.each([
 				expect(svg.getAttribute('width')).toBe('64');
 				const image = svg.querySelector('image')!;
 				const asset = getVipCrownAssetSrc(accessory.name);
-				if (!asset) {
-					throw new Error(`Missing crown: ${accessory.name}`);
-				}
-				const expectedHref =
-					mode === 'inline'
-						? 'data:image/svg+xml;base64,' +
-							readFileSync(`src/accessories/crowns/${accessory.name}.svg`).toString('base64')
-						: asset;
+				expect.assert(typeof asset === 'string', `Missing crown: ${accessory.name}`);
+				expect(asset).not.toBe('');
+				const expectedHref = {
+					inline:
+						'data:image/svg+xml;base64,' +
+						readFileSync(`src/accessories/crowns/${accessory.name}.svg`).toString('base64'),
+					assets: asset,
+				}[mode];
 				expect(image.getAttribute('href')).toBe(expectedHref);
 				const viewport = getVipCrownAssetViewport(asset)!;
 				const scaleX = Number(image.getAttribute('width')) / 3209;

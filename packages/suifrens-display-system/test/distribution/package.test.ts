@@ -8,10 +8,10 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { test } from 'vitest';
 import manifest from '../../package.json' with { type: 'json' };
 
-const EXTERNAL_SVG_URL_PATTERN: RegExp = /file:.*\.svg/;
-const EXTERNAL_SVG_FRAGMENT_PATTERN: RegExp = /(?:href|xlink:href)="(file:[^"#]+\.svg)#([^"]+)"/gi;
-const CLIP_PATH_PATTERN: RegExp = /clipPath|clip-path/;
-const PATH_ELEMENT_PATTERN: RegExp = /<path\b/g;
+const EXTERNAL_SVG_URL_PATTERN: RegExp = /file:.*\.svg/u;
+const EXTERNAL_SVG_FRAGMENT_PATTERN: RegExp = /(?:href|xlink:href)="(file:[^"#]+\.svg)#([^"]+)"/giu;
+const CLIP_PATH_PATTERN: RegExp = /clipPath|clip-path/u;
+const PATH_ELEMENT_PATTERN: RegExp = /<path\b/gu;
 
 const root = new URL('../../', import.meta.url);
 
@@ -19,7 +19,10 @@ test.each(Object.entries(manifest.exports))(
 	'published entry %s and its declaration file resolve',
 	async (entry, paths) => {
 		assert.ok(existsSync(new URL(paths.types, root)), `${entry}: missing declarations`);
-		const exported = await import(`${manifest.name}${entry === '.' ? '' : entry.slice(1)}`);
+		const exported: unknown = await import(`${manifest.name}${entry.slice(1)}`);
+		assert.equal(typeof exported, 'object');
+		assert.ok(exported != null);
+		assert.ok(typeof exported === 'object');
 		assert.ok(
 			!Object.hasOwn(exported, 'SOCCER_TEAM_SIDES'),
 			`${entry}: internal soccer sides leaked`,
@@ -32,29 +35,31 @@ test.each(Object.entries(manifest.exports))(
 );
 
 test('built inline and asset renderers preserve custom kits for both species and sides', async () => {
-	const { ACCESSORIES: accessories } = await import(manifest.name + '/accessories');
-	const { resolveSoccerTeamKit } = await import(manifest.name + '/kits');
+	const { ACCESSORIES: accessories } = await import('@suigar/suifrens-display-system/accessories');
+	const { resolveSoccerTeamKit } = await import('@suigar/suifrens-display-system/kits');
 	const kit = {
 		code: 'CLUB',
 		primary: '#123456',
 		secondary: '#fedcba',
 		accent: '#abcdef',
 		pattern: 'vertical',
-	};
-	for (const [entry, name] of [
-		['/image-inline', 'SuiFrenImageInline'],
-		['', 'SuiFrenImage'],
+	} as const;
+	for (const [SuiFrenImage, assertAssets] of [
+		[
+			(await import('@suigar/suifrens-display-system/image-inline')).SuiFrenImageInline,
+			assertInlineAssets,
+		],
+		[(await import('@suigar/suifrens-display-system')).SuiFrenImage, assertExternalAssets],
 	] as const) {
-		const { [name]: SuiFrenImage } = await import(manifest.name + entry);
-		for (const species of ['capy', 'bullshark']) {
-			for (const side of ['home', 'away']) {
+		for (const shape of [{ earShape: 'default' }, { finStyle: 'classic' }] as const) {
+			for (const side of ['home', 'away'] as const) {
 				const gear = accessories
-					.filter((item: { name: string }) =>
+					.filter((item) =>
 						['soccer team shirt', 'soccer team swim trunks', 'left goth boot'].includes(item.name),
 					)
-					.map((item: object) => ({
+					.map((item) => ({
 						...item,
-						renderOptions: { kit: { type: 'soccer', team: kit, side } },
+						renderOptions: { kit: { type: 'soccer' as const, team: kit, side } },
 					}));
 				const svg = renderToStaticMarkup(
 					createElement(SuiFrenImage, {
@@ -63,7 +68,7 @@ test('built inline and asset renderers preserve custom kits for both species and
 							secondaryColor: 'e6fbff',
 							skin: 'basic',
 							expression: 'happy',
-							...(species === 'capy' ? { earShape: 'default' } : { finStyle: 'classic' }),
+							...shape,
 						},
 						accessories: gear,
 					}),
@@ -71,16 +76,7 @@ test('built inline and asset renderers preserve custom kits for both species and
 				assert.ok(svg.includes('shirt-body-CLUB'), 'custom team identity must survive bundling');
 				assert.ok(svg.includes(kit.primary));
 				assert.ok(svg.includes(kit.secondary));
-				if (entry !== '/image-inline') {
-					const references = [...svg.matchAll(EXTERNAL_SVG_FRAGMENT_PATTERN)];
-					assert.ok(references.length > 0, 'asset renderer must reference emitted SVGs');
-					for (const [, url] of references) {
-						assert.ok(url);
-						assert.ok(existsSync(new URL(url)), `missing asset ${url}`);
-					}
-				} else {
-					assert.doesNotMatch(svg, EXTERNAL_SVG_URL_PATTERN);
-				}
+				assertAssets(svg);
 			}
 		}
 	}
@@ -89,14 +85,14 @@ test('built inline and asset renderers preserve custom kits for both species and
 });
 
 test('historical root species renderers remain exported', async () => {
-	const library = await import(manifest.name);
+	const library = await import('@suigar/suifrens-display-system');
 	assert.equal(typeof library.CapyImage, 'function');
 	assert.equal(typeof library.BullsharkImage, 'function');
 });
 
 test('built goth boot assets contain only the selected boot without clipping', async () => {
-	const { ACCESSORIES: accessories } = await import(manifest.name + '/accessories');
-	const { SuiFrenImage } = await import(manifest.name);
+	const { ACCESSORIES: accessories } = await import('@suigar/suifrens-display-system/accessories');
+	const { SuiFrenImage } = await import('@suigar/suifrens-display-system');
 	for (const side of ['left', 'right']) {
 		const svg = renderToStaticMarkup(
 			createElement(SuiFrenImage, {
@@ -107,31 +103,29 @@ test('built goth boot assets contain only the selected boot without clipping', a
 					expression: 'happy',
 					earShape: 'default',
 				},
-				accessories: accessories.filter(
-					(item: { name: string }) => item.name === `${side} goth boot`,
-				),
+				accessories: accessories.filter((item) => item.name === `${side} goth boot`),
 			}),
 		);
 		const references = [...svg.matchAll(EXTERNAL_SVG_FRAGMENT_PATTERN)];
 		assert.ok(references.length > 0);
 		for (const [, url] of references) {
-			assert.ok(url);
+			assert.ok(typeof url === 'string');
+			assert.notEqual(url, '');
 			const asset = readFileSync(new URL(url), 'utf8');
 			assert.doesNotMatch(asset, CLIP_PATH_PATTERN);
-			assert.equal((asset.match(PATH_ELEMENT_PATTERN) ?? []).length, 20);
+			assert.equal(Array.from(asset.matchAll(PATH_ELEMENT_PATTERN)).length, 20);
 			assert.equal(asset.split(`data-boot-side="${side}"`).length - 1, 4);
 		}
 	}
 });
 
 test('built runner kits preserve configurable bibs and native limbs in every renderer and species', async () => {
-	const { buildRunnerAccessories } = await import(manifest.name + '/kits');
-	for (const [entry, name] of [
-		['/image-inline', 'SuiFrenImageInline'],
-		['', 'SuiFrenImage'],
+	const { buildRunnerAccessories } = await import('@suigar/suifrens-display-system/kits');
+	for (const SuiFrenImage of [
+		(await import('@suigar/suifrens-display-system/image-inline')).SuiFrenImageInline,
+		(await import('@suigar/suifrens-display-system')).SuiFrenImage,
 	] as const) {
-		const { [name]: SuiFrenImage } = await import(manifest.name + entry);
-		for (const species of ['capy', 'bullshark']) {
+		for (const shape of [{ earShape: 'default' }, { finStyle: 'classic' }] as const) {
 			const svg = renderToStaticMarkup(
 				createElement(SuiFrenImage, {
 					attributes: {
@@ -139,7 +133,7 @@ test('built runner kits preserve configurable bibs and native limbs in every ren
 						secondaryColor: 'e6fbff',
 						skin: 'basic',
 						expression: 'happy',
-						...(species === 'capy' ? { earShape: 'default' } : { finStyle: 'classic' }),
+						...shape,
 					},
 					accessories: buildRunnerAccessories({ color: '#123456', number: 9, mirrorBib: true }),
 				}),
@@ -167,3 +161,17 @@ test('published data catalogues use uppercase export names', async () => {
 	assert.ok(!('colors' in palette));
 	assert.ok(!('earGeneToEarShape' in attributes));
 });
+
+function assertInlineAssets(svg: string): void {
+	assert.doesNotMatch(svg, EXTERNAL_SVG_URL_PATTERN);
+}
+
+function assertExternalAssets(svg: string): void {
+	const references = [...svg.matchAll(EXTERNAL_SVG_FRAGMENT_PATTERN)];
+	assert.ok(references.length > 0, 'asset renderer must reference emitted SVGs');
+	for (const [, url] of references) {
+		assert.ok(typeof url === 'string');
+		assert.notEqual(url, '');
+		assert.ok(existsSync(new URL(url)), `missing asset ${url}`);
+	}
+}

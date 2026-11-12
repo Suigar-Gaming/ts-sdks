@@ -45,7 +45,7 @@ function renderHit(trigger?: string | number | null) {
 			attributes={attributes}
 			health={10}
 			maxHealth={10}
-			{...(trigger !== undefined && { hitFlashTrigger: trigger })}
+			{...(trigger != null && { hitFlashTrigger: trigger })}
 			imageStyle={{ filter: 'blur(2px)' }}
 		/>,
 	);
@@ -56,6 +56,8 @@ function filter() {
 async function advance(ms: number) {
 	await act(async () => {
 		vi.advanceTimersByTime(ms);
+
+		await Promise.resolve();
 	});
 }
 

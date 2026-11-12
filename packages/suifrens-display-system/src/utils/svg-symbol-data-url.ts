@@ -1,7 +1,7 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-const BASE64_PARAMETER_PATTERN: RegExp = /;base64(?:;|$)/i;
+const BASE64_PARAMETER_PATTERN: RegExp = /;base64(?:;|$)/iu;
 const SVG_DATA_URL_PREFIX = 'data:image/svg+xml';
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
 const MAX_CACHE_ENTRIES = 128;
@@ -10,7 +10,7 @@ const SYMBOL_SOURCE_CACHE = new Map<string, string | null>();
 
 function decodeBase64Utf8(value: string): string {
 	const decoded = atob(value);
-	const bytes = Uint8Array.from(decoded, (character) => character.charCodeAt(0));
+	const bytes = Uint8Array.from(decoded, (character) => character.codePointAt(0)!);
 	return new TextDecoder().decode(bytes);
 }
 
@@ -30,7 +30,7 @@ function decodeSvgDataUrl(assetSrc: string): string | null {
 function rememberSymbolSource(cacheKey: string, source: string | null): string | null {
 	if (SYMBOL_SOURCE_CACHE.size >= MAX_CACHE_ENTRIES) {
 		const oldestKey = SYMBOL_SOURCE_CACHE.keys().next().value;
-		if (oldestKey !== undefined) {
+		if (oldestKey != null) {
 			SYMBOL_SOURCE_CACHE.delete(oldestKey);
 		}
 	}
@@ -63,7 +63,7 @@ export function resolveEmbeddedSvgSymbolSource(
 
 	try {
 		const markup = decodeSvgDataUrl(assetSrc);
-		if (!markup) {
+		if (markup == null || markup === '') {
 			return rememberSymbolSource(cacheKey, null);
 		}
 
@@ -72,7 +72,7 @@ export function resolveEmbeddedSvgSymbolSource(
 			return rememberSymbolSource(cacheKey, null);
 		}
 
-		const symbol = Array.from(document.getElementsByTagName('symbol')).find(
+		const symbol = Array.from(document.querySelectorAll('symbol')).find(
 			(candidate) => candidate.getAttribute('id') === symbolId,
 		);
 		if (!symbol) {
@@ -89,7 +89,7 @@ export function resolveEmbeddedSvgSymbolSource(
 
 		if (!svg.hasAttribute('viewBox')) {
 			const rootViewBox = document.documentElement.getAttribute('viewBox');
-			if (rootViewBox) {
+			if (rootViewBox != null && rootViewBox !== '') {
 				svg.setAttribute('viewBox', rootViewBox);
 			}
 		}

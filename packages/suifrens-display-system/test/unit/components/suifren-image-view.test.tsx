@@ -51,7 +51,7 @@ test.each([
 	expect(finTargets.length).toBeGreaterThan(0);
 	for (const { element } of finTargets) {
 		expect(element?.isConnected).toBe(true);
-		expect(element?.getAttribute('data-suifren-animation-part')).toBe('fin');
+		expect(element?.dataset['suifrenAnimationPart']).toBe('fin');
 	}
 	register.mockClear();
 	await view.render(

@@ -38,7 +38,7 @@ describe.each([
 	test('points the thumb below the palm in the thumbs-down pose', () => {
 		const markup = renderToStaticMarkup(<Image attributes={shark} gesture="thumbs_down" />);
 		const transform = markup.match(
-			/data-suifren-gesture="thumbs-down"[^>]*><g transform="([^"]+)"/,
+			/data-suifren-gesture="thumbs-down"[^>]*><g transform="([^"]+)"/u,
 		);
 		const matrix = parseMatrix(transform?.[1]);
 		expect(matrix).not.toBeNull();
@@ -51,7 +51,7 @@ describe.each([
 		expect(resting).not.toContain('data-suifren-gesture');
 		expect(resting).toContain('1002.9,1719.3');
 		expect(raised).not.toContain('1002.9,1719.3');
-		expect(raised.match(/data-suifren-gesture="thumbs-up"/g)).toHaveLength(1);
+		expect(raised.match(/data-suifren-gesture="thumbs-up"/gu)).toHaveLength(1);
 		const gesture = raised.slice(raised.indexOf('data-suifren-gesture'));
 		expect(gesture).toContain('fill="#6fbbee"');
 		expect(gesture).not.toContain('#4e4943');

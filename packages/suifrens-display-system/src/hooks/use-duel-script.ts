@@ -147,7 +147,7 @@ export function useDuelScript<TExpression extends string = string>({
 				preset,
 				...(playback && { playback }),
 				trigger,
-				...(holdOnComplete !== undefined && { holdOnComplete }),
+				...(holdOnComplete != null && { holdOnComplete }),
 			};
 			commit((prev) => ({
 				...prev,
@@ -219,16 +219,17 @@ export function useDuelScript<TExpression extends string = string>({
 						if (stateRef.current[step.side].status === 'dead') {
 							break;
 						}
-						if (step.expression) {
+						if (step.expression != null && step.expression !== '') {
 							setExpression(step.side, step.expression);
 						}
 						playPreset(step.side, step.preset, step.playback, step.holdOnComplete);
-						if (step.durationMs !== undefined) {
-							await wait(step.durationMs, signal);
-							if (step.revertToIdle !== false && stateRef.current[step.side].status !== 'dead') {
-								idle(step.side);
-								setExpression(step.side, stateRef.current[step.side].baseExpression);
-							}
+						if (step.durationMs == null) {
+							break;
+						}
+						await wait(step.durationMs, signal);
+						if (step.revertToIdle !== false && stateRef.current[step.side].status !== 'dead') {
+							idle(step.side);
+							setExpression(step.side, stateRef.current[step.side].baseExpression);
 						}
 						break;
 					}
@@ -242,10 +243,10 @@ export function useDuelScript<TExpression extends string = string>({
 						const hitDelayMs = target.delayMs ?? 140;
 						const afterMs = step.afterMs ?? 140;
 
-						if (attacker.expression) {
+						if (attacker.expression != null && attacker.expression !== '') {
 							setExpression(attacker.side, attacker.expression);
 						}
-						if (target.expression) {
+						if (target.expression != null && target.expression !== '') {
 							setExpression(targetSide, target.expression);
 						}
 
@@ -287,16 +288,16 @@ export function useDuelScript<TExpression extends string = string>({
 						if (stateRef.current[step.side].status === 'dead') {
 							break;
 						}
-						if (step.expression) {
+						if (step.expression != null && step.expression !== '') {
 							setExpression(step.side, step.expression);
 						}
 						playPreset(step.side, step.preset, { iterations: 1 as const }, true);
 						markDead(step.side);
 						const duration = getPresetDurationMs(step.preset, { iterations: 1 as const });
-						if (duration) {
+						if (duration != null && duration !== 0 && !Number.isNaN(duration)) {
 							await wait(duration, signal);
 						}
-						if (step.afterMs) {
+						if (step.afterMs != null && step.afterMs !== 0 && !Number.isNaN(step.afterMs)) {
 							await wait(step.afterMs, signal);
 						}
 						break;
@@ -308,16 +309,16 @@ export function useDuelScript<TExpression extends string = string>({
 
 						const preset = step.preset ?? 'victory';
 						const playback = { iterations: step.iterations ?? 5 };
-						if (step.expression) {
+						if (step.expression != null && step.expression !== '') {
 							setExpression(step.side, step.expression);
 						}
 
 						playPreset(step.side, preset, playback);
 						const duration = getPresetDurationMs(preset, playback);
-						if (duration) {
+						if (duration != null && duration !== 0 && !Number.isNaN(duration)) {
 							await wait(duration, signal);
 						}
-						if (step.afterMs) {
+						if (step.afterMs != null && step.afterMs !== 0 && !Number.isNaN(step.afterMs)) {
 							await wait(step.afterMs, signal);
 						}
 
@@ -377,10 +378,12 @@ export function useDuelScript<TExpression extends string = string>({
 
 	useEffect(() => {
 		if (disabled || !autoStart) {
-			return undefined;
+			return;
 		}
 		void start();
-		return () => abortRun();
+		return () => {
+			abortRun();
+		};
 	}, [abortRun, autoStart, disabled, start]);
 
 	return {

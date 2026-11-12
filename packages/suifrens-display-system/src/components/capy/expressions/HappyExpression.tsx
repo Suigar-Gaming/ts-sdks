@@ -38,7 +38,7 @@ function HappyEye({
 				</g>
 			</g>
 			<g transform="matrix(1, 0, 0, 1, 0, 0)">
-				<g>{cheekId ? <g id={cheekId}>{cheekPath}</g> : cheekPath}</g>
+				<g>{cheekId != null && cheekId !== '' ? <g id={cheekId}>{cheekPath}</g> : cheekPath}</g>
 			</g>
 		</g>
 	);

@@ -29,12 +29,12 @@ function canAttachRefToType(type: unknown): boolean {
 		const prototype: unknown = type.prototype;
 		return (
 			typeof prototype === 'object' &&
-			prototype !== null &&
+			prototype != null &&
 			'isReactComponent' in prototype &&
 			Boolean(prototype.isReactComponent)
 		);
 	}
-	if (typeof type !== 'object' || type === null || !('$$typeof' in type)) {
+	if (typeof type !== 'object' || type == null || !('$$typeof' in type)) {
 		return false;
 	}
 	return (
@@ -46,11 +46,13 @@ function canAttachRefToType(type: unknown): boolean {
 function getElementRef(element: ReactElement): Ref<SVGElement> | undefined {
 	// React 19 stores refs in props; React 18 stores them on the element.
 	// Inspect data properties so neither version's deprecated getter is invoked.
-	const propsRef = Object.getOwnPropertyDescriptor(element.props, 'ref');
+	const propsRef: TypedPropertyDescriptor<Ref<SVGElement>> | undefined =
+		Object.getOwnPropertyDescriptor(element.props, 'ref');
 	if (propsRef && 'value' in propsRef) {
 		return propsRef.value;
 	}
-	const elementRef = Object.getOwnPropertyDescriptor(element, 'ref');
+	const elementRef: TypedPropertyDescriptor<Ref<SVGElement>> | undefined =
+		Object.getOwnPropertyDescriptor(element, 'ref');
 	return elementRef && 'value' in elementRef ? elementRef.value : undefined;
 }
 
@@ -66,11 +68,11 @@ export function AnimatedAccessory({ children, fallbackPart }: AnimatedAccessoryP
 
 	useEffect(() => {
 		if (!store) {
-			return undefined;
+			return;
 		}
 		const svgElement = localRef.current;
 		if (!svgElement) {
-			return undefined;
+			return;
 		}
 
 		const registrations: Array<() => void> = [];
@@ -94,7 +96,9 @@ export function AnimatedAccessory({ children, fallbackPart }: AnimatedAccessoryP
 		}
 
 		return () => {
-			registrations.forEach((cleanup) => cleanup());
+			registrations.forEach((cleanup) => {
+				cleanup();
+			});
 		};
 	}, [store, fallbackPart]);
 

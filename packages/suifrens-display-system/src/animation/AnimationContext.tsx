@@ -36,15 +36,21 @@ const AnimationContext = createContext<AnimationContextValue | null>(null);
 
 function useResolvedAnimationConfig(animation: AnimationConfig | null): AnimationConfig | null {
 	const presetName = animation && 'preset' in animation ? animation.preset : undefined;
-	const immediateSequence = presetName ? resolvePresetSequenceSync(presetName) : undefined;
+	const immediateSequence =
+		presetName != null && presetName !== '' ? resolvePresetSequenceSync(presetName) : undefined;
 	const [deferred, setDeferred] = useState<{
 		preset: string;
 		sequence: ReturnType<typeof resolvePresetSequenceSync> | null;
 	} | null>(null);
 
 	useEffect(() => {
-		if (!presetName || immediateSequence || !isDeferredPreset(presetName)) {
-			return undefined;
+		if (
+			presetName == null ||
+			presetName === '' ||
+			immediateSequence ||
+			!isDeferredPreset(presetName)
+		) {
+			return;
 		}
 
 		let cancelled = false;
@@ -54,8 +60,6 @@ function useResolvedAnimationConfig(animation: AnimationConfig | null): Animatio
 				if (!cancelled) {
 					setDeferred({ preset: presetName, sequence });
 				}
-
-				return undefined;
 			})
 			.catch(() => {
 				if (!cancelled) {
@@ -100,7 +104,7 @@ export function AnimationProvider({ animation = null, children }: AnimationProvi
 	useEffect(() => {
 		const root = rootRef.current;
 		if (!root) {
-			return undefined;
+			return;
 		}
 
 		const unregister: Array<() => void> = [];
@@ -111,7 +115,11 @@ export function AnimationProvider({ animation = null, children }: AnimationProvi
 			}
 		});
 
-		return () => unregister.forEach((cleanup) => cleanup());
+		return () => {
+			unregister.forEach((cleanup) => {
+				cleanup();
+			});
+		};
 	}, [store]);
 
 	useEffect(() => {
@@ -128,7 +136,7 @@ export function AnimationProvider({ animation = null, children }: AnimationProvi
 
 		controller.applyConfig(resolvedAnimation);
 		if (!controller.needsAnimationFrame()) {
-			return undefined;
+			return;
 		}
 
 		let raf: number | null = null;
@@ -144,13 +152,13 @@ export function AnimationProvider({ animation = null, children }: AnimationProvi
 		};
 
 		const play = (): void => {
-			if (raf === null && controller.needsAnimationFrame()) {
+			if (raf == null && controller.needsAnimationFrame()) {
 				last = performance.now();
 				raf = requestAnimationFrame(tick);
 			}
 		};
 		const pause = (): void => {
-			if (raf !== null) {
+			if (raf != null) {
 				cancelAnimationFrame(raf);
 				raf = null;
 			}

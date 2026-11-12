@@ -20,8 +20,12 @@ function getAccessorySlotKey(accessory: SuiFrenAccessory): string {
 export function getAccessoriesByType<T extends SuiFrenAccessory>(
 	accessories: ReadonlyArray<T>,
 ): AccessorySlots<T> {
-	return accessories.reduce<AccessorySlots<T>>((accumulator, accessory) => {
-		accumulator[getAccessorySlotKey(accessory)] = accessory;
-		return accumulator;
-	}, Object.create(null));
+	return accessories.reduce<AccessorySlots<T>>(
+		(accumulator, accessory) => {
+			accumulator[getAccessorySlotKey(accessory)] = accessory;
+			return accumulator;
+		},
+		// oxlint-disable-next-line typescript/no-unsafe-argument -- Object.create(null) is the intentional reduce seed.
+		Object.create(null),
+	);
 }

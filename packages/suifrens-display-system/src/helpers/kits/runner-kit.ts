@@ -7,7 +7,7 @@ import type { AccessoryMetadata } from '../../types/accessory.type.js';
 import type { RunnerKitOptions } from '../../types/runner-kit.type.js';
 
 export function resolveRunnerKit(value: unknown): Required<RunnerKitOptions> {
-	const options = value && typeof value === 'object' ? (value as RunnerKitOptions) : {};
+	const options = value != null && typeof value === 'object' ? (value as RunnerKitOptions) : {};
 	return {
 		color:
 			typeof options.color === 'string' && HEX_COLOR_PATTERN.test(options.color)

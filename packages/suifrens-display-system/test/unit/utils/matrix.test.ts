@@ -20,7 +20,7 @@ test.each([0, 45, 89.9999, 90, 90.0001, 135, 180])(
 		const transform = matrixToAnimationTransform(original);
 		const rotation = parseMatrix(transform)!;
 		expect(rotation[0] * rotation[3] - rotation[1] * rotation[2]).toBeGreaterThan(0);
-		expect(transform).toMatch(/ scale\(-1, 1\)$/);
+		expect(transform).toMatch(/ scale\(-1, 1\)$/u);
 		const composed = multiplyMatrix(rotation, [-1, 0, 0, 1, 0, 0]);
 		for (const [index, value] of original.entries()) {
 			expect(composed[index]).toBeCloseTo(value, 5);

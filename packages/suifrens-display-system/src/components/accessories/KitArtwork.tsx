@@ -12,21 +12,21 @@ import type { AnimationPart } from '../../types/animation.type.js';
 import type { SoccerTeamKit } from '../../types/soccer-kit.type.js';
 import { SvgArtwork } from './SvgArtwork.js';
 
-const TEMPLATE_VARIABLE_PATTERN: RegExp = /\{\{(\w+)\}\}/g;
-const PATTERN_SLOT_PATTERN: RegExp = /<g data-pattern-slot="(\w+)">\s*<\/g>/g;
-const UNSAFE_ID_CHARACTER_PATTERN: RegExp = /[^\w-]/g;
+const TEMPLATE_VARIABLE_PATTERN: RegExp = /\{\{(\w+)\}\}/gu;
+const PATTERN_SLOT_PATTERN: RegExp = /<g data-pattern-slot="(\w+)">\s*<\/g>/gu;
+const UNSAFE_ID_CHARACTER_PATTERN: RegExp = /[^\w-]/gu;
 
 function applyValues(source: string, values: Record<string, string | number>): string {
 	// Only validated colors, codes, numbers and internal SVG transforms are substituted.
-	return source.replace(TEMPLATE_VARIABLE_PATTERN, (_, key: string) => String(values[key]));
+	return source.replaceAll(TEMPLATE_VARIABLE_PATTERN, (_, key: string) => String(values[key]));
 }
 
 function renderSoccerArtwork(source: string, kit: SoccerTeamKit, id: string): string {
 	const code = kit.code === 'GLOBAL' ? 'GLO' : kit.code;
 	const patterns = ARTWORK['patterns/' + kit.pattern];
-	source = source.replace(PATTERN_SLOT_PATTERN, (_, slot: string) => {
+	source = source.replaceAll(PATTERN_SLOT_PATTERN, (_, slot: string) => {
 		const pattern = patterns?.[slot];
-		if (!pattern) {
+		if (pattern == null || pattern === '') {
 			throw new Error(`Missing SVG pattern ${kit.pattern}/${slot}`);
 		}
 		return pattern.trim().replace(SVG_WRAPPER_PATTERN, '');
@@ -48,16 +48,16 @@ export function KitArtwork({
 	layer,
 	fallbackPart,
 }: AccessoryRendererProps & { fallbackPart?: AnimationPart | undefined }) {
-	const id = useId().replace(
+	const id = useId().replaceAll(
 		UNSAFE_ID_CHARACTER_PATTERN,
-		(c) => '-' + c.charCodeAt(0).toString(16) + '-',
+		(c) => '-' + c.codePointAt(0)!.toString(16) + '-',
 	);
 	const layers = ARTWORK[accessory.name];
 	if (!layers) {
 		return null;
 	}
 	let source = layers[layer ?? 'default'] ?? layers['default'];
-	if (source === undefined) {
+	if (source == null) {
 		return null;
 	}
 	const options = accessory.renderOptions.kit;

@@ -26,13 +26,13 @@ export function SuiFrenBattleSprite({
 	const healthBarOffset = spriteSize * 0.12;
 	const [flash, setFlash] = useState({
 		trigger: hitFlashTrigger,
-		active: hitFlashTrigger !== undefined && hitFlashTrigger !== null,
+		active: hitFlashTrigger != null,
 	});
 	// A new hit starts a fresh flash without remounting the animated SuiFren.
 	if (!Object.is(flash.trigger, hitFlashTrigger)) {
 		setFlash({
 			trigger: hitFlashTrigger,
-			active: hitFlashTrigger !== undefined && hitFlashTrigger !== null ? true : flash.active,
+			active: hitFlashTrigger == null ? flash.active : true,
 		});
 	}
 	const flashTimeoutRef = useRef<number | null>(null);
@@ -48,10 +48,10 @@ export function SuiFrenBattleSprite({
 	};
 
 	useEffect(() => {
-		if (hitFlashTrigger === undefined || hitFlashTrigger === null) {
+		if (hitFlashTrigger == null) {
 			return;
 		}
-		if (flashTimeoutRef.current) {
+		if (flashTimeoutRef.current != null) {
 			window.clearTimeout(flashTimeoutRef.current);
 		}
 		flashTimeoutRef.current = window.setTimeout(() => {
@@ -62,7 +62,7 @@ export function SuiFrenBattleSprite({
 
 	useEffect(
 		() => () => {
-			if (flashTimeoutRef.current) {
+			if (flashTimeoutRef.current != null) {
 				window.clearTimeout(flashTimeoutRef.current);
 				flashTimeoutRef.current = null;
 			}

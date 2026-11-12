@@ -51,7 +51,9 @@ export class AnimationStore {
 		const baseTransform = element.getAttribute('transform') ?? undefined;
 		const unregister = this.register(part, {
 			getBaseTransform: () => baseTransform,
-			setTransform: (value) => element.setAttribute('transform', value),
+			setTransform: (value) => {
+				element.setAttribute('transform', value);
+			},
 			pivotOverride,
 			element,
 		});
@@ -81,14 +83,14 @@ export class AnimationStore {
 				return;
 			}
 			collection.delete(registration);
-			if (!collection.size) {
+			if (collection.size === 0) {
 				this.registrations.delete(part);
 			}
 		};
 	}
 
 	setPose(part: AnimationPart, pose: PartPose | undefined): void {
-		if (!pose || (pose.rotate === undefined && !pose.translate && !pose.scale)) {
+		if (!pose || (pose.rotate == null && !pose.translate && !pose.scale)) {
 			this.poses.delete(part);
 		} else {
 			this.poses.set(part, pose);
@@ -104,7 +106,7 @@ export class AnimationStore {
 	}
 
 	clear(): void {
-		if (!this.poses.size) {
+		if (this.poses.size === 0) {
 			return;
 		}
 		this.poses.clear();
@@ -188,8 +190,7 @@ export class AnimationStore {
 		registration: AnimationRegistration,
 		pose: PartPose,
 	): string {
-		const poses = new Map(this.poses);
-		poses.set(part, pose);
+		const poses = new Map(this.poses).set(part, pose);
 		return composePartTransform(
 			part,
 			registration.getBaseTransform(),

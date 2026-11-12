@@ -28,7 +28,7 @@ describe('resolveEmbeddedSvgSymbolSource', () => {
 	it('extracts only the requested symbol into a standalone SVG image', () => {
 		const resolved = resolveEmbeddedSvgSymbolSource(toEncodedDataUrl(SPRITE_MARKUP), 'leftLeg');
 
-		expect(resolved).toMatch(/^data:image\/svg\+xml,/);
+		expect(resolved).toMatch(/^data:image\/svg\+xml,/u);
 		const document = parseResolvedSvg(resolved!);
 		expect(document.documentElement.tagName).toBe('svg');
 		expect(document.documentElement.getAttribute('viewBox')).toBe('0 0 3000 3000');

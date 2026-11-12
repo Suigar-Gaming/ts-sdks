@@ -52,4 +52,6 @@ function createVipCrownAccessory(name: VipCrownAccessoryName): AccessoryMetadata
 	};
 }
 
-export const VIP_CROWN_ACCESSORIES = VIP_CROWN_ACCESSORY_NAMES.map(createVipCrownAccessory);
+export const VIP_CROWN_ACCESSORIES = VIP_CROWN_ACCESSORY_NAMES.map((name) =>
+	createVipCrownAccessory(name),
+);

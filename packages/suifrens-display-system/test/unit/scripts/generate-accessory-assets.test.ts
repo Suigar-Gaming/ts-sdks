@@ -41,11 +41,13 @@ beforeAll(() => {
 	execFileSync(process.execPath, [script], { cwd: directory, timeout: 10_000 });
 });
 
-afterAll(() => rmSync(directory, { recursive: true, force: true }));
+afterAll(() => {
+	rmSync(directory, { recursive: true, force: true });
+});
 
 test('optimizes SVG content without corrupting IDs, references or the artwork notice', () => {
 	const svg = readFileSync(join(directory, 'src/generated/accessory-assets/fixture.svg'), 'utf8');
-	expect(svg.match(/<svg\b/g)).toHaveLength(1);
+	expect(svg.match(/<svg\b/gu)).toHaveLength(1);
 	expect(svg).toContain('xmlns="http://www.w3.org/2000/svg"');
 	expect(svg).not.toContain('<?xml');
 	expect(svg).not.toContain('xlink:');

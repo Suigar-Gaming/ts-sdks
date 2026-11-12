@@ -4,7 +4,7 @@
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitest/config';
 
-const ACCESSORY_SVG_IMPORT_PATTERN: RegExp = /^(\.\.\/accessories\/.+\.svg)$/;
+const ACCESSORY_SVG_IMPORT_PATTERN: RegExp = /^(\.\.\/accessories\/.+\.svg)$/u;
 
 export default defineConfig({
 	// Vite serves plain SVG imports as URLs. Match Rolldown's text imports for artwork.

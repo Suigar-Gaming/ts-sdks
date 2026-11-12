@@ -4,7 +4,7 @@
 import { WHITESPACE_PATTERN } from '../constants/svg-patterns.js';
 import type { AnimationPart } from '../types/animation.type.js';
 
-const TRAILING_DECIMAL_ZEROS_PATTERN: RegExp = /\.?0+$/;
+const TRAILING_DECIMAL_ZEROS_PATTERN: RegExp = /\.?0+$/u;
 
 type PartDefinition = {
 	pivot: { x: number; y: number };
@@ -94,7 +94,7 @@ export function getPartDefinition(part: AnimationPart): PartDefinition {
 }
 
 export function matchPartByTransform(transform: string | null): AnimationPart | null {
-	if (!transform) {
+	if (transform == null || transform === '') {
 		return null;
 	}
 	const normalized = normalizeTransform(transform);

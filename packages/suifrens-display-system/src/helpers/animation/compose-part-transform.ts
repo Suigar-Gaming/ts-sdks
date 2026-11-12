@@ -33,7 +33,7 @@ export function composePartTransform(
 		composed = multiplyMatrix(scale, composed);
 	}
 
-	if (pose.rotate !== undefined) {
+	if (pose.rotate != null) {
 		const rotate = rotateMatrix(pose.rotate, pivotSource.x, pivotSource.y);
 		composed = multiplyMatrix(rotate, composed);
 	}
@@ -60,7 +60,7 @@ export function composePartTransform(
 				);
 				composed = multiplyMatrix(scale, composed);
 			}
-			if (parentPose.rotate !== undefined) {
+			if (parentPose.rotate != null) {
 				const rotate = rotateMatrix(parentPose.rotate, parentPivot.x, parentPivot.y);
 				composed = multiplyMatrix(rotate, composed);
 			}

@@ -5,7 +5,7 @@ import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { optimize, type XastElement } from 'svgo';
 
-const SVG_EXTENSION_PATTERN: RegExp = /\.svg$/;
+const SVG_EXTENSION_PATTERN: RegExp = /\.svg$/u;
 const ARTWORK_NOTICE =
 	'<!-- Adapted by Suigar from the SuiFrens Display System by Mysten Labs. -->';
 const GENERATED_HEADER = '// Copyright (c) Suigar\n// SPDX-License-Identifier: Apache-2.0\n\n';
@@ -37,11 +37,16 @@ function renderSymbol(markup: string, prefix: string, part: string, role?: strin
 								return;
 							}
 							for (const candidate of ['body', 'backleg', 'frontleg']) {
-								if (node.attributes['id']?.includes(candidate)) {
+								if (node.attributes['id']?.includes(candidate) === true) {
 									roles.add(candidate);
 								}
 							}
-							if (role && !selectedGroup && node.attributes['id']?.includes(role)) {
+							if (
+								role != null &&
+								role !== '' &&
+								!selectedGroup &&
+								node.attributes['id']?.includes(role) === true
+							) {
 								selectedGroup = node;
 							}
 						},
@@ -63,7 +68,7 @@ function renderSymbol(markup: string, prefix: string, part: string, role?: strin
 							if (!svg || svg.type !== 'element') {
 								throw new Error('Expected an SVG root element');
 							}
-							if (role) {
+							if (role != null && role !== '') {
 								if (!selectedGroup) {
 									throw new Error(`Missing ${role} group for ${prefix}`);
 								}
@@ -160,7 +165,7 @@ ${entries.join(',\n')}
 	const layers = await readLayers(source, INLINE_IMPORTS, INLINE_ENTRIES);
 	const symbols: Array<string> = [];
 	const baseLayer = layers['default'];
-	if (!baseLayer) {
+	if (baseLayer == null || baseLayer === '') {
 		throw new Error(`Missing default SVG layer for ${name}`);
 	}
 	const notice = Object.values(layers).some((layer) => layer.includes(ARTWORK_NOTICE))
@@ -200,7 +205,7 @@ ${entries.join(',\n')}
 		join(OUTPUT_DIR, filename),
 		`<svg xmlns="http://www.w3.org/2000/svg">${notice}${symbols.join('')}</svg>`,
 	);
-	const assetId = dir.replaceAll('-', '_').replace(/^([0-9])/, '_$1');
+	const assetId = dir.replaceAll('-', '_').replace(/^([0-9])/u, '_$1');
 	MANIFEST_IMPORTS.push(`import ${assetId} from './accessory-assets/${filename}?url';`);
 	MANIFEST_ENTRIES.push(`${JSON.stringify(name)}: ${assetId}`);
 }

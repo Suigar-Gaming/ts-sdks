@@ -30,9 +30,17 @@ test('an interrupted duel cannot mark its replacement as finished', async () => 
 			</StrictMode>,
 		);
 		const button = view.container.querySelector('button')!;
-		await act(async () => button.click());
+		await act(async () => {
+			button.click();
+
+			await Promise.resolve();
+		});
 		await act(async () => vi.advanceTimersByTimeAsync(50));
-		await act(async () => button.click());
+		await act(async () => {
+			button.click();
+
+			await Promise.resolve();
+		});
 		await act(async () => vi.advanceTimersByTimeAsync(50));
 		expect(button.textContent).toBe('Running: Waiting');
 		await act(async () => vi.advanceTimersByTimeAsync(50));
@@ -66,7 +74,7 @@ test.each([
 	const view = createTestRoot();
 	try {
 		await view.render(<Attack />);
-		const state = () => JSON.parse(view.container.textContent ?? '{}');
+		const state = (): unknown => JSON.parse(view.container.textContent);
 		await act(async () => vi.advanceTimersByTimeAsync(39));
 		expect(state()).toMatchObject({
 			[side]: { expression: 'angry', animation: { preset: 'punch' } },

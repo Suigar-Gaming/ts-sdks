@@ -43,9 +43,12 @@ function point(element: Element, x: number, y: number) {
 	const [a, b, c, d, e, f] = parseMatrix(element.getAttribute('transform'))!;
 	return { x: a * x + c * y + e, y: b * x + d * y + f };
 }
-test.each(['capy', 'bullshark'] as const)(
+test.each([
+	['capy', CapyImage],
+	['bullshark', BullsharkImage],
+] as const)(
 	'%s re-registers its foreground gripping hand when victory replaces the resting arm',
-	async (species) => {
+	async (_species, Renderer) => {
 		const view = createTestRoot();
 		const store = new AnimationStore();
 		context.store = store;
@@ -53,19 +56,11 @@ test.each(['capy', 'bullshark'] as const)(
 			view.render(
 				<svg>
 					<AccessoryRendererProvider renderer={HeldCup}>
-						{species === 'capy' ? (
-							<CapyImage
-								attributes={{ ...attributes, earShape: 'default' }}
-								accessoriesByType={{ object: cup }}
-								renderMicrophoneArmInForeground={foreground}
-							/>
-						) : (
-							<BullsharkImage
-								attributes={{ ...attributes, finStyle: 'classic' }}
-								accessoriesByType={{ object: cup }}
-								renderMicrophoneArmInForeground={foreground}
-							/>
-						)}
+						<Renderer
+							attributes={{ ...attributes, earShape: 'default', finStyle: 'classic' }}
+							accessoriesByType={{ object: cup }}
+							renderMicrophoneArmInForeground={foreground}
+						/>
 					</AccessoryRendererProvider>
 				</svg>,
 			);
@@ -80,15 +75,19 @@ test.each(['capy', 'bullshark'] as const)(
 			expect(arm).not.toBeNull();
 			const base = arm.getAttribute('transform');
 			for (const rotate of [35, 70, 50, 75, 55, 60]) {
-				act(() => store.setPose('leftArm', { rotate }));
+				act(() => {
+					store.setPose('leftArm', { rotate });
+				});
 				expect(arm.getAttribute('transform')).not.toBe(base);
-				const palm = point(arm, 34, 137),
-					grip = point(object, 1100, 2120);
+				const palm = point(arm, 34, 137);
+				const grip = point(object, 1100, 2120);
 				expect(Math.hypot(palm.x - grip.x, palm.y - grip.y)).toBeLessThan(3);
 			}
 			await render(false);
 			const detached = arm.getAttribute('transform');
-			act(() => store.setPose('leftArm', { rotate: 0 }));
+			act(() => {
+				store.setPose('leftArm', { rotate: 0 });
+			});
 			expect(arm.getAttribute('transform')).toBe(detached);
 		} finally {
 			await view.unmount();

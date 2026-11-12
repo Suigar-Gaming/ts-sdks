@@ -55,7 +55,7 @@ function BullsharkFin({
 	colorTheme: ReturnType<typeof getThemeFromSkin>;
 }) {
 	const headAccessory = accessoriesByType['head'];
-	if (headAccessory && !headAccessory.renderOptions.showFin) {
+	if (headAccessory && headAccessory.renderOptions.showFin !== true) {
 		return null;
 	}
 	return (

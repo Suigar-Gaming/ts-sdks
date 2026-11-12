@@ -83,7 +83,7 @@ export class AnimationController {
 		const incomingSignature = playbackSignature(config.playback);
 		const sequenceChanged = this.sequenceSource?.sequence !== sequence;
 		const playbackChanged = this.playbackSignature !== incomingSignature;
-		const triggerChanged = config.trigger !== undefined && config.trigger !== this.lastTrigger;
+		const triggerChanged = config.trigger != null && config.trigger !== this.lastTrigger;
 		const directionChanged = direction !== this.currentDirection;
 		const transitionMs =
 			typeof config.transitionMs === 'number' && config.transitionMs >= 0
@@ -141,8 +141,6 @@ export class AnimationController {
 				this.syncCurrentPoses();
 				this.completionSettled = true;
 				break;
-			case 'idle':
-			case 'stopped':
 			default:
 				this.player.stop(true);
 				this.player.setDirection(direction, true, startAt);
@@ -153,7 +151,7 @@ export class AnimationController {
 				break;
 		}
 
-		if (playState === 'running' && config.trigger !== undefined) {
+		if (playState === 'running' && config.trigger != null) {
 			this.player.play();
 		}
 	}

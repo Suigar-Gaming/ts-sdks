@@ -19,22 +19,28 @@ export function normalizePlayback(playback?: PlaybackOptions): NormalizedPlaybac
 		iterations:
 			playback?.iterations === 'infinite' ? Infinity : Math.max(1, playback?.iterations ?? 1),
 		alternate: Boolean(playback?.alternate),
-		speed: playback?.speed && playback.speed > 0 ? playback.speed : 1,
+		speed:
+			playback?.speed != null &&
+			playback?.speed !== 0 &&
+			!Number.isNaN(playback?.speed) &&
+			playback.speed > 0
+				? playback.speed
+				: 1,
 	};
 }
 
 export function interpolatePose(track: AnimationTrack, time: number): PartPose | undefined {
-	if (!track.keyframes.length) {
+	if (track.keyframes.length === 0) {
 		return undefined;
 	}
 
-	const duration = track.keyframes[track.keyframes.length - 1]?.at ?? 0;
+	const duration = track.keyframes.at(-1)?.at ?? 0;
 	if (duration <= 0) {
-		return track.keyframes[track.keyframes.length - 1]?.pose;
+		return track.keyframes.at(-1)?.pose;
 	}
 
 	let previous = track.keyframes[0];
-	let next = track.keyframes[track.keyframes.length - 1];
+	let next = track.keyframes.at(-1);
 
 	for (const frame of track.keyframes) {
 		if (frame.at <= time) {
@@ -230,12 +236,10 @@ export class SequencePlayer {
 
 		if (this.playback.alternate) {
 			this.direction = this.direction === 1 ? -1 : 1;
+		} else if (this.sequence) {
+			this.time = this.direction === 1 ? 0 : this.sequence.duration;
 		} else {
-			if (this.sequence) {
-				this.time = this.direction === 1 ? 0 : this.sequence.duration;
-			} else {
-				this.time = 0;
-			}
+			this.time = 0;
 		}
 	}
 

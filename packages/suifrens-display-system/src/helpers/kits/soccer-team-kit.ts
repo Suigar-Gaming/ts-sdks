@@ -13,7 +13,7 @@ import type {
 	SoccerTeamSide,
 } from '../../types/soccer-kit.type.js';
 
-const TEAM_CODE_PATTERN: RegExp = /^[A-Z0-9]{1,4}$/;
+const TEAM_CODE_PATTERN: RegExp = /^[A-Z0-9]{1,4}$/u;
 
 const DARK_STROKE = '#050916';
 
@@ -23,7 +23,7 @@ function isSoccerCountryCode(value: string): value is SoccerTeamCountryCode {
 
 function isSoccerTeamKit(value: unknown): value is SoccerTeamKit {
 	if (
-		!value ||
+		value == null ||
 		typeof value !== 'object' ||
 		!('code' in value) ||
 		!('primary' in value) ||

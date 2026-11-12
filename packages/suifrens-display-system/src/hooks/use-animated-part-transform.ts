@@ -28,11 +28,13 @@ export function useAnimatedPartTransform(
 
 	useEffect(() => {
 		if (!store || directDomTransforms) {
-			return undefined;
+			return;
 		}
 		const registration = {
 			getBaseTransform: () => baseRef.current,
-			setTransform: (value: string) => setTransform(value),
+			setTransform: (value: string) => {
+				setTransform(value);
+			},
 			pivotOverride: options?.pivotOverride,
 		};
 		return store.register(part, registration);

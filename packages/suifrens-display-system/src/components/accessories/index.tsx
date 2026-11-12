@@ -27,10 +27,10 @@ export function InlineAccessory(props: AccessoryRendererProps) {
 	if (isKitAccessory(name)) {
 		return <KitArtwork {...props} fallbackPart={fallbackPart} />;
 	}
-	if (!assetSrc && source) {
+	if ((assetSrc == null || assetSrc === '') && source != null && source !== '') {
 		return <SvgArtwork source={source} fallbackPart={fallbackPart} />;
 	}
-	if (!assetSrc) {
+	if (assetSrc == null || assetSrc === '') {
 		return null;
 	}
 	return (

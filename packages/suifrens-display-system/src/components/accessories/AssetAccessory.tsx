@@ -18,13 +18,15 @@ function resolveAssetSrc(
 	props: AccessoryRendererProps,
 ): { assetSrc: string; symbolId?: AccessoryAssetVariant } | undefined {
 	const explicitAsset = resolveAccessoryAssetOverride(props.accessory);
-	if (explicitAsset) {
+	if (explicitAsset != null && explicitAsset !== '') {
 		return { assetSrc: explicitAsset };
 	}
 
 	const assets: Readonly<Record<string, string>> = ACCESSORY_ASSET_MANIFEST;
 	const assetSrc = assets[props.accessory.name];
-	return assetSrc ? { assetSrc, symbolId: props.layer ?? 'default' } : undefined;
+	return assetSrc != null && assetSrc !== ''
+		? { assetSrc, symbolId: props.layer ?? 'default' }
+		: undefined;
 }
 
 export function AssetAccessory(props: AccessoryRendererProps) {

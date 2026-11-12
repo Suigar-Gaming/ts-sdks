@@ -15,9 +15,9 @@ export function interpolatePartPose(
 	to: PartPose | undefined,
 	eased: number,
 ): PartPose | undefined {
-	const hasRotate = from?.rotate !== undefined || to?.rotate !== undefined;
-	const hasTranslate = Boolean(from?.translate || to?.translate);
-	const hasScale = Boolean(from?.scale || to?.scale);
+	const hasRotate = from?.rotate != null || to?.rotate != null;
+	const hasTranslate = Boolean(from?.translate ?? to?.translate);
+	const hasScale = Boolean(from?.scale ?? to?.scale);
 
 	if (!hasRotate && !hasTranslate && !hasScale) {
 		return undefined;

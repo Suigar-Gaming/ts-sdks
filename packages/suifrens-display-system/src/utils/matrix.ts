@@ -4,9 +4,10 @@
 import { formatNumber } from '../animation/parts.js';
 import type { Matrix } from '../types/animation.type.js';
 
-const MATRIX_COEFFICIENT_PATTERN: RegExp = /\s*(-?\d*\.?\d+(?:e[-+]?\d+)?)\s*/;
+const MATRIX_COEFFICIENT_PATTERN: RegExp = /\s*(-?\d*\.?\d+(?:e[-+]?\d+)?)\s*/u;
 const MATRIX_TRANSFORM_PATTERN: RegExp = new RegExp(
-	String.raw`matrix\(${Array(6).fill(MATRIX_COEFFICIENT_PATTERN.source).join(',')}\)`,
+	String.raw`matrix\(${Array.from({ length: 6 }, () => MATRIX_COEFFICIENT_PATTERN.source).join(',')}\)`,
+	'u',
 );
 
 export const IDENTITY_MATRIX: Matrix = [1, 0, 0, 1, 0, 0];
@@ -23,7 +24,7 @@ export function multiplyMatrix(a: Matrix, b: Matrix): Matrix {
 }
 
 export function parseMatrix(transform: string | undefined | null): Matrix | null {
-	if (!transform) {
+	if (transform == null || transform === '') {
 		return null;
 	}
 	const match = transform.match(MATRIX_TRANSFORM_PATTERN);
