@@ -109,7 +109,7 @@ async function resolveTransactionOwner({
 				'The saved session wallet address does not match its keychain signer. Recover the intended wallet with "setup_session_wallet" before executing SweetHouse transactions.',
 			);
 		}
-		if (input.owner) {
+		if (input.owner != null && input.owner !== '') {
 			const requestedOwner = await resolveOwnerAddress({ owner: input.owner, bundle });
 			if (requestedOwner !== sessionAddress) {
 				throw new RangeError(
@@ -220,7 +220,7 @@ function sweetHouseContext({
 		coinDecimals: coin.decimals,
 		gameInputs: {
 			sweetHouseAction: action,
-			...(requestId ? { requestId } : {}),
+			...(requestId != null && requestId !== '' ? { requestId } : {}),
 		},
 	};
 }

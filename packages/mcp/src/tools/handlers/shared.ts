@@ -77,7 +77,7 @@ const GAME_TO_TOOLS = {
 function json(value: unknown): string {
 	return JSON.stringify(
 		value,
-		(_key, item) => (typeof item === 'bigint' ? item.toString() : item),
+		(_key, item: unknown) => (typeof item === 'bigint' ? item.toString() : item),
 		2,
 	);
 }
@@ -251,10 +251,10 @@ export async function resolveWalletOwner({
 	};
 	bundle: SuigarClientBundle;
 }): Promise<string> {
-	if (input.owner) {
-		return await resolveOwnerAddress({ owner: input.owner, bundle });
+	if (input.owner != null && input.owner !== '') {
+		return resolveOwnerAddress({ owner: input.owner, bundle });
 	}
-	if (input.sessionWalletId) {
+	if (input.sessionWalletId != null && input.sessionWalletId !== '') {
 		const sessionWallet = await loadSessionWallet(input.sessionWalletId);
 		if (!sessionWallet) {
 			throw new Error('No local session wallet exists with that ID.');
@@ -317,7 +317,7 @@ export function getSuigarPackageId({
 }): string {
 	const packageId =
 		config.sdk.packageIds[SUIGAR_PACKAGE_KEYS[pkg]] ?? SUIGAR_PACKAGE_FALLBACKS[pkg];
-	if (!packageId) {
+	if (packageId == null || packageId === '') {
 		throw new RangeError(`Missing Suigar package id for ${pkg}.`);
 	}
 	return packageId;

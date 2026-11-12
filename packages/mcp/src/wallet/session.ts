@@ -15,6 +15,7 @@ import { wordlist } from '@scure/bip39/wordlists/english.js';
 import { randomHex, randomUuid, sameState } from '../utils/crypto.js';
 import { isNonArrayRecord } from '../utils/object.js';
 import {
+	asyncRequestListener,
 	getLoopbackServerPort,
 	LOOPBACK_HOST,
 	LOOPBACK_ORIGIN,
@@ -63,7 +64,7 @@ async function saveWalletFile(wallets: Array<SessionWallet>): Promise<void> {
 export async function listSessionWallets(): Promise<Array<SessionWallet>> {
 	try {
 		const stored: unknown = JSON.parse(await readFile(SESSION_WALLETS_FILE, 'utf8'));
-		return Array.isArray(stored) ? stored.filter(isSessionWallet) : [];
+		return Array.isArray(stored) ? stored.filter((value) => isSessionWallet(value)) : [];
 	} catch (error) {
 		if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
 			return [];
@@ -74,7 +75,10 @@ export async function listSessionWallets(): Promise<Array<SessionWallet>> {
 
 export async function loadSessionWallet(id?: string): Promise<SessionWallet | null> {
 	const wallets = await listSessionWallets();
-	return wallets.find((wallet) => wallet.id === id) ?? (id ? null : (wallets[0] ?? null));
+	return (
+		wallets.find((wallet) => wallet.id === id) ??
+		(id != null && id !== '' ? null : (wallets[0] ?? null))
+	);
 }
 
 export async function loadSessionSigner(id?: string): Promise<Keypair> {
@@ -83,7 +87,7 @@ export async function loadSessionSigner(id?: string): Promise<Keypair> {
 		throw new Error('No session wallet is available. Create or recover one first.');
 	}
 	const secret = await readSessionWalletSecret(wallet.id);
-	if (!secret) {
+	if (secret == null || secret === '') {
 		throw new Error('No session wallet is available. Create or recover one first.');
 	}
 	return signerFromPrivateKey(secret);
@@ -111,7 +115,10 @@ function signerFromPrivateKey(privateKey: string): Keypair {
 			return Secp256k1Keypair.fromSecretKey(secretKey);
 		case 'Secp256r1':
 			return Secp256r1Keypair.fromSecretKey(secretKey);
-		default:
+		case 'MLDSA65':
+		case 'MultiSig':
+		case 'Passkey':
+		case 'ZkLogin':
 			throw new RangeError(`Unsupported Sui private-key scheme: ${scheme}.`);
 	}
 }
@@ -180,10 +187,10 @@ function layout({ title, children }: { title: string; children: string }): strin
 
 function escapeHtml(value: string): string {
 	return value
-		.replace(/&/gu, '&amp;')
-		.replace(/</gu, '&lt;')
-		.replace(/>/gu, '&gt;')
-		.replace(/"/gu, '&quot;');
+		.replaceAll('&', '&amp;')
+		.replaceAll('<', '&lt;')
+		.replaceAll('>', '&gt;')
+		.replaceAll('"', '&quot;');
 }
 
 function page({
@@ -218,20 +225,21 @@ function success({
 	wallet: SessionWallet;
 	accountUrl?: string | undefined;
 }): string {
-	const destination = accountUrl
-		? (() => {
-				const url = new URL(accountUrl);
-				url.searchParams.set('addSessionWallet', wallet.address);
-				url.searchParams.set('sessionWalletName', wallet.name);
-				return url.toString();
-			})()
-		: undefined;
+	const destination =
+		accountUrl != null && accountUrl !== ''
+			? (() => {
+					const url = new URL(accountUrl);
+					url.searchParams.set('addSessionWallet', wallet.address);
+					url.searchParams.set('sessionWalletName', wallet.name);
+					return url.toString();
+				})()
+			: undefined;
 	return layout({
 		title: 'Session wallet ready',
 		children: `<p class="eyebrow">SUIGAR MCP</p><div class="success" aria-hidden="true">✓</div><h1 class="heading">Session wallet ready</h1>
 <p class="lead">Your ${wallet.source === 'created' ? 'new' : wallet.source === 'imported' ? 'recovered' : 'imported'} session wallet is ready to use for both Suigar mainnet and testnet.</p>
 <div class="details"><p>Name</p><code class="inline">${escapeHtml(wallet.name)}</code><p>Address</p><code class="recovery">${escapeHtml(wallet.address)}</code><p>Session wallet details saved to <code class="inline">${escapeHtml(DISPLAY_FILE)}</code>.</p><p>The signing key is stored in your operating-system keychain, not in that file.</p></div>
-	<p class="lead">${destination ? `This wallet will be added to your account dashboard automatically. <a id="account-link" href="${escapeHtml(destination)}">Open account now</a>.` : 'You may close this window and return to your MCP client.'}</p>${destination ? `<script>window.setTimeout(()=>{const link=document.getElementById('account-link');if(link instanceof HTMLAnchorElement){location.assign(link.href)}},900)</script>` : ''}`,
+	<p class="lead">${destination != null && destination !== '' ? `This wallet will be added to your account dashboard automatically. <a id="account-link" href="${escapeHtml(destination)}">Open account now</a>.` : 'You may close this window and return to your MCP client.'}</p>${destination != null && destination !== '' ? `<script>window.setTimeout(()=>{const link=document.getElementById('account-link');if(link instanceof HTMLAnchorElement){location.assign(link.href)}},900)</script>` : ''}`,
 	});
 }
 
@@ -252,7 +260,9 @@ function readForm(request: IncomingMessage): Promise<URLSearchParams> {
 				request.destroy();
 			}
 		});
-		request.on('end', () => resolve(new URLSearchParams(body)));
+		request.on('end', () => {
+			resolve(new URLSearchParams(body));
+		});
 		request.on('error', reject);
 	});
 }
@@ -268,69 +278,79 @@ export async function createSessionWalletSetup({
 	const state = randomHex(32);
 	const mnemonic = generateMnemonic(wordlist, 256);
 	const currentWallet = await loadSessionWallet();
-	const server = createServer(async (request, response) => {
-		const url = new URL(request.url ?? '/', LOOPBACK_ORIGIN);
-		if (request.method === 'GET' && url.pathname === '/') {
-			response.writeHead(200, {
-				'content-type': 'text/html; charset=utf-8',
-				'cache-control': 'no-store',
-			});
-			response.end(page({ state, mnemonic, currentWallet }));
-			return;
-		}
-		if (
-			request.method !== 'POST' ||
-			!['/save', '/recover', '/import-private-key'].includes(url.pathname)
-		) {
-			response.writeHead(404).end();
-			return;
-		}
-		try {
-			const form = await readForm(request);
-			if (!(await sameState(form.get('state') ?? '', state))) {
-				throw new Error('Invalid setup state.');
+	const server = createServer(
+		asyncRequestListener(async (request, response) => {
+			const url = new URL(request.url ?? '/', LOOPBACK_ORIGIN);
+			if (request.method === 'GET' && url.pathname === '/') {
+				response.writeHead(200, {
+					'content-type': 'text/html; charset=utf-8',
+					'cache-control': 'no-store',
+				});
+				response.end(page({ state, mnemonic, currentWallet }));
+				return;
 			}
-			const wallet =
-				url.pathname === '/import-private-key'
-					? await persistSessionWallet({
-							signer: signerFromPrivateKey(form.get('privateKey')?.trim() ?? ''),
-							source: 'private-key',
-							name: form.get('name')?.trim() ?? '',
-						})
-					: await (async () => {
-							const phrase = form.get('mnemonic')?.trim().replace(/\s+/gu, ' ') ?? '';
-							if (!validateMnemonic(phrase, wordlist)) {
-								throw new TypeError('Invalid recovery phrase.');
-							}
-							if (url.pathname === '/save' && form.get('confirmed') !== 'on') {
-								throw new Error('Confirm that you saved the recovery phrase.');
-							}
-							return persistMnemonicSessionWallet({
-								mnemonic: phrase,
-								source: url.pathname === '/save' ? 'created' : 'imported',
+			if (
+				request.method !== 'POST' ||
+				!['/save', '/recover', '/import-private-key'].includes(url.pathname)
+			) {
+				response.writeHead(404).end();
+				return;
+			}
+			try {
+				const form = await readForm(request);
+				if (!(await sameState(form.get('state') ?? '', state))) {
+					throw new Error('Invalid setup state.');
+				}
+				const wallet =
+					url.pathname === '/import-private-key'
+						? await persistSessionWallet({
+								signer: signerFromPrivateKey(form.get('privateKey')?.trim() ?? ''),
+								source: 'private-key',
 								name: form.get('name')?.trim() ?? '',
-							});
-						})();
-			response.writeHead(200, {
-				'content-type': 'text/html; charset=utf-8',
-				'cache-control': 'no-store',
-			});
-			response.end(success({ wallet, accountUrl }));
-			setTimeout(() => server.close(), 500).unref();
-		} catch (error) {
-			response.writeHead(400, {
-				'content-type': 'text/html; charset=utf-8',
-				'cache-control': 'no-store',
-			});
-			response.end(
-				failure(error instanceof Error ? error.message : 'Unable to save session wallet.'),
-			);
-		}
+							})
+						: await (async () => {
+								const phrase = form.get('mnemonic')?.trim().replaceAll(/\s+/gu, ' ') ?? '';
+								if (!validateMnemonic(phrase, wordlist)) {
+									throw new TypeError('Invalid recovery phrase.');
+								}
+								if (url.pathname === '/save' && form.get('confirmed') !== 'on') {
+									throw new Error('Confirm that you saved the recovery phrase.');
+								}
+								return persistMnemonicSessionWallet({
+									mnemonic: phrase,
+									source: url.pathname === '/save' ? 'created' : 'imported',
+									name: form.get('name')?.trim() ?? '',
+								});
+							})();
+				response.writeHead(200, {
+					'content-type': 'text/html; charset=utf-8',
+					'cache-control': 'no-store',
+				});
+				response.end(success({ wallet, accountUrl }));
+				setTimeout(() => {
+					server.close();
+				}, 500).unref();
+			} catch (error) {
+				response.writeHead(400, {
+					'content-type': 'text/html; charset=utf-8',
+					'cache-control': 'no-store',
+				});
+				response.end(
+					failure(error instanceof Error ? error.message : 'Unable to save session wallet.'),
+				);
+			}
+		}),
+	);
+	await new Promise<void>((resolve) => {
+		server.listen(0, LOOPBACK_HOST, resolve);
 	});
-	await new Promise<void>((resolve) => server.listen(0, LOOPBACK_HOST, resolve));
 	const port = getLoopbackServerPort(server);
-	const timeout = setTimeout(() => server.close(), resolvedTimeoutMs).unref();
-	server.once('close', () => clearTimeout(timeout));
+	const timeout = setTimeout(() => {
+		server.close();
+	}, resolvedTimeoutMs).unref();
+	server.once('close', () => {
+		clearTimeout(timeout);
+	});
 	return { setupUrl: `${loopbackOrigin(port)}/` };
 }
 

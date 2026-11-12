@@ -74,7 +74,7 @@ describe('wallet credentials', () => {
 
 		await credentials.removeProfile('testnet');
 		expect((await credentials.loadCredentials()).profiles).toEqual({
-			mainnet: expect.objectContaining({ address }),
+			mainnet: expect.objectContaining({ address }) as unknown,
 		});
 	});
 

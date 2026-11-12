@@ -5,7 +5,7 @@ export type AnyRecord = Record<string, unknown>;
 
 /** Recognizes non-null objects, including arrays, for generic object inspection. */
 export function isRecord(value: unknown): value is AnyRecord {
-	return value !== null && typeof value === 'object';
+	return value != null && typeof value === 'object';
 }
 
 /** Recognizes object-shaped payloads and excludes arrays. */

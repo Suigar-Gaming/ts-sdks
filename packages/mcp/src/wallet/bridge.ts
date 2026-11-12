@@ -14,6 +14,7 @@ import {
 	type WalletProfile,
 } from './credentials.js';
 import {
+	asyncRequestListener,
 	getLoopbackServerPort,
 	LOCALHOST_HOST,
 	LOOPBACK_HOST,
@@ -82,7 +83,7 @@ async function openBridgeUrl({
 	shouldOpen: boolean;
 }): Promise<void> {
 	if (shouldOpen) {
-		await open(url).catch(() => undefined);
+		await open(url).catch(() => {});
 	}
 }
 
@@ -106,7 +107,9 @@ function readBody({
 			}
 			body += decoder.decode(chunk, { stream: true });
 		});
-		request.on('end', () => resolve(body + decoder.decode()));
+		request.on('end', () => {
+			resolve(body + decoder.decode());
+		});
 		request.on('error', reject);
 	});
 }
@@ -130,11 +133,13 @@ function respond({
 async function createLoopbackServer(webOrigin: string): Promise<{
 	server: Server;
 	port: number;
-	close: () => Server;
+	close: () => void;
 	authorize: (input: { request: IncomingMessage; response: ServerResponse }) => boolean;
 }> {
 	const server = createServer();
-	await new Promise<void>((resolve) => server.listen(0, LOOPBACK_HOST, resolve));
+	await new Promise<void>((resolve) => {
+		server.listen(0, LOOPBACK_HOST, resolve);
+	});
 	const port = getLoopbackServerPort(server);
 	const allowedHosts = new Set([`${LOOPBACK_HOST}:${port}`, `${LOCALHOST_HOST}:${port}`]);
 	const authorize = ({
@@ -164,7 +169,14 @@ async function createLoopbackServer(webOrigin: string): Promise<{
 		}
 		return true;
 	};
-	return { server, port, close: () => server.close(), authorize };
+	return {
+		server,
+		port,
+		close: () => {
+			server.close();
+		},
+		authorize,
+	};
 }
 
 export async function createLoginBridge({
@@ -186,63 +198,66 @@ export async function createLoginBridge({
 		reject(new Error('Wallet login expired. Start login again.'));
 	}, options.timeoutMs).unref();
 
-	server.on('request', async (request, response) => {
-		if (!loopback.authorize({ request, response })) {
-			return;
-		}
-		const url = new URL(request.url ?? '/', loopbackOrigin(port));
-		if (request.method === 'GET' && url.pathname === '/handshake') {
-			if (!(await sameState(url.searchParams.get('state') ?? '', state))) {
-				respond({ response, status: 403, body: { ok: false, error: 'Invalid pairing state' } });
+	server.on(
+		'request',
+		asyncRequestListener(async (request, response) => {
+			if (!loopback.authorize({ request, response })) {
 				return;
 			}
-			preflight = true;
-			respond({ response, status: 200, body: { ok: true, network } });
-			return;
-		}
-		if (request.method !== 'POST' || url.pathname !== '/callback') {
-			respond({ response, status: 404, body: { error: 'Not found' } });
-			return;
-		}
-		if (!request.headers['content-type']?.startsWith('application/json')) {
-			respond({ response, status: 415, body: { error: 'Expected JSON' } });
-			return;
-		}
-		try {
-			const payload: unknown = JSON.parse(
-				await readBody({ request, maxBodyBytes: options.maxBodyBytes }),
-			);
-			if (!isNonArrayRecord(payload)) {
-				throw new TypeError('Expected a JSON object.');
-			}
-			if (typeof payload['state'] !== 'string' || !(await sameState(payload['state'], state))) {
-				respond({ response, status: 403, body: { error: 'Invalid pairing state' } });
+			const url = new URL(request.url ?? '/', loopbackOrigin(port));
+			if (request.method === 'GET' && url.pathname === '/handshake') {
+				if (!(await sameState(url.searchParams.get('state') ?? '', state))) {
+					respond({ response, status: 403, body: { ok: false, error: 'Invalid pairing state' } });
+					return;
+				}
+				preflight = true;
+				respond({ response, status: 200, body: { ok: true, network } });
 				return;
 			}
-			if (
-				!preflight ||
-				typeof payload['address'] !== 'string' ||
-				(payload['walletType'] !== 'wallet' && payload['walletType'] !== 'zklogin')
-			) {
-				respond({ response, status: 400, body: { error: 'Invalid wallet callback' } });
+			if (request.method !== 'POST' || url.pathname !== '/callback') {
+				respond({ response, status: 404, body: { error: 'Not found' } });
 				return;
 			}
-			preflight = false;
-			const profile: WalletProfile = {
-				address: payload['address'],
-				walletType: payload['walletType'],
-				frontendOrigin: webOrigin,
-				connectedAt: new Date().toISOString(),
-			};
-			await saveProfile({ network, profile });
-			clearTimeout(timeout);
-			respond({ response, status: 200, body: { ok: true } });
-			resolve(profile);
-			setTimeout(close, 100).unref();
-		} catch {
-			respond({ response, status: 400, body: { error: 'Invalid request' } });
-		}
-	});
+			if (request.headers['content-type']?.startsWith('application/json') !== true) {
+				respond({ response, status: 415, body: { error: 'Expected JSON' } });
+				return;
+			}
+			try {
+				const payload: unknown = JSON.parse(
+					await readBody({ request, maxBodyBytes: options.maxBodyBytes }),
+				);
+				if (!isNonArrayRecord(payload)) {
+					throw new TypeError('Expected a JSON object.');
+				}
+				if (typeof payload['state'] !== 'string' || !(await sameState(payload['state'], state))) {
+					respond({ response, status: 403, body: { error: 'Invalid pairing state' } });
+					return;
+				}
+				if (
+					!preflight ||
+					typeof payload['address'] !== 'string' ||
+					(payload['walletType'] !== 'wallet' && payload['walletType'] !== 'zklogin')
+				) {
+					respond({ response, status: 400, body: { error: 'Invalid wallet callback' } });
+					return;
+				}
+				preflight = false;
+				const profile: WalletProfile = {
+					address: payload['address'],
+					walletType: payload['walletType'],
+					frontendOrigin: webOrigin,
+					connectedAt: new Date().toISOString(),
+				};
+				await saveProfile({ network, profile });
+				clearTimeout(timeout);
+				respond({ response, status: 200, body: { ok: true } });
+				resolve(profile);
+				setTimeout(close, 100).unref();
+			} catch {
+				respond({ response, status: 400, body: { error: 'Invalid request' } });
+			}
+		}),
+	);
 
 	const url = new URL('/connection', webOrigin);
 	url.searchParams.set('port', String(port));
@@ -280,76 +295,79 @@ export async function createExecutionBridge({
 		EXECUTIONS.set(requestId, { requestId, status: 'expired' });
 		close();
 	}, options.timeoutMs).unref();
-	server.on('request', async (request, response) => {
-		const url = new URL(request.url ?? '/', loopbackOrigin(port));
-		if (!loopback.authorize({ request, response })) {
-			return;
-		}
-		if (
-			!(await sameState(url.searchParams.get('state') ?? '', state)) &&
-			request.method === 'GET'
-		) {
-			respond({ response, status: 403, body: { error: 'Invalid approval state' } });
-			return;
-		}
-		if (request.method === 'GET' && url.pathname === '/request') {
-			respond({
-				response,
-				status: 200,
-				body: {
-					requestId,
-					network,
-					address: profile.address,
-					transactionBytesBase64,
-					summary,
-				},
-			});
-			return;
-		}
-		if (
-			request.method !== 'POST' ||
-			url.pathname !== '/callback' ||
-			!request.headers['content-type']?.startsWith('application/json')
-		) {
-			respond({ response, status: 404, body: { error: 'Not found' } });
-			return;
-		}
-		try {
-			const payload: unknown = JSON.parse(
-				await readBody({ request, maxBodyBytes: options.maxBodyBytes }),
-			);
-			if (!isNonArrayRecord(payload)) {
-				throw new TypeError('Expected a JSON object.');
-			}
-			if (
-				typeof payload['state'] !== 'string' ||
-				!(await sameState(payload['state'], state)) ||
-				payload['address'] !== profile.address
-			) {
-				respond({ response, status: 403, body: { error: 'Invalid approval callback' } });
+	server.on(
+		'request',
+		asyncRequestListener(async (request, response) => {
+			const url = new URL(request.url ?? '/', loopbackOrigin(port));
+			if (!loopback.authorize({ request, response })) {
 				return;
 			}
-			const status: ExecutionStatus =
-				payload['rejected'] === true
-					? { requestId, status: 'rejected' }
-					: typeof payload['digest'] === 'string'
-						? { requestId, status: 'approved', digest: payload['digest'] }
-						: {
-								requestId,
-								status: 'failed',
-								error:
-									typeof payload['error'] === 'string'
-										? payload['error']
-										: 'Wallet approval failed',
-							};
-			EXECUTIONS.set(requestId, status);
-			clearTimeout(expire);
-			respond({ response, status: 200, body: { ok: true } });
-			setTimeout(close, 100).unref();
-		} catch {
-			respond({ response, status: 400, body: { error: 'Invalid request' } });
-		}
-	});
+			if (
+				!(await sameState(url.searchParams.get('state') ?? '', state)) &&
+				request.method === 'GET'
+			) {
+				respond({ response, status: 403, body: { error: 'Invalid approval state' } });
+				return;
+			}
+			if (request.method === 'GET' && url.pathname === '/request') {
+				respond({
+					response,
+					status: 200,
+					body: {
+						requestId,
+						network,
+						address: profile.address,
+						transactionBytesBase64,
+						summary,
+					},
+				});
+				return;
+			}
+			if (
+				request.method !== 'POST' ||
+				url.pathname !== '/callback' ||
+				request.headers['content-type']?.startsWith('application/json') !== true
+			) {
+				respond({ response, status: 404, body: { error: 'Not found' } });
+				return;
+			}
+			try {
+				const payload: unknown = JSON.parse(
+					await readBody({ request, maxBodyBytes: options.maxBodyBytes }),
+				);
+				if (!isNonArrayRecord(payload)) {
+					throw new TypeError('Expected a JSON object.');
+				}
+				if (
+					typeof payload['state'] !== 'string' ||
+					!(await sameState(payload['state'], state)) ||
+					payload['address'] !== profile.address
+				) {
+					respond({ response, status: 403, body: { error: 'Invalid approval callback' } });
+					return;
+				}
+				const status: ExecutionStatus =
+					payload['rejected'] === true
+						? { requestId, status: 'rejected' }
+						: typeof payload['digest'] === 'string'
+							? { requestId, status: 'approved', digest: payload['digest'] }
+							: {
+									requestId,
+									status: 'failed',
+									error:
+										typeof payload['error'] === 'string'
+											? payload['error']
+											: 'Wallet approval failed',
+								};
+				EXECUTIONS.set(requestId, status);
+				clearTimeout(expire);
+				respond({ response, status: 200, body: { ok: true } });
+				setTimeout(close, 100).unref();
+			} catch {
+				respond({ response, status: 400, body: { error: 'Invalid request' } });
+			}
+		}),
+	);
 	const url = new URL('/approval', webOrigin);
 	url.searchParams.set('port', String(port));
 	url.searchParams.set('state', state);
@@ -385,51 +403,54 @@ export async function createLogoutBridge({
 		reject(new Error('Wallet logout expired. Start logout again.'));
 	}, options.timeoutMs).unref();
 
-	server.on('request', async (request, response) => {
-		if (!loopback.authorize({ request, response })) {
-			return;
-		}
-		const url = new URL(request.url ?? '/', loopbackOrigin(port));
-		if (request.method === 'GET' && url.pathname === '/request') {
-			if (!(await sameState(url.searchParams.get('state') ?? '', state))) {
-				respond({ response, status: 403, body: { error: 'Invalid logout state' } });
+	server.on(
+		'request',
+		asyncRequestListener(async (request, response) => {
+			if (!loopback.authorize({ request, response })) {
 				return;
 			}
-			respond({ response, status: 200, body: { network, all } });
-			return;
-		}
-		if (
-			request.method !== 'POST' ||
-			url.pathname !== '/callback' ||
-			!request.headers['content-type']?.startsWith('application/json')
-		) {
-			respond({ response, status: 404, body: { error: 'Not found' } });
-			return;
-		}
-		try {
-			const payload: unknown = JSON.parse(
-				await readBody({ request, maxBodyBytes: options.maxBodyBytes }),
-			);
-			if (!isNonArrayRecord(payload)) {
-				throw new TypeError('Expected a JSON object.');
-			}
-			if (typeof payload['state'] !== 'string' || !(await sameState(payload['state'], state))) {
-				respond({ response, status: 403, body: { error: 'Invalid logout callback' } });
+			const url = new URL(request.url ?? '/', loopbackOrigin(port));
+			if (request.method === 'GET' && url.pathname === '/request') {
+				if (!(await sameState(url.searchParams.get('state') ?? '', state))) {
+					respond({ response, status: 403, body: { error: 'Invalid logout state' } });
+					return;
+				}
+				respond({ response, status: 200, body: { network, all } });
 				return;
 			}
-			if (all) {
-				await clearCredentials();
-			} else if (network) {
-				await removeProfile(network);
+			if (
+				request.method !== 'POST' ||
+				url.pathname !== '/callback' ||
+				request.headers['content-type']?.startsWith('application/json') !== true
+			) {
+				respond({ response, status: 404, body: { error: 'Not found' } });
+				return;
 			}
-			clearTimeout(timeout);
-			respond({ response, status: 200, body: { ok: true } });
-			resolve({ network, all });
-			setTimeout(close, 100).unref();
-		} catch {
-			respond({ response, status: 400, body: { error: 'Invalid request' } });
-		}
-	});
+			try {
+				const payload: unknown = JSON.parse(
+					await readBody({ request, maxBodyBytes: options.maxBodyBytes }),
+				);
+				if (!isNonArrayRecord(payload)) {
+					throw new TypeError('Expected a JSON object.');
+				}
+				if (typeof payload['state'] !== 'string' || !(await sameState(payload['state'], state))) {
+					respond({ response, status: 403, body: { error: 'Invalid logout callback' } });
+					return;
+				}
+				if (all) {
+					await clearCredentials();
+				} else if (network) {
+					await removeProfile(network);
+				}
+				clearTimeout(timeout);
+				respond({ response, status: 200, body: { ok: true } });
+				resolve({ network, all });
+				setTimeout(close, 100).unref();
+			} catch {
+				respond({ response, status: 400, body: { error: 'Invalid request' } });
+			}
+		}),
+	);
 
 	const url = new URL('/connection', webOrigin);
 	url.searchParams.set('port', String(port));

@@ -127,68 +127,68 @@ describe('MCP server registration', () => {
 		}
 	});
 
-	it.each(['legacy', 'modern'] as const)(
-		'serves valid calls and distinguishes errors for %s clients',
-		async (era) => {
-			const client = new Client(
-				{ name: 'suigar-test', version: '0.0.0' },
-				{
-					versionNegotiation: { mode: era === 'modern' ? { pin: '2026-07-28' } : 'legacy' },
-				},
+	it.each([
+		['legacy', 'legacy'],
+		['modern', { pin: '2026-07-28' }],
+	] as const)('serves valid calls and distinguishes errors for %s clients', async (_era, mode) => {
+		const client = new Client(
+			{ name: 'suigar-test', version: '0.0.0' },
+			{
+				versionNegotiation: { mode: mode },
+			},
+		);
+		const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+		const handle = serveSuigarMcpStdio(serverTransport);
+		try {
+			await client.connect(clientTransport);
+			const config = await client.callTool({
+				name: 'read_config',
+				arguments: { network: 'testnet' },
+			});
+			expect(config.isError).not.toBe(true);
+			expect(config.structuredContent).toMatchObject({ network: 'testnet' });
+			expect(config.content).toEqual(
+				expect.arrayContaining([expect.objectContaining({ type: 'text' })]),
 			);
-			const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
-			const handle = serveSuigarMcpStdio(serverTransport);
-			try {
-				await client.connect(clientTransport);
-				const config = await client.callTool({
-					name: 'read_config',
-					arguments: { network: 'testnet' },
-				});
-				expect(config.isError).not.toBe(true);
-				expect(config.structuredContent).toMatchObject({ network: 'testnet' });
-				expect(config.content).toEqual(
-					expect.arrayContaining([expect.objectContaining({ type: 'text' })]),
-				);
 
-				const failure = await client.callTool({
-					name: 'read_config',
-					arguments: { config: { coins: { sui: { coinType: 'invalid' } } } },
-				});
-				expect(failure.isError).toBe(true);
-				expect(failure.structuredContent).toMatchObject({ errors: expect.any(Array) });
+			const failure = await client.callTool({
+				name: 'read_config',
+				arguments: { config: { coins: { sui: { coinType: 'invalid' } } } },
+			});
+			expect(failure.isError).toBe(true);
+			expect(failure.structuredContent).toMatchObject({ errors: expect.any(Array) as unknown });
 
-				const missingTool = client.callTool({ name: 'missing_tool', arguments: {} });
-				await expect(missingTool).rejects.toBeInstanceOf(ProtocolError);
-				await expect(missingTool).rejects.toMatchObject({ code: ProtocolErrorCode.InvalidParams });
-				const invalidInput = await client.callTool({
-					name: 'read_config',
-					arguments: { network: 'invalid' },
-				});
-				expect(invalidInput).toMatchObject({
-					isError: true,
-					content: [{ type: 'text', text: expect.stringContaining('network') }],
-				});
+			const missingTool = client.callTool({ name: 'missing_tool', arguments: {} });
+			await expect(missingTool).rejects.toBeInstanceOf(ProtocolError);
+			await expect(missingTool).rejects.toMatchObject({ code: ProtocolErrorCode.InvalidParams });
+			const invalidInput = await client.callTool({
+				name: 'read_config',
+				arguments: { network: 'invalid' },
+			});
+			expect(invalidInput).toMatchObject({
+				isError: true,
+				content: [{ type: 'text', text: expect.stringContaining('network') as unknown }],
+			});
 
-				// A failed call must not poison the connection or mix inputs across concurrent calls.
-				const networks = ['mainnet', 'testnet', 'mainnet', 'testnet'] as const;
-				const results = await Promise.all(
-					networks.map((network) =>
-						client.callTool({
-							name: 'read_config',
-							arguments: { network },
-						}),
-					),
-				);
-				for (const [index, result] of results.entries()) {
-					expect(result.isError).not.toBe(true);
-					expect(result.structuredContent).toMatchObject({ network: networks[index] });
-				}
-			} finally {
-				await client.close();
-				await handle.close();
+			// A failed call must not poison the connection or mix inputs across concurrent calls.
+			const networks = ['mainnet', 'testnet', 'mainnet', 'testnet'] as const;
+			const results = await Promise.all(
+				networks.map((network) =>
+					client.callTool({
+						name: 'read_config',
+						arguments: { network },
+					}),
+				),
+			);
+			for (const [index, result] of results.entries()) {
+				expect(result.isError).not.toBe(true);
+				expect(result.structuredContent).toMatchObject({ network: networks[index] });
 			}
-		},
-	);
+		} finally {
+			await client.close();
+			await handle.close();
+		}
+	});
 
 	it('preserves app resource metadata for legacy clients', async () => {
 		const server = createSuigarMcpServer();
@@ -320,7 +320,7 @@ describe('MCP 2026-07-28 stdio protocol', () => {
 				code: -32022,
 				data: {
 					requested: '2099-01-01',
-					supported: expect.arrayContaining(['2026-07-28']),
+					supported: expect.arrayContaining(['2026-07-28']) as unknown,
 				},
 			},
 		});

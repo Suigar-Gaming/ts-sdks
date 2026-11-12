@@ -18,7 +18,7 @@ const HIDDEN_DYNAMIC_ENTRY_KEYS = new Set<string>([
 export function stringify(value: unknown): string {
 	return JSON.stringify(
 		value,
-		(_key, item) => (typeof item === 'bigint' ? item.toString() : item),
+		(_key, item: unknown) => (typeof item === 'bigint' ? item.toString() : item),
 		2,
 	);
 }
@@ -41,9 +41,9 @@ export function formatValue(value: unknown): unknown {
 
 export function labelFor(key: string): string {
 	return key
-		.replace(/([a-z0-9])([A-Z])/gu, '$1 $2')
-		.replace(/_/gu, ' ')
-		.replace(/\b\w/gu, (character) => character.toUpperCase());
+		.replaceAll(/([a-z0-9])([A-Z])/gu, '$1 $2')
+		.replaceAll('_', ' ')
+		.replaceAll(/\b\w/gu, (character) => character.toUpperCase());
 }
 
 export function dynamicEntries(record: AnyRecord): Array<DefinitionEntry> {

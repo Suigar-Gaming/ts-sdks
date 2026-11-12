@@ -76,7 +76,7 @@ export const connectionInputSchema = configInputSchema
 	})
 	.strict()
 	.superRefine((input, context) => {
-		if (input.open !== undefined && input.noOpen !== undefined && input.open === input.noOpen) {
+		if (input.open != null && input.noOpen != null && input.open === input.noOpen) {
 			context.addIssue({
 				code: 'custom',
 				path: ['noOpen'],

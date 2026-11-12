@@ -1,23 +1,25 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
+import type { timingSafeEqual as nodeEqualBytes } from 'node:crypto';
 import { fromHex } from '@mysten/sui/utils';
 import { bytesToHex, equalBytes as nobleEqualBytes, randomBytes } from '@noble/ciphers/utils.js';
 
 export const HEX_16_BYTE_PATTERN: RegExp = /^[0-9a-f]{32}$/iu;
 export const HEX_32_BYTE_PATTERN: RegExp = /^[0-9a-f]{64}$/iu;
 
-const nodeTimingSafeEqual = import('node:crypto')
-	.then(({ timingSafeEqual }) => timingSafeEqual)
-	.catch(() => null);
+let nodeTimingSafeEqual: Promise<typeof nodeEqualBytes | null> | undefined;
 
 export async function equalBytes(a: Uint8Array, b: Uint8Array): Promise<boolean> {
 	if (a.length !== b.length) {
 		return false;
 	}
 
+	nodeTimingSafeEqual ??= import('node:crypto')
+		.then(({ timingSafeEqual }) => timingSafeEqual)
+		.catch(() => null);
 	const timingSafeEqual = await nodeTimingSafeEqual;
-	return timingSafeEqual === null ? nobleEqualBytes(a, b) : timingSafeEqual(a, b);
+	return timingSafeEqual == null ? nobleEqualBytes(a, b) : timingSafeEqual(a, b);
 }
 
 export async function sameState(left: string, right: string): Promise<boolean> {

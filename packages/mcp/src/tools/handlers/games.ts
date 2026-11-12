@@ -404,7 +404,9 @@ function requireNumberArray({
 	if (
 		Array.isArray(value) &&
 		value.length > 0 &&
-		value.every((item) => typeof item === 'number' && Number.isFinite(item))
+		value.every(
+			(item: unknown): item is number => typeof item === 'number' && Number.isFinite(item),
+		)
 	) {
 		return value;
 	}
@@ -500,7 +502,7 @@ async function resolveTransactionOwner({
 				'The saved session wallet address does not match its keychain signer. Recover the intended wallet with "setup_session_wallet" before executing games.',
 			);
 		}
-		if (input.owner) {
+		if (input.owner != null && input.owner !== '') {
 			const requestedOwner = await resolveOwnerAddress({ owner: input.owner, bundle });
 			if (requestedOwner !== sessionAddress) {
 				throw new RangeError(

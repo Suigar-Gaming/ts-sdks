@@ -19,7 +19,7 @@ export type InspectorViewModel = {
 function resultEventFields(structuredContent: AnyRecord): AnyRecord {
 	const dryRunSummary = asRecord(structuredContent['dryRunSummary']);
 	const events = Array.isArray(dryRunSummary['events']) ? dryRunSummary['events'] : [];
-	const eventRecords = events.map(asRecord);
+	const eventRecords = events.map((event: unknown) => asRecord(event));
 	const event =
 		eventRecords.find((item) => item['event'] === 'BetResultEvent') ??
 		eventRecords.find((item) => {
@@ -49,10 +49,9 @@ function targetsFor(structuredContent: AnyRecord): Array<string> {
 function notesFor(structuredContent: AnyRecord): Array<string> {
 	const plan = asRecord(structuredContent['plan']);
 	const game = asRecord(structuredContent['game']);
-	return [
-		...(Array.isArray(plan['notes']) ? plan['notes'] : []),
-		...(Array.isArray(game['notes']) ? game['notes'] : []),
-	].filter((note): note is string => typeof note === 'string');
+	const planNotes: Array<unknown> = Array.isArray(plan['notes']) ? plan['notes'] : [];
+	const gameNotes: Array<unknown> = Array.isArray(game['notes']) ? game['notes'] : [];
+	return planNotes.concat(gameNotes).filter((note): note is string => typeof note === 'string');
 }
 
 function errorsFor(structuredContent: AnyRecord): Array<string> {
@@ -111,7 +110,9 @@ export function createInspectorViewModel({
 	const sweethouse = asRecord(record['sweethouse']);
 	const nft = asRecord(record['nft']);
 	const referral = asRecord(record['referral']);
-	const typeArguments = Array.isArray(plan['typeArguments']) ? plan['typeArguments'] : null;
+	const typeArguments: Array<unknown> | null = Array.isArray(plan['typeArguments'])
+		? plan['typeArguments']
+		: null;
 	const requiredInputs = Array.isArray(plan['requiredInputs']) ? plan['requiredInputs'] : null;
 	const sweetHouseAction = firstString(sweethouse['action'], gameInputs['sweetHouseAction']);
 	const nftAction = firstString(gameInputs['nftSpecId']);
@@ -123,16 +124,22 @@ export function createInspectorViewModel({
 		nftAction,
 		referralAction,
 	);
-	const feature = sweetHouseAction
-		? 'SweetHouse'
-		: nft['packageId'] || nftAction
-			? 'NFT'
-			: referralAction
-				? 'Referral'
-				: null;
-	const coinType =
+	const feature =
+		sweetHouseAction != null && sweetHouseAction !== ''
+			? 'SweetHouse'
+			: Boolean(nft['packageId']) || (nftAction != null && nftAction !== '')
+				? 'NFT'
+				: referralAction != null && referralAction !== ''
+					? 'Referral'
+					: null;
+	const coinType: unknown =
 		summary['coinType'] ?? game['coinType'] ?? (typeArguments ? typeArguments[0] : null);
 	const amountLabel = feature === 'SweetHouse' ? 'Amount' : 'Stake';
+
+	const hasStakeDisplay = Boolean(summary['stakeDisplay']);
+	const hasPlanTarget = Boolean(plan['target']);
+	const hasGasBudgetDisplay = Boolean(summary['gasBudgetDisplay']);
+	const hasDryRun = Boolean(record['dryRun']);
 
 	return {
 		coinBadge: coinBadgeFor(coinType),
@@ -152,13 +159,13 @@ export function createInspectorViewModel({
 			['Sender', summary['sender']],
 			[
 				amountLabel,
-				summary['stakeDisplay']
+				hasStakeDisplay
 					? `${scalarText(summary['stakeDisplay'])} (${scalarText(summary['stake'])} base units)`
 					: summary['stake'],
 			],
 			['Required inputs', requiredInputs],
 			...dynamicEntries(gameInputs),
-			['Commands', summary['commandCount'] ?? (plan['target'] ? 'planned' : null)],
+			['Commands', summary['commandCount'] ?? (hasPlanTarget ? 'planned' : null)],
 			['Inputs', summary['inputs'] ?? requiredInputs],
 			['Type args', typeArguments],
 			[
@@ -171,7 +178,7 @@ export function createInspectorViewModel({
 		gasEntries: [
 			[
 				'Gas budget',
-				summary['gasBudgetDisplay']
+				hasGasBudgetDisplay
 					? `${scalarText(summary['gasBudgetDisplay'])} (${scalarText(summary['gasBudget'])} base units)`
 					: summary['gasBudget'],
 			],
@@ -183,7 +190,7 @@ export function createInspectorViewModel({
 		dryRunEntries: [
 			['Dry-run success', dryRunSummary['success']],
 			...dynamicEntries(eventFields),
-			['Raw payload', record['dryRun'] ? 'included' : null],
+			['Raw payload', hasDryRun ? 'included' : null],
 		],
 		targets: targetsFor(record),
 		notes: notesFor(record),

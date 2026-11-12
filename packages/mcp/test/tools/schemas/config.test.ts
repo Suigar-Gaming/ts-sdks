@@ -13,7 +13,7 @@ describe('config input schema', () => {
 	});
 
 	it('rejects own __proto__ keys on strict input objects', () => {
-		const input = JSON.parse('{"__proto__":true}');
+		const input: unknown = JSON.parse('{"__proto__":true}');
 
 		expect(() => configInputSchema.parse(input)).toThrow(/Unrecognized key/u);
 	});

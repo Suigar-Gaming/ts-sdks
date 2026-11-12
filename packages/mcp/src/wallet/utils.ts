@@ -10,7 +10,7 @@ export function resolvePositiveInteger({
 	name: string;
 	defaultValue: number;
 }): number {
-	if (value === undefined || value === '') {
+	if (value == null || value === '') {
 		return defaultValue;
 	}
 	const parsed = typeof value === 'number' ? value : Number(value);

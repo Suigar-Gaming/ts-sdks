@@ -90,14 +90,14 @@ describe('owner resolution', () => {
 		await expect(
 			resolveOwnerAddress({
 				owner: 'not a name',
-				bundle: createResolverBundle(async () => ({ address: resolvedOwner })),
+				bundle: createResolverBundle(() => Promise.resolve({ address: resolvedOwner })),
 			}),
 		).rejects.toThrow(/Sui address or SuiNS name/u);
 
 		await expect(
 			resolveOwnerAddress({
 				owner: 'missing.sui',
-				bundle: createResolverBundle(async () => ({ address: null })),
+				bundle: createResolverBundle(() => Promise.resolve({ address: null })),
 			}),
 		).rejects.toThrow(/did not resolve/u);
 	});

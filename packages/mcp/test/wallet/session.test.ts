@@ -109,8 +109,8 @@ describe('session wallet setup', () => {
 			expect.objectContaining({
 				source: 'created',
 				name: 'Daily bets',
-				id: expect.stringMatching(/^[0-9a-f-]{36}$/u),
-				address: expect.stringMatching(/^0x/u),
+				id: expect.stringMatching(/^[0-9a-f-]{36}$/u) as unknown,
+				address: expect.stringMatching(/^0x/u) as unknown,
 			}),
 		);
 		expect((await session.loadSessionSigner()).toSuiAddress()).toBe(wallet!.address);

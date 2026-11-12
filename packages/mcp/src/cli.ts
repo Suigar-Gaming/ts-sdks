@@ -121,7 +121,10 @@ export async function runSuigarCli(argv: Array<string> = hideBin(process.argv)):
 				const credentials = await loadCredentials();
 				const network = args.network ?? credentials.defaultNetwork;
 				const bridgeOptions = getBridgeOptions(args);
-				const useNetworkOrigins = args.all && !args.webUrl && !process.env[BRIDGE_WEB_URL_ENV];
+				const useNetworkOrigins =
+					args.all &&
+					(args.webUrl == null || args.webUrl === '') &&
+					(process.env[BRIDGE_WEB_URL_ENV] == null || process.env[BRIDGE_WEB_URL_ENV] === '');
 				const bridges: Array<LogoutBridge> = [];
 				if (useNetworkOrigins) {
 					for (const logoutNetwork of SUPPORTED_SUI_NETWORKS) {

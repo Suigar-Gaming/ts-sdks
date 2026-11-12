@@ -16,17 +16,17 @@ const pluginManifestPaths = [
 
 const packageJson: unknown = JSON.parse(await readFile(packageJsonPath, 'utf8'));
 if (
-	!packageJson ||
+	packageJson == null ||
 	typeof packageJson !== 'object' ||
 	!('version' in packageJson) ||
 	typeof packageJson.version !== 'string'
 ) {
 	throw new TypeError('Missing package version.');
 }
-const versionPattern = /^(\s*"version"\s*:\s*")[^"]+(")/m;
-const mcpPackagePattern = /("@suigar\/mcp)(?:@[^"]+)?(")/;
+const versionPattern = /^(\s*"version"\s*:\s*")[^"]+(")/mu;
+const mcpPackagePattern = /("@suigar\/mcp)(?:@[^"]+)?(")/u;
 const serverPackageVersionPattern =
-	/("identifier"\s*:\s*"@suigar\/mcp"\s*,\s*"version"\s*:\s*")[^"]+(")/;
+	/("identifier"\s*:\s*"@suigar\/mcp"\s*,\s*"version"\s*:\s*")[^"]+(")/u;
 
 async function replaceInFile(
 	filePath: URL,
@@ -78,7 +78,7 @@ await replaceInFile(
 
 await replaceInFile(
 	sourceVersionPath,
-	/(export const VERSION = ')[^']+(';)/,
+	/(export const VERSION = ')[^']+(';)/u,
 	`$1${packageJson.version}$2`,
 	'Missing source VERSION export',
 );

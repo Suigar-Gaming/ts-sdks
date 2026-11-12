@@ -42,7 +42,7 @@ export function Header({
 				<h1 className="text-foreground text-2xl leading-tight font-extrabold">{title}</h1>
 			</div>
 			<div className="flex max-w-full flex-wrap items-center gap-2 sm:shrink-0 sm:justify-end">
-				{coinBadge ? (
+				{coinBadge != null && coinBadge !== '' ? (
 					<div
 						className="border-secondary/75 bg-secondary text-secondary-foreground w-max max-w-full rounded-full border px-3 py-1.5 font-mono text-xs leading-tight font-extrabold"
 						title={`Coin ${coinBadge}`}
@@ -59,7 +59,7 @@ export function Header({
 }
 
 export function ExecutionApproval({ url }: { url: string | null }) {
-	if (!url) {
+	if (url == null || url === '') {
 		return null;
 	}
 
@@ -97,7 +97,7 @@ export function Panel({
 	hidden?: boolean | undefined;
 	title: string;
 }) {
-	if (hidden) {
+	if (hidden === true) {
 		return null;
 	}
 

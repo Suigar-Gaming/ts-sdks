@@ -26,7 +26,16 @@ export type ResolvedAppView = {
 
 export function resolveAppView(payload: unknown): ResolvedAppView {
 	const result = asRecord(payload);
-	if (result['sessionWallet']) {
+	const hasSessionWallet = Boolean(result['sessionWallet']);
+	const hasReferral = Boolean(result['referral']);
+	const hasSummary = Boolean(result['summary']);
+	const hasSweethouse = Boolean(result['sweethouse']);
+	const hasNft = Boolean(result['nft']);
+	const hasGame = Boolean(result['game']);
+	const hasSupportedGames = Boolean(result['supportedGames']);
+	const hasExecution = Boolean(result['execution']);
+
+	if (hasSessionWallet) {
 		return {
 			coinBadge: null,
 			title: 'Session Wallet',
@@ -37,27 +46,27 @@ export function resolveAppView(payload: unknown): ResolvedAppView {
 	if (Array.isArray(wallet['balances']) || Array.isArray(wallet['coins'])) {
 		return { coinBadge: null, title: 'Wallet', View: WalletView };
 	}
-	if (result['referral'] && !result['summary']) {
+	if (hasReferral && !hasSummary) {
 		return { coinBadge: null, title: 'Referral Rewards', View: ReferralView };
 	}
 	const { coinBadge } = createInspectorViewModel({ payload, explicitErrors: [] });
 	if (Array.isArray(result['ownedNfts'])) {
 		return { coinBadge, title: 'NFT Collection', View: NftView };
 	}
-	if (result['sweethouse'] && !result['summary']) {
+	if (hasSweethouse && !hasSummary) {
 		return { coinBadge, title: 'SweetHouse Transaction', View: TransactionView };
 	}
-	if (result['nft'] && !result['summary']) {
+	if (hasNft && !hasSummary) {
 		return { coinBadge, title: 'NFT Transaction', View: TransactionView };
 	}
-	if (result['game'] && !result['summary']) {
+	if (hasGame && !hasSummary) {
 		return { coinBadge, title: 'Game Metadata', View: GameMetadataView };
 	}
-	if (result['supportedGames'] && !result['summary']) {
+	if (hasSupportedGames && !hasSummary) {
 		return { coinBadge, title: 'Suigar Config', View: ConfigView };
 	}
 	const execution = asRecord(result['execution']);
-	if (result['execution'] && (!result['summary'] || execution['wallet'] === 'session')) {
+	if (hasExecution && (!hasSummary || execution['wallet'] === 'session')) {
 		return {
 			coinBadge: null,
 			title: 'Transaction Status',

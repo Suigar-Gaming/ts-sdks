@@ -18,7 +18,7 @@ export function getToolResultPayload(result: unknown): AnyRecord {
 	}
 
 	const content = envelope['content'];
-	const textItem = Array.isArray(content)
+	const textItem: unknown = Array.isArray(content)
 		? content.find((item) => asRecord(item)['type'] === 'text')
 		: undefined;
 	const text = asRecord(textItem)['text'];

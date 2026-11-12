@@ -30,7 +30,7 @@ describe('read_config', () => {
 		expect(content.network).toBe('testnet');
 		expect(content.config.sdk.packageIds).toEqual(
 			expect.objectContaining({
-				nftV1: expect.stringMatching(/^0x/u),
+				nftV1: expect.stringMatching(/^0x/u) as unknown,
 			}),
 		);
 		expect(content.config.sdk.packageIds.coinflip).toBeUndefined();
@@ -49,7 +49,7 @@ describe('read_config', () => {
 					tools: expect.arrayContaining([
 						'get_referral_commission',
 						'build_referral_commission_claim_transaction',
-					]),
+					]) as unknown,
 				}),
 				expect.objectContaining({
 					id: 'sweethouse',

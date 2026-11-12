@@ -25,7 +25,7 @@ const address = `0x${'a'.repeat(64)}`;
 
 const bridgeOrigin = (url: string, portParameter: string) => {
 	const port = new URL(url).searchParams.get(portParameter);
-	if (!port) {
+	if (port == null || port === '') {
 		throw new Error(`Missing ${portParameter} in bridge URL`);
 	}
 	return loopback.loopbackOrigin(port);
@@ -61,7 +61,9 @@ const postChunks = (url: string, chunks: Array<Uint8Array>) =>
 				response.on('data', (chunk: string) => {
 					body += chunk;
 				});
-				response.on('end', () => resolve({ body, status: response.statusCode ?? 0 }));
+				response.on('end', () => {
+					resolve({ body, status: response.statusCode ?? 0 });
+				});
 			},
 		);
 		request.on('error', reject);

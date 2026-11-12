@@ -62,13 +62,13 @@ describe('game transaction tools', () => {
 	it('accepts one MoveCall to the selected game package and module', () => {
 		const packageId = getSuigarPackageId({ config: testConfig, pkg: 'coinflip' });
 
-		expect(() =>
+		expect(() => {
 			assertSessionGameTransaction({
 				transaction: createMoveCallTransaction(packageId, 'coinflip'),
 				config: testConfig,
 				game: 'coinflip',
-			}),
-		).not.toThrow();
+			});
+		}).not.toThrow();
 	});
 
 	it('rejects transactions without exactly one MoveCall', () => {
@@ -79,27 +79,27 @@ describe('game transaction tools', () => {
 			target: `${packageId}::coinflip::another_action`,
 		});
 
-		expect(() =>
-			assertSessionGameTransaction({ transaction: noCalls, config: testConfig, game: 'coinflip' }),
-		).toThrow(/one verified Suigar game action/u);
-		expect(() =>
+		expect(() => {
+			assertSessionGameTransaction({ transaction: noCalls, config: testConfig, game: 'coinflip' });
+		}).toThrow(/one verified Suigar game action/u);
+		expect(() => {
 			assertSessionGameTransaction({
 				transaction: multipleCalls,
 				config: testConfig,
 				game: 'coinflip',
-			}),
-		).toThrow(/one verified Suigar game action/u);
+			});
+		}).toThrow(/one verified Suigar game action/u);
 	});
 
 	it('rejects a MoveCall to another package or module', () => {
-		expect(() =>
+		expect(() => {
 			assertSessionGameTransaction({
 				transaction: createMoveCallTransaction(testAddress('c'), 'coinflip'),
 				config: testConfig,
 				game: 'coinflip',
-			}),
-		).toThrow(/outside the trusted Suigar game package/u);
-		expect(() =>
+			});
+		}).toThrow(/outside the trusted Suigar game package/u);
+		expect(() => {
 			assertSessionGameTransaction({
 				transaction: createMoveCallTransaction(
 					getSuigarPackageId({ config: testConfig, pkg: 'coinflip' }),
@@ -107,12 +107,12 @@ describe('game transaction tools', () => {
 				),
 				config: testConfig,
 				game: 'coinflip',
-			}),
-		).toThrow(/outside the trusted Suigar game package/u);
+			});
+		}).toThrow(/outside the trusted Suigar game package/u);
 	});
 
 	it('derives the PvP Coinflip module name from the game id', () => {
-		expect(() =>
+		expect(() => {
 			assertSessionGameTransaction({
 				transaction: createMoveCallTransaction(
 					getSuigarPackageId({ config: testConfig, pkg: 'pvp-coinflip' }),
@@ -120,8 +120,8 @@ describe('game transaction tools', () => {
 				),
 				config: testConfig,
 				game: 'pvp-coinflip',
-			}),
-		).not.toThrow();
+			});
+		}).not.toThrow();
 	});
 
 	it.each([

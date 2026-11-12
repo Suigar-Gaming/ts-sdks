@@ -162,8 +162,10 @@ describe('MCP tool registration', () => {
 	});
 
 	it('wraps thrown handler failures as MCP tool errors', async () => {
-		const result = await withToolErrors(async () => {
-			throw new TypeError('bad input');
+		const result = await withToolErrors(() => {
+			return Promise.try(() => {
+				throw new TypeError('bad input');
+			});
 		})({});
 
 		expect(result).toMatchObject({

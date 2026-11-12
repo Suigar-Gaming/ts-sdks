@@ -81,7 +81,7 @@ export function extractDryRunErrors(dryRun: unknown): Array<string> {
 	const source: unknown = getDryRunTransaction(dryRun) ?? dryRun;
 	const effects = isRecord(source) ? source['effects'] : undefined;
 	const status = isRecord(effects) ? effects['status'] : undefined;
-	const errorSources = [source, effects, status].filter(isRecord);
+	const errorSources = [source, effects, status].filter((value) => isRecord(value));
 
 	const errors = errorSources.flatMap((item) =>
 		collectStrings({ value: item, path: ['error', 'cleverError', 'message'] }),
@@ -125,7 +125,12 @@ function gasUsedSummary({
 	const rebate = stringField({ record: gasUsed, key: 'storageRebate' });
 	const nonRefundableStorageFee = stringField({ record: gasUsed, key: 'nonRefundableStorageFee' });
 	const net =
-		computation && storage && rebate
+		computation != null &&
+		computation !== '' &&
+		storage != null &&
+		storage !== '' &&
+		rebate != null &&
+		rebate !== ''
 			? String(-(BigInt(computation) + BigInt(storage) - BigInt(rebate)))
 			: undefined;
 

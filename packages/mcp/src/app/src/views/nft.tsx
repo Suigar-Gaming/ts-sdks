@@ -33,7 +33,9 @@ function NftImage({ name, url }: { name: string; url: unknown }): JSX.Element {
 			className="border-border/70 bg-background size-14 rounded-md border object-cover"
 			height={56}
 			loading="lazy"
-			onError={() => setFailed(true)}
+			onError={() => {
+				setFailed(true);
+			}}
 			src={imageUrl}
 			width={56}
 		/>

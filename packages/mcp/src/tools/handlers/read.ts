@@ -99,7 +99,7 @@ export async function listNftsTool(input: Partial<ListNftsInput> = {}): Promise<
 			});
 		}
 		cursor = page.cursor;
-	} while (cursor);
+	} while (cursor != null && cursor !== '');
 
 	return asTextResponse({
 		network: config.network,

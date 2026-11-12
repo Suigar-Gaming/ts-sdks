@@ -50,8 +50,10 @@ export function createSuigarMcpServer(): McpServer {
 	return server;
 }
 
-export async function startSuigarMcpServer(): Promise<void> {
-	serveSuigarMcpStdio();
+export function startSuigarMcpServer(): Promise<void> {
+	return Promise.try(() => {
+		serveSuigarMcpStdio();
+	});
 }
 
 export function serveSuigarMcpStdio(transport: Transport = new StdioServerTransport()) {

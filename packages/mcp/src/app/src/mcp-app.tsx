@@ -112,7 +112,7 @@ export function SuigarInspectorApp(): JSX.Element | null {
 	};
 
 	const onToolResult = (result: CallToolResult) => {
-		if (result.isError) {
+		if (result.isError === true) {
 			const errors = textErrors(result);
 			dispatch({
 				type: 'tool-error',
@@ -206,19 +206,17 @@ export function SuigarInspectorApp(): JSX.Element | null {
 		);
 	}
 
-	if (Object.keys(asRecord(inspector.payload)).length === 0) {
-		if (inspector.errors.length === 0) {
-			return (
-				<main className={shellClassName} style={safeAreaStyle}>
-					<Header status="Waiting for tool result" title="Suigar MCP" />
-					<Panel title="Tool result">
-						<p className="text-muted-foreground text-xs leading-5 font-semibold">
-							The app is connected, but the host has not delivered a readable tool result.
-						</p>
-					</Panel>
-				</main>
-			);
-		}
+	if (Object.keys(asRecord(inspector.payload)).length === 0 && inspector.errors.length === 0) {
+		return (
+			<main className={shellClassName} style={safeAreaStyle}>
+				<Header status="Waiting for tool result" title="Suigar MCP" />
+				<Panel title="Tool result">
+					<p className="text-muted-foreground text-xs leading-5 font-semibold">
+						The app is connected, but the host has not delivered a readable tool result.
+					</p>
+				</Panel>
+			</main>
+		);
 	}
 
 	if (inspector.errors.length > 0) {

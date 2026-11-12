@@ -63,7 +63,7 @@ vi.mock('../../../src/tools/handlers/shared.js', () => ({
 		structuredContent,
 	}),
 	getConfigInput: (input: unknown) => input,
-	resolveCoinDisplayMetadata: async () => ({ decimals: 9, symbol: 'SUI' }),
+	resolveCoinDisplayMetadata: () => Promise.resolve({ decimals: 9, symbol: 'SUI' }),
 	resolveWalletOwner: vi.fn<() => void>(),
 }));
 
@@ -266,7 +266,7 @@ describe('wallet tools', () => {
 				scale: 4,
 			});
 			expect(content.sessionWallet.funding.addressQrCodeDataUrl).toMatch(
-				/^data:image\/gif;base64,/,
+				/^data:image\/gif;base64,/u,
 			);
 			expect(fundingUrl.pathname).toBe('/fund-session-wallet');
 			expect(fundingUrl.searchParams.get('destination')).toBe(sessionAddress);
@@ -287,7 +287,7 @@ describe('wallet tools', () => {
 					status: 'setup-required',
 					setupUrl: sessionSetupUrl,
 					wallets: [sessionWallet],
-					note: expect.stringContaining('shared by mainnet and testnet'),
+					note: expect.stringContaining('shared by mainnet and testnet') as unknown,
 				},
 			});
 		});

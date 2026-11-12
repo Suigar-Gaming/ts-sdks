@@ -111,11 +111,13 @@ describe('suigar cli bridge options', () => {
 			defaultNetwork: 'testnet',
 			profiles: {},
 		});
-		mocks.createLogoutBridge.mockImplementation(async (input) => ({
-			url: `${input.webOrigin}/connection`,
-			done: Promise.resolve({ network: input.network, all: input.all }),
-			close: vi.fn<() => void>(),
-		}));
+		mocks.createLogoutBridge.mockImplementation((input) =>
+			Promise.resolve({
+				url: `${input.webOrigin}/connection`,
+				done: Promise.resolve({ network: input.network, all: input.all }),
+				close: vi.fn<() => void>(),
+			}),
+		);
 		const stdout = vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
 		const stderr = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
 

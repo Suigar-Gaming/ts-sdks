@@ -45,7 +45,7 @@ export function requireTransactionFields({
 		}
 
 		const value = input[field];
-		if (value === undefined || value === null || value === '') {
+		if (value == null || value === '') {
 			context.addIssue({
 				code: 'custom',
 				path: [field],
