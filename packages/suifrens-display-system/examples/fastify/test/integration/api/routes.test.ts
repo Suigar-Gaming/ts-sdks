@@ -293,13 +293,14 @@ test.each(INVALID_OPTIONS)(
 		const app = buildServer({ logger: false });
 		const rendering = vi.spyOn(imageRenderer, 'renderImage');
 		try {
-			for (const format of ['svg', 'png']) {
-				const suifren = await app.inject(`/suifrens/0x1/${format}?${option}=${value}`);
-				const accessory = await app.inject(
-					`/accessories/soccer%20team%20shirt/${format}?${option}=${value}`,
-				);
-				expect(suifren.statusCode).toBe(400);
-				expect(accessory.statusCode).toBe(400);
+			const responses = await Promise.all(
+				['svg', 'png'].flatMap((format) => [
+					app.inject(`/suifrens/0x1/${format}?${option}=${value}`),
+					app.inject(`/accessories/soccer%20team%20shirt/${format}?${option}=${value}`),
+				]),
+			);
+			for (const response of responses) {
+				expect(response.statusCode).toBe(400);
 			}
 			expect(client.getObject).not.toHaveBeenCalled();
 			expect(rendering).not.toHaveBeenCalled();

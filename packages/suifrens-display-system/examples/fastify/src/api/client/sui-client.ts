@@ -42,19 +42,24 @@ export async function getSuiFrenAccessories(suiFrenId: string) {
 	const equipped: Array<AccessoryMetadata> = [];
 	let cursor: string | null = null;
 	do {
+		// oxlint-disable-next-line no-await-in-loop -- Each page needs the cursor returned by the previous page.
 		const page: SuiClientTypes.ListDynamicFieldsResponse = await suiClient.listDynamicFields({
 			parentId: suiFrenId,
 			cursor,
 		});
-		for (const field of page.dynamicFields) {
-			if (field.name.type !== ACCESSORIES_KEY_TYPE) {
-				continue;
-			}
-			const { object } = await suiClient.getDynamicObjectField({
-				parentId: suiFrenId,
-				name: field.name,
-				include: { content: true },
-			});
+		// oxlint-disable-next-line no-await-in-loop -- Load accessories for the current page before advancing its cursor.
+		const objects = await Promise.all(
+			page.dynamicFields
+				.filter((field) => field.name.type === ACCESSORIES_KEY_TYPE)
+				.map((field) =>
+					suiClient.getDynamicObjectField({
+						parentId: suiFrenId,
+						name: field.name,
+						include: { content: true },
+					}),
+				),
+		);
+		for (const { object } of objects) {
 			if (object.type !== ACCESSORY_TYPE) {
 				continue;
 			}

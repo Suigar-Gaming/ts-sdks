@@ -43,3 +43,40 @@ test('gRPC accessory lookup follows pagination and dynamic-object names', async 
 		include: { content: true },
 	});
 });
+
+test('loads accessories in parallel while preserving page order and cursor dependencies', async () => {
+	const first = Promise.withResolvers<Awaited<ReturnType<typeof client.getDynamicObjectField>>>();
+	client.listDynamicFields
+		.mockResolvedValueOnce({
+			dynamicFields: [1, 2].map((value) => ({
+				name: { type: ACCESSORIES_KEY_TYPE, bcs: new Uint8Array([value]) },
+			})),
+			cursor: 'next',
+			hasNextPage: true,
+		})
+		.mockResolvedValueOnce({ dynamicFields: [], cursor: null, hasNextPage: false });
+	client.getDynamicObjectField.mockReturnValueOnce(first.promise).mockResolvedValueOnce({
+		object: {
+			type: ACCESSORY_TYPE,
+			content: Accessory.serialize({ id: '0x3', name: '8 bit glasses', type: 'glasses' }).toBytes(),
+		},
+	});
+
+	const result = getSuiFrenAccessories('0x1');
+	await vi.waitFor(() => {
+		expect(client.getDynamicObjectField).toHaveBeenCalledTimes(2);
+	});
+	expect(client.listDynamicFields).toHaveBeenCalledTimes(1);
+	first.resolve({
+		object: {
+			type: ACCESSORY_TYPE,
+			content: Accessory.serialize({ id: '0x2', name: 'baseball cap', type: 'hat' }).toBytes(),
+		},
+	});
+
+	expect((await result).map((accessory) => accessory.name)).toEqual([
+		'baseball cap',
+		'8 bit glasses',
+	]);
+	expect(client.listDynamicFields).toHaveBeenNthCalledWith(2, { parentId: '0x1', cursor: 'next' });
+});
