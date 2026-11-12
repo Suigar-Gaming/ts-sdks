@@ -6,7 +6,7 @@ import { StandardGameFields } from '@/components/forms/shared-game-fields';
 import { Field, FieldCode, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
-import { getRangePointMax, parseOptionalNumber } from '@/lib/suigar-app';
+import { getRangePointMax, parseOptionalNumber, resolveGameScale } from '@/lib/suigar-app';
 import type { RangeFormValues } from '@/lib/suigar-types';
 
 export function RangeForm({
@@ -22,12 +22,8 @@ export function RangeForm({
 	stakeDescription?: React.ReactNode | undefined;
 	rangeBoundsDescription?: React.ReactNode | undefined;
 }) {
-	const configuredScale = parseOptionalNumber(value.scale);
-	const effectiveScale =
-		configuredScale != null && Number.isFinite(configuredScale) && configuredScale > 0
-			? configuredScale
-			: DEFAULT_RANGE_SCALE;
-	const maxPoint = getRangePointMax(configuredScale);
+	const effectiveScale = resolveGameScale(parseOptionalNumber(value.scale), DEFAULT_RANGE_SCALE);
+	const maxPoint = getRangePointMax(effectiveScale);
 
 	return (
 		<div className="space-y-6">

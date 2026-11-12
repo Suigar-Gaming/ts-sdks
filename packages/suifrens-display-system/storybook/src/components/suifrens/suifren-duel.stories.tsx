@@ -981,11 +981,7 @@ export const Ring: Story = {
 			fightIdRef.current = 0;
 			ringWinnerRef.current = null;
 			setRingWinnerId(null);
-			if (
-				ringWinnerTimeoutRef.current != null &&
-				ringWinnerTimeoutRef.current !== 0 &&
-				!Number.isNaN(ringWinnerTimeoutRef.current)
-			) {
+			if (ringWinnerTimeoutRef.current != null) {
 				window.clearTimeout(ringWinnerTimeoutRef.current);
 				ringWinnerTimeoutRef.current = null;
 			}
@@ -1421,11 +1417,7 @@ export const Ring: Story = {
 
 		useEffect(
 			() => () => {
-				if (
-					ringWinnerTimeoutRef.current != null &&
-					ringWinnerTimeoutRef.current !== 0 &&
-					!Number.isNaN(ringWinnerTimeoutRef.current)
-				) {
+				if (ringWinnerTimeoutRef.current != null) {
 					window.clearTimeout(ringWinnerTimeoutRef.current);
 					ringWinnerTimeoutRef.current = null;
 				}

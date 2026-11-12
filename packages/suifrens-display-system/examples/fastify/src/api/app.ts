@@ -31,11 +31,7 @@ export function buildServer(options: FastifyServerOptions = {}) {
 	fastify.register(accessories);
 
 	// Health check:
-	fastify.get('/', () => {
-		return Promise.try(() => {
-			return { ok: true };
-		});
-	});
+	fastify.get('/', () => Promise.resolve({ ok: true }));
 
 	return fastify;
 }

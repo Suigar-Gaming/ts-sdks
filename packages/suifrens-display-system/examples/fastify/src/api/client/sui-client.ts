@@ -47,19 +47,16 @@ export async function getSuiFrenAccessories(suiFrenId: string) {
 			parentId: suiFrenId,
 			cursor,
 		});
-		// oxlint-disable-next-line no-await-in-loop -- Load accessories for the current page before advancing its cursor.
-		const objects = await Promise.all(
-			page.dynamicFields
-				.filter((field) => field.name.type === ACCESSORIES_KEY_TYPE)
-				.map((field) =>
-					suiClient.getDynamicObjectField({
-						parentId: suiFrenId,
-						name: field.name,
-						include: { content: true },
-					}),
-				),
-		);
-		for (const { object } of objects) {
+		for (const field of page.dynamicFields) {
+			if (field.name.type !== ACCESSORIES_KEY_TYPE) {
+				continue;
+			}
+			// oxlint-disable-next-line no-await-in-loop -- Keep only one accessory RPC request in flight at a time.
+			const { object } = await suiClient.getDynamicObjectField({
+				parentId: suiFrenId,
+				name: field.name,
+				include: { content: true },
+			});
 			if (object.type !== ACCESSORY_TYPE) {
 				continue;
 			}

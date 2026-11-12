@@ -5,7 +5,7 @@ import { DEFAULT_LIMBO_MULTIPLIER_SCALE } from '@suigar/sdk/utils';
 import { StandardGameFields } from '@/components/forms/shared-game-fields';
 import { Field, FieldCode, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
-import { parseOptionalNumber } from '@/lib/suigar-app';
+import { parseOptionalNumber, resolveGameScale } from '@/lib/suigar-app';
 import type { LimboFormValues } from '@/lib/suigar-types';
 
 export function LimboForm({
@@ -21,11 +21,10 @@ export function LimboForm({
 	stakeDescription?: React.ReactNode | undefined;
 	targetMultiplierDescription?: React.ReactNode | undefined;
 }) {
-	const configuredScale = parseOptionalNumber(value.scale);
-	const effectiveScale =
-		configuredScale != null && Number.isFinite(configuredScale) && configuredScale > 0
-			? configuredScale
-			: DEFAULT_LIMBO_MULTIPLIER_SCALE;
+	const effectiveScale = resolveGameScale(
+		parseOptionalNumber(value.scale),
+		DEFAULT_LIMBO_MULTIPLIER_SCALE,
+	);
 
 	return (
 		<div className="space-y-6">

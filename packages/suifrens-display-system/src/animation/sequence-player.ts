@@ -15,17 +15,12 @@ import { interpolatePartPose } from './interpolate-part-pose.js';
 const EPSILON = 0.0001;
 
 export function normalizePlayback(playback?: PlaybackOptions): NormalizedPlayback {
+	const speed = playback?.speed ?? 1;
 	return {
 		iterations:
 			playback?.iterations === 'infinite' ? Infinity : Math.max(1, playback?.iterations ?? 1),
 		alternate: Boolean(playback?.alternate),
-		speed:
-			playback?.speed != null &&
-			playback?.speed !== 0 &&
-			!Number.isNaN(playback?.speed) &&
-			playback.speed > 0
-				? playback.speed
-				: 1,
+		speed: speed > 0 ? speed : 1,
 	};
 }
 

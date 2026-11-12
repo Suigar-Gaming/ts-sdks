@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import type { AnimationSequence } from '../../types/animation.type.js';
-import { getCorePresetSequence } from './core.js';
 
 const DEFERRED_PRESET_NAMES = new Set([
 	'run',
@@ -26,10 +25,6 @@ const DEFERRED_PRESET_NAMES = new Set([
 ]);
 
 let battleRoyalePresetsPromise: Promise<Record<string, AnimationSequence>> | undefined;
-
-export function resolvePresetSequenceSync(name: string): AnimationSequence | undefined {
-	return getCorePresetSequence(name);
-}
 
 export function isDeferredPreset(name: string): boolean {
 	return DEFERRED_PRESET_NAMES.has(name);

@@ -26,9 +26,7 @@ export function resolveCoinKeyForType(
 	const normalizedCoinType = normalizeStructTag(coinType);
 
 	return (
-		SUIGAR_COINS.map((key) => [key, coinTypes[key]] as const).find(
-			([, configuredCoinType]) => normalizeStructTag(configuredCoinType) === normalizedCoinType,
-		)?.[0] ?? null
+		SUIGAR_COINS.find((key) => normalizeStructTag(coinTypes[key]) === normalizedCoinType) ?? null
 	);
 }
 
@@ -60,8 +58,7 @@ export function getCoinDisplayAmount({
 	}
 
 	if (
-		(balanceOwner !== currentAccountAddress &&
-			(balanceState.error == null || balanceState.error === '')) ||
+		balanceOwner !== currentAccountAddress ||
 		balanceState.isLoading ||
 		(balanceState.error != null && balanceState.error !== '')
 	) {

@@ -81,6 +81,7 @@ import {
 	DEFAULT_STANDARD_FORMS,
 	getRangePointMax,
 	parseOptionalNumber,
+	resolveGameScale,
 } from '@/lib/suigar-app';
 import type {
 	GameConfigOption,
@@ -1453,11 +1454,10 @@ function useIntegrationState({
 			return null;
 		}
 
-		const configuredScale = parseOptionalNumber(standardForms.range.scale);
-		const effectiveScale =
-			configuredScale != null && Number.isFinite(configuredScale) && configuredScale > 0
-				? configuredScale
-				: DEFAULT_RANGE_SCALE;
+		const effectiveScale = resolveGameScale(
+			parseOptionalNumber(standardForms.range.scale),
+			DEFAULT_RANGE_SCALE,
+		);
 
 		return (
 			<FieldDescription size="sm">
@@ -1604,12 +1604,11 @@ function useIntegrationState({
 		}
 
 		if (standardGameParameters?.rangeBounds) {
-			const configuredScale = parseOptionalNumber(standardForms.range.scale);
-			const effectiveScale =
-				configuredScale != null && Number.isFinite(configuredScale) && configuredScale > 0
-					? configuredScale
-					: DEFAULT_RANGE_SCALE;
-			const maxPoint = getRangePointMax(configuredScale);
+			const effectiveScale = resolveGameScale(
+				parseOptionalNumber(standardForms.range.scale),
+				DEFAULT_RANGE_SCALE,
+			);
+			const maxPoint = getRangePointMax(effectiveScale);
 			const minZoneSize = standardGameParameters.rangeBounds.minZoneSize / effectiveScale;
 			const maxZoneSize = standardGameParameters.rangeBounds.maxZoneSize / effectiveScale;
 			const leftPoint = parseOptionalNumber(standardForms.range.leftPoint);

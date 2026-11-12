@@ -44,7 +44,7 @@ test('gRPC accessory lookup follows pagination and dynamic-object names', async 
 	});
 });
 
-test('loads accessories in parallel while preserving page order and cursor dependencies', async () => {
+test('waits for each accessory lookup before starting the next one or advancing the cursor', async () => {
 	const first = Promise.withResolvers<Awaited<ReturnType<typeof client.getDynamicObjectField>>>();
 	client.listDynamicFields
 		.mockResolvedValueOnce({
@@ -64,7 +64,7 @@ test('loads accessories in parallel while preserving page order and cursor depen
 
 	const result = getSuiFrenAccessories('0x1');
 	await vi.waitFor(() => {
-		expect(client.getDynamicObjectField).toHaveBeenCalledTimes(2);
+		expect(client.getDynamicObjectField).toHaveBeenCalledTimes(1);
 	});
 	expect(client.listDynamicFields).toHaveBeenCalledTimes(1);
 	first.resolve({

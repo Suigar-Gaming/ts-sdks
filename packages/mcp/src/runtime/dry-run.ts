@@ -205,7 +205,8 @@ function parseDryRunEvent({
 	}
 
 	const standardBetResult = /::BetResultEvent<[^>]+::([^:<>,]+)::Game>/u.exec(eventType);
-	const game = GAMES.find((known) => known === standardBetResult?.[1]?.replaceAll('_', '-'));
+	const gameName = standardBetResult?.[1]?.replaceAll('_', '-');
+	const game = GAMES.find((known) => known === gameName);
 	return game
 		? {
 				game,

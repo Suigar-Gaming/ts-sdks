@@ -35,7 +35,7 @@ function empty(): Credentials {
 }
 
 function isValidSuigarNetwork(value: unknown): value is SuigarNetwork {
-	return typeof value === 'string' && SUPPORTED_SUI_NETWORKS.some((network) => network === value);
+	return SUPPORTED_SUI_NETWORKS.some((network) => network === value);
 }
 
 function isValidWalletProfile(value: unknown): value is WalletProfile {

@@ -42,14 +42,11 @@ export function formatBaseUnitAmount({
 	const raw = String(value);
 	const negative = raw.startsWith('-');
 	const digits = negative ? raw.slice(1) : raw;
-	if (!BASE_UNIT_AMOUNT_PATTERN.test(digits)) {
+	if (decimals === 0 || !BASE_UNIT_AMOUNT_PATTERN.test(digits)) {
 		return raw;
 	}
-	if (decimals === 0) {
-		return `${negative ? '-' : ''}${digits}`;
-	}
 
-	const padded = digits.length <= decimals ? digits.padStart(decimals + 1, '0') : digits;
+	const padded = digits.padStart(decimals + 1, '0');
 	const whole = padded.slice(0, -decimals) || '0';
 	const fraction = padded.slice(-decimals).replace(TRAILING_ZERO_PATTERN, '');
 	return `${negative ? '-' : ''}${whole}${fraction ? `.${fraction}` : ''}`;

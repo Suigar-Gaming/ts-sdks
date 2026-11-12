@@ -228,9 +228,7 @@ function sortPackageDirsByWorkspaceDependencies(packageDirsByName) {
 		];
 
 		for (const dependencyName of dependencyNames.sort(compareStrings)) {
-			if (packageDirsByName.has(dependencyName)) {
-				visitPackage(dependencyName);
-			}
+			visitPackage(dependencyName);
 		}
 
 		visiting.delete(name);
