@@ -123,6 +123,22 @@ export function requireString({ value, fieldName }: { value: unknown; fieldName:
 	throw new TypeError(`Missing required field: ${fieldName}.`);
 }
 
+export function requireChoice<T extends string>({
+	value,
+	choices,
+	fieldName,
+}: {
+	value: unknown;
+	choices: ReadonlyArray<T>;
+	fieldName: string;
+}): T {
+	const choice = choices.find((candidate) => candidate === value);
+	if (choice != null) {
+		return choice;
+	}
+	throw new TypeError(`Invalid ${fieldName}. Choose one of: ${choices.join(', ')}.`);
+}
+
 export function requireGame(value: unknown): Game {
 	const game = requireString({ value, fieldName: 'game' });
 	const supported = GAMES.find((candidate) => candidate === game);

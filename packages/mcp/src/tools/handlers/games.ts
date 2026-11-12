@@ -52,6 +52,7 @@ import {
 	getConfigInput,
 	getMode,
 	getSuigarPackageId,
+	requireChoice,
 	requireString,
 } from './shared.js';
 
@@ -76,10 +77,7 @@ export async function buildCoinflipTransactionTool(
 		);
 	}
 
-	const side = COIN_SIDES.find((candidate) => candidate === input.side);
-	if (!side) {
-		throw new TypeError('Choose heads or tails.');
-	}
+	const side = requireChoice({ value: input.side, choices: COIN_SIDES, fieldName: 'side' });
 	return buildTransactionTool({
 		input,
 		game: 'coinflip',
@@ -275,10 +273,11 @@ export async function buildPvpCoinflipCreateTransactionTool(
 		);
 	}
 
-	const creatorSide = COIN_SIDES.find((candidate) => candidate === input.creatorSide);
-	if (!creatorSide) {
-		throw new TypeError('Choose heads or tails.');
-	}
+	const creatorSide = requireChoice({
+		value: input.creatorSide,
+		choices: COIN_SIDES,
+		fieldName: 'creatorSide',
+	});
 	return buildTransactionTool({
 		input,
 		game: 'pvp-coinflip',
