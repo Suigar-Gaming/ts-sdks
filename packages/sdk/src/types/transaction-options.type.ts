@@ -15,7 +15,7 @@ export type WithThrowOnError<T> = T & {
 	throwOnError?: boolean | undefined;
 };
 
-export type WithConfig<T = {}> = T & {
+export type WithConfig<T = unknown> = T & {
 	config: SuigarConfig;
 };
 
@@ -27,7 +27,7 @@ export type WithGame<T, TGame extends Game = Game> = T & {
 	game: TGame;
 };
 
-export type WithCoinType<T = {}> = T & {
+export type WithCoinType<T = unknown> = T & {
 	coinType: string;
 };
 

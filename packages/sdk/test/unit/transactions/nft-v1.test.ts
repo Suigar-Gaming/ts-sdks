@@ -10,7 +10,7 @@ import { TEST_CONFIG } from '../../utils.js';
 import { getMoveCall } from './utils.js';
 
 describe('NFT V1 transaction builder', () => {
-	it('builds an NFT V1 mint with the configured specification price', async () => {
+	it('builds an NFT V1 mint with the configured specification price', () => {
 		const nftConfig = {
 			...TEST_CONFIG,
 			packageIds: {

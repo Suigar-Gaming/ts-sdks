@@ -167,7 +167,7 @@ describe('resolveSuigarConfig', () => {
 	])('rejects invalid %s overrides', (_kind, config) => {
 		expect(() => resolveSuigarConfig({ network: 'testnet', config })).toThrow(TypeError);
 		expect(() => resolveSuigarConfig({ network: 'testnet', config })).toThrow(
-			/Invalid (package|object) id configuration/,
+			/Invalid (package|object) id configuration/u,
 		);
 	});
 

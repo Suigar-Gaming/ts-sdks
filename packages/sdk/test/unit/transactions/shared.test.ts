@@ -33,7 +33,7 @@ describe('shared transaction helpers', () => {
 		expect(tx.getData().sender).toBe(normalizeSuiAddress('0xabc'));
 	});
 
-	it('creates a base transaction with normalized owner address and configured gas budget', async () => {
+	it('creates a base transaction with normalized owner address and configured gas budget', () => {
 		const tx = createBaseTransaction({
 			owner: '0xabc',
 			gasBudget: 999,

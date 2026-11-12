@@ -38,7 +38,7 @@ const textDecoder = new TextDecoder();
  */
 export function parseCoinType(type: string): string {
 	const coinType = parseStructTag(type).typeParams[0];
-	if (!coinType) {
+	if (coinType == null || coinType === '') {
 		throw new TypeError(`Unable to parse coin type from ${type}`);
 	}
 
@@ -244,12 +244,18 @@ export function parseGameDetails({
 	gameDetails,
 }: WithGame<{ gameDetails: BetResultGameDetails }>): Record<string, unknown> {
 	const schema: Record<string, GameDetailSchemaValueType> = GAME_DETAILS_SCHEMAS[game];
-	return gameDetails.contents.reduce<Record<string, unknown>>((parsedDetails, entry) => {
-		const valueType = Object.hasOwn(schema, entry.key) ? (schema[entry.key] ?? 'string') : 'string';
-		parsedDetails[entry.key] = parseGameDetail({
-			valueType,
-			value: entry.value,
-		});
-		return parsedDetails;
-	}, Object.create(null));
+	return gameDetails.contents.reduce<Record<string, unknown>>(
+		(parsedDetails, entry) => {
+			const valueType = Object.hasOwn(schema, entry.key)
+				? (schema[entry.key] ?? 'string')
+				: 'string';
+			parsedDetails[entry.key] = parseGameDetail({
+				valueType,
+				value: entry.value,
+			});
+			return parsedDetails;
+		},
+		// oxlint-disable-next-line typescript/no-unsafe-argument -- Object.create(null) is the intentional reduce seed.
+		Object.create(null),
+	);
 }

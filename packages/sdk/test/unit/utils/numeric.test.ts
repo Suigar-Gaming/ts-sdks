@@ -55,6 +55,7 @@ describe('toU8', () => {
 	});
 
 	it('rejects unsupported input types', () => {
+		// oxlint-disable-next-line unicorn/no-useless-undefined -- Explicit undefined is the input under test.
 		expect(() => toU8(undefined)).toThrow('Value must be a finite number or integer string');
 		expect(() => toU8(true)).toThrow('Value must be a u8 integer');
 	});
@@ -86,6 +87,7 @@ describe('toU16', () => {
 	});
 
 	it('rejects unsupported input types', () => {
+		// oxlint-disable-next-line unicorn/no-useless-undefined -- Explicit undefined is the input under test.
 		expect(() => toU16(undefined)).toThrow('Value must be a finite number or integer string');
 		expect(() => toU16(true)).toThrow('Value must be a u16 integer');
 	});
@@ -116,6 +118,7 @@ describe('toU32', () => {
 	});
 
 	it('rejects unsupported input types', () => {
+		// oxlint-disable-next-line unicorn/no-useless-undefined -- Explicit undefined is the input under test.
 		expect(() => toU32(undefined)).toThrow('Value must be a finite number or integer string');
 		expect(() => toU32(true)).toThrow('Value must be a u32 integer');
 	});

@@ -224,7 +224,7 @@ export class SuigarClient {
 				...optionalOptions({ signal }),
 			});
 
-			if (!object?.content) {
+			if (object?.content == null) {
 				throw new Error(`Missing parameters object content for ${game} and coin type ${coinType}`);
 			}
 
@@ -285,11 +285,9 @@ export class SuigarClient {
 	 *   returned array.
 	 */
 	async getPvPCoinflipGames(
-		options: WithThrowOnError<Omit<SuiClientTypes.ListDynamicFieldsOptions, 'parentId'>> = {
-			limit: DEFAULT_QUERY_LIMIT,
-		},
+		options?: WithThrowOnError<Omit<SuiClientTypes.ListDynamicFieldsOptions, 'parentId'>>,
 	): Promise<Array<InferBcsType<typeof PvPCoinflipGame> & { coin_type: string }>> {
-		const { throwOnError = false, ...listOptions } = options;
+		const { throwOnError = false, ...listOptions } = options ?? { limit: DEFAULT_QUERY_LIMIT };
 		const { dynamicFields } = await this.#client.core.listDynamicFields({
 			...listOptions,
 			parentId: await this.#getPvPCoinflipRegistryId(listOptions.signal),
@@ -309,7 +307,7 @@ export class SuigarClient {
 					throw object;
 				}
 
-				if (!object.content) {
+				if (object.content == null) {
 					throw new Error('Unable to resolve PvP Coinflip game from retrieved object');
 				}
 

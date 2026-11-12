@@ -14,7 +14,7 @@ import type { MoveFloat } from '../types/index.js';
  */
 export function isMoveI64(value: unknown): value is MoveFloat['exp'] {
 	return (
-		typeof value === 'object' && value !== null && 'bits' in value && typeof value.bits === 'string'
+		typeof value === 'object' && value != null && 'bits' in value && typeof value.bits === 'string'
 	);
 }
 
@@ -25,7 +25,7 @@ export function isMoveI64(value: unknown): value is MoveFloat['exp'] {
  * @returns Whether `value` has the generated Move float shape.
  */
 export function isMoveFloat(value: unknown): value is MoveFloat {
-	if (typeof value !== 'object' || value === null) {
+	if (typeof value !== 'object' || value == null) {
 		return false;
 	}
 

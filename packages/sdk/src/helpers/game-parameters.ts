@@ -27,10 +27,10 @@ export function normalizeGameParameterValues(value: unknown): unknown {
 	}
 
 	if (Array.isArray(value)) {
-		return value.map((item) => normalizeGameParameterValues(item));
+		return value.map((item: unknown) => normalizeGameParameterValues(item));
 	}
 
-	if (typeof value === 'object' && value !== null) {
+	if (typeof value === 'object' && value != null) {
 		const normalized: Record<string, unknown> = {};
 		for (const [key, item] of Object.entries(value)) {
 			normalized[key] = normalizeGameParameterValues(item);

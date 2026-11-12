@@ -227,7 +227,7 @@ describe('parseSuigarEvent', () => {
 
 		expect(suigarEvent?.game).toBe('pvp-coinflip');
 		expect(suigarEvent?.event.type).toBe('GameCancelledEvent');
-		expect(suigarEvent && 'gameDetails' in suigarEvent).toBe(false);
+		expect(suigarEvent).not.toHaveProperty('gameDetails');
 		expect(suigarEvent?.event.data).toMatchObject({
 			game_id: gameId,
 			stake_per_player: '1',
@@ -303,7 +303,8 @@ describe('parseGameDetails', () => {
 			expect(Object.getPrototypeOf(details)).toBeNull();
 			expect(Object.hasOwn(details, key)).toBe(true);
 			expect(details[key]).toBe('custom value');
-			expect(JSON.parse(JSON.stringify(details))[key]).toBe('custom value');
+			const serialized: unknown = JSON.parse(JSON.stringify(details));
+			expect(serialized).toHaveProperty(key, 'custom value');
 		},
 	);
 

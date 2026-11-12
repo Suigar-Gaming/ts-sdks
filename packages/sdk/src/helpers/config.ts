@@ -51,14 +51,18 @@ export function resolveSuigarConfig({
 	const objectIds = OBJECT_IDS[network];
 	const coins = COINS[network];
 
-	const resolvedCoins = SUIGAR_COINS.reduce<SuigarConfig['coins']>((result, coin) => {
-		result[coin] = resolveCoinMetadata({
-			coin,
-			coinMetadata: coins[coin],
-			configCoinMetadata: config.coins?.[coin],
-		});
-		return result;
-	}, Object.create(null));
+	const resolvedCoins = SUIGAR_COINS.reduce<SuigarConfig['coins']>(
+		(result, coin) => {
+			result[coin] = resolveCoinMetadata({
+				coin,
+				coinMetadata: coins[coin],
+				configCoinMetadata: config.coins?.[coin],
+			});
+			return result;
+		},
+		// oxlint-disable-next-line typescript/no-unsafe-argument -- Object.create(null) is the intentional reduce seed.
+		Object.create(null),
+	);
 	const resolvedPackageIds = { ...packageIds, ...config.packageIds };
 	const resolvedObjectIds = { ...objectIds, ...config.objectIds };
 

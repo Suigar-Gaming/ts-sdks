@@ -314,127 +314,146 @@ class TestClient extends CoreClient {
 	}
 
 	override mvr: SuiClientTypes.MvrMethods = {
-		resolvePackage: async ({ package: packageName }) => ({
-			package: TEST_MVR_PACKAGES[packageName] ?? packageName,
-		}),
-		resolveType: async ({ type }) => ({
-			type: resolveTestMvrType(type),
-		}),
-		resolve: async ({ packages = [], types = [] }) => ({
-			packages: Object.fromEntries(
-				packages.map((packageName) => [
-					packageName,
-					{ package: TEST_MVR_PACKAGES[packageName] ?? packageName },
-				]),
-			),
-			types: Object.fromEntries(types.map((type) => [type, { type: resolveTestMvrType(type) }])),
-		}),
+		resolvePackage: ({ package: packageName }) =>
+			Promise.resolve({
+				package: TEST_MVR_PACKAGES[packageName] ?? packageName,
+			}),
+		resolveType: ({ type }) =>
+			Promise.resolve({
+				type: resolveTestMvrType(type),
+			}),
+		resolve: ({ packages = [], types = [] }) =>
+			Promise.resolve({
+				packages: Object.fromEntries(
+					packages.map((packageName) => [
+						packageName,
+						{ package: TEST_MVR_PACKAGES[packageName] ?? packageName },
+					]),
+				),
+				types: Object.fromEntries(types.map((type) => [type, { type: resolveTestMvrType(type) }])),
+			}),
 	};
 
-	getObjects<Include extends SuiClientTypes.ObjectInclude = {}>(
+	getObjects<Include extends SuiClientTypes.ObjectInclude = Record<string, never>>(
 		options: SuiClientTypes.GetObjectsOptions<Include>,
 	): Promise<SuiClientTypes.GetObjectsResponse<Include>>;
-	async getObjects(options: SuiClientTypes.GetObjectsOptions<SuiClientTypes.ObjectInclude>) {
-		this.getObjectsCalls.push(options);
-		return {
-			objects: options.objectIds.map((objectId, index) => {
-				const object = this.mockObjects.find((candidate) => {
-					return (
-						!(candidate instanceof Error) &&
-						normalizeSuiAddress(candidate.objectId) === normalizeSuiAddress(objectId)
-					);
-				});
-				if (object) {
-					return object;
-				}
-
-				const dynamicFieldLookup =
-					this.mockDynamicFieldLookups.find((lookup) => {
-						if (!lookup.nameBcs) {
-							return false;
-						}
-
-						return [lookup.parentId, normalizeSuiAddress(lookup.parentId)].some(
-							(parentId) =>
-								deriveDynamicFieldID(parentId, lookup.nameType, lookup.nameBcs!) === objectId,
+	getObjects(options: SuiClientTypes.GetObjectsOptions<SuiClientTypes.ObjectInclude>) {
+		return Promise.try(() => {
+			this.getObjectsCalls.push(options);
+			return {
+				objects: options.objectIds.map((objectId, index) => {
+					const object = this.mockObjects.find((candidate) => {
+						return (
+							!(candidate instanceof Error) &&
+							normalizeSuiAddress(candidate.objectId) === normalizeSuiAddress(objectId)
 						);
-					}) ??
-					(() => {
-						const lookups = this.mockDynamicFieldLookups.filter((lookup) => lookup.nameBcs);
-						return lookups[this.dynamicFieldObjectReads++ % lookups.length];
-					})();
-				if (dynamicFieldLookup?.nameBcs) {
-					return createDynamicObjectFieldObject({
-						childId: dynamicFieldLookup.childId,
-						fieldId: objectId,
-						nameBcs: dynamicFieldLookup.nameBcs,
-						nameType: dynamicFieldLookup.nameType,
 					});
-				}
+					if (object) {
+						return object;
+					}
 
-				return this.mockObjects[index] ?? new Error(`No object found for id ${objectId}`);
-			}),
-		};
+					const dynamicFieldLookup =
+						this.mockDynamicFieldLookups.find((lookup) => {
+							if (!lookup.nameBcs) {
+								return false;
+							}
+
+							return [lookup.parentId, normalizeSuiAddress(lookup.parentId)].some(
+								(parentId) =>
+									deriveDynamicFieldID(parentId, lookup.nameType, lookup.nameBcs!) === objectId,
+							);
+						}) ??
+						(() => {
+							const lookups = this.mockDynamicFieldLookups.filter((lookup) => lookup.nameBcs);
+							return lookups[this.dynamicFieldObjectReads++ % lookups.length];
+						})();
+					if (dynamicFieldLookup?.nameBcs) {
+						return createDynamicObjectFieldObject({
+							childId: dynamicFieldLookup.childId,
+							fieldId: objectId,
+							nameBcs: dynamicFieldLookup.nameBcs,
+							nameType: dynamicFieldLookup.nameType,
+						});
+					}
+
+					return this.mockObjects[index] ?? new Error(`No object found for id ${objectId}`);
+				}),
+			};
+		});
 	}
 
-	listCoins: CoreClient['listCoins'] = async () => ({
-		objects: [],
-		hasNextPage: false,
-		cursor: null,
-	});
+	listCoins: CoreClient['listCoins'] = () =>
+		Promise.resolve({
+			objects: [],
+			hasNextPage: false,
+			cursor: null,
+		});
 
-	listOwnedObjects: CoreClient['listOwnedObjects'] = async <
+	listOwnedObjects: CoreClient['listOwnedObjects'] = <
 		Include extends SuiClientTypes.ObjectInclude,
-	>() => ({
-		objects: [] as Array<SuiClientTypes.Object<Include>>,
-		hasNextPage: false,
-		cursor: null,
-	});
+	>() =>
+		Promise.resolve({
+			objects: [] as Array<SuiClientTypes.Object<Include>>,
+			hasNextPage: false,
+			cursor: null,
+		});
 
-	getBalance: CoreClient['getBalance'] = async () => ({
-		balance: {
-			coinType: '0x2::sui::SUI',
-			balance: '0',
-			coinBalance: '0',
-			addressBalance: '0',
-		},
-	});
+	getBalance: CoreClient['getBalance'] = () =>
+		Promise.resolve({
+			balance: {
+				coinType: '0x2::sui::SUI',
+				balance: '0',
+				coinBalance: '0',
+				addressBalance: '0',
+			},
+		});
 
-	listBalances: CoreClient['listBalances'] = async () => ({
-		balances: [],
-		hasNextPage: false,
-		cursor: null,
-	});
+	listBalances: CoreClient['listBalances'] = () =>
+		Promise.resolve({
+			balances: [],
+			hasNextPage: false,
+			cursor: null,
+		});
 
-	getCoinMetadata: CoreClient['getCoinMetadata'] = async () => ({
-		coinMetadata: null,
-	});
+	getCoinMetadata: CoreClient['getCoinMetadata'] = () =>
+		Promise.resolve({
+			coinMetadata: null,
+		});
 
-	getTransaction: CoreClient['getTransaction'] = async () => {
-		throw new Error('Not implemented.');
+	getTransaction: CoreClient['getTransaction'] = () => {
+		return Promise.try(() => {
+			throw new Error('Not implemented.');
+		});
 	};
 
-	executeTransaction: CoreClient['executeTransaction'] = async () => {
-		throw new Error('Not implemented.');
+	executeTransaction: CoreClient['executeTransaction'] = () => {
+		return Promise.try(() => {
+			throw new Error('Not implemented.');
+		});
 	};
 
-	simulateTransaction<Include extends SuiClientTypes.SimulateTransactionInclude = {}>(
+	simulateTransaction<
+		Include extends SuiClientTypes.SimulateTransactionInclude = Record<string, never>,
+	>(
 		options: SuiClientTypes.SimulateTransactionOptions<Include>,
 	): Promise<SuiClientTypes.SimulateTransactionResult<Include>>;
-	async simulateTransaction(
+	simulateTransaction(
 		options: SuiClientTypes.SimulateTransactionOptions<SuiClientTypes.SimulateTransactionInclude>,
 	) {
-		this.simulateTransactionCalls.push(options);
-		return this.mockSimulationResult;
+		return Promise.try(() => {
+			this.simulateTransactionCalls.push(options);
+			return this.mockSimulationResult;
+		});
 	}
 
-	getReferenceGasPrice: CoreClient['getReferenceGasPrice'] = async () => ({
-		referenceGasPrice: '0',
-		price: '1',
-	});
+	getReferenceGasPrice: CoreClient['getReferenceGasPrice'] = () =>
+		Promise.resolve({
+			referenceGasPrice: '0',
+			price: '1',
+		});
 
-	getCurrentSystemState: CoreClient['getCurrentSystemState'] = async () =>
-		({
+	getCurrentSystemState: CoreClient['getCurrentSystemState'] = () =>
+		Promise.resolve({
 			systemState: {
 				systemStateVersion: '1',
 				epoch: '1',
@@ -466,102 +485,113 @@ class TestClient extends CoreClient {
 					stakeSubsidyDecreaseRate: 0,
 				},
 			},
-		}) satisfies SuiClientTypes.GetCurrentSystemStateResponse;
+		} satisfies SuiClientTypes.GetCurrentSystemStateResponse);
 
-	getProtocolConfig: CoreClient['getProtocolConfig'] = async () => ({
-		protocolConfig: { protocolVersion: '1', featureFlags: {}, attributes: {} },
-	});
-
-	getChainIdentifier: CoreClient['getChainIdentifier'] = async () =>
-		({
-			chainIdentifier: 'testnet',
-		}) satisfies SuiClientTypes.GetChainIdentifierResponse;
-
-	listDynamicFields: CoreClient['listDynamicFields'] = async (options) => {
-		this.listDynamicFieldsCalls.push(options);
-		return {
-			dynamicFields: this.mockDynamicFields,
-			hasNextPage: false,
-			cursor: null,
-		};
-	};
-
-	override getDynamicObjectField<Include extends SuiClientTypes.ObjectInclude = {}>(
-		options: SuiClientTypes.GetDynamicObjectFieldOptions<Include>,
-	): Promise<SuiClientTypes.GetDynamicObjectFieldResponse<Include>>;
-	override async getDynamicObjectField(
-		options: SuiClientTypes.GetDynamicObjectFieldOptions<SuiClientTypes.ObjectInclude>,
-	) {
-		const resolvedOptions = {
-			...options,
-			name: {
-				...options.name,
-				type: resolveTestMvrType(options.name.type),
-			},
-		};
-		this.getDynamicObjectFieldCalls.push(resolvedOptions);
-		const lookup = this.mockDynamicFieldLookups.find((entry) => {
-			const nameTypes = [
-				entry.nameType,
-				`0x2::dynamic_object_field::Wrapper<${entry.nameType}>`,
-			].map((type) => normalizeStructTag(type));
-			return (
-				entry.parentId === resolvedOptions.parentId && nameTypes.includes(resolvedOptions.name.type)
-			);
+	getProtocolConfig: CoreClient['getProtocolConfig'] = () =>
+		Promise.resolve({
+			protocolConfig: { protocolVersion: '1', featureFlags: {}, attributes: {} },
 		});
 
-		if (!lookup) {
-			throw new Error(`No dynamic object field found for ${resolvedOptions.name.type}`);
-		}
+	getChainIdentifier: CoreClient['getChainIdentifier'] = () =>
+		Promise.resolve({
+			chainIdentifier: 'testnet',
+		} satisfies SuiClientTypes.GetChainIdentifierResponse);
 
-		const object = this.mockObjects.find((entry) => {
-			return !(entry instanceof Error) && entry.objectId === lookup.childId;
-		}) ?? {
-			objectId: lookup.childId,
-			version: '1',
-			digest: `${lookup.childId}-digest`,
-			owner: {
-				$kind: 'AddressOwner',
-				AddressOwner: '0xowner',
-			},
-			type: resolvedOptions.name.type,
-			previousTransaction: undefined,
-			objectBcs: undefined,
-			json: undefined,
-			display: undefined,
-		};
+	listDynamicFields: CoreClient['listDynamicFields'] = (options) => {
+		return Promise.try(() => {
+			this.listDynamicFieldsCalls.push(options);
+			return {
+				dynamicFields: this.mockDynamicFields,
+				hasNextPage: false,
+				cursor: null,
+			};
+		});
+	};
 
-		if (object instanceof Error) {
-			throw object;
-		}
+	override getDynamicObjectField<
+		Include extends SuiClientTypes.ObjectInclude = Record<string, never>,
+	>(
+		options: SuiClientTypes.GetDynamicObjectFieldOptions<Include>,
+	): Promise<SuiClientTypes.GetDynamicObjectFieldResponse<Include>>;
+	override getDynamicObjectField(
+		options: SuiClientTypes.GetDynamicObjectFieldOptions<SuiClientTypes.ObjectInclude>,
+	) {
+		return Promise.try(() => {
+			const resolvedOptions = {
+				...options,
+				name: {
+					...options.name,
+					type: resolveTestMvrType(options.name.type),
+				},
+			};
+			this.getDynamicObjectFieldCalls.push(resolvedOptions);
+			const lookup = this.mockDynamicFieldLookups.find((entry) => {
+				const nameTypes = [
+					entry.nameType,
+					`0x2::dynamic_object_field::Wrapper<${entry.nameType}>`,
+				].map((type) => normalizeStructTag(type));
+				return (
+					entry.parentId === resolvedOptions.parentId &&
+					nameTypes.includes(resolvedOptions.name.type)
+				);
+			});
 
-		return {
-			object,
-		};
+			if (!lookup) {
+				throw new Error(`No dynamic object field found for ${resolvedOptions.name.type}`);
+			}
+
+			const object = this.mockObjects.find((entry) => {
+				return !(entry instanceof Error) && entry.objectId === lookup.childId;
+			}) ?? {
+				objectId: lookup.childId,
+				version: '1',
+				digest: `${lookup.childId}-digest`,
+				owner: {
+					$kind: 'AddressOwner',
+					AddressOwner: '0xowner',
+				},
+				type: resolvedOptions.name.type,
+				previousTransaction: undefined,
+				objectBcs: undefined,
+				json: undefined,
+				display: undefined,
+			};
+
+			if (object instanceof Error) {
+				throw object;
+			}
+
+			return {
+				object,
+			};
+		});
 	}
 
 	resolveTransactionPlugin: CoreClient['resolveTransactionPlugin'] = () => async () => {};
 
-	verifyZkLoginSignature: CoreClient['verifyZkLoginSignature'] = async () => ({
-		success: true,
-		errors: [],
-	});
+	verifyZkLoginSignature: CoreClient['verifyZkLoginSignature'] = () =>
+		Promise.resolve({
+			success: true,
+			errors: [],
+		});
 
-	getMoveFunction: CoreClient['getMoveFunction'] = async () => {
-		throw new Error('Not implemented.');
+	getMoveFunction: CoreClient['getMoveFunction'] = () => {
+		return Promise.try(() => {
+			throw new Error('Not implemented.');
+		});
 	};
 
-	defaultNameServiceName: CoreClient['defaultNameServiceName'] = async () =>
-		({
+	defaultNameServiceName: CoreClient['defaultNameServiceName'] = () =>
+		Promise.resolve({
 			data: {
 				name: null,
 			},
-		}) satisfies SuiClientTypes.DefaultNameServiceNameResponse;
+		} satisfies SuiClientTypes.DefaultNameServiceNameResponse);
 
-	resolveNameServiceAddress: CoreClient['resolveNameServiceAddress'] = async () =>
-		({
+	resolveNameServiceAddress: CoreClient['resolveNameServiceAddress'] = () =>
+		Promise.resolve({
 			address: null,
-		}) satisfies SuiClientTypes.ResolveNameServiceAddressResponse;
+		} satisfies SuiClientTypes.ResolveNameServiceAddressResponse);
 
 	listTransactions: CoreClient['listTransactions'] = () => {
 		throw new Error('Not implemented.');
@@ -699,12 +729,11 @@ describe('SuigarClient', () => {
 			'../../src/contracts/range/range.js',
 			'../../src/contracts/wheel/wheel.js',
 		]) {
-			vi.doMock(contractPath, async (importOriginal) => await importOriginal());
+			vi.doMock(contractPath, async (importOriginal) => importOriginal());
 		}
 		await import('../../src/transactions/coinflip.js');
-		vi.doMock(
-			'../../src/contracts/pvp-coinflip/pvp_coinflip.js',
-			async (importOriginal) => await importOriginal(),
+		vi.doMock('../../src/contracts/pvp-coinflip/pvp_coinflip.js', async (importOriginal) =>
+			importOriginal(),
 		);
 		const { suigar: mockedSuigar } = await import('../../src/client.js');
 		const partner = normalizeSuiAddress('0x456');
@@ -935,36 +964,41 @@ describe('SuigarClient', () => {
 		expect(parameters.max_rtp).toBe(99);
 	});
 
-	it('throws the game and coin type when parameters content is missing', async () => {
-		const client = createSuigarTestClient({
-			objects: [createObjectWithoutContent('0x111')],
-			dynamicFieldLookups: [
-				{
-					nameBcs: COINFLIP_SETTINGS_FIELD_BCS,
-					parentId: OBJECT_IDS.testnet.sweetHouse,
-					nameType: `${TEST_CONFIG.packageIds.coinflip}::coinflip::CoinFlipSettingsKey`,
-					childId: '0x222',
-				},
-				{
-					nameBcs: SUI_TYPE_NAME_FIELD_BCS,
-					parentId: '0x222',
-					nameType: TypeName.name,
-					childId: '0x111',
-				},
-			],
-		});
+	it.each([undefined, null])(
+		'throws the game and coin type when parameters content is %s',
+		async (content) => {
+			const object = createObjectWithoutContent('0x111');
+			Reflect.set(object, 'content', content);
+			const client = createSuigarTestClient({
+				objects: [object],
+				dynamicFieldLookups: [
+					{
+						nameBcs: COINFLIP_SETTINGS_FIELD_BCS,
+						parentId: OBJECT_IDS.testnet.sweetHouse,
+						nameType: `${TEST_CONFIG.packageIds.coinflip}::coinflip::CoinFlipSettingsKey`,
+						childId: '0x222',
+					},
+					{
+						nameBcs: SUI_TYPE_NAME_FIELD_BCS,
+						parentId: '0x222',
+						nameType: TypeName.name,
+						childId: '0x111',
+					},
+				],
+			});
 
-		await expect(
-			client.suigar.getGameParameters({
-				game: 'coinflip',
-				coinType: COINS.testnet.sui.coinType,
-			}),
-		).rejects.toThrow(
-			`Missing parameters object content for coinflip and coin type ${normalizeStructTag(
-				COINS.testnet.sui.coinType,
-			)}`,
-		);
-	});
+			await expect(
+				client.suigar.getGameParameters({
+					game: 'coinflip',
+					coinType: COINS.testnet.sui.coinType,
+				}),
+			).rejects.toThrow(
+				`Missing parameters object content for coinflip and coin type ${normalizeStructTag(
+					COINS.testnet.sui.coinType,
+				)}`,
+			);
+		},
+	);
 
 	it('caches settings ids and game parameters until ignored', async () => {
 		const client = createSuigarTestClient({
@@ -1002,13 +1036,7 @@ describe('SuigarClient', () => {
 		expect(client.getObjectsCalls).toHaveLength(0);
 
 		client.mockObjects = [createCoinflipParametersObject({ objectId: '0x333', minStake: 50n })];
-		client.mockDynamicFieldLookups = client.mockDynamicFieldLookups.map((lookup) => {
-			if (lookup.parentId === '0x222' && lookup.nameType === TypeName.name) {
-				return { ...lookup, childId: '0x333' };
-			}
-
-			return lookup;
-		});
+		client.mockDynamicFieldLookups.at(-1)!.childId = '0x333';
 
 		const refreshed = await client.suigar.getGameParameters({
 			game: 'coinflip',
@@ -1397,7 +1425,7 @@ describe('SuigarClient', () => {
 		expect(games.map((game) => game.id)).toEqual(['0xopen', '0xpending']);
 	});
 
-	it('exposes BCS schemas under their current event keys', async () => {
+	it('exposes BCS schemas under their current event keys', () => {
 		const client = createSuigarTestClient();
 
 		expect(client.suigar.bcs.NftV1Factory).toBeDefined();
@@ -1442,15 +1470,20 @@ describe('SuigarClient', () => {
 		expect(redeemRequestEvent.request_id).toBe(TEST_OBJECT_ID);
 	});
 
-	it('rejects unresolved PvP Coinflip games when throwOnError is true', async () => {
-		const client = createSuigarTestClient({
-			objects: [createPvPCoinflipGameObjectWithoutContent('0xbroken')],
-			dynamicFields: [createDynamicField('0xbroken')],
-		});
-		await expect(client.suigar.getPvPCoinflipGames({ throwOnError: true })).rejects.toThrow(
-			'Unable to resolve PvP Coinflip game from retrieved object',
-		);
-	});
+	it.each([undefined, null])(
+		'rejects PvP Coinflip games with %s content when throwOnError is true',
+		async (content) => {
+			const object = createPvPCoinflipGameObjectWithoutContent('0xbroken');
+			Reflect.set(object, 'content', content);
+			const client = createSuigarTestClient({
+				objects: [object],
+				dynamicFields: [createDynamicField('0xbroken')],
+			});
+			await expect(client.suigar.getPvPCoinflipGames({ throwOnError: true })).rejects.toThrow(
+				'Unable to resolve PvP Coinflip game from retrieved object',
+			);
+		},
+	);
 
 	it('forwards object lookup options when resolving PvP Coinflip registry games', async () => {
 		const client = createSuigarTestClient({

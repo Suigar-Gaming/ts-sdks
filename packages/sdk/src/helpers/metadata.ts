@@ -58,7 +58,7 @@ export function encodeBetMetadata({
 		values.push(encodeMetadataValue(value));
 	}
 
-	if (partner?.trim()) {
+	if (partner != null && partner.trim() !== '') {
 		keys.unshift(PARTNER_METADATA_KEY);
 		values.unshift(encodeMetadataValue(partner));
 	}

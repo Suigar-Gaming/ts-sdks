@@ -132,7 +132,7 @@ describe('pvp coinflip transaction builder', () => {
 		expect(options.arguments[5]).toBe(TEST_CONFIG.coins.sui.priceInfoObjectId);
 		const resolveStake = options.arguments[2];
 		expect.assert(typeof resolveStake === 'function');
-		await resolveStake(new Transaction());
+		await Reflect.apply(resolveStake, undefined, [new Transaction()]);
 		expect(getGame).toHaveBeenCalledWith({
 			client,
 			objectId: '0x999',
