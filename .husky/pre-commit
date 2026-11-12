@@ -1,2 +1,3 @@
+node scripts/validate-git-identities.mjs --config || exit $?
 pnpm --filter '@suigar/*' run doctor --staged
 pnpm exec lint-staged
