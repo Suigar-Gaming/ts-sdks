@@ -212,6 +212,7 @@ export function useDuelScript<TExpression extends string = string>({
 
 				switch (step.type) {
 					case 'wait': {
+						// oxlint-disable-next-line no-await-in-loop -- Run script steps in order.
 						await wait(step.ms, signal);
 						break;
 					}
@@ -226,6 +227,7 @@ export function useDuelScript<TExpression extends string = string>({
 						if (step.durationMs == null) {
 							break;
 						}
+						// oxlint-disable-next-line no-await-in-loop -- Keep the pose active for its scripted duration.
 						await wait(step.durationMs, signal);
 						if (step.revertToIdle !== false && stateRef.current[step.side].status !== 'dead') {
 							idle(step.side);
@@ -252,6 +254,7 @@ export function useDuelScript<TExpression extends string = string>({
 
 						playPreset(attacker.side, attacker.preset, { iterations: 1 as const });
 
+						// oxlint-disable-next-line no-await-in-loop -- Apply damage only after the attack reaches its hit frame.
 						await wait(hitDelayMs, signal);
 
 						if (stateRef.current[targetSide].status !== 'dead') {
@@ -266,8 +269,10 @@ export function useDuelScript<TExpression extends string = string>({
 						const totalDuration = Math.max(attackDuration, hitDelayMs + reactionDuration);
 						const remaining = Math.max(0, totalDuration - hitDelayMs);
 						if (remaining > 0) {
+							// oxlint-disable-next-line no-await-in-loop -- Wait for attack and reaction animations before returning to idle.
 							await wait(remaining, signal);
 						}
+						// oxlint-disable-next-line no-await-in-loop -- Preserve the pause between consecutive attacks.
 						await wait(afterMs, signal);
 
 						if (stateRef.current[attacker.side].status !== 'dead') {
@@ -295,9 +300,11 @@ export function useDuelScript<TExpression extends string = string>({
 						markDead(step.side);
 						const duration = getPresetDurationMs(step.preset, { iterations: 1 as const });
 						if (duration != null && duration !== 0 && !Number.isNaN(duration)) {
+							// oxlint-disable-next-line no-await-in-loop -- Complete the death animation before the next step.
 							await wait(duration, signal);
 						}
 						if (step.afterMs != null && step.afterMs !== 0 && !Number.isNaN(step.afterMs)) {
+							// oxlint-disable-next-line no-await-in-loop -- Preserve the scripted pause after death.
 							await wait(step.afterMs, signal);
 						}
 						break;
@@ -316,9 +323,11 @@ export function useDuelScript<TExpression extends string = string>({
 						playPreset(step.side, preset, playback);
 						const duration = getPresetDurationMs(preset, playback);
 						if (duration != null && duration !== 0 && !Number.isNaN(duration)) {
+							// oxlint-disable-next-line no-await-in-loop -- Complete the victory animation before the next step.
 							await wait(duration, signal);
 						}
 						if (step.afterMs != null && step.afterMs !== 0 && !Number.isNaN(step.afterMs)) {
+							// oxlint-disable-next-line no-await-in-loop -- Preserve the scripted pause after victory.
 							await wait(step.afterMs, signal);
 						}
 

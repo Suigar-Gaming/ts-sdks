@@ -106,22 +106,23 @@ async function readLayers(
 	imports: Array<string>,
 	entries: Array<string>,
 ): Promise<Record<string, string>> {
-	const layers: Record<string, string> = {};
 	const fields: Array<string> = [];
 	const singleFile = SVG_EXTENSION_PATTERN.test(source);
 	const files = singleFile ? [source] : (await readdir(join(SOURCE_DIR, source))).toSorted();
-	for (const file of files) {
-		const relativePath = singleFile ? file : source + '/' + file;
-		const layer = singleFile ? 'default' : file.replace(SVG_EXTENSION_PATTERN, '');
-		const id = 'layer' + imports.length;
-		imports.push(`import ${id} from '../accessories/${relativePath}';`);
-		fields.push(`${JSON.stringify(layer)}: ${id}`);
-		layers[layer] = await readFile(join(SOURCE_DIR, relativePath), 'utf8');
-	}
+	const layers = await Promise.all(
+		files.map(async (file) => {
+			const relativePath = singleFile ? file : source + '/' + file;
+			const layer = singleFile ? 'default' : file.replace(SVG_EXTENSION_PATTERN, '');
+			const id = 'layer' + imports.length;
+			imports.push(`import ${id} from '../accessories/${relativePath}';`);
+			fields.push(`${JSON.stringify(layer)}: ${id}`);
+			return [layer, await readFile(join(SOURCE_DIR, relativePath), 'utf8')] as const;
+		}),
+	);
 	entries.push(
 		`${JSON.stringify(source.replace(SVG_EXTENSION_PATTERN, '').replaceAll('-', ' '))}: { ${fields.join(', ')} }`,
 	);
-	return layers;
+	return Object.fromEntries(layers);
 }
 
 const sources = (await readdir(SOURCE_DIR, { withFileTypes: true }))
@@ -134,14 +135,19 @@ const sources = (await readdir(SOURCE_DIR, { withFileTypes: true }))
 for (const source of sources) {
 	const dir = source.replace(SVG_EXTENSION_PATTERN, '');
 	if (dir === 'crowns') {
-		const entries: Array<string> = [];
-		for (const file of (await readdir(join(SOURCE_DIR, dir)))
+		// oxlint-disable-next-line no-await-in-loop -- Sources share ordered import and manifest accumulators.
+		const files = (await readdir(join(SOURCE_DIR, dir)))
 			.filter((name) => SVG_EXTENSION_PATTERN.test(name))
-			.toSorted()) {
-			const svg = await readFile(join(SOURCE_DIR, dir, file));
-			const key = JSON.stringify(file.replace(SVG_EXTENSION_PATTERN, ''));
-			entries.push(`${key}: "data:image/svg+xml;base64,${svg.toString('base64')}"`);
-		}
+			.toSorted();
+		// oxlint-disable-next-line no-await-in-loop -- Finish this source before advancing the ordered catalogue.
+		const entries = await Promise.all(
+			files.map(async (file) => {
+				const svg = await readFile(join(SOURCE_DIR, dir, file));
+				const key = JSON.stringify(file.replace(SVG_EXTENSION_PATTERN, ''));
+				return `${key}: "data:image/svg+xml;base64,${svg.toString('base64')}"`;
+			}),
+		);
+		// oxlint-disable-next-line no-await-in-loop -- Finish this source before starting the next so errors stop later writes.
 		await writeFile(
 			join(GENERATED_DIR, 'inline-crowns.ts'),
 			`${GENERATED_HEADER}export const INLINE_CROWNS: Readonly<Record<string, string>> = {
@@ -152,16 +158,20 @@ ${entries.join(',\n')}
 		continue;
 	}
 	if (dir === 'patterns') {
+		// oxlint-disable-next-line no-await-in-loop -- Discover pattern folders before assigning their ordered import IDs.
 		for (const pattern of (await readdir(join(SOURCE_DIR, dir))).toSorted()) {
+			// oxlint-disable-next-line no-await-in-loop -- Shared accumulators assign import IDs in pattern order.
 			await readLayers('patterns/' + pattern, KIT_IMPORTS, KIT_ENTRIES);
 		}
 		continue;
 	}
 	const name = dir.replaceAll('-', ' ');
 	if (dir.startsWith('runner-') || dir.startsWith('soccer-team-')) {
+		// oxlint-disable-next-line no-await-in-loop -- Shared accumulators assign import IDs in source order.
 		await readLayers(source, KIT_IMPORTS, KIT_ENTRIES);
 		continue;
 	}
+	// oxlint-disable-next-line no-await-in-loop -- Shared accumulators assign import IDs in source order.
 	const layers = await readLayers(source, INLINE_IMPORTS, INLINE_ENTRIES);
 	const symbols: Array<string> = [];
 	const baseLayer = layers['default'];
@@ -201,6 +211,7 @@ ${entries.join(',\n')}
 	}
 
 	const filename = `${dir}.svg`;
+	// oxlint-disable-next-line no-await-in-loop -- Finish writing each source before adding its manifest entry.
 	await writeFile(
 		join(OUTPUT_DIR, filename),
 		`<svg xmlns="http://www.w3.org/2000/svg">${notice}${symbols.join('')}</svg>`,
@@ -223,12 +234,16 @@ export const ACCESSORY_ASSET_MANIFEST = {
 
 await writeFile(MANIFEST_PATH, GENERATED_HEADER + MANIFEST);
 
-for (const [file, imports, entries] of [
-	['inline-artwork', INLINE_IMPORTS, INLINE_ENTRIES],
-	['kit-artwork', KIT_IMPORTS, KIT_ENTRIES],
-] as const) {
-	await writeFile(
-		join(GENERATED_DIR, `${file}.ts`),
-		`${GENERATED_HEADER}${imports.join('\n')}\nexport const ARTWORK: Readonly<Record<string, Readonly<Record<string,string>>>> = {\n${entries.join(',\n')}\n};\n`,
-	);
-}
+await Promise.all(
+	(
+		[
+			['inline-artwork', INLINE_IMPORTS, INLINE_ENTRIES],
+			['kit-artwork', KIT_IMPORTS, KIT_ENTRIES],
+		] as const
+	).map(([file, imports, entries]) =>
+		writeFile(
+			join(GENERATED_DIR, `${file}.ts`),
+			`${GENERATED_HEADER}${imports.join('\n')}\nexport const ARTWORK: Readonly<Record<string, Readonly<Record<string,string>>>> = {\n${entries.join(',\n')}\n};\n`,
+		),
+	),
+);

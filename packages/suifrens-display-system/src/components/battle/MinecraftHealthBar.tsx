@@ -162,6 +162,7 @@ export function MinecraftHealthBar({
 			{resolvedHearts > 0 ? (
 				<div style={{ display: 'flex', gap: 2, alignItems: 'center' }}>
 					{heartStates.map((fill, index) => (
+						// oxlint-disable-next-line react/no-array-index-key -- Hearts are fixed positional slots and never reorder.
 						<PixelHeart key={index} fill={fill} size={size} />
 					))}
 				</div>

@@ -150,6 +150,7 @@ test('changing shoe color registers the replacement SVG legs for animation', asy
 	for (const color of ['#123456', '#654321']) {
 		const shoes = buildRunnerAccessories({ color }).find((item) => item.name === 'runner shoes');
 		expect.assert(shoes);
+		// oxlint-disable-next-line no-await-in-loop -- Render both colors on the same root in order to test SVG replacement.
 		await view.render(
 			<svg>
 				<KitArtwork accessory={shoes} species="capy" fallbackPart="rightLeg" />

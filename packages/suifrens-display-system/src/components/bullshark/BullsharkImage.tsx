@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { AnimatedAccessory } from '../../animation/AnimatedAccessory.js';
+import { EMPTY_ACCESSORY_SLOTS } from '../../constants/accessory-slots.js';
 import { getAccessoryLayers } from '../../helpers/accessories/accessory-layers.js';
 import { getThemeFromSkin } from '../../helpers/appearance/bullshark-theme.js';
 import type { BullsharkImageProps } from '../../types/bullshark.type.js';
@@ -28,7 +29,7 @@ import { TailPattern } from './tail/TailPattern.js';
 
 function BullsharkHead({
 	attributes,
-	accessoriesByType = {},
+	accessoriesByType = EMPTY_ACCESSORY_SLOTS,
 	incognito = false,
 	colorTheme,
 }: Pick<BullsharkImageProps, 'attributes' | 'accessoriesByType' | 'incognito'> & {
@@ -48,7 +49,7 @@ function BullsharkHead({
 
 function BullsharkFin({
 	attributes,
-	accessoriesByType = {},
+	accessoriesByType = EMPTY_ACCESSORY_SLOTS,
 	incognito = false,
 	colorTheme,
 }: Pick<BullsharkImageProps, 'attributes' | 'accessoriesByType' | 'incognito'> & {
@@ -69,7 +70,7 @@ function BullsharkFin({
 export function BullsharkImage({
 	attributes,
 	gesture,
-	accessoriesByType = {},
+	accessoriesByType = EMPTY_ACCESSORY_SLOTS,
 	detail = 'full',
 	incognito = false,
 	renderMicrophoneArmInForeground = false,
