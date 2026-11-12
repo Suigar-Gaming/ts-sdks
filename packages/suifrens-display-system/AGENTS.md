@@ -11,10 +11,8 @@ Read the [workspace instructions](../../AGENTS.md) too. These rules apply to `pa
 pnpm --dir packages/suifrens-display-system run build
 # Build without regeneration
 pnpm --dir packages/suifrens-display-system run build:ci
-# Regenerate both, or run one generator independently
+# Regenerate and format all generated files
 pnpm --dir packages/suifrens-display-system run codegen
-pnpm --dir packages/suifrens-display-system run codegen:assets
-pnpm --dir packages/suifrens-display-system run codegen:presets
 # Run after building: distribution tests import dist/
 pnpm --dir packages/suifrens-display-system run test
 pnpm --dir packages/suifrens-display-system run typecheck
@@ -39,9 +37,11 @@ Documentation-only edits need formatting and diff checks.
 - Write hexadecimal color literals in lowercase, including palette keys without `#`, in source, SVGs, tests and examples.
 - Put shared types in `src/types/*.type.ts` and public exports in `src/types/index.ts`. Keep types used by one component below its imports.
 - Group pure domain helpers under `src/helpers/animation/`, `accessories/`, `appearance/` and `kits/`. Keep generic utilities in `src/utils/` and animation state/playback in `src/animation/`.
-- Keep animation preset catalogues and their resolver in `src/animation/presets/`. Preserve deferred loading for battle presets.
+- Keep animation catalogues and their resolver in `src/animation/presets/`. To add a deferred catalogue, register its module path (without the extension) and export name in `scripts/generate-preset-catalogues.ts`. Give each preset a unique name across catalogues.
+- Run `codegen:presets` after changing a catalogue. In `src/generated/presets/`, `catalogues.ts` provides the presets for synchronous lookups and `loaders.ts` maps preset names to on-demand imports.
 - Keep character patterns and gestures in `src/components/shared/`; species shapes and pattern selection belong in `src/components/capy/` and `src/components/bullshark/`.
-- Edit accessory artwork in `src/accessories/`. Single-layer assets use one SVG; layered assets use a folder with `default.svg` and optional `body.svg`, `left.svg` and `right.svg`. Crowns have their own viewport; kits use SVG templates. Regenerate `src/generated/` with `codegen:assets` after artwork changes.
+- Edit accessory artwork in `src/accessories/`. Single-layer assets use one SVG; layered assets use a folder with `default.svg` and optional `body.svg`, `left.svg` and `right.svg`. Crowns have their own viewport; kits use SVG templates.
+- Run `codegen:assets` after changing accessory artwork. In `src/generated/accessory-assets/`, `svg/` holds the generated SVGs and `manifest.ts` maps accessory names to their URLs. Inline rendering uses `inline-layers.ts` and `crown-data-urls.ts`. Both renderers use `kit-templates.ts` for customizable outfits.
 - Accessory codegen runs directly with Node and uses [SVGO](https://github.com/svg/svgo). Preserve IDs and group boundaries until limb extraction; plugins such as `cleanupIds` and `collapseGroups` can break that step. Use SVGO visitors to select groups and create symbols, and `prefixIds` for IDs, CSS and references. Keep SVG processing in the generator rather than importing runtime helpers from `src/` or manipulating XML with regular expressions.
 
 ## Tests and visual review
@@ -59,5 +59,3 @@ For browser tests, install Chromium with `pnpm --filter @suigar/suifrens-storybo
 Follow the workspace changeset and PR rules. Consumer-visible changes need an `@suigar/suifrens-display-system` changeset, with one topic per note. Version through the workspace Changesets workflow.
 
 Before committing, pushing or opening a PR, present the package contents, check results and relevant renders for explicit owner approval of the current revision and scope.
-
-To add a deferred animation catalogue, create its module under `src/animation/presets/` and register its relative path (without extension) and named preset-record export in `scripts/generate-preset-catalogues.ts`. Run `pnpm --dir packages/suifrens-display-system run codegen:presets`. The generator derives the routing names, static catalogue and public preset-name union from the same registration. Preset names must be unique across catalogues.
