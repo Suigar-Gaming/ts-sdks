@@ -78,6 +78,10 @@ jobs:
         shell: bash
         run: pnpm exec manypkg check
 
+      - name: Build packages
+        shell: bash
+        run: pnpm turbo run build:ci --filter='./packages/*'
+
       - name: Lint workspace sources and tests
         run: pnpm run lint
 
@@ -88,10 +92,6 @@ jobs:
       - name: Run packages typecheck
         shell: bash
         run: pnpm turbo run typecheck --filter='./packages/*'
-
-      - name: Run packages builds
-        shell: bash
-        run: pnpm turbo run build:ci --filter='./packages/*'
 
       - name: Run Playground typecheck
         shell: bash

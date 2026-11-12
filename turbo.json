@@ -22,10 +22,12 @@
 			"outputs": []
 		},
 		"build": {
+			"dependsOn": ["^build"],
 			"inputs": ["$TURBO_DEFAULT$", "!test/**", "!tests/**", "!README.md", "!CHANGELOG.md"],
 			"outputs": ["dist/**"]
 		},
 		"build:ci": {
+			"dependsOn": ["^build:ci"],
 			"inputs": ["$TURBO_DEFAULT$", "!test/**", "!tests/**", "!README.md", "!CHANGELOG.md"],
 			"outputs": ["dist/**"]
 		}
