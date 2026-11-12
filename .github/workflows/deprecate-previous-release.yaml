@@ -42,7 +42,7 @@ jobs:
         run: |
           BEFORE_SHA=$(git rev-parse "$HEAD_SHA^")
 
-          RELEASED_DIRS=$(git diff --name-only "$BEFORE_SHA" "$HEAD_SHA" | grep -E '/(package\.json|CHANGELOG\.md)$' | sed -E 's/\/(package\.json|CHANGELOG\.md)$//' | sort | uniq -c | awk '$1==2 {print $2}')
+          RELEASED_DIRS=$(git diff --name-only "$BEFORE_SHA" "$HEAD_SHA" | awk '/\/(package\.json|CHANGELOG\.md)$/' | sed -E 's/\/(package\.json|CHANGELOG\.md)$//' | sort | uniq -c | awk '$1==2 {print $2}')
 
           RELEASED_PACKAGES="[]"
 
@@ -65,7 +65,7 @@ jobs:
         run: echo "No published release packages detected; skipping deprecation."
 
       - name: Deprecate previous release
-        if: steps.release.outputs.should_deprecate == 'true'
+        if: steps.release.outputs.should_deprecate == 'true' && steps.release.outputs.released_packages != '[]'
         shell: bash
         env:
           RELEASED_PACKAGES: ${{ steps.release.outputs.released_packages }}

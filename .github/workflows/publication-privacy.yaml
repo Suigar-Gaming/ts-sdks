@@ -24,7 +24,7 @@ jobs:
         with:
           node-version-file: .node-version
       - name: Test publication identity guard
-        run: node --test scripts/validate-git-identities.test.mjs scripts/fetch-git-event-objects.test.mjs scripts/dispatch-version-publication-check.test.mjs
+        run: node --test scripts/validate-git-identities.test.mjs scripts/fetch-git-event-objects.test.mjs scripts/dispatch-version-publication-check.test.mjs .github/tests/deprecate-release-detection.test.mjs
       - name: Check incoming commits and squash metadata
         env:
           GITHUB_TOKEN: ${{ github.token }}
