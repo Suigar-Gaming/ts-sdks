@@ -16,6 +16,7 @@ import { GAMES } from '../types/game.type.js';
 import type {
 	BetResultGameDetails,
 	Game,
+	GameDetail,
 	GameDetails,
 	GameDetailSchemaValueType,
 	GameDetailValueType,
@@ -154,9 +155,9 @@ function normalizeBcsGameDetailValue({
 	value,
 }: {
 	valueType: GameDetailValueType;
-	value: unknown;
-}): unknown {
-	if (valueType === 'float' && isMoveFloat(value)) {
+	value: ReturnType<(typeof GAME_DETAIL_BCS)[GameDetailValueType]['parse']>;
+}): GameDetail<GameDetailValueType> {
+	if (isMoveFloat(value)) {
 		return fromMoveFloat(value);
 	}
 	if (
@@ -186,7 +187,7 @@ function parseGameDetail({
 }: {
 	valueType: GameDetailSchemaValueType;
 	value: Array<number>;
-}): unknown {
+}): GameDetail<GameDetailValueType> | Array<GameDetail<GameDetailValueType>> {
 	if (valueType === 'string') {
 		return parseStringGameDetail(value);
 	}
@@ -242,9 +243,12 @@ export function parseGameDetails<TGame extends Game>(
 export function parseGameDetails({
 	game,
 	gameDetails,
-}: WithGame<{ gameDetails: BetResultGameDetails }>): Record<string, unknown> {
+}: WithGame<{ gameDetails: BetResultGameDetails }>): Record<
+	string,
+	ReturnType<typeof parseGameDetail>
+> {
 	const schema: Record<string, GameDetailSchemaValueType> = GAME_DETAILS_SCHEMAS[game];
-	return gameDetails.contents.reduce<Record<string, unknown>>(
+	return gameDetails.contents.reduce<Record<string, ReturnType<typeof parseGameDetail>>>(
 		(parsedDetails, entry) => {
 			const valueType = Object.hasOwn(schema, entry.key)
 				? (schema[entry.key] ?? 'string')
