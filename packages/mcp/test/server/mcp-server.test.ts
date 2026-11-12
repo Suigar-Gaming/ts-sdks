@@ -280,6 +280,7 @@ describe('MCP 2026-07-28 stdio protocol', () => {
 			},
 		});
 		for (const method of ['tools/list', 'resources/list', 'resources/templates/list']) {
+			// oxlint-disable-next-line no-await-in-loop -- The request helper replaces the transport response callback for each request.
 			expect(await request(method)).toMatchObject({
 				result: {
 					resultType: 'complete',

@@ -129,6 +129,7 @@ export async function runSuigarCli(argv: Array<string> = hideBin(process.argv)):
 				if (useNetworkOrigins) {
 					for (const logoutNetwork of SUPPORTED_SUI_NETWORKS) {
 						bridges.push(
+							// oxlint-disable-next-line no-await-in-loop -- Open logout browser pages in network order.
 							await createLogoutBridge({
 								network: logoutNetwork,
 								all: true,

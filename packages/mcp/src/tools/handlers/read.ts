@@ -80,6 +80,7 @@ export async function listNftsTool(input: Partial<ListNftsInput> = {}): Promise<
 	let cursor: string | null | undefined;
 
 	do {
+		// oxlint-disable-next-line no-await-in-loop -- Each page needs the cursor returned by the previous page.
 		const page = await client.core.listOwnedObjects({
 			owner,
 			type: nftType,

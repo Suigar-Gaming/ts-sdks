@@ -46,14 +46,13 @@ async function replaceInFile(
 	}
 }
 
-for (const manifestPath of pluginManifestPaths) {
-	await replaceInFile(
-		manifestPath,
-		versionPattern,
-		`$1${packageJson.version}$2`,
-		'Missing version field',
-	);
-}
+const versionReplacement = `$1${packageJson.version}$2`;
+
+await Promise.all(
+	pluginManifestPaths.map((manifestPath) =>
+		replaceInFile(manifestPath, versionPattern, versionReplacement, 'Missing version field'),
+	),
+);
 
 await replaceInFile(
 	mcpConfigPath,

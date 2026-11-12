@@ -89,14 +89,16 @@ describe('package exports', () => {
 			new URL('../plugin/.codex-plugin/plugin.json', import.meta.url),
 			new URL('../plugin/.cursor-plugin/plugin.json', import.meta.url),
 		];
-		for (const manifestUrl of manifestUrls) {
-			const manifest = asRecord(JSON.parse(await readFile(manifestUrl, 'utf8')));
-			expect(manifest['name']).toBe('suigar-mcp');
-			expect(manifest['version']).toBe(packageJson.version);
-			expect(manifest['license']).toBe('Apache-2.0');
-			expect.assert(typeof manifest['description'] === 'string');
-			expect(manifest['description'].length).toBeLessThanOrEqual(MANIFEST_DESCRIPTION_LIMIT);
-		}
+		await Promise.all(
+			manifestUrls.map(async (manifestUrl) => {
+				const manifest = asRecord(JSON.parse(await readFile(manifestUrl, 'utf8')));
+				expect(manifest['name']).toBe('suigar-mcp');
+				expect(manifest['version']).toBe(packageJson.version);
+				expect(manifest['license']).toBe('Apache-2.0');
+				expect.assert(typeof manifest['description'] === 'string');
+				expect(manifest['description'].length).toBeLessThanOrEqual(MANIFEST_DESCRIPTION_LIMIT);
+			}),
+		);
 
 		const mcpConfig: unknown = JSON.parse(
 			await readFile(new URL('../plugin/.mcp.json', import.meta.url), 'utf8'),

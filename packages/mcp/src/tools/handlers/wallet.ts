@@ -52,6 +52,7 @@ export async function getWalletBalancesTool(
 	let cursor: string | null = null;
 	let hasNextPage = false;
 	do {
+		// oxlint-disable-next-line no-await-in-loop -- Each page needs the cursor returned by the previous page.
 		const result = await bundle.client.core.listBalances({ owner, cursor });
 		balances.push(...result.balances);
 		cursor = result.cursor;
@@ -245,6 +246,7 @@ export async function getSessionWalletTool(input: SessionWalletInput): Promise<T
 	let cursor: string | null = null;
 	let hasNextPage = false;
 	do {
+		// oxlint-disable-next-line no-await-in-loop -- Each page needs the cursor returned by the previous page.
 		const result = await bundle.client.core.listBalances({
 			owner: wallet.address,
 			cursor,
