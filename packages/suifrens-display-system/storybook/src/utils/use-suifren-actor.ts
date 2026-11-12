@@ -122,7 +122,6 @@ function deriveAnimation(locomotion: LocomotionState, speedMultiplier: number): 
 				playback: { iterations: 'infinite' },
 				holdOnComplete: true,
 			};
-		case 'idle':
 		default:
 			return { preset: 'idle', playback: { iterations: 'infinite' } };
 	}
@@ -402,7 +401,9 @@ export function useSuiFrenActor<TExpression extends string = string>(
 			tick(time);
 		});
 
-		return () => cancelAnimationFrame(raf);
+		return () => {
+			cancelAnimationFrame(raf);
+		};
 	}, [config]);
 
 	const setDirection = useCallback((x: number, y: number) => {

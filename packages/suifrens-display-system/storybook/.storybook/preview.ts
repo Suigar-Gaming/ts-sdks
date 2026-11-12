@@ -7,8 +7,8 @@ import { createElement } from 'react';
 import { ThemeDocsContainer } from '../src/components/ThemeDocsContainer.js';
 import '../src/tailwind.css';
 
-const COLOR_CONTROL_PATTERN: RegExp = /(background|color)$/i;
-const DATE_CONTROL_PATTERN: RegExp = /Date$/i;
+const COLOR_CONTROL_PATTERN: RegExp = /(background|color)$/iu;
+const DATE_CONTROL_PATTERN: RegExp = /Date$/iu;
 
 const preview: Preview = {
 	tags: ['autodocs'],
@@ -32,7 +32,10 @@ const preview: Preview = {
 		(Story, { globals }) =>
 			createElement(
 				'div',
-				{ className: 'story-page', 'data-theme': globals['theme'] },
+				{
+					className: 'story-page',
+					'data-theme': typeof globals['theme'] === 'string' ? globals['theme'] : undefined,
+				},
 				createElement(Story),
 			),
 	],

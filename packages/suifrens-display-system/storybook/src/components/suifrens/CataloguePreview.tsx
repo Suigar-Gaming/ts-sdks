@@ -20,7 +20,7 @@ export function CataloguePreview({ title, subtitle, expression = 'happy', ...pro
 		<div className="story-panel">
 			<div className="flex items-baseline justify-between gap-2">
 				<span className="text-sm font-semibold text-slate-800 dark:text-slate-200">{title}</span>
-				{subtitle && (
+				{subtitle != null && subtitle !== '' && (
 					<span className="font-mono text-[11px] text-slate-500 dark:text-slate-400">
 						{subtitle}
 					</span>

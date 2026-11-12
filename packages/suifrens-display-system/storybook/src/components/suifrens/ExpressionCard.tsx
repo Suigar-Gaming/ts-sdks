@@ -47,7 +47,9 @@ export function ExpressionTransitionPreview({ attributes, ...props }: Expression
 				setExpression(randomExpression);
 			}
 		}, 500);
-		return () => clearInterval(interval);
+		return () => {
+			clearInterval(interval);
+		};
 	}, []);
 	return <ExpressionCard {...props} attributes={{ ...attributes, expression }} />;
 }

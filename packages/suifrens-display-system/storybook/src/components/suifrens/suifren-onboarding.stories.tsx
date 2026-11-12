@@ -78,12 +78,20 @@ function Onboarding() {
 					type="button"
 					className="story-button disabled:opacity-50"
 					disabled={index === 0}
-					onClick={() => setIndex(index - 1)}
+					onClick={() => {
+						setIndex(index - 1);
+					}}
 				>
 					Back
 				</button>
 				{index + 1 < steps.length ? (
-					<button type="button" className="story-button" onClick={() => setIndex(index + 1)}>
+					<button
+						type="button"
+						className="story-button"
+						onClick={() => {
+							setIndex(index + 1);
+						}}
+					>
 						Next
 					</button>
 				) : (

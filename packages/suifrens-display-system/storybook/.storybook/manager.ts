@@ -22,7 +22,7 @@ addons.setConfig({
 		...defaultConfig,
 		{
 			display: { sidebar: true, toolbar: false, mdx: false },
-			tags: /^\d+\.\d+\.\d+$/,
+			tags: /^\d+\.\d+\.\d+$/u,
 			badge: ({ tag }) => {
 				const version = `v${tag}`;
 				return { text: version, style: 'blue', tooltip: `Available since ${version}` };

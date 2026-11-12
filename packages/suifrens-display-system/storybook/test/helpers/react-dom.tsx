@@ -14,11 +14,15 @@ export function createTestRoot() {
 		async render(node: ReactNode) {
 			await act(async () => {
 				root.render(node);
+
+				await Promise.resolve();
 			});
 		},
 		async unmount() {
 			await act(async () => {
 				root.unmount();
+
+				await Promise.resolve();
 			});
 			container.remove();
 		},

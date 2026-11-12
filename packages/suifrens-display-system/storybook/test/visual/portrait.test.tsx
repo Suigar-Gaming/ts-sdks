@@ -9,13 +9,14 @@ import '../../src/tailwind.css';
 
 for (const theme of ['light', 'dark']) {
 	it(`renders the Bullshark portrait in the ${theme} theme`, async () => {
-		const host = document.body.appendChild(document.createElement('div'));
+		const host = document.createElement('div');
+		document.body.append(host);
 		host.className = 'story-page';
 		host.dataset['theme'] = theme;
 		host.style.width = '176px';
 		const root = createRoot(host);
 		try {
-			flushSync(() =>
+			flushSync(() => {
 				root.render(
 					<ExpressionCard
 						detail="head"
@@ -28,12 +29,10 @@ for (const theme of ['light', 'dark']) {
 							secondaryColor: 'e6fbff',
 						}}
 					/>,
-				),
-			);
+				);
+			});
 			const portrait = host.querySelector('svg');
-			if (!portrait) {
-				throw new Error('Bullshark portrait did not render');
-			}
+			expect.assert(portrait != null, 'Bullshark portrait did not render');
 			await expect.element(portrait).toMatchScreenshot(`bullshark-${theme}`);
 		} finally {
 			root.unmount();

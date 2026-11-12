@@ -17,7 +17,11 @@ export function ThemeDocsContainer({ context, children }: PropsWithChildren<Docs
 			};
 		},
 		() => {
-			const theme = context.getStoryContext(context.storyById())['globals']['theme'];
+			const globals: unknown = context.getStoryContext(context.storyById())['globals'];
+			const theme =
+				typeof globals === 'object' && globals != null && 'theme' in globals
+					? globals.theme
+					: undefined;
 			return theme === 'dark' || (theme === 'system' && preference.matches);
 		},
 	);

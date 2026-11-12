@@ -98,7 +98,7 @@ function ControlButton({
 			onBlur={onRelease}
 			className={[
 				'flex min-h-12 touch-none select-none px-2 items-center justify-center rounded-xl border text-sm font-semibold shadow-xs transition',
-				active
+				active === true
 					? 'border-blue-500 bg-blue-500 text-white shadow-blue-200'
 					: 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 active:bg-slate-100 dark:active:bg-slate-700',
 				className ?? '',
@@ -133,7 +133,7 @@ function SuiFrenStage({ state, spriteRef, title, note }: StageProps) {
 
 	return (
 		<div>
-			{title ? (
+			{title != null && title !== '' ? (
 				<h3 className="mb-2 text-sm font-semibold text-slate-800 dark:text-slate-200">{title}</h3>
 			) : null}
 			<div
@@ -179,7 +179,9 @@ function SuiFrenStage({ state, spriteRef, title, note }: StageProps) {
 					</span>
 				</div>
 			</div>
-			{note ? <p className="mt-2 text-xs text-slate-600 dark:text-slate-300">{note}</p> : null}
+			{note != null && note !== '' ? (
+				<p className="mt-2 text-xs text-slate-600 dark:text-slate-300">{note}</p>
+			) : null}
 		</div>
 	);
 }
@@ -191,7 +193,7 @@ export const ControlPadPlayground: Story = {
 		await userEvent.click(canvas.getByRole('button', { name: 'Reset position' }));
 		await expect(canvas.getByText('Expression: happy', { exact: false })).toBeVisible();
 	},
-	render: () => {
+	render: function SuifrenPlayground() {
 		const isDocs =
 			typeof window !== 'undefined' &&
 			new URLSearchParams(window.location.search).get('viewMode') === 'docs';
@@ -200,7 +202,9 @@ export const ControlPadPlayground: Story = {
 		const { state, controls } = useSuiFrenActor<SuiFrenExpression>({
 			bounds,
 			initialPosition,
-			onPose: (pose) => updateSprite(spriteRef.current, pose),
+			onPose: (pose) => {
+				updateSprite(spriteRef.current, pose);
+			},
 			moveSpeed: 320,
 			runMultiplier: 1.8,
 			jumpStrength: 820,
@@ -271,7 +275,7 @@ export const ControlPadPlayground: Story = {
 
 		useEffect(() => {
 			if (typeof window === 'undefined' || isDocs) {
-				return undefined;
+				return;
 			}
 			const held = new Set<string>();
 
@@ -376,8 +380,12 @@ export const ControlPadPlayground: Story = {
 								icon={ArrowUp}
 								ariaLabel="Move up"
 								active={activeDirections.includes('up')}
-								onPress={() => pressDirection('up')}
-								onRelease={() => releaseDirection('up')}
+								onPress={() => {
+									pressDirection('up');
+								}}
+								onRelease={() => {
+									releaseDirection('up');
+								}}
 							/>
 							<div />
 							<ControlButton
@@ -385,8 +393,12 @@ export const ControlPadPlayground: Story = {
 								icon={ArrowLeft}
 								ariaLabel="Move left"
 								active={activeDirections.includes('left')}
-								onPress={() => pressDirection('left')}
-								onRelease={() => releaseDirection('left')}
+								onPress={() => {
+									pressDirection('left');
+								}}
+								onRelease={() => {
+									releaseDirection('left');
+								}}
 							/>
 							<div />
 							<ControlButton
@@ -394,8 +406,12 @@ export const ControlPadPlayground: Story = {
 								icon={ArrowRight}
 								ariaLabel="Move right"
 								active={activeDirections.includes('right')}
-								onPress={() => pressDirection('right')}
-								onRelease={() => releaseDirection('right')}
+								onPress={() => {
+									pressDirection('right');
+								}}
+								onRelease={() => {
+									releaseDirection('right');
+								}}
 							/>
 							<div />
 							<ControlButton
@@ -403,8 +419,12 @@ export const ControlPadPlayground: Story = {
 								icon={ArrowDown}
 								ariaLabel="Move down"
 								active={activeDirections.includes('down')}
-								onPress={() => pressDirection('down')}
-								onRelease={() => releaseDirection('down')}
+								onPress={() => {
+									pressDirection('down');
+								}}
+								onRelease={() => {
+									releaseDirection('down');
+								}}
 							/>
 						</div>
 					</div>
@@ -424,11 +444,19 @@ export const ControlPadPlayground: Story = {
 							onPress={pressCrouch}
 							onRelease={releaseCrouch}
 						/>
-						<ControlButton label="Jump" ariaLabel="Jump" onPress={() => controls.requestJump()} />
+						<ControlButton
+							label="Jump"
+							ariaLabel="Jump"
+							onPress={() => {
+								controls.requestJump();
+							}}
+						/>
 						<ControlButton
 							label="Reset"
 							ariaLabel="Reset position"
-							onPress={() => controls.reset()}
+							onPress={() => {
+								controls.reset();
+							}}
 						/>
 					</div>
 
@@ -439,25 +467,33 @@ export const ControlPadPlayground: Story = {
 								label="Heart eyes"
 								icon={Heart}
 								ariaLabel="Heart eyes"
-								onPress={() => controls.triggerEmote('heartEyes', 1600)}
+								onPress={() => {
+									controls.triggerEmote('heartEyes', 1600);
+								}}
 							/>
 							<ControlButton
 								label="Laughing"
 								icon={Laugh}
 								ariaLabel="Laughing"
-								onPress={() => controls.triggerEmote('laughing', 1600)}
+								onPress={() => {
+									controls.triggerEmote('laughing', 1600);
+								}}
 							/>
 							<ControlButton
 								label="Angry"
 								icon={Angry}
 								ariaLabel="Angry"
-								onPress={() => controls.triggerEmote('angry', 1600)}
+								onPress={() => {
+									controls.triggerEmote('angry', 1600);
+								}}
 							/>
 							<ControlButton
 								label="Cool"
 								icon={Glasses}
 								ariaLabel="Cool"
-								onPress={() => controls.triggerEmote('cool', 1600)}
+								onPress={() => {
+									controls.triggerEmote('cool', 1600);
+								}}
 							/>
 						</div>
 					</div>

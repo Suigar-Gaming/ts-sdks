@@ -82,14 +82,18 @@ test('turning the character mirrors only the image and keeps the emote label rea
 	await view.render(<Playground />);
 	const sprite = view.container.querySelector<HTMLElement>('[style*="will-change"]')!;
 	const image = sprite.querySelector('svg')!.parentElement!;
-	const label = Array.from(sprite.querySelectorAll('div')).find(
-		(element) => element.childElementCount === 0 && element.textContent === 'heartEyes',
+	const label = Array.from(sprite.querySelectorAll<HTMLDivElement>('div:not(:has(*))')).find(
+		(element) => element.textContent === 'heartEyes',
 	)!;
 	const { onPose } = useActor.mock.calls[0]![0];
 	const pose = { position: { x: 480, y: 420 }, elevation: 0 };
-	for (const facing of ['left', 'right', 'left'] as const) {
+	for (const [facing, expected] of [
+		['left', '-1'],
+		['right', '1'],
+		['left', '-1'],
+	] as const) {
 		onPose({ ...pose, facing });
-		expect(sprite.style.getPropertyValue('--sprite-facing')).toBe(facing === 'left' ? '-1' : '1');
+		expect(sprite.style.getPropertyValue('--sprite-facing')).toBe(expected);
 		expect(sprite.style.transform).toBe('translate3d(150%, 75%, 0)');
 		expect(image.style.transform).toBe('scaleX(var(--sprite-facing, 1))');
 		expect(image.contains(label)).toBe(false);

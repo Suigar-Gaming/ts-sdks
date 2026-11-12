@@ -13,7 +13,7 @@ const releases = [
 	'1.0.1',
 	'1.0.2',
 	...Array.from(
-		changelog.matchAll(/^## (\d+\.\d+\.\d+)$/gm),
+		changelog.matchAll(/^## (\d+\.\d+\.\d+)$/gmu),
 		([, version]) => version!,
 	).toReversed(),
 ];
