@@ -35,6 +35,7 @@ Use each package's scoped instructions for build, code generation, tests, and ty
 - Reuse existing guards, parsers, resolvers, and supported-value lists. Do not duplicate a helper or repeat schema validation for the same input at the same boundary.
 - Keep shared catalogues and choice lists separate from transformation/resolution functions, following each package's established module layout. When runtime choices are needed, derive literal unions from canonical `as const` arrays and reuse those arrays for validation and iteration. Keep internal constants out of public entry points.
 - Prefer inference and existing type guards to casts, non-null assertions, or temporary aliases introduced only for lint. Preserve deliberate `Object.create(null)` dictionaries rather than replacing them with prototype mutations or seeded copies.
+- Do not widen known SDK or domain types to `unknown` to satisfy lint or incomplete test fixtures. Make fixtures conform to the real contract; reserve `unknown` for untyped inputs and recursive implementations whose exposed generic signature preserves the result type.
 - Preserve asynchronous contracts: removing `async` must not turn a rejected promise into a synchronous throw. Do not add dummy awaits or unnecessary Promise wrappers. Final `.then()` callbacks used only for side effects may return implicitly; do not manufacture `: undefined` annotations and `return undefined` statements.
 - Name custom hooks with the `use` prefix. Give Storybook render functions that call hooks a PascalCase component name.
 
