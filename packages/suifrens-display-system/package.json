@@ -1,6 +1,6 @@
 {
 	"name": "@suigar/suifrens-display-system",
-	"version": "2.0.0-beta.0",
+	"version": "2.0.0-beta.1",
 	"description": "React components for rendering and animating Suifrens capys and bullsharks with inline or external SVG accessories",
 	"keywords": [
 		"animation",
