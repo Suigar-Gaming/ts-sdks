@@ -17,6 +17,11 @@ concurrency:
 
 jobs:
   release:
+    permissions:
+      actions: write
+      contents: write
+      pull-requests: write
+      id-token: write
     runs-on: ubuntu-latest
     outputs:
       published: ${{ steps.changesets.outputs.published }}
@@ -39,6 +44,13 @@ jobs:
           publish-script: pnpm run release
           commit-message: 'ci: version packages'
           pr-title: 'ci: version packages'
+
+      - name: Check publication identities on the token-created version PR
+        if: steps.changesets.outputs['pr-number'] != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION_PR: ${{ steps.changesets.outputs['pr-number'] }}
+        run: node scripts/dispatch-version-publication-check.mjs
 
   publish-mcp-registry:
     needs: release
