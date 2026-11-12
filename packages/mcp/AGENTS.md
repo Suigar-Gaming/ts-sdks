@@ -36,8 +36,7 @@ pnpm --dir packages/mcp run lint
 - Document MCP config to match `SuigarConfigOverrides`: both `coins.sui` and `coins.usdc` accept optional `coinType`, `decimals`, and `priceInfoObjectId` metadata.
 - Merge partial MCP App host-context updates with the existing context and apply host-provided safe-area insets to every inspector screen.
 - Wallet bridge and session setup state comparisons use `sameState()` from `packages/mcp/src/utils/crypto.ts`; keep hex decoding and strict 32-byte state validation in that shared helper.
-- Reuse the browser-safe object guards in `src/utils/record.ts`: `isRecord` accepts non-null objects including arrays; `isNonArrayRecord` excludes arrays for object-shaped payloads; `asRecord` provides an empty-object fallback. Keep local HTTP server address validation in `getLoopbackServerPort` from `src/wallet/loopback.ts`.
-- Keep input validators in `src/utils/validation.ts`: `requireString` for required non-empty strings, `requireGame` for supported game names, and `requireChoice` for choices from a canonical list with an inferred return type. Preserve existing error contracts with `createError` when needed. Import them directly rather than re-exporting them from handler helpers.
+- Import shared validators from `src/utils/validation.ts` and browser-safe object guards from `src/utils/record.ts`. `isRecord` accepts arrays; use `isNonArrayRecord` when arrays are invalid.
 - The MCP App is an inspector UI only. It must not sign or execute transactions, and it should include restrictive `_meta.ui.csp` metadata.
 - Do not reintroduce explicit coin object sourcing or copied transaction builders unless the SDK adds a public API for that behavior.
 - If a new MCP behavior requires an SDK change, add the SDK change, tests, docs, and an `@suigar/sdk` changeset entry in the same task.
