@@ -2,8 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { parseStructTag } from '@mysten/sui/utils';
-import { amountText, asRecord, dynamicEntries, isRecord } from './format.js';
-import type { AnyRecord, DefinitionEntry } from './types.js';
+import { type AnyRecord, asRecord, isRecord } from '../../../utils/record.js';
+import { amountText, dynamicEntries } from './format.js';
+import type { DefinitionEntry } from './types.js';
 
 export type InspectorViewModel = {
 	coinBadge: string | null;

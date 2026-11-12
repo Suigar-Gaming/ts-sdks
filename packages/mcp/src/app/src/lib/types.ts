@@ -1,8 +1,6 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-export type { AnyRecord } from '../../../utils/object.js';
-
 export type InspectorState = {
 	status: string;
 	payload: unknown;

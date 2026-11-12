@@ -1,10 +1,8 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import { asRecord, isRecord } from '../../../utils/object.js';
-import type { AnyRecord, DefinitionEntry } from './types.js';
-
-export { asRecord, isRecord } from '../../../utils/object.js';
+import { type AnyRecord, asRecord, isRecord } from '../../../utils/record.js';
+import type { DefinitionEntry } from './types.js';
 
 const HIDDEN_DYNAMIC_ENTRY_KEYS = new Set<string>([
 	'game_details',

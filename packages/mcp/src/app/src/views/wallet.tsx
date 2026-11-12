@@ -1,8 +1,8 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
+import { asRecord } from '../../../utils/record.js';
 import { DefinitionList, InspectorTable, Panel } from '../components/inspector-components.js';
-import { asRecord } from '../lib/format.js';
 
 export function WalletView({ payload }: { payload: unknown }) {
 	const result = asRecord(payload);

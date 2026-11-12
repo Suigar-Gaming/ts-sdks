@@ -3,8 +3,8 @@
 
 import { formatAddress } from '@mysten/sui/utils';
 import { type JSX, useState } from 'react';
+import { asRecord } from '../../../utils/record.js';
 import { DefinitionList, InspectorTable, Panel } from '../components/inspector-components.js';
-import { asRecord } from '../lib/format.js';
 
 function isHttpUrl(value: string): boolean {
 	try {

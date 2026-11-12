@@ -1,8 +1,7 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
-import { asRecord } from './format.js';
-import type { AnyRecord } from './types.js';
+import { type AnyRecord, asRecord } from '../../../utils/record.js';
 
 export function getToolResultPayload(result: unknown): AnyRecord {
 	const envelope = asRecord(result);

@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { describe, expect, it } from 'vitest';
-import { asRecord, isNonArrayRecord, isRecord } from '../../src/utils/object.js';
+import { asRecord, isNonArrayRecord, isRecord } from '../../src/utils/record.js';
 
 describe('asRecord', () => {
 	it('returns objects unchanged', () => {

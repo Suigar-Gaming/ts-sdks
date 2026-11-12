@@ -2,8 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import type { JSX } from 'react';
+import { asRecord } from '../../../utils/record.js';
 import { DefinitionList, Panel } from '../components/inspector-components.js';
-import { asRecord, dynamicEntries } from '../lib/format.js';
+import { dynamicEntries } from '../lib/format.js';
 import type { DefinitionEntry } from '../lib/types.js';
 
 export function ConfigView({ payload }: { payload: unknown }): JSX.Element {

@@ -13,7 +13,7 @@ import type { Entry } from '@napi-rs/keyring';
 import { generateMnemonic, validateMnemonic } from '@scure/bip39';
 import { wordlist } from '@scure/bip39/wordlists/english.js';
 import { randomHex, randomUuid, sameState } from '../utils/crypto.js';
-import { isNonArrayRecord } from '../utils/object.js';
+import { isNonArrayRecord } from '../utils/record.js';
 import {
 	asyncRequestListener,
 	getLoopbackServerPort,

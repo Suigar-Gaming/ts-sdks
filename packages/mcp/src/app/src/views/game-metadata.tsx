@@ -1,8 +1,9 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
+import { asRecord } from '../../../utils/record.js';
 import { DefinitionList, Panel } from '../components/inspector-components.js';
-import { asRecord, dynamicEntries } from '../lib/format.js';
+import { dynamicEntries } from '../lib/format.js';
 
 export function GameMetadataView({ payload }: { payload: unknown }) {
 	const result = asRecord(payload);

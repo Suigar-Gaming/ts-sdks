@@ -4,7 +4,7 @@
 import { readFile } from 'node:fs/promises';
 import { describe, expect, it } from 'vitest';
 import packageJson from '../package.json' with { type: 'json' };
-import { asRecord } from '../src/utils/object.js';
+import { asRecord } from '../src/utils/record.js';
 
 const MANIFEST_DESCRIPTION_LIMIT = 100;
 

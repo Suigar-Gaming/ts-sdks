@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import type { ComponentType } from 'react';
-import { asRecord } from '../lib/format.js';
+import { asRecord } from '../../../utils/record.js';
 import { createInspectorViewModel } from '../lib/inspector.js';
 import { ConfigView } from './config.js';
 import { ExecutionStatusView } from './execution-status.js';

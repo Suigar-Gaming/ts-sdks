@@ -5,6 +5,7 @@ import { type McpUiHostContext, useApp, useHostStyles } from '@modelcontextproto
 import type { CallToolResult } from '@modelcontextprotocol/server';
 import { type JSX, StrictMode, useEffect, useReducer, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
+import { asRecord } from '../../utils/record.js';
 import {
 	ExecutionApproval,
 	Header,
@@ -12,7 +13,6 @@ import {
 	Panel,
 	RawPayload,
 } from './components/inspector-components.js';
-import { asRecord } from './lib/format.js';
 import { getToolResultPayload } from './lib/tool-result.js';
 import type { InspectorState } from './lib/types.js';
 import { resolveAppView } from './views/index.js';

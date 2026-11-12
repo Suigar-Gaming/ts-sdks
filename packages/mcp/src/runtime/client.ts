@@ -15,7 +15,7 @@ import {
 } from '@mysten/sui/utils';
 import { suigar, type SuigarClient, type SuigarNetwork, SUPPORTED_SUI_NETWORKS } from '@suigar/sdk';
 import { formatBaseUnitAmount } from '../utils/index.js';
-import { isNonArrayRecord } from '../utils/object.js';
+import { isNonArrayRecord } from '../utils/record.js';
 import { readPersistedDefaultNetwork } from '../wallet/credentials.js';
 import { extractDryRunErrors, summarizeDryRun, toJsonValue } from './dry-run.js';
 import type {

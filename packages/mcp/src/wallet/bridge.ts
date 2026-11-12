@@ -5,7 +5,7 @@ import { createServer, type IncomingMessage, type Server, type ServerResponse } 
 import open from 'open';
 import type { SuigarNetwork } from '@suigar/sdk';
 import { randomHex, sameState } from '../utils/crypto.js';
-import { isNonArrayRecord } from '../utils/object.js';
+import { isNonArrayRecord } from '../utils/record.js';
 import {
 	clearCredentials,
 	loadCredentials,
