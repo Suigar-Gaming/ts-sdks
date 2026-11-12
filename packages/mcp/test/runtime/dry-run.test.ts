@@ -1,13 +1,55 @@
 // Copyright (c) Suigar
 // SPDX-License-Identifier: Apache-2.0
 
+import type { SuiClientTypes } from '@mysten/sui/client';
 import { describe, expect, it } from 'vitest';
 import { extractDryRunErrors, summarizeDryRun, toJsonValue } from '../../src/runtime/dry-run.js';
+import type { RawDryRunResult } from '../../src/runtime/types.js';
 
 const testAddress = (fill: string) => `0x${fill.repeat(64)}`;
 const owner = testAddress('a');
 const packageId = testAddress('b');
 const gamePackageId = testAddress('c');
+
+const transactionDefaults: NonNullable<RawDryRunResult['Transaction']> = {
+	digest: 'simulation-digest',
+	signatures: [],
+	epoch: null,
+	timestampMs: null,
+	checkpoint: null,
+	status: { success: true, error: null },
+	balanceChanges: [],
+	events: [],
+	objectTypes: undefined,
+	transaction: undefined,
+	bcs: undefined,
+	effects: {
+		bcs: null,
+		version: 2,
+		status: { success: true, error: null },
+		gasUsed: {
+			computationCost: '0',
+			storageCost: '0',
+			storageRebate: '0',
+			nonRefundableStorageFee: '0',
+		},
+		transactionDigest: 'simulation-digest',
+		gasObject: null,
+		eventsDigest: null,
+		dependencies: [],
+		lamportVersion: null,
+		changedObjects: [],
+		unchangedConsensusObjects: [],
+		auxiliaryDataDigest: null,
+	},
+};
+
+const eventDefaults = {
+	packageId,
+	module: 'coinflip',
+	sender: owner,
+	bcs: new Uint8Array(),
+} satisfies Omit<SuiClientTypes.Event, 'eventType' | 'json'>;
 
 describe('dry-run JSON conversion', () => {
 	it('converts dry-run payloads into JSON-safe values', () => {
@@ -31,33 +73,44 @@ describe('dry-run JSON conversion', () => {
 
 describe('dry-run errors', () => {
 	it('extracts failed transaction errors from nested status fields', () => {
-		const dryRun = {
-			FailedTransaction: {
-				effects: {
-					status: {
-						error: 'MoveAbort in coinflip::play',
-					},
-				},
-				transaction: {
-					bcs: new Uint8Array([7, 8, 9]),
-				},
-			},
+		const status: SuiClientTypes.ExecutionStatus = {
+			success: false,
+			error: { $kind: 'Unknown', Unknown: null, message: 'MoveAbort in coinflip::play' },
 		};
+		const dryRun = {
+			$kind: 'FailedTransaction',
+			commandResults: undefined,
+			gasPaymentMocked: false,
+			FailedTransaction: {
+				...transactionDefaults,
+				status,
+				effects: { ...transactionDefaults.effects, status },
+			},
+		} satisfies RawDryRunResult;
 		expect(extractDryRunErrors(dryRun)).toEqual(['MoveAbort in coinflip::play']);
 	});
 
 	it('deduplicates errors found on multiple dry-run branches', () => {
-		const dryRun = {
-			FailedTransaction: {
+		const status: SuiClientTypes.ExecutionStatus = {
+			success: false,
+			error: { $kind: 'Unknown', Unknown: null, message: 'same error' },
+		};
+		const failedTransaction = {
+			...transactionDefaults,
+			status,
+			message: 'same error',
+			effects: {
+				...transactionDefaults.effects,
 				message: 'same error',
-				effects: {
-					message: 'same error',
-					status: {
-						error: 'same error',
-					},
-				},
+				status,
 			},
 		};
+		const dryRun = {
+			$kind: 'FailedTransaction',
+			commandResults: undefined,
+			gasPaymentMocked: false,
+			FailedTransaction: failedTransaction,
+		} satisfies RawDryRunResult;
 		expect(extractDryRunErrors(dryRun)).toEqual(['same error']);
 	});
 });
@@ -66,8 +119,12 @@ describe('dry-run summaries', () => {
 	it('summarizes successful dry-run gas, balance changes, and event amounts', () => {
 		const dryRun = {
 			$kind: 'Transaction',
+			commandResults: undefined,
+			gasPaymentMocked: false,
 			Transaction: {
+				...transactionDefaults,
 				effects: {
+					...transactionDefaults.effects,
 					status: { success: true, error: null },
 					gasUsed: {
 						computationCost: '1120000',
@@ -85,6 +142,7 @@ describe('dry-run summaries', () => {
 				],
 				events: [
 					{
+						...eventDefaults,
 						eventType: `${packageId}::core::BetResultEvent<${gamePackageId}::coinflip::Game>`,
 						json: {
 							player_bet: 'heads',
@@ -95,10 +153,10 @@ describe('dry-run summaries', () => {
 					},
 				],
 			},
-		};
+		} satisfies RawDryRunResult;
 
 		const summary = summarizeDryRun({
-			dryRun: dryRun,
+			dryRun,
 			context: {
 				coinDecimals: 9,
 			},
@@ -154,12 +212,17 @@ describe('dry-run summaries', () => {
 	it('keeps parsed event identity for JSON bet result events after other events', () => {
 		const dryRun = {
 			$kind: 'Transaction',
+			commandResults: undefined,
+			gasPaymentMocked: false,
 			Transaction: {
+				...transactionDefaults,
 				effects: {
+					...transactionDefaults.effects,
 					status: { success: true, error: null },
 				},
 				events: [
 					{
+						...eventDefaults,
 						eventType: `${packageId}::core::BetPlacedEvent`,
 						json: {
 							amount: '5000000',
@@ -167,6 +230,7 @@ describe('dry-run summaries', () => {
 						},
 					},
 					{
+						...eventDefaults,
 						eventType: `${packageId}::core::BetResultEvent<${gamePackageId}::coinflip::Game>`,
 						json: {
 							player_bet: 'tails',
@@ -177,10 +241,10 @@ describe('dry-run summaries', () => {
 					},
 				],
 			},
-		};
+		} satisfies RawDryRunResult;
 
 		const summary = summarizeDryRun({
-			dryRun: dryRun,
+			dryRun,
 			context: {
 				coinDecimals: 9,
 			},
@@ -211,33 +275,32 @@ describe('dry-run summaries', () => {
 		]);
 	});
 
-	it('summarizes failed dry-runs without gas, balance, or event data', () => {
-		const summary = summarizeDryRun({
-			dryRun: {
-				$kind: 'FailedTransaction',
-				FailedTransaction: {
-					effects: {
-						status: {
-							success: false,
-							error: {
-								message: 'MoveAbort in coinflip::play',
-							},
-						},
-					},
-				},
+	it('summarizes failed dry-runs without balance or event data', () => {
+		const status: SuiClientTypes.ExecutionStatus = {
+			success: false,
+			error: { $kind: 'Unknown', Unknown: null, message: 'MoveAbort in coinflip::play' },
+		};
+		const dryRun = {
+			$kind: 'FailedTransaction',
+			commandResults: undefined,
+			gasPaymentMocked: false,
+			FailedTransaction: {
+				...transactionDefaults,
+				status,
+				effects: { ...transactionDefaults.effects, status },
 			},
-			context: { coinDecimals: 9 },
-		});
+		} satisfies RawDryRunResult;
+		const summary = summarizeDryRun({ dryRun, context: { coinDecimals: 9 } });
 
 		expect(summary).toEqual({
 			success: false,
 			error: 'MoveAbort in coinflip::play',
 			gasUsed: {
-				computation: null,
-				storage: null,
-				rebate: null,
-				nonRefundableStorageFee: null,
-				net: null,
+				computation: { raw: '0', display: '0' },
+				storage: { raw: '0', display: '0' },
+				rebate: { raw: '0', display: '0' },
+				nonRefundableStorageFee: { raw: '0', display: '0' },
+				net: { raw: '0', display: '0' },
 			},
 			balanceChanges: [],
 			events: [],

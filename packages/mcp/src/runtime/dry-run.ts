@@ -9,14 +9,14 @@ import type {
 	DryRunEventSummary,
 	DryRunSummary,
 	JsonValue,
+	RawDryRunResult,
 	TransactionSummaryFormattingContext,
 } from './types.js';
 
-function getDryRunTransaction(dryRun: unknown): unknown {
-	if (!isRecord(dryRun)) {
-		return undefined;
-	}
-	return dryRun['FailedTransaction'] ?? dryRun['Transaction'];
+function getDryRunTransaction(
+	dryRun: RawDryRunResult,
+): NonNullable<RawDryRunResult['Transaction']> {
+	return dryRun.FailedTransaction ?? dryRun.Transaction;
 }
 
 export function toJsonValue(value: unknown): JsonValue | undefined {
@@ -77,11 +77,9 @@ function collectStrings({ value, path }: { value: unknown; path: Array<string> }
 	});
 }
 
-export function extractDryRunErrors(dryRun: unknown): Array<string> {
-	const source: unknown = getDryRunTransaction(dryRun) ?? dryRun;
-	const effects = isRecord(source) ? source['effects'] : undefined;
-	const status = isRecord(effects) ? effects['status'] : undefined;
-	const errorSources = [source, effects, status].filter((value) => isRecord(value));
+export function extractDryRunErrors(dryRun: RawDryRunResult): Array<string> {
+	const source = getDryRunTransaction(dryRun);
+	const errorSources = [source, source.effects, source.effects.status];
 
 	const errors = errorSources.flatMap((item) =>
 		collectStrings({ value: item, path: ['error', 'cleverError', 'message'] }),
@@ -298,56 +296,28 @@ export function summarizeDryRun({
 	dryRun,
 	context = {},
 }: {
-	dryRun: unknown;
+	dryRun: RawDryRunResult;
 	context?: TransactionSummaryFormattingContext | undefined;
 }): DryRunSummary {
 	const transaction = getDryRunTransaction(dryRun);
-	const transactionRecord: Record<string, unknown> = isRecord(transaction) ? transaction : {};
-	const effects = transactionRecord['effects'];
-	const status = isRecord(effects) ? effects['status'] : undefined;
-	const success = isRecord(status) ? status['success'] === true : false;
-	const statusError = isRecord(status) ? status['error'] : undefined;
-	const error =
-		typeof statusError === 'string'
-			? statusError
-			: isRecord(statusError) && typeof statusError['message'] === 'string'
-				? statusError['message']
-				: null;
-	const balanceChanges = Array.isArray(transactionRecord['balanceChanges'])
-		? transactionRecord['balanceChanges'].reduce<DryRunSummary['balanceChanges']>(
-				(changes, change) => {
-					if (isRecord(change)) {
-						const rawAmount = toJsonValue(change['amount']);
-						changes.push({
-							address: typeof change['address'] === 'string' ? change['address'] : '',
-							coinType: typeof change['coinType'] === 'string' ? change['coinType'] : '',
-							amount:
-								formatAmount({ value: change['amount'], decimals: context.coinDecimals }) ??
-								({
-									raw:
-										typeof rawAmount === 'string' ||
-										typeof rawAmount === 'number' ||
-										typeof rawAmount === 'boolean'
-											? String(rawAmount)
-											: '',
-									display: '',
-								} as const),
-						});
-					}
-					return changes;
-				},
-				[],
-			)
-		: [];
-	const events = Array.isArray(transactionRecord['events'])
-		? transactionRecord['events'].reduce<Array<DryRunEventSummary>>((summaries, event) => {
-				const summary = summarizeDryRunEvent({ event, decimals: context.coinDecimals });
-				if (summary) {
-					summaries.push(summary);
-				}
-				return summaries;
-			}, [])
-		: [];
+	const { effects } = transaction;
+	const { success, error: statusError } = effects.status;
+	const error = statusError?.message ?? null;
+	const balanceChanges = transaction.balanceChanges.map((change) => ({
+		address: change.address,
+		coinType: change.coinType,
+		amount: formatAmount({ value: change.amount, decimals: context.coinDecimals }) ?? {
+			raw: change.amount,
+			display: '',
+		},
+	}));
+	const events = transaction.events.reduce<Array<DryRunEventSummary>>((summaries, event) => {
+		const summary = summarizeDryRunEvent({ event, decimals: context.coinDecimals });
+		if (summary) {
+			summaries.push(summary);
+		}
+		return summaries;
+	}, []);
 
 	return {
 		success,
