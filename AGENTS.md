@@ -30,13 +30,29 @@ Use each package's scoped instructions for build, code generation, tests, and ty
 
 ## Shared code conventions
 
+- Keep lint fixes small and preserve behavior and public exports. Compare the final diff with the original code and remove unnecessary aliases, guards, wrappers, extra passes, and helper extractions.
 - Use `value == null` and `value != null` for missing-value checks. Keep strict comparisons when `null` and `undefined` have distinct meanings.
+- Reuse existing guards, parsers, resolvers, and supported-value lists. Do not duplicate a helper or repeat schema validation for the same input at the same boundary.
+- Keep shared catalogues and choice lists separate from transformation/resolution functions, following each package's established module layout. When runtime choices are needed, derive literal unions from canonical `as const` arrays and reuse those arrays for validation and iteration. Keep internal constants out of public entry points.
+- Prefer inference and existing type guards to casts, non-null assertions, or temporary aliases introduced only for lint. Preserve deliberate `Object.create(null)` dictionaries rather than replacing them with prototype mutations or seeded copies.
+- Preserve asynchronous contracts: removing `async` must not turn a rejected promise into a synchronous throw. Do not add dummy awaits or unnecessary Promise wrappers. Final `.then()` callbacks used only for side effects may return implicitly; do not manufacture `: undefined` annotations and `return undefined` statements.
+- Name custom hooks with the `use` prefix. Give Storybook render functions that call hooks a PascalCase component name.
+
+## Lint fixes and verification
+
+- Read `.oxlintrc.json` and the relevant scoped configuration before changing code. Keep rule keys alphabetically sorted in both `rules` and overrides, with comments attached to the rules they explain.
+- Fix confirmed issues in code. Use shared rule options for repository-wide conventions. For a necessary local exception, use `// oxlint-disable-next-line rule-name -- reason` at the exact expression. Avoid bespoke per-file overrides and broad suppressions; keep generated-code exceptions in the shared configuration.
+- Review automatic fixes against the original behavior, including return values, error propagation, effect cleanup, and intentional invalid test inputs. Do not hand-edit generated bindings, assets, or build outputs to fix lint; use the generator or the applicable generated-code configuration.
+- For code or lint configuration changes, run `pnpm run lint` and `pnpm exec oxlint --deny-warnings --report-unused-disable-directives-severity error`, plus the affected packages' tests and typechecks. Documentation-only changes need formatting and diff checks.
+- Finish library builds before distribution tests or consumer checks that read `dist/`. Do not run type-aware lint or typechecks alongside a build that cleans the same output; missing declarations can produce misleading diagnostics.
+- Keep normal Git hooks enabled. Investigate React Doctor findings in the source before restructuring code or suppressing them. When committing in parts, keep configuration changes with their package and verify the staged snapshot; respect the user's commit exclusions.
 
 ## Shared testing conventions
 
 - The packages use Vitest 5 in the Node.js environment. Run tests through the package scripts or from the package root so its Vitest config is loaded. For `-t` filters, match an individual test name or use `.*` between suite and test names.
 - Add regression coverage near the affected behavior. Check observable results, argument normalization, configuration overrides, and actionable failures where relevant. Transaction tests should cover the applicable game or action and its generated contract-call arguments; keep standard and PvP flows separate.
 - Reuse nearby test fixtures and helpers. Mock external services and generated contract boundaries where needed, but exercise the package's own behavior. Keep tests independent of live networks and real wallet credentials; wallet bridge tests may use local loopback servers and temporary storage.
+- Keep one-off helpers inside the relevant test or `describe` scope; use module scope for shared fixtures and helpers. Prefer explicit `test.each` inputs and expected results to conditional assertions, and preserve intentionally invalid inputs such as an explicit `undefined` argument.
 - Vitest clears mock call history before each test by default. If a test changes mock implementations, module state, environment variables, timers or resources, reset them explicitly. Clearing call history does not reset them. Keep `vi.mock`, `vi.unmock`, and `vi.hoisted` at module scope, and use `vi.doMock` for runtime mocking. Await asynchronous assertions.
 - Run tests and typechecks for every affected package. Package-specific test typechecks and fixtures are documented in the scoped instructions.
 
