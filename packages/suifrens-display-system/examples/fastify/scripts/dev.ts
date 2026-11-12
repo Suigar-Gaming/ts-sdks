@@ -21,7 +21,7 @@ await build({
 			}
 		});
 		server.on('exit', (code) => {
-			if (!signal.aborted && code) {
+			if (!signal.aborted && code != null && code !== 0 && !Number.isNaN(code)) {
 				process.exitCode = code;
 			}
 		});

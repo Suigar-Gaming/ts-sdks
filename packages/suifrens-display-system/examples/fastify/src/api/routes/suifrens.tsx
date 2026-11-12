@@ -4,7 +4,7 @@
 
 import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import { ObjectError } from '@mysten/sui/client';
-import type { FastifyPluginAsync } from 'fastify';
+import type { FastifyPluginCallback } from 'fastify';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Type } from 'typebox';
 import { SuiFrenImageInline } from '@suigar/suifrens-display-system/image-inline';
@@ -12,7 +12,7 @@ import { getSuiFrenAttributesAndAccessories } from '../client/sui-client.js';
 import { IMAGE_LOGO_SCHEMA, renderImageLogo } from '../lib/image-logo.js';
 import { renderImage } from '../lib/render-image.js';
 
-export const suifrens: FastifyPluginAsync = async (fastify) => {
+export const suifrens: FastifyPluginCallback = (fastify, _options, done) => {
 	for (const format of ['svg', 'png'] as const) {
 		fastify.withTypeProvider<TypeBoxTypeProvider>().get(
 			`/suifrens/:suifrenId/${format}`,
@@ -63,7 +63,7 @@ export const suifrens: FastifyPluginAsync = async (fastify) => {
 							: undefined,
 					);
 					reply.header('Content-Type', image.contentType);
-					return reply.send(image.body);
+					return await reply.send(image.body);
 				} catch (e: unknown) {
 					if (e instanceof ObjectError && (e.reason === 'deleted' || e.reason === 'notFound')) {
 						return reply.status(404).send(null);
@@ -74,4 +74,5 @@ export const suifrens: FastifyPluginAsync = async (fastify) => {
 			},
 		);
 	}
+	done();
 };

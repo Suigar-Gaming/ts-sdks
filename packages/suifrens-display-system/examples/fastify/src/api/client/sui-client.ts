@@ -65,7 +65,7 @@ export async function getSuiFrenAccessories(suiFrenId: string) {
 			}
 		}
 		cursor = page.hasNextPage ? page.cursor : null;
-	} while (cursor);
+	} while (cursor != null && cursor !== '');
 	return equipped;
 }
 

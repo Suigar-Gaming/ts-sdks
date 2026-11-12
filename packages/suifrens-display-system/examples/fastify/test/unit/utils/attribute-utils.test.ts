@@ -35,17 +35,17 @@ test.each<[SuiFrenSpecies, Array<string>]>([
 	expect(() => parseSuiFrenAttributes(species, attributes)).toThrow(TypeError);
 });
 
-test.each(['capy', 'bullshark'] as const)(
-	'normalizes legacy uppercase %s colors before palette validation',
-	(species) => {
-		const attributes = parseSuiFrenAttributes(species, [
-			'basic',
-			'6fbbee'.toUpperCase(),
-			'e6fbff'.toUpperCase(),
-			'happy',
-			species === 'capy' ? 'ear1' : 'classic',
-		]);
-		expect(attributes.mainColor).toBe('6fbbee');
-		expect(attributes.secondaryColor).toBe('e6fbff');
-	},
-);
+test.each([
+	['capy', 'ear1'],
+	['bullshark', 'classic'],
+] as const)('normalizes legacy uppercase %s colors before palette validation', (species, trait) => {
+	const attributes = parseSuiFrenAttributes(species, [
+		'basic',
+		'6fbbee'.toUpperCase(),
+		'e6fbff'.toUpperCase(),
+		'happy',
+		trait,
+	]);
+	expect(attributes.mainColor).toBe('6fbbee');
+	expect(attributes.secondaryColor).toBe('e6fbff');
+});

@@ -8,7 +8,7 @@ import { ALL_EXPRESSIONS } from '@suigar/suifrens-display-system/expressions';
 import type { SuiFrenAttributes, SuiFrenSpecies } from '@suigar/suifrens-display-system/types';
 
 function isColor(value: string | undefined): value is keyof typeof COLORS {
-	return value !== undefined && Object.hasOwn(COLORS, value);
+	return value != null && Object.hasOwn(COLORS, value);
 }
 
 export function parseSuiFrenAttributes(
@@ -23,7 +23,12 @@ export function parseSuiFrenAttributes(
 		throw new TypeError(`Invalid ${species} appearance attributes`);
 	}
 	const appearance = { skin, expression, mainColor, secondaryColor };
-	if (species === 'capy' && trait && Object.hasOwn(EAR_GENE_TO_EAR_SHAPE, trait)) {
+	if (
+		species === 'capy' &&
+		trait != null &&
+		trait !== '' &&
+		Object.hasOwn(EAR_GENE_TO_EAR_SHAPE, trait)
+	) {
 		const earShape = EAR_GENE_TO_EAR_SHAPE[trait];
 		if (earShape) {
 			return { ...appearance, earShape };

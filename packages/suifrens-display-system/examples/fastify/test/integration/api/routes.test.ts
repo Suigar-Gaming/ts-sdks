@@ -17,12 +17,14 @@ import * as imageRenderer from '../../../src/api/lib/render-image.js';
 import { Accessory, SuiFren } from '../../../src/api/lib/suifren-bcs.js';
 import { client } from '../../helpers/sui-client.js';
 
+const IMAGE_EXPECTATIONS = { svg: expectSvgResponse, png: expectPngResponse };
+
 vi.mock('@mysten/sui/grpc', async () => (await import('../../helpers/sui-client.js')).grpcMock);
 beforeEach(() => {
 	vi.resetAllMocks();
 });
 
-test.each(['svg', 'png'])(
+test.each(['svg', 'png'] as const)(
 	'serves health and %s images and handles missing accessories',
 	async (format) => {
 		const app = buildServer({ logger: false });
@@ -30,11 +32,7 @@ test.each(['svg', 'png'])(
 			expect((await app.inject('/')).json()).toEqual({ ok: true });
 			const image = await app.inject(`/accessories/soccer%20team%20shirt/${format}`);
 			expect(image.statusCode).toBe(200);
-			if (format === 'svg') {
-				expectSvgResponse(image);
-			} else {
-				await expectPngResponse(image);
-			}
+			await IMAGE_EXPECTATIONS[format](image);
 			expect((await app.inject(`/accessories/missing/${format}`)).statusCode).toBe(404);
 			const cors = await app.inject({
 				method: 'OPTIONS',
@@ -57,59 +55,58 @@ test.each([
 	[BULLSHARK_TYPE, 'classic', 'svg'],
 	[CAPY_TYPE, 'ear1', 'png'],
 	[BULLSHARK_TYPE, 'classic', 'png'],
-])('renders %s with %s in %s and handles upstream failures', async (species, trait, format) => {
-	const app = buildServer({ logger: false });
-	client.getObject.mockResolvedValue({
-		object: {
-			type: `${SUIFREN_TYPE}<${species}>`,
-			content: SuiFren.serialize({
-				id: '0x1',
-				generation: 1,
-				birthdate: 1700000000000,
-				cohort: 42,
-				genes: [24, 8],
-				attributes: ['basic', '6fbbee', 'e6fbff', 'happy', trait],
-				birth_location: 'Sui',
-			}).toBytes(),
-		},
-	});
-	client.listDynamicFields.mockResolvedValue({
-		dynamicFields: [],
-		cursor: null,
-		hasNextPage: false,
-	});
-	try {
-		const image = await app.inject(`/suifrens/0x1/${format}`);
-		expect(image.statusCode).toBe(200);
-		if (format === 'png') {
-			await expectPngResponse(image);
-		} else {
-			expectSvgResponse(image);
-		}
-		await expectLogoVariants(app, `/suifrens/0x1/${format}`);
-		await expectOptionVariants(app, `/suifrens/0x1/${format}`, 'shadow', true);
-		expect(client.getObject).toHaveBeenCalledWith({ objectId: '0x1', include: { content: true } });
-		if (format === 'png') {
-			await expectEquippedPng(app, image.rawPayload);
-			await expectResizedPng(app, '/suifrens/0x1/png');
-		}
-
-		client.getObject.mockResolvedValueOnce({
-			object: { type: `${SUIFREN_TYPE}<${species}>`, content: new Uint8Array([1]) },
+] as const)(
+	'renders %s with %s in %s and handles upstream failures',
+	async (species, trait, format) => {
+		const app = buildServer({ logger: false });
+		client.getObject.mockResolvedValue({
+			object: {
+				type: `${SUIFREN_TYPE}<${species}>`,
+				content: SuiFren.serialize({
+					id: '0x1',
+					generation: 1,
+					birthdate: 1700000000000,
+					cohort: 42,
+					genes: [24, 8],
+					attributes: ['basic', '6fbbee', 'e6fbff', 'happy', trait],
+					birth_location: 'Sui',
+				}).toBytes(),
+			},
 		});
-		expect((await app.inject(`/suifrens/0x1/${format}`)).statusCode).toBe(500);
-		client.getObject.mockRejectedValue(
-			new ObjectError('NOT_FOUND', 'missing', { reason: 'notFound' }),
-		);
-		expect((await app.inject(`/suifrens/0x1/${format}`)).statusCode).toBe(404);
-		client.getObject.mockRejectedValue(new Error('private upstream detail'));
-		const failed = await app.inject(`/suifrens/0x1/${format}`);
-		expect(failed.statusCode).toBe(500);
-		expect(failed.body).not.toContain('private upstream detail');
-	} finally {
-		await app.close();
-	}
-});
+		client.listDynamicFields.mockResolvedValue({
+			dynamicFields: [],
+			cursor: null,
+			hasNextPage: false,
+		});
+		try {
+			const image = await app.inject(`/suifrens/0x1/${format}`);
+			expect(image.statusCode).toBe(200);
+			await IMAGE_EXPECTATIONS[format](image);
+			await expectLogoVariants(app, `/suifrens/0x1/${format}`);
+			await expectOptionVariants(app, `/suifrens/0x1/${format}`, 'shadow', true);
+			expect(client.getObject).toHaveBeenCalledWith({
+				objectId: '0x1',
+				include: { content: true },
+			});
+			await expectFormatOptions(format, app, image.rawPayload);
+
+			client.getObject.mockResolvedValueOnce({
+				object: { type: `${SUIFREN_TYPE}<${species}>`, content: new Uint8Array([1]) },
+			});
+			expect((await app.inject(`/suifrens/0x1/${format}`)).statusCode).toBe(500);
+			client.getObject.mockRejectedValue(
+				new ObjectError('NOT_FOUND', 'missing', { reason: 'notFound' }),
+			);
+			expect((await app.inject(`/suifrens/0x1/${format}`)).statusCode).toBe(404);
+			client.getObject.mockRejectedValue(new Error('private upstream detail'));
+			const failed = await app.inject(`/suifrens/0x1/${format}`);
+			expect(failed.statusCode).toBe(500);
+			expect(failed.body).not.toContain('private upstream detail');
+		} finally {
+			await app.close();
+		}
+	},
+);
 
 async function expectPng(buffer: Buffer, width = 1024) {
 	expect(buffer.subarray(0, 8)).toEqual(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));
@@ -142,6 +139,13 @@ test.each(['/accessories/soccer%20team%20shirt/png'])(
 		}
 	},
 );
+
+async function expectFormatOptions(format: 'svg' | 'png', app: FastifyInstance, bareImage: Buffer) {
+	if (format === 'png') {
+		await expectEquippedPng(app, bareImage);
+		await expectResizedPng(app, '/suifrens/0x1/png');
+	}
+}
 
 function expectSvgResponse(image: { headers: Record<string, unknown>; body: string }) {
 	expect(image.headers['content-type']).toContain('image/svg+xml');
@@ -272,35 +276,38 @@ test('combines PNG width, logo and shadow selection', async () => {
 	}
 });
 
-test.each(
-	['logo', 'shadow'].flatMap((option) =>
-		[
-			...(option === 'logo' ? ['true', 'false', 'sui&logo=suigar'] : []),
-			'invalid',
-			'',
-			'0',
-			'1',
-			`true&${option}=false`,
-		].map((value) => [option, value]),
-	),
-)('rejects invalid %s value %s before reading or rendering', async (option, value) => {
-	const app = buildServer({ logger: false });
-	const rendering = vi.spyOn(imageRenderer, 'renderImage');
-	try {
-		for (const format of ['svg', 'png']) {
-			const suifren = await app.inject(`/suifrens/0x1/${format}?${option}=${value}`);
-			const accessory = await app.inject(
-				`/accessories/soccer%20team%20shirt/${format}?${option}=${value}`,
-			);
-			expect(suifren.statusCode).toBe(400);
-			expect(accessory.statusCode).toBe(400);
+const INVALID_OPTIONS = ['logo', 'shadow'].flatMap((option) =>
+	[
+		...(option === 'logo' ? ['true', 'false', 'sui&logo=suigar'] : []),
+		'invalid',
+		'',
+		'0',
+		'1',
+		`true&${option}=false`,
+	].map((value) => [option, value]),
+);
+
+test.each(INVALID_OPTIONS)(
+	'rejects invalid %s value %s before reading or rendering',
+	async (option, value) => {
+		const app = buildServer({ logger: false });
+		const rendering = vi.spyOn(imageRenderer, 'renderImage');
+		try {
+			for (const format of ['svg', 'png']) {
+				const suifren = await app.inject(`/suifrens/0x1/${format}?${option}=${value}`);
+				const accessory = await app.inject(
+					`/accessories/soccer%20team%20shirt/${format}?${option}=${value}`,
+				);
+				expect(suifren.statusCode).toBe(400);
+				expect(accessory.statusCode).toBe(400);
+			}
+			expect(client.getObject).not.toHaveBeenCalled();
+			expect(rendering).not.toHaveBeenCalled();
+		} finally {
+			await app.close();
 		}
-		expect(client.getObject).not.toHaveBeenCalled();
-		expect(rendering).not.toHaveBeenCalled();
-	} finally {
-		await app.close();
-	}
-});
+	},
+);
 
 async function expectLogoVariants(app: FastifyInstance, url: string) {
 	const original = await app.inject(url);
@@ -317,7 +324,7 @@ async function expectLogoVariants(app: FastifyInstance, url: string) {
 	await expectImageResponse(suigar);
 }
 
-test.each(['svg', 'png'])(
+test.each(['svg', 'png'] as const)(
 	'selects a Sui or Suigar logo for accessory %s output',
 	async (format) => {
 		const app = buildServer({ logger: false });
