@@ -1,5 +1,11 @@
 # @suigar/suifrens-display-system
 
+## 2.0.0-beta.1
+
+### Patch Changes
+
+- [`a36ccb8`](https://github.com/Suigar-Gaming/ts-sdks/commit/a36ccb80944998bb58735f9f914f9ff9f293f437) - Point the package homepage to the Suifrens documentation and declare the supported Node.js runtimes (`^24.0.0 || ^26.0.0`) in the package metadata.
+
 ## 2.0.0-beta.0
 
 ### Major Changes
